@@ -516,3 +516,123 @@ FB.help._render = function (topicId) {
   if (closeBtn) container.appendChild(closeBtn);
   container.appendChild(article);
 };
+
+FB.help._getDriver = function () {
+  if (
+    window.driver &&
+    window.driver.js &&
+    typeof window.driver.js.driver === "function"
+  ) {
+    return window.driver.js.driver;
+  }
+  if (typeof window.driver === "function") {
+    return window.driver;
+  }
+  return null;
+};
+
+FB.help.startTour = function () {
+  FB.help.close();
+
+  var driverFn = FB.help._getDriver();
+  if (!driverFn) {
+    FB.util.showToast("Tour unavailable — please reload and try again");
+    return;
+  }
+
+  var driverObj = driverFn({
+    showProgress: true,
+    animate: true,
+    allowClose: true,
+    overlayOpacity: 0.55,
+    stagePadding: 6,
+    stageRadius: 6,
+    onDestroyed: function () {
+      localStorage.setItem("fb-help-seen", "1");
+      if (FB.help._removeBanner) FB.help._removeBanner();
+    },
+    steps: [
+      {
+        popover: {
+          title: "Welcome to Framework Builder",
+          description:
+            "This quick tour walks you through the key areas of the interface. Use the arrows or keyboard to navigate — press ESC to exit at any time.",
+          side: "over",
+          align: "center",
+        },
+      },
+      {
+        element: "#topbar",
+        popover: {
+          title: "The Toolbar",
+          description:
+            "Switch device views, undo/redo changes, preview your page, save and load designs, import from URLs or AI, and export your finished page.",
+          side: "bottom",
+          align: "start",
+        },
+      },
+      {
+        element: "#left-panel",
+        popover: {
+          title: "Left Panel",
+          description:
+            "Browse your section library, templates, layouts, and widgets. Everything you need to build a page lives here.",
+          side: "right",
+          align: "start",
+        },
+      },
+      {
+        element: "#block-library",
+        popover: {
+          title: "Sections Library",
+          description:
+            "Click any section to add it to your canvas. Sections are grouped by type — hero, features, testimonials, footers, and more.",
+          side: "right",
+          align: "start",
+        },
+      },
+      {
+        element: "#canvas-wrap",
+        popover: {
+          title: "The Canvas",
+          description:
+            "Your live editing area. Click a block to select it. Use the ↑↓ arrows to reorder, or drag blocks to new positions.",
+          side: "left",
+          align: "start",
+        },
+      },
+      {
+        element: "#right-panel",
+        popover: {
+          title: "Block Inspector",
+          description:
+            "When a block is selected, this panel shows all its controls — content, colours, typography, spacing, effects, hover states, and animations.",
+          side: "left",
+          align: "start",
+        },
+      },
+      {
+        element: '[title="AI Import"]',
+        popover: {
+          title: "AI Import",
+          description:
+            "Describe the page you want in plain English, or paste a URL. AI will generate a full page layout for you instantly.",
+          side: "bottom",
+          align: "center",
+        },
+      },
+      {
+        element: ".tb-export",
+        popover: {
+          title: "Export",
+          description:
+            "When your design is ready, export clean production code as HTML, React JSX, or TypeScript TSX — no extra dependencies needed.",
+          side: "bottom",
+          align: "end",
+        },
+      },
+    ],
+  });
+
+  driverObj.drive();
+};
