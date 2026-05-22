@@ -636,3 +636,40 @@ FB.help.startTour = function () {
 
   driverObj.drive();
 };
+
+FB.help._removeBanner = function () {
+  var banner = document.getElementById("fb-help-banner");
+  if (banner) banner.remove();
+};
+
+FB.help._checkFirstVisit = function () {
+  if (localStorage.getItem("fb-help-seen")) return;
+
+  setTimeout(function () {
+    if (document.getElementById("fb-help-banner")) return;
+
+    var banner = document.createElement("div");
+    banner.id = "fb-help-banner";
+    banner.innerHTML =
+      '<span class="fb-banner-text">New here?</span>' +
+      '<button class="fb-banner-tour-btn">Take a quick tour</button>' +
+      '<button class="fb-banner-dismiss" aria-label="Dismiss">&#x2715;</button>';
+
+    banner
+      .querySelector(".fb-banner-tour-btn")
+      .addEventListener("click", function () {
+        localStorage.setItem("fb-help-seen", "1");
+        FB.help._removeBanner();
+        FB.help.startTour();
+      });
+
+    banner
+      .querySelector(".fb-banner-dismiss")
+      .addEventListener("click", function () {
+        localStorage.setItem("fb-help-seen", "1");
+        FB.help._removeBanner();
+      });
+
+    document.body.appendChild(banner);
+  }, 1500);
+};

@@ -89,6 +89,8 @@ FB.init = function () {
   setInterval(function () {
     FB.pages._save();
   }, 30000);
+
+  if (FB.help && FB.help._checkFirstVisit) FB.help._checkFirstVisit();
 };
 
 document.addEventListener("DOMContentLoaded", FB.init);
