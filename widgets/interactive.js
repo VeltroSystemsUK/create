@@ -1,0 +1,438 @@
+// Interactive Widgets
+
+FB.widgets.register("counter", {
+  label: "Counter",
+  icon: "#",
+  iconBg: "#1a2a1a",
+  iconColor: "#CDFE00",
+  category: "interactive",
+  defaultProps: {
+    number: 100,
+    prefix: "",
+    suffix: "+",
+    title: "Projects",
+    color: "#111111",
+    size: 48,
+  },
+  render: function (p) {
+    return (
+      '<div class="fw-counter" style="text-align:center;padding:1rem">' +
+      '<div class="fw-counter-number" style="font-family:\'Lexend\',sans-serif;font-size:' +
+      (p.size || 48) +
+      "px;font-weight:800;line-height:1;color:" +
+      (p.color || "#111") +
+      '">' +
+      (p.prefix || "") +
+      "<span>" +
+      (p.number || 100) +
+      "</span>" +
+      (p.suffix || "") +
+      "</div>" +
+      '<div class="fw-counter-title" style="font-size:14px;color:#666;margin-top:4px">' +
+      (p.title || "") +
+      "</div></div>"
+    );
+  },
+  editPanel: function (id, p) {
+    return (
+      '<div class="rp-row"><label>Number</label><input type="number" value="' +
+      (p.number || 100) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','number',+this.value)\"></div>" +
+      '<div class="rp-row"><label>Prefix</label><input type="text" value="' +
+      p.prefix +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','prefix',this.value)\"></div>" +
+      '<div class="rp-row"><label>Suffix</label><input type="text" value="' +
+      p.suffix +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','suffix',this.value)\"></div>" +
+      '<div class="rp-row"><label>Title</label><input type="text" value="' +
+      p.title +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','title',this.value)\"></div>" +
+      '<div class="rp-row"><label>Size: ' +
+      (p.size || 48) +
+      'px</label><input type="range" min="24" max="96" value="' +
+      (p.size || 48) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','size',+this.value);this.previousElementSibling.textContent='Size: '+this.value+'px'\"></div>"
+    );
+  },
+});
+
+FB.widgets.register("progressBar", {
+  label: "Progress Bar",
+  icon: "\u25A3",
+  iconBg: "#2a2a1a",
+  iconColor: "#CDFE00",
+  category: "interactive",
+  defaultProps: { percent: 75, title: "Skills", color: "#CDFE00", height: 24 },
+  render: function (p) {
+    return (
+      '<div style="padding:0.5rem 1rem">' +
+      (p.title
+        ? '<div style="font-size:13px;margin-bottom:4px;font-weight:500">' +
+          p.title +
+          "</div>"
+        : "") +
+      '<div class="fw-progress" style="background:#e8e8e4;border-radius:4px;height:' +
+      (p.height || 24) +
+      'px;overflow:hidden">' +
+      '<div class="fw-progress-fill" style="height:100%;border-radius:4px;width:' +
+      (p.percent || 75) +
+      "%;background:" +
+      (p.color || "#CDFE00") +
+      ';display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#111">' +
+      (p.percent || 75) +
+      "%</div></div></div>"
+    );
+  },
+  editPanel: function (id, p) {
+    return (
+      '<div class="rp-row"><label>Title</label><input type="text" value="' +
+      p.title +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','title',this.value)\"></div>" +
+      '<div class="rp-row"><label>Percent: ' +
+      (p.percent || 75) +
+      '%</label><input type="range" min="5" max="100" value="' +
+      (p.percent || 75) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','percent',+this.value);this.previousElementSibling.textContent='Percent: '+this.value+'%'\"></div>"
+    );
+  },
+});
+
+FB.widgets.register("countdown", {
+  label: "Countdown",
+  icon: "\u23F1",
+  iconBg: "#1a1a2a",
+  iconColor: "#CDFE00",
+  category: "interactive",
+  defaultProps: { date: "2027-01-01", label: "New Year" },
+  render: function (p) {
+    return (
+      '<div style="padding:1rem;text-align:center">' +
+      (p.label
+        ? '<div style="font-size:14px;font-weight:500;margin-bottom:1rem">' +
+          p.label +
+          "</div>"
+        : "") +
+      '<div class="fw-countdown" style="display:flex;gap:1rem;justify-content:center">' +
+      '<div class="fw-countdown-unit"><div class="fw-countdown-num" style="font-family:\'Lexend\',sans-serif;font-size:3rem;font-weight:800;line-height:1">--</div><div class="fw-countdown-label" style="font-size:11px;text-transform:uppercase;color:#999;letter-spacing:2px">Days</div></div>' +
+      '<div class="fw-countdown-unit"><div class="fw-countdown-num" style="font-family:\'Lexend\',sans-serif;font-size:3rem;font-weight:800;line-height:1">--</div><div class="fw-countdown-label" style="font-size:11px;text-transform:uppercase;color:#999;letter-spacing:2px">Hours</div></div>' +
+      '<div class="fw-countdown-unit"><div class="fw-countdown-num" style="font-family:\'Lexend\',sans-serif;font-size:3rem;font-weight:800;line-height:1">--</div><div class="fw-countdown-label" style="font-size:11px;text-transform:uppercase;color:#999;letter-spacing:2px">Mins</div></div>' +
+      '<div class="fw-countdown-unit"><div class="fw-countdown-num" style="font-family:\'Lexend\',sans-serif;font-size:3rem;font-weight:800;line-height:1">--</div><div class="fw-countdown-label" style="font-size:11px;text-transform:uppercase;color:#999;letter-spacing:2px">Secs</div></div></div></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    return (
+      '<div class="rp-row"><label>Target Date</label><input type="date" value="' +
+      (p.date || "2027-01-01") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','date',this.value)\"></div>" +
+      '<div class="rp-row"><label>Label</label><input type="text" value="' +
+      p.label +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','label',this.value)\"></div>"
+    );
+  },
+});
+
+FB.widgets.register("animatedHeadline", {
+  label: "Animated Headline",
+  icon: "\uD83D\uDDA5",
+  iconBg: "#2a1a2a",
+  iconColor: "#CDFE00",
+  category: "interactive",
+  defaultProps: {
+    beforeText: "We build",
+    words: ["great", "amazing", "fast"],
+    afterText: "things",
+    color: "#111",
+  },
+  render: function (p) {
+    var words = p.words || [];
+    return (
+      '<div class="fw-animated-headline" style="text-align:center;padding:1rem;font-family:\'Lexend\',sans-serif;font-size:clamp(1.5rem,4vw,3rem);font-weight:800;letter-spacing:-1px;color:' +
+      (p.color || "#111") +
+      '">' +
+      (p.beforeText || "") +
+      ' <span class="fw-ah-words" style="display:inline-block;overflow:hidden;vertical-align:bottom">' +
+      words
+        .map(function (w, i) {
+          return (
+            '<span class="fw-ah-word' +
+            (i === 0 ? " active" : "") +
+            '" style="' +
+            (i === 0
+              ? "display:inline-block;animation:ahFadeIn 0.4s ease"
+              : "display:none") +
+            '">' +
+            w +
+            "</span>"
+          );
+        })
+        .join("") +
+      "</span> " +
+      (p.afterText || "") +
+      "</div>"
+    );
+  },
+  editPanel: function (id, p) {
+    return (
+      '<div class="rp-row"><label>Before Text</label><input type="text" value="' +
+      p.beforeText +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','beforeText',this.value)\"></div>" +
+      '<div class="rp-row"><label>Animated Words (one per line)</label><textarea rows="3" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','words',this.value.split('\\n').filter(function(s){return s.trim()}))\">" +
+      (p.words || []).join("\n") +
+      "</textarea></div>" +
+      '<div class="rp-row"><label>After Text</label><input type="text" value="' +
+      p.afterText +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','afterText',this.value)\"></div>"
+    );
+  },
+});
+
+FB.widgets.register("hotspot", {
+  label: "Hotspot",
+  icon: "\uD83D\uDCCD",
+  iconBg: "#1a3a2a",
+  iconColor: "#CDFE00",
+  category: "interactive",
+  defaultProps: {
+    src: "",
+    hotspots: [
+      { x: 30, y: 30, label: "Hotspot 1" },
+      { x: 70, y: 70, label: "Hotspot 2" },
+    ],
+  },
+  render: function (p) {
+    if (!p.src)
+      return '<div style="padding:1rem;text-align:center;color:#999;border:2px dashed #ddd;border-radius:6px;margin:0.5rem 1rem;padding:3rem">\uD83D\uDCCD Hotspot<br><span style="font-size:11px">Set image in panel</span></div>';
+    var markers = (p.hotspots || [])
+      .map(function (m) {
+        return (
+          '<div class="fw-hotspot-marker" style="position:absolute;left:' +
+          m.x +
+          "%;top:" +
+          m.y +
+          '%;width:24px;height:24px;background:var(--accent);border-radius:50%;cursor:pointer;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#111;box-shadow:0 2px 8px rgba(0,0,0,0.2)" title="' +
+          m.label +
+          '">+</div>'
+        );
+      })
+      .join("");
+    return (
+      '<div style="padding:0.5rem 1rem"><div class="fw-hotspot-img" style="position:relative;display:inline-block;width:100%"><img src="' +
+      p.src +
+      '" style="width:100%;border-radius:6px;display:block">' +
+      markers +
+      "</div></div>"
+    );
+  },
+  editPanel: function (id, p) {
+    var html =
+      '<div class="rp-row"><label>Background Image URL</label><input type="text" value="' +
+      p.src +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','src',this.value)\"></div>";
+    (p.hotspots || []).forEach(function (m, i) {
+      html +=
+        '<div class="rp-row" style="border:1px solid var(--border);border-radius:4px;margin:4px 14px;padding:8px">' +
+        "<label>Marker " +
+        (i + 1) +
+        ' Label</label><input type="text" value="' +
+        m.label +
+        '" onchange="var hs=JSON.parse(JSON.stringify(FB.state.blocks.find(function(b){return b.id===\'' +
+        id +
+        "'}).props.hotspots||[]));hs[" +
+        i +
+        "].label=this.value;FB.panels.updateWidgetProp('" +
+        id +
+        "','hotspots',hs)\">" +
+        '<div style="display:flex;gap:4px;margin-top:4px"><label style="font-size:10px">X: </label><input type="range" min="5" max="95" value="' +
+        (m.x || 30) +
+        '" style="flex:1" oninput="var hs=JSON.parse(JSON.stringify(FB.state.blocks.find(function(b){return b.id===\'' +
+        id +
+        "'}).props.hotspots||[]));hs[" +
+        i +
+        "].x=+this.value;FB.panels.updateWidgetProp('" +
+        id +
+        "','hotspots',hs)\">" +
+        '<label style="font-size:10px">Y: </label><input type="range" min="5" max="95" value="' +
+        (m.y || 30) +
+        '" style="flex:1" oninput="var hs=JSON.parse(JSON.stringify(FB.state.blocks.find(function(b){return b.id===\'' +
+        id +
+        "'}).props.hotspots||[]));hs[" +
+        i +
+        "].y=+this.value;FB.panels.updateWidgetProp('" +
+        id +
+        "','hotspots',hs)\"></div></div>";
+    });
+    return html;
+  },
+});
+
+FB.widgets.register("progressTracker", {
+  label: "Progress Tracker",
+  icon: "\u25A3",
+  iconBg: "#2a1a2a",
+  iconColor: "#CDFE00",
+  category: "interactive",
+  defaultProps: {
+    steps: [
+      { title: "Step 1", desc: "Start" },
+      { title: "Step 2", desc: "Finish" },
+    ],
+    current: 1,
+  },
+  render: function (p) {
+    var steps = p.steps || [];
+    var current = p.current || 1;
+    return (
+      '<div class="fw-tracker" style="display:flex;padding:1rem;gap:0">' +
+      steps
+        .map(function (s, i) {
+          var active = i < current;
+          return (
+            '<div class="fw-tracker-step' +
+            (active ? " active" : "") +
+            '" style="flex:1;text-align:center;position:relative">' +
+            (i < steps.length - 1
+              ? '<div style="position:absolute;top:16px;left:60%;width:80%;height:2px;background:' +
+                (active ? "var(--accent)" : "#ddd") +
+                '"></div>'
+              : "") +
+            '<div class="fw-tracker-dot" style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:14px;font-weight:700;background:' +
+            (active ? "var(--accent)" : "#eee") +
+            ";color:" +
+            (active ? "#111" : "#999") +
+            '">' +
+            (i + 1) +
+            "</div>" +
+            '<div class="fw-tracker-label" style="font-size:11px;color:' +
+            (active ? "#111" : "#999") +
+            ";font-weight:" +
+            (active ? "500" : "400") +
+            '">' +
+            s.title +
+            "</div></div>"
+          );
+        })
+        .join("") +
+      "</div>"
+    );
+  },
+  editPanel: function (id, p) {
+    var html =
+      '<div class="rp-row"><label>Current Step: ' +
+      (p.current || 1) +
+      '</label><input type="range" min="0" max="' +
+      (p.steps ? p.steps.length : 2) +
+      '" value="' +
+      (p.current || 1) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','current',+this.value);this.previousElementSibling.textContent='Current Step: '+this.value\"></div>";
+    (p.steps || []).forEach(function (s, i) {
+      html +=
+        '<div class="rp-row"><label>Step ' +
+        (i + 1) +
+        ' Title</label><input type="text" value="' +
+        s.title +
+        '" onchange="var steps=JSON.parse(JSON.stringify(FB.state.blocks.find(function(b){return b.id===\'' +
+        id +
+        "'}).props.steps||[]));steps[" +
+        i +
+        "].title=this.value;FB.panels.updateWidgetProp('" +
+        id +
+        "','steps',steps)\"></div>";
+    });
+    return html;
+  },
+});
+
+FB.widgets.register("alert", {
+  label: "Alert",
+  icon: "\u26A0",
+  iconBg: "#2a2a1a",
+  iconColor: "#f0ad4e",
+  category: "interactive",
+  defaultProps: {
+    title: "Notice",
+    desc: "This is an alert message",
+    type: "info",
+    dismissible: true,
+  },
+  render: function (p) {
+    return (
+      '<div class="fw-alert fw-alert-' +
+      (p.type || "info") +
+      '" style="padding:1rem 1.25rem;border-radius:6px;display:flex;align-items:flex-start;gap:12px;margin:0.5rem 1rem;font-size:14px">' +
+      '<div style="flex:1"><strong>' +
+      (p.title || "") +
+      "</strong>" +
+      (p.desc ? "<br><span>" + p.desc + "</span>" : "") +
+      "</div>" +
+      (p.dismissible
+        ? '<button class="fw-alert-dismiss" style="background:none;border:none;font-size:18px;cursor:pointer;color:inherit;padding:0;line-height:1;margin-left:auto" onclick="this.parentElement.style.display=\'none\'">\u00D7</button>'
+        : "") +
+      "</div>"
+    );
+  },
+  editPanel: function (id, p) {
+    return (
+      '<div class="rp-row"><label>Title</label><input type="text" value="' +
+      p.title +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','title',this.value)\"></div>" +
+      '<div class="rp-row"><label>Description</label><textarea rows="2" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','desc',this.value)\">" +
+      p.desc +
+      "</textarea></div>" +
+      '<div class="rp-row"><label>Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','type',this.value)\">" +
+      ["info", "success", "warning", "danger"]
+        .map(function (t) {
+          return (
+            '<option value="' +
+            t +
+            '"' +
+            (p.type === t ? " selected" : "") +
+            ">" +
+            t.charAt(0).toUpperCase() +
+            t.slice(1) +
+            "</option>"
+          );
+        })
+        .join("") +
+      "</select></div>" +
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.dismissible ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','dismissible',this.checked)\"> Dismissible</label></div>"
+    );
+  },
+});

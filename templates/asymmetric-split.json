@@ -1,0 +1,91 @@
+{
+  "name": "Asymmetric Split",
+  "version": 1,
+  "created": "2026-05-20T00:00:00Z",
+  "blocks": [
+    {
+      "id": "g_as_001",
+      "type": "nav",
+      "props": {
+        "logoText": "Studio",
+        "links": ["Work", "About", "Journal", "Contact"],
+        "ctaText": "Get in touch",
+        "bg": "#ffffff",
+        "textColor": "#111111",
+        "accentColor": "#e63946"
+      }
+    },
+    {
+      "id": "g_as_002",
+      "type": "hero",
+      "props": {
+        "eyebrow": "Asymmetric Split",
+        "headline": "Bold. Unequal.<br><em>Unforgettable.</em>",
+        "subtext": "40/60 split with a sticky side panel — editorial design for portfolios, lookbooks, and modern brand pages.",
+        "ctaText": "View work →",
+        "bg": "#fafafa",
+        "accentColor": "#e63946",
+        "showBlob": false
+      }
+    },
+    {
+      "id": "g_as_003",
+      "type": "textBlock",
+      "props": {
+        "headline": "The 40/60 Principle",
+        "body": "An asymmetric layout deliberately avoids equal columns. The smaller side (40%) acts as an anchor — holding navigation, context, or key visuals — while the larger side (60%) carries the main content. The sticky sidebar stays visible as users scroll through content, creating a grounded editorial experience. This pattern is widely used in photography portfolios, editorial lookbooks, and modern contact pages where visual hierarchy matters more than content density.",
+        "bg": "#ffffff",
+        "textColor": "#111111",
+        "accentColor": "#e63946",
+        "paddingV": 60,
+        "paddingH": 48
+      }
+    },
+    {
+      "id": "g_as_004",
+      "type": "stats",
+      "props": {
+        "stats": [
+          { "num": "40%", "label": "Side Panel" },
+          { "num": "60%", "label": "Main Content" },
+          { "num": "100%", "label": "Attention" },
+          { "num": "2×", "label": "Engagement" }
+        ],
+        "bg": "#e63946",
+        "accentColor": "#ffffff"
+      }
+    },
+    {
+      "id": "g_as_005",
+      "type": "cta",
+      "props": {
+        "headline": "Ready to break the <em>grid?</em>",
+        "btnText": "Start your project →",
+        "bg": "#111111",
+        "textColor": "#ffffff"
+      }
+    },
+    {
+      "id": "g_as_006",
+      "type": "footer",
+      "props": {
+        "logoText": "Studio",
+        "tagline": "Design that stands out.",
+        "cols": [
+          {
+            "heading": "Social",
+            "links": ["Instagram", "Twitter", "LinkedIn", "Dribbble"]
+          },
+          { "heading": "Info", "links": ["About", "Process", "FAQ"] },
+          {
+            "heading": "Contact",
+            "links": ["hello@studio.co", "+1 234 567 890"]
+          }
+        ],
+        "copyright": "© 2026 Studio. All rights reserved.",
+        "bg": "#111111",
+        "accentColor": "#e63946"
+      }
+    }
+  ]
+}

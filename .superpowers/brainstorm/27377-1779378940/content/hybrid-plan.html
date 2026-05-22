@@ -1,0 +1,229 @@
+<h2>Hybrid Integration Plan</h2>
+<p class="subtitle">
+  Which patterns become new blocks vs style variants. Review the split and let
+  me know if it looks right.
+</p>
+
+<div class="section">
+  <div class="label">NEW BLOCK TYPES (15 blocks added to BLOCK_DEFS)</div>
+  <div class="cards">
+    <div class="card" data-choice="b1">
+      <div class="card-body">
+        <h3>videoHero</h3>
+        <p>Full-screen video background + overlay + dual CTAs + rating pill</p>
+      </div>
+    </div>
+    <div class="card" data-choice="b2">
+      <div class="card-body">
+        <h3>splitHero</h3>
+        <p>2-column grid: text left, embedded media right (Vimeo/YouTube)</p>
+      </div>
+    </div>
+    <div class="card" data-choice="b3">
+      <div class="card-body">
+        <h3>orbsHero</h3>
+        <p>
+          Animated floating colored orbs + word-swap headline + gradient text
+        </p>
+      </div>
+    </div>
+    <div class="card" data-choice="b4">
+      <div class="card-body">
+        <h3>megaNav</h3>
+        <p>
+          Hover-triggered multi-column dropdown with discipline/service links
+        </p>
+      </div>
+    </div>
+    <div class="card" data-choice="b5">
+      <div class="card-body">
+        <h3>slideNav</h3>
+        <p>
+          Checkbox-triggered slide-in mobile menu with multi-level back
+          navigation
+        </p>
+      </div>
+    </div>
+    <div class="card" data-choice="b6">
+      <div class="card-body">
+        <h3>resultsGrid</h3>
+        <p>
+          3-column result cards with metrics (before→after), testimonials,
+          verified badges
+        </p>
+      </div>
+    </div>
+    <div class="card" data-choice="b7">
+      <div class="card-body">
+        <h3>glassCards</h3>
+        <p>
+          Glass-morphism service cards with subtle borders, glow, hover
+          transitions
+        </p>
+      </div>
+    </div>
+    <div class="card" data-choice="b8">
+      <div class="card-body">
+        <h3>portfolioGrid</h3>
+        <p>Image grid with hover overlays and modal triggers</p>
+      </div>
+    </div>
+    <div class="card" data-choice="b9">
+      <div class="card-body">
+        <h3>clientCarousel</h3>
+        <p>Auto-scrolling logo carousel with lazy loading (Splide/Swiper)</p>
+      </div>
+    </div>
+    <div class="card" data-choice="b10">
+      <div class="card-body">
+        <h3>trustPill</h3>
+        <p>Star rating + text + logo + verification date inline component</p>
+      </div>
+    </div>
+    <div class="card" data-choice="b11">
+      <div class="card-body">
+        <h3>metricBox</h3>
+        <p>
+          Before→after metric display with percentage increase and animated
+          counter
+        </p>
+      </div>
+    </div>
+    <div class="card" data-choice="b12">
+      <div class="card-body">
+        <h3>wordSwap</h3>
+        <p>
+          Rotating keywords with gradient text colors
+          (leads/conversions/exposure)
+        </p>
+      </div>
+    </div>
+    <div class="card" data-choice="b13">
+      <div class="card-body">
+        <h3>chatWidget</h3>
+        <p>Floating chat bubble with welcome message + chat interface</p>
+      </div>
+    </div>
+    <div class="card" data-choice="b14">
+      <div class="card-body">
+        <h3>cookieConsent</h3>
+        <p>Categorized consent modal with accept/decline/customize options</p>
+      </div>
+    </div>
+    <div class="card" data-choice="b15">
+      <div class="card-body">
+        <h3>liteVideo</h3>
+        <p>
+          Lazy-loaded video embed (Vimeo/YouTube) with poster image, plays on
+          click
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="label">STYLE VARIANTS (added as props to existing blocks)</div>
+  <div class="cards">
+    <div class="card" data-choice="v1">
+      <div class="card-body">
+        <h3>hero: blobStyle</h3>
+        <p>"blob" (existing), "orbs", "gradient", "solid", "video"</p>
+      </div>
+    </div>
+    <div class="card" data-choice="v2">
+      <div class="card-body">
+        <h3>nav: menuStyle</h3>
+        <p>"simple" (existing), "mega", "slide"</p>
+      </div>
+    </div>
+    <div class="card" data-choice="v3">
+      <div class="card-body">
+        <h3>cta: buttonStyle</h3>
+        <p>"filled" (existing), "outlined", "floating-pulse", "dual"</p>
+      </div>
+    </div>
+    <div class="card" data-choice="v4">
+      <div class="card-body">
+        <h3>footer: layoutStyle</h3>
+        <p>"columns" (existing), "mega", "minimal"</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="label">
+    ANIMATION PRESETS (added to CSS + right-panel selector)
+  </div>
+  <div class="cards">
+    <div class="card" data-choice="a1">
+      <div class="card-body">
+        <h3>scrollReveal</h3>
+        <p>Elements fade/slide in on scroll (AOS-style IntersectionObserver)</p>
+      </div>
+    </div>
+    <div class="card" data-choice="a2">
+      <div class="card-body">
+        <h3>floatingOrbs</h3>
+        <p>Animated colored circles with position/opacity changes</p>
+      </div>
+    </div>
+    <div class="card" data-choice="a3">
+      <div class="card-body">
+        <h3>neonGlow</h3>
+        <p>Ambient glow effect on cards and buttons</p>
+      </div>
+    </div>
+    <div class="card" data-choice="a4">
+      <div class="card-body">
+        <h3>gradientText</h3>
+        <p>Multi-color animated gradient on headings</p>
+      </div>
+    </div>
+    <div class="card" data-choice="a5">
+      <div class="card-body">
+        <h3>hoverUnderline</h3>
+        <p>Animated underline reveal on nav links</p>
+      </div>
+    </div>
+    <div class="card" data-choice="a6">
+      <div class="card-body">
+        <h3>carouselLoop</h3>
+        <p>Auto-scroll carousel with responsive breakpoints</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="label">SEO SYSTEM (export-level, not blocks)</div>
+  <div class="cards">
+    <div class="card" data-choice="s1">
+      <div class="card-body">
+        <h3>Meta Tag Generator</h3>
+        <p>
+          Title, description, OG, Twitter, canonical — added to export HTML head
+        </p>
+      </div>
+    </div>
+    <div class="card" data-choice="s2">
+      <div class="card-body">
+        <h3>JSON-LD Schema</h3>
+        <p>Organization, LocalBusiness, BreadcrumbList structured data</p>
+      </div>
+    </div>
+    <div class="card" data-choice="s3">
+      <div class="card-body">
+        <h3>Resource Hints</h3>
+        <p>preload, preconnect, dns-prefetch for fonts/CDNs</p>
+      </div>
+    </div>
+    <div class="card" data-choice="s4">
+      <div class="card-body">
+        <h3>Semantic HTML Export</h3>
+        <p>header/nav/main/section/footer with ARIA in exported HTML</p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,550 @@
+<h2>Guided Tour — Step Design</h2>
+<p class="subtitle">
+  This is how each tour step looks in the real app. A spotlight highlights the
+  target element; the popover appears alongside it.
+</p>
+
+<div class="mockup">
+  <div class="mockup-header">Tour active — Step 3 of 8: Left Panel</div>
+  <div
+    class="mockup-body"
+    style="
+      padding: 0;
+      overflow: hidden;
+      border-radius: 0 0 8px 8px;
+      position: relative;
+    "
+  >
+    <!-- Simulated app layout with overlay -->
+    <div
+      style="
+        display: flex;
+        flex-direction: column;
+        height: 340px;
+        font-family: &quot;Lexend&quot;, sans-serif;
+        position: relative;
+      "
+    >
+      <!-- Top bar (dimmed) -->
+      <div
+        style="
+          background: rgba(17, 17, 17, 0.25);
+          padding: 7px 12px;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 10px;
+          border-bottom: 1px solid #1e1e1e;
+        "
+      >
+        <span style="color: rgba(205, 254, 0, 0.25); font-weight: 700"
+          >Framework Builder</span
+        >
+        <div
+          style="
+            flex: 1;
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.15);
+          "
+        >
+          <span
+            style="
+              background: rgba(34, 34, 34, 0.4);
+              padding: 2px 5px;
+              border-radius: 2px;
+            "
+            >🖥 📱</span
+          >
+          <span
+            style="
+              background: rgba(34, 34, 34, 0.4);
+              padding: 2px 5px;
+              border-radius: 2px;
+            "
+            >↩ ↪</span
+          >
+          <span
+            style="
+              background: rgba(34, 34, 34, 0.4);
+              padding: 2px 5px;
+              border-radius: 2px;
+            "
+            >⚙</span
+          >
+        </div>
+        <span
+          style="
+            background: rgba(205, 254, 0, 0.2);
+            color: rgba(17, 17, 17, 0.5);
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 3px;
+          "
+          >Export</span
+        >
+      </div>
+
+      <!-- App body -->
+      <div style="display: flex; flex: 1; position: relative">
+        <!-- Left panel — HIGHLIGHTED (not dimmed) -->
+        <div
+          style="
+            width: 110px;
+            background: #111;
+            border-right: 1px solid #333;
+            padding: 8px;
+            position: relative;
+            z-index: 2;
+            box-shadow:
+              0 0 0 3px #cdfe00,
+              0 0 0 6px rgba(205, 254, 0, 0.15);
+          "
+        >
+          <div
+            style="
+              color: #cdfe00;
+              font-size: 9px;
+              font-weight: 700;
+              margin-bottom: 6px;
+            "
+          >
+            SECTIONS
+          </div>
+          <div
+            style="
+              background: #1e1e1e;
+              border-radius: 3px;
+              padding: 5px 7px;
+              margin-bottom: 3px;
+              color: #aaa;
+              font-size: 9px;
+            "
+          >
+            Layers
+          </div>
+          <div
+            style="
+              background: #1e1e1e;
+              border-radius: 3px;
+              padding: 5px 7px;
+              margin-bottom: 3px;
+              color: #aaa;
+              font-size: 9px;
+            "
+          >
+            Templates
+          </div>
+          <div
+            style="
+              background: #222;
+              border-radius: 3px;
+              padding: 5px 7px;
+              margin-bottom: 3px;
+              color: #cdfe00;
+              font-size: 9px;
+              font-weight: 600;
+            "
+          >
+            Sections ◄
+          </div>
+          <div
+            style="
+              background: #1e1e1e;
+              border-radius: 3px;
+              padding: 5px 7px;
+              margin-bottom: 3px;
+              color: #aaa;
+              font-size: 9px;
+            "
+          >
+            Widgets
+          </div>
+        </div>
+
+        <!-- Canvas (dimmed) -->
+        <div
+          style="
+            flex: 1;
+            background: rgba(22, 22, 22, 0.4);
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+          "
+        >
+          <div
+            style="
+              background: rgba(34, 34, 34, 0.3);
+              border-radius: 3px;
+              height: 24px;
+            "
+          ></div>
+          <div
+            style="
+              background: rgba(34, 34, 34, 0.3);
+              border-radius: 3px;
+              height: 40px;
+            "
+          ></div>
+          <div
+            style="
+              background: rgba(34, 34, 34, 0.3);
+              border-radius: 3px;
+              height: 24px;
+            "
+          ></div>
+        </div>
+
+        <!-- Right panel (dimmed) -->
+        <div
+          style="
+            width: 100px;
+            background: rgba(17, 17, 17, 0.25);
+            border-left: 1px solid rgba(34, 34, 34, 0.4);
+            padding: 8px;
+          "
+        >
+          <div
+            style="
+              color: rgba(170, 170, 170, 0.2);
+              font-size: 9px;
+              margin-bottom: 4px;
+            "
+          >
+            Content
+          </div>
+          <div
+            style="
+              color: rgba(170, 170, 170, 0.2);
+              font-size: 9px;
+              margin-bottom: 4px;
+            "
+          >
+            Style
+          </div>
+          <div
+            style="
+              color: rgba(170, 170, 170, 0.2);
+              font-size: 9px;
+              margin-bottom: 4px;
+            "
+          >
+            Typography
+          </div>
+        </div>
+
+        <!-- Semi-transparent overlay (simulating driver.js backdrop) -->
+        <div
+          style="
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 1;
+            pointer-events: none;
+          "
+        ></div>
+
+        <!-- Tour popover -->
+        <div
+          style="
+            position: absolute;
+            left: 118px;
+            top: 10px;
+            z-index: 10;
+            background: #161616;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            width: 200px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+          "
+        >
+          <!-- Arrow pointing left -->
+          <div
+            style="
+              position: absolute;
+              left: -7px;
+              top: 18px;
+              width: 0;
+              height: 0;
+              border-top: 6px solid transparent;
+              border-bottom: 6px solid transparent;
+              border-right: 7px solid #2a2a2a;
+            "
+          ></div>
+          <div
+            style="
+              position: absolute;
+              left: -6px;
+              top: 18px;
+              width: 0;
+              height: 0;
+              border-top: 6px solid transparent;
+              border-bottom: 6px solid transparent;
+              border-right: 7px solid #161616;
+            "
+          ></div>
+
+          <div style="padding: 14px 14px 10px">
+            <div
+              style="
+                color: #cdfe00;
+                font-size: 9px;
+                font-weight: 700;
+                letter-spacing: 0.1em;
+                margin-bottom: 4px;
+              "
+            >
+              STEP 3 OF 8
+            </div>
+            <div
+              style="
+                color: #fff;
+                font-size: 12px;
+                font-weight: 700;
+                margin-bottom: 6px;
+              "
+            >
+              Left Panel
+            </div>
+            <div style="color: #777; font-size: 10px; line-height: 1.6">
+              This is your section library. Browse Sections, Layouts, Templates,
+              Widgets and more — click any item to add it straight to your
+              canvas.
+            </div>
+          </div>
+
+          <div
+            style="
+              padding: 8px 14px 12px;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              border-top: 1px solid #1e1e1e;
+              margin-top: 4px;
+            "
+          >
+            <div style="display: flex; gap: 4px">
+              <div
+                style="
+                  width: 6px;
+                  height: 6px;
+                  border-radius: 50%;
+                  background: #222;
+                "
+              ></div>
+              <div
+                style="
+                  width: 6px;
+                  height: 6px;
+                  border-radius: 50%;
+                  background: #222;
+                "
+              ></div>
+              <div
+                style="
+                  width: 6px;
+                  height: 6px;
+                  border-radius: 50%;
+                  background: #cdfe00;
+                "
+              ></div>
+              <div
+                style="
+                  width: 6px;
+                  height: 6px;
+                  border-radius: 50%;
+                  background: #222;
+                "
+              ></div>
+              <div
+                style="
+                  width: 6px;
+                  height: 6px;
+                  border-radius: 50%;
+                  background: #222;
+                "
+              ></div>
+              <div
+                style="
+                  width: 6px;
+                  height: 6px;
+                  border-radius: 50%;
+                  background: #222;
+                "
+              ></div>
+              <div
+                style="
+                  width: 6px;
+                  height: 6px;
+                  border-radius: 50%;
+                  background: #222;
+                "
+              ></div>
+              <div
+                style="
+                  width: 6px;
+                  height: 6px;
+                  border-radius: 50%;
+                  background: #222;
+                "
+              ></div>
+            </div>
+            <div style="display: flex; gap: 5px">
+              <div
+                style="
+                  color: #555;
+                  font-size: 9px;
+                  padding: 4px 8px;
+                  border: 1px solid #2a2a2a;
+                  border-radius: 3px;
+                  cursor: pointer;
+                "
+              >
+                ← Back
+              </div>
+              <div
+                style="
+                  background: #cdfe00;
+                  color: #111;
+                  font-size: 9px;
+                  font-weight: 700;
+                  padding: 4px 10px;
+                  border-radius: 3px;
+                  cursor: pointer;
+                "
+              >
+                Next →
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  style="
+    margin-top: 20px;
+    background: #1a1a1a;
+    border-radius: 8px;
+    padding: 16px 18px;
+  "
+>
+  <div
+    style="
+      color: #aaa;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: 0.06em;
+    "
+  >
+    WHAT'S IN EVERY STEP
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 7px">
+    <div style="display: flex; align-items: flex-start; gap: 8px">
+      <svg
+        width="12"
+        height="12"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#CDFE00"
+        stroke-width="2.5"
+        style="flex-shrink: 0; margin-top: 1px"
+      >
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+      <span style="color: #777; font-size: 11px"
+        >Step counter label (Step X of 8)</span
+      >
+    </div>
+    <div style="display: flex; align-items: flex-start; gap: 8px">
+      <svg
+        width="12"
+        height="12"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#CDFE00"
+        stroke-width="2.5"
+        style="flex-shrink: 0; margin-top: 1px"
+      >
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+      <span style="color: #777; font-size: 11px">Dot progress indicator</span>
+    </div>
+    <div style="display: flex; align-items: flex-start; gap: 8px">
+      <svg
+        width="12"
+        height="12"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#CDFE00"
+        stroke-width="2.5"
+        style="flex-shrink: 0; margin-top: 1px"
+      >
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+      <span style="color: #777; font-size: 11px"
+        >Back / Next buttons + keyboard arrow support</span
+      >
+    </div>
+    <div style="display: flex; align-items: flex-start; gap: 8px">
+      <svg
+        width="12"
+        height="12"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#CDFE00"
+        stroke-width="2.5"
+        style="flex-shrink: 0; margin-top: 1px"
+      >
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+      <span style="color: #777; font-size: 11px"
+        >Skip tour link (always available)</span
+      >
+    </div>
+    <div style="display: flex; align-items: flex-start; gap: 8px">
+      <svg
+        width="12"
+        height="12"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#CDFE00"
+        stroke-width="2.5"
+        style="flex-shrink: 0; margin-top: 1px"
+      >
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+      <span style="color: #777; font-size: 11px"
+        >Spotlight cuts out around the highlighted element</span
+      >
+    </div>
+    <div style="display: flex; align-items: flex-start; gap: 8px">
+      <svg
+        width="12"
+        height="12"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#CDFE00"
+        stroke-width="2.5"
+        style="flex-shrink: 0; margin-top: 1px"
+      >
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+      <span style="color: #777; font-size: 11px"
+        >First visit auto-prompt: "Take a quick tour?" (stored in
+        localStorage)</span
+      >
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top: 16px">
+  Does the popover style feel right? Happy with the dark card + #CDFE00 accent
+  approach?
+</p>

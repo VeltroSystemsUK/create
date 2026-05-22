@@ -1,0 +1,134 @@
+{
+  "name": "Landing Page",
+  "version": 1,
+  "created": "2026-05-20T00:00:00Z",
+  "blocks": [
+    {
+      "id": "b_l001",
+      "type": "nav",
+      "props": {
+        "logoText": "Luma",
+        "links": ["Features", "Pricing", "About", "Contact"],
+        "ctaText": "Get Started",
+        "bg": "#ffffff",
+        "textColor": "#111111",
+        "accentColor": "#6C5CE7"
+      }
+    },
+    {
+      "id": "b_l002",
+      "type": "hero",
+      "props": {
+        "eyebrow": "Launch your product",
+        "headline": "Build something <em>remarkable.</em>",
+        "subtext": "The all-in-one platform for modern teams. Ship faster, collaborate better, and grow smarter.",
+        "ctaText": "Start free trial →",
+        "bg": "#f8f7ff",
+        "accentColor": "#6C5CE7",
+        "showBlob": true
+      }
+    },
+    {
+      "id": "b_l003",
+      "type": "features",
+      "props": {
+        "label": "Features",
+        "headline": "Everything you need.",
+        "items": [
+          {
+            "icon": "🚀",
+            "title": "Lightning Fast",
+            "desc": "Built for speed. Every millisecond counts."
+          },
+          {
+            "icon": "🎨",
+            "title": "Beautiful Design",
+            "desc": "Pixel-perfect interfaces that delight users."
+          },
+          {
+            "icon": "🔒",
+            "title": "Secure by Default",
+            "desc": "Enterprise-grade security out of the box."
+          },
+          {
+            "icon": "📊",
+            "title": "Analytics",
+            "desc": "Real-time insights into your business."
+          },
+          {
+            "icon": "💬",
+            "title": "Live Chat",
+            "desc": "Connect with your customers instantly."
+          },
+          {
+            "icon": "🔄",
+            "title": "Integrations",
+            "desc": "Works with your favorite tools."
+          }
+        ],
+        "bg": "#ffffff",
+        "textColor": "#111111",
+        "accentColor": "#6C5CE7"
+      }
+    },
+    {
+      "id": "b_l004",
+      "type": "stats",
+      "props": {
+        "stats": [
+          { "num": "10K+", "label": "Active Users" },
+          { "num": "99.9%", "label": "Uptime" },
+          { "num": "150+", "label": "Countries" },
+          { "num": "4.9★", "label": "Rating" }
+        ],
+        "bg": "#6C5CE7",
+        "accentColor": "#ffffff"
+      }
+    },
+    {
+      "id": "b_l005",
+      "type": "testimonial",
+      "props": {
+        "quote": "This platform transformed how our team works. The simplicity and power are unmatched.",
+        "attribution": "Alex K. — CEO, TechScale",
+        "bg": "#1a1a2e",
+        "accentColor": "#6C5CE7"
+      }
+    },
+    {
+      "id": "b_l006",
+      "type": "cta",
+      "props": {
+        "headline": "Ready to get <em>started?</em>",
+        "btnText": "Claim your free account →",
+        "bg": "#6C5CE7",
+        "textColor": "#ffffff"
+      }
+    },
+    {
+      "id": "b_l007",
+      "type": "footer",
+      "props": {
+        "logoText": "Luma",
+        "tagline": "Modern tools for modern teams.",
+        "cols": [
+          {
+            "heading": "Product",
+            "links": ["Features", "Pricing", "Integrations", "Changelog"]
+          },
+          {
+            "heading": "Company",
+            "links": ["About", "Blog", "Careers", "Press"]
+          },
+          {
+            "heading": "Support",
+            "links": ["Docs", "API", "Status", "Contact"]
+          }
+        ],
+        "copyright": "© 2026 Luma. All rights reserved.",
+        "bg": "#1a1a2e",
+        "accentColor": "#6C5CE7"
+      }
+    }
+  ]
+}

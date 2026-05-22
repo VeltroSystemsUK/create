@@ -1,0 +1,391 @@
+<h2>Help Centre — Modal Design</h2>
+<p class="subtitle">
+  This is how it will look when a user clicks "?" in the toolbar. Does this
+  layout feel right?
+</p>
+
+<div class="mockup">
+  <div class="mockup-header">Help Centre Modal (full-screen overlay)</div>
+  <div
+    class="mockup-body"
+    style="padding: 0; overflow: hidden; border-radius: 0 0 8px 8px"
+  >
+    <div
+      style="
+        display: flex;
+        height: 420px;
+        font-family: &quot;Lexend&quot;, sans-serif;
+      "
+    >
+      <!-- Sidebar -->
+      <div
+        style="
+          width: 200px;
+          background: #111;
+          border-right: 1px solid #222;
+          display: flex;
+          flex-direction: column;
+          flex-shrink: 0;
+        "
+      >
+        <div style="padding: 16px 14px 10px; border-bottom: 1px solid #1e1e1e">
+          <div
+            style="
+              color: #cdfe00;
+              font-weight: 700;
+              font-size: 13px;
+              letter-spacing: 0.05em;
+            "
+          >
+            HELP CENTRE
+          </div>
+          <div style="color: #444; font-size: 10px; margin-top: 2px">
+            Framework Builder
+          </div>
+        </div>
+
+        <!-- Topics list -->
+        <div style="flex: 1; overflow-y: auto; padding: 8px 0">
+          <div
+            style="
+              padding: 7px 14px;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              background: #1a1a1a;
+              border-left: 2px solid #cdfe00;
+              cursor: pointer;
+            "
+          >
+            <span style="font-size: 13px">🗺</span>
+            <span style="color: #fff; font-size: 11px; font-weight: 600"
+              >Interface Overview</span
+            >
+          </div>
+
+          <div
+            style="
+              padding: 7px 14px;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              cursor: pointer;
+            "
+          >
+            <span style="font-size: 13px">◆</span>
+            <span style="color: #666; font-size: 11px"
+              >Working with Sections</span
+            >
+          </div>
+
+          <div
+            style="
+              padding: 7px 14px;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              cursor: pointer;
+            "
+          >
+            <span style="font-size: 13px">🎨</span>
+            <span style="color: #666; font-size: 11px">Styling</span>
+          </div>
+
+          <div
+            style="
+              padding: 7px 14px;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              cursor: pointer;
+            "
+          >
+            <span style="font-size: 13px">⊞</span>
+            <span style="color: #666; font-size: 11px">Templates & Saving</span>
+          </div>
+
+          <div
+            style="
+              padding: 7px 14px;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              cursor: pointer;
+            "
+          >
+            <span style="font-size: 13px">📄</span>
+            <span style="color: #666; font-size: 11px">Pages</span>
+          </div>
+
+          <div
+            style="
+              padding: 7px 14px;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              cursor: pointer;
+            "
+          >
+            <span style="font-size: 13px">⬇</span>
+            <span style="color: #666; font-size: 11px">Import</span>
+          </div>
+
+          <div
+            style="
+              padding: 7px 14px;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              cursor: pointer;
+            "
+          >
+            <span style="font-size: 13px">⬆</span>
+            <span style="color: #666; font-size: 11px">Export</span>
+          </div>
+
+          <div
+            style="
+              padding: 7px 14px;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              cursor: pointer;
+            "
+          >
+            <span style="font-size: 13px">✨</span>
+            <span style="color: #666; font-size: 11px"
+              >Animations & Effects</span
+            >
+          </div>
+
+          <div
+            style="
+              padding: 7px 14px;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              cursor: pointer;
+            "
+          >
+            <span style="font-size: 13px">⌨</span>
+            <span style="color: #666; font-size: 11px">Keyboard Shortcuts</span>
+          </div>
+        </div>
+
+        <!-- Tour button at bottom -->
+        <div style="padding: 10px 12px; border-top: 1px solid #1e1e1e">
+          <div
+            style="
+              background: #cdfe00;
+              color: #111;
+              font-size: 10px;
+              font-weight: 700;
+              padding: 7px 10px;
+              border-radius: 4px;
+              text-align: center;
+              cursor: pointer;
+            "
+          >
+            ▶ Take the Tour
+          </div>
+        </div>
+      </div>
+
+      <!-- Article content -->
+      <div
+        style="
+          flex: 1;
+          background: #161616;
+          overflow-y: auto;
+          position: relative;
+        "
+      >
+        <!-- Close button -->
+        <div
+          style="
+            position: absolute;
+            top: 12px;
+            right: 14px;
+            color: #444;
+            font-size: 16px;
+            cursor: pointer;
+            line-height: 1;
+          "
+        >
+          ✕
+        </div>
+
+        <div style="padding: 28px 28px 24px">
+          <!-- Article header -->
+          <div style="margin-bottom: 20px">
+            <div
+              style="
+                color: #cdfe00;
+                font-size: 10px;
+                font-weight: 700;
+                letter-spacing: 0.1em;
+                margin-bottom: 6px;
+              "
+            >
+              GETTING STARTED
+            </div>
+            <div
+              style="
+                color: #fff;
+                font-size: 18px;
+                font-weight: 700;
+                line-height: 1.2;
+                margin-bottom: 8px;
+              "
+            >
+              Interface Overview
+            </div>
+            <div style="color: #666; font-size: 12px; line-height: 1.6">
+              Framework Builder is a visual page composer. You build pages by
+              stacking and styling sections — no code required.
+            </div>
+          </div>
+
+          <!-- Key areas list -->
+          <div style="margin-bottom: 20px">
+            <div
+              style="
+                color: #aaa;
+                font-size: 10px;
+                font-weight: 700;
+                letter-spacing: 0.08em;
+                margin-bottom: 10px;
+              "
+            >
+              KEY AREAS
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <div
+                style="
+                  background: #1e1e1e;
+                  border-radius: 5px;
+                  padding: 10px 12px;
+                  border-left: 2px solid #cdfe00;
+                "
+              >
+                <div
+                  style="
+                    color: #fff;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-bottom: 2px;
+                  "
+                >
+                  Top Bar
+                </div>
+                <div style="color: #666; font-size: 10px; line-height: 1.5">
+                  Device preview, undo/redo, save, load, import, export and
+                  settings live here.
+                </div>
+              </div>
+              <div
+                style="
+                  background: #1e1e1e;
+                  border-radius: 5px;
+                  padding: 10px 12px;
+                "
+              >
+                <div
+                  style="
+                    color: #fff;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-bottom: 2px;
+                  "
+                >
+                  Left Panel
+                </div>
+                <div style="color: #666; font-size: 10px; line-height: 1.5">
+                  Your section library, templates, layers and widgets. Click any
+                  section to add it.
+                </div>
+              </div>
+              <div
+                style="
+                  background: #1e1e1e;
+                  border-radius: 5px;
+                  padding: 10px 12px;
+                "
+              >
+                <div
+                  style="
+                    color: #fff;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-bottom: 2px;
+                  "
+                >
+                  Canvas
+                </div>
+                <div style="color: #666; font-size: 10px; line-height: 1.5">
+                  The live editing area. Click a block to select it, drag to
+                  reorder.
+                </div>
+              </div>
+              <div
+                style="
+                  background: #1e1e1e;
+                  border-radius: 5px;
+                  padding: 10px 12px;
+                "
+              >
+                <div
+                  style="
+                    color: #fff;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-bottom: 2px;
+                  "
+                >
+                  Right Panel
+                </div>
+                <div style="color: #666; font-size: 10px; line-height: 1.5">
+                  Appears when a block is selected. Edit content, style,
+                  typography, animations and more.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tip -->
+          <div
+            style="
+              background: #1a2200;
+              border: 1px solid #3a4800;
+              border-radius: 5px;
+              padding: 10px 12px;
+            "
+          >
+            <div
+              style="
+                color: #cdfe00;
+                font-size: 10px;
+                font-weight: 700;
+                margin-bottom: 3px;
+              "
+            >
+              TIP
+            </div>
+            <div style="color: #aaa; font-size: 10px; line-height: 1.5">
+              New here? Click
+              <strong style="color: #cdfe00">▶ Take the Tour</strong> below to
+              get a guided walkthrough of the whole interface in about 2
+              minutes.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top: 20px">
+  Does this layout and style feel right? Happy to adjust the sidebar width,
+  article density, or anything else before we move on.
+</p>

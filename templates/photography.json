@@ -1,0 +1,162 @@
+{
+  "name": "Photography Studio",
+  "version": 1,
+  "created": "2026-05-21T00:00:00Z",
+  "blocks": [
+    {
+      "id": "b_p000001",
+      "type": "megaNav",
+      "props": {
+        "logoText": "LENS",
+        "links": [
+          { "label": "Portfolio", "url": "#" },
+          {
+            "label": "Services",
+            "url": "#",
+            "children": [
+              { "label": "Wedding", "url": "#" },
+              { "label": "Brand & Commercial", "url": "#" },
+              { "label": "Portrait", "url": "#" },
+              { "label": "Event Coverage", "url": "#" }
+            ]
+          },
+          { "label": "Pricing", "url": "#" },
+          { "label": "About", "url": "#" },
+          { "label": "Journal", "url": "#" }
+        ],
+        "ctaText": "Book a Shoot",
+        "bg": "rgba(24,24,27,0.95)",
+        "textColor": "#fafafa",
+        "accentColor": "#a78bfa"
+      }
+    },
+    {
+      "id": "b_p000002",
+      "type": "splitHero",
+      "props": {
+        "eyebrow": "Manchester Photography Studio",
+        "headline": "Every frame<br>tells a story.",
+        "subtext": "Professional photography for brands, events, and personal milestones. Based in Manchester, available worldwide.",
+        "ctaPrimary": "View Portfolio",
+        "ctaSecondary": "Our Process",
+        "image": "https://images.unsplash.com/photo-1554048612-b6a482bc67e5?w=800",
+        "imageAlt": "Photographer at work in studio",
+        "bg": "#18181b",
+        "accentColor": "#a78bfa",
+        "textColor": "#fafafa"
+      }
+    },
+    {
+      "id": "b_p000003",
+      "type": "portfolioGrid",
+      "props": {
+        "label": "Selected work.",
+        "headline": "Recent captures.",
+        "items": [
+          {
+            "image": "https://images.unsplash.com/photo-1519741497674-611481863552?w=600",
+            "title": "Sarah & James",
+            "category": "Wedding"
+          },
+          {
+            "image": "https://images.unsplash.com/photo-1556228578-0d85b1a47e70?w=600",
+            "title": "Nordic Skincare",
+            "category": "Brand"
+          },
+          {
+            "image": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600",
+            "title": "Tech Summit 2026",
+            "category": "Event"
+          },
+          {
+            "image": "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=600",
+            "title": "Executive Series",
+            "category": "Portrait"
+          },
+          {
+            "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600",
+            "title": "Artisan Coffee Co",
+            "category": "Product"
+          },
+          {
+            "image": "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600",
+            "title": "Garden Wedding",
+            "category": "Wedding"
+          }
+        ],
+        "bg": "#18181b",
+        "accentColor": "#a78bfa",
+        "textColor": "#fafafa"
+      }
+    },
+    {
+      "id": "b_p000004",
+      "type": "services",
+      "props": {
+        "label": "Services.",
+        "headline": "What we\ncapture.",
+        "description": "From intimate portraits to large-scale commercial shoots, we bring technical excellence and creative vision to every project.",
+        "services": [
+          { "num": "01", "name": "Wedding & Elopement." },
+          { "num": "02", "name": "Brand & Commercial." },
+          { "num": "03", "name": "Portrait & Headshot." },
+          { "num": "04", "name": "Event Coverage." },
+          { "num": "05", "name": "Product & Still Life." }
+        ],
+        "bg": "#18181b",
+        "accentColor": "#a78bfa"
+      }
+    },
+    {
+      "id": "b_p000005",
+      "type": "testimonial",
+      "props": {
+        "quote": "The photos from our wedding day are absolutely stunning. They captured every emotion, every detail, every moment we never want to forget.",
+        "attribution": "Emma & David \u2014 Wedding, Cotswolds",
+        "bg": "#27272a",
+        "accentColor": "#a78bfa"
+      }
+    },
+    {
+      "id": "b_p000006",
+      "type": "cta",
+      "props": {
+        "headline": "Let's capture<br><em>your story.</em>",
+        "btnText": "Book a Shoot \u2192",
+        "bg": "#a78bfa",
+        "textColor": "#18181b",
+        "buttonStyle": "filled"
+      }
+    },
+    {
+      "id": "b_p000007",
+      "type": "footer",
+      "props": {
+        "logoText": "LENS",
+        "tagline": "Photography Studio \u00B7 Manchester",
+        "cols": [
+          {
+            "heading": "Services",
+            "links": ["Wedding", "Brand", "Portrait", "Event", "Product"]
+          },
+          {
+            "heading": "Studio",
+            "links": ["About", "Equipment", "FAQ", "Journal"]
+          },
+          {
+            "heading": "Contact",
+            "links": ["hello@lens.studio", "+44 161 000 0000", "Manchester, UK"]
+          },
+          {
+            "heading": "Follow",
+            "links": ["Instagram", "Pinterest", "Behance"]
+          }
+        ],
+        "copyright": "\u00A9 2026 LENS Studio. All rights reserved.",
+        "bg": "#0f0f10",
+        "accentColor": "#a78bfa",
+        "layoutStyle": "columns"
+      }
+    }
+  ]
+}

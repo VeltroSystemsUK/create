@@ -1,0 +1,138 @@
+{
+  "name": "SaaS Landing Page",
+  "version": 1,
+  "created": "2026-05-20T00:00:00Z",
+  "blocks": [
+    {
+      "id": "b_s000001",
+      "type": "nav",
+      "props": {
+        "logoText": "Product.",
+        "links": ["Features", "Pricing", "About", "Blog"],
+        "ctaText": "Get started",
+        "bg": "#0a0a1a",
+        "textColor": "#f7f6f2",
+        "accentColor": "#6C8EFF"
+      }
+    },
+    {
+      "id": "b_s000002",
+      "type": "hero",
+      "props": {
+        "eyebrow": "SaaS · Platform",
+        "headline": "Scale your <em>growth.</em>",
+        "subtext": "The all-in-one platform for modern teams to build, launch, and scale faster than ever.",
+        "ctaText": "Start free trial →",
+        "bg": "#0a0a1a",
+        "accentColor": "#6C8EFF",
+        "showBlob": true
+      }
+    },
+    {
+      "id": "b_s000003",
+      "type": "features",
+      "props": {
+        "label": "Core features.",
+        "headline": "Everything you need to scale.",
+        "items": [
+          {
+            "icon": "🚀",
+            "title": "Lightning Fast",
+            "desc": "Built for speed. Every millisecond counts."
+          },
+          {
+            "icon": "🔒",
+            "title": "Secure by Default",
+            "desc": "Enterprise-grade security out of the box."
+          },
+          {
+            "icon": "📊",
+            "title": "Advanced Analytics",
+            "desc": "Real-time data at your fingertips."
+          }
+        ],
+        "bg": "#ffffff",
+        "textColor": "#111111",
+        "accentColor": "#6C8EFF"
+      }
+    },
+    {
+      "id": "b_s000004",
+      "type": "pricing",
+      "props": {
+        "label": "Pricing.",
+        "headline": "Choose your plan.",
+        "tiers": [
+          {
+            "name": "Starter",
+            "price": "$29",
+            "features": ["1 project", "Basic analytics", "Email support"],
+            "cta": "Get Started",
+            "featured": false
+          },
+          {
+            "name": "Pro",
+            "price": "$79",
+            "features": [
+              "10 projects",
+              "Advanced analytics",
+              "Priority support",
+              "Custom domain"
+            ],
+            "cta": "Go Pro",
+            "featured": true
+          },
+          {
+            "name": "Enterprise",
+            "price": "$249",
+            "features": [
+              "Unlimited projects",
+              "Full analytics",
+              "24/7 support",
+              "Dedicated manager"
+            ],
+            "cta": "Contact Us",
+            "featured": false
+          }
+        ],
+        "bg": "#f7f6f2",
+        "accentColor": "#6C8EFF"
+      }
+    },
+    {
+      "id": "b_s000005",
+      "type": "cta",
+      "props": {
+        "headline": "Ready to get <em>started?</em>",
+        "btnText": "Start free trial →",
+        "bg": "#6C8EFF",
+        "textColor": "#111111"
+      }
+    },
+    {
+      "id": "b_s000006",
+      "type": "footer",
+      "props": {
+        "logoText": "Product.",
+        "tagline": "Built for modern teams.",
+        "cols": [
+          {
+            "heading": "Product",
+            "links": ["Features", "Pricing", "Integrations", "Changelog"]
+          },
+          {
+            "heading": "Company",
+            "links": ["About", "Blog", "Careers", "Contact"]
+          },
+          {
+            "heading": "Legal",
+            "links": ["Privacy", "Terms", "Security", "Cookies"]
+          }
+        ],
+        "copyright": "© 2026 Product. All rights reserved.",
+        "bg": "#0a0a1a",
+        "accentColor": "#6C8EFF"
+      }
+    }
+  ]
+}

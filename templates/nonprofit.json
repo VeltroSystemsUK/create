@@ -1,0 +1,148 @@
+{
+  "name": "Nonprofit & Charity",
+  "version": 1,
+  "created": "2026-05-21T00:00:00Z",
+  "blocks": [
+    {
+      "id": "b_n000001",
+      "type": "nav",
+      "props": {
+        "logoText": "HopeFund",
+        "links": ["Our Work", "Impact", "Get Involved", "Stories"],
+        "ctaText": "Donate Now",
+        "bg": "#ffffff",
+        "textColor": "#1e3a5f",
+        "accentColor": "#10b981",
+        "menuStyle": "simple"
+      }
+    },
+    {
+      "id": "b_n000002",
+      "type": "hero",
+      "props": {
+        "eyebrow": "Changing Lives Since 2010",
+        "headline": "Every child<br><em>deserves.</em>",
+        "subtext": "Education, healthcare, and hope for communities that need it most. Your support changes lives.",
+        "ctaText": "Make a Difference",
+        "bg": "#ffffff",
+        "accentColor": "#10b981",
+        "showBlob": true,
+        "blobStyle": "blob"
+      }
+    },
+    {
+      "id": "b_n000003",
+      "type": "marquee",
+      "props": {
+        "items": [
+          "50K+ Lives Changed",
+          "12 Countries",
+          "100% Transparency",
+          "Rated Excellent",
+          "Registered Charity"
+        ],
+        "bg": "#10b981",
+        "textColor": "#ffffff",
+        "speed": 18
+      }
+    },
+    {
+      "id": "b_n000004",
+      "type": "features",
+      "props": {
+        "label": "Our Work",
+        "headline": "Where your help goes.",
+        "items": [
+          {
+            "icon": "\uD83C\uDF93",
+            "title": "Education",
+            "desc": "Building schools and training teachers in underserved communities."
+          },
+          {
+            "icon": "\uD83C\uDFE5",
+            "title": "Healthcare",
+            "desc": "Mobile clinics bringing medical care to remote villages."
+          },
+          {
+            "icon": "\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67",
+            "title": "Families",
+            "desc": "Supporting families with nutrition, shelter, and counselling."
+          },
+          {
+            "icon": "\uD83C\uDF0D",
+            "title": "Community",
+            "desc": "Empowering local leaders to create lasting change."
+          }
+        ],
+        "bg": "#f0fdf4",
+        "textColor": "#1e3a5f",
+        "accentColor": "#10b981"
+      }
+    },
+    {
+      "id": "b_n000005",
+      "type": "stats",
+      "props": {
+        "stats": [
+          { "num": "50K+", "label": "Lives Changed" },
+          { "num": "12", "label": "Countries" },
+          { "num": "\u00A38M", "label": "Funds Deployed" },
+          { "num": "95%", "label": "To Programs" }
+        ],
+        "bg": "#ffffff",
+        "accentColor": "#10b981"
+      }
+    },
+    {
+      "id": "b_n000006",
+      "type": "testimonial",
+      "props": {
+        "quote": "HopeFund didn't just build a school in our village \u2014 they gave our children a future. My daughter is now the first in our family to read and write.",
+        "attribution": "Amina K. \u2014 Parent, Rural Kenya",
+        "bg": "#f0fdf4",
+        "accentColor": "#10b981"
+      }
+    },
+    {
+      "id": "b_n000007",
+      "type": "cta",
+      "props": {
+        "headline": "Change a life<br><em>today.</em>",
+        "btnText": "Donate Now \u2192",
+        "bg": "#10b981",
+        "textColor": "#ffffff",
+        "buttonStyle": "filled"
+      }
+    },
+    {
+      "id": "b_n000008",
+      "type": "footer",
+      "props": {
+        "logoText": "HopeFund",
+        "tagline": "Changing lives since 2010.",
+        "cols": [
+          {
+            "heading": "Our Work",
+            "links": ["Education", "Healthcare", "Families", "Community"]
+          },
+          {
+            "heading": "Get Involved",
+            "links": ["Donate", "Volunteer", "Fundraise", "Corporate Partners"]
+          },
+          {
+            "heading": "About",
+            "links": ["Our Story", "Team", "Financial Reports", "Contact"]
+          },
+          {
+            "heading": "Legal",
+            "links": ["Privacy", "Safeguarding", "Cookie Policy"]
+          }
+        ],
+        "copyright": "\u00A9 2026 HopeFund. Registered Charity No. 1234567.",
+        "bg": "#1e3a5f",
+        "accentColor": "#10b981",
+        "layoutStyle": "columns"
+      }
+    }
+  ]
+}

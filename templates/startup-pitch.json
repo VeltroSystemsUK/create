@@ -1,0 +1,159 @@
+{
+  "name": "Startup Pitch",
+  "version": 1,
+  "created": "2026-05-21T00:00:00Z",
+  "blocks": [
+    {
+      "id": "b_s000001",
+      "type": "nav",
+      "props": {
+        "logoText": "Launch\u2191",
+        "links": ["Product", "About", "Blog"],
+        "ctaText": "Join Waitlist",
+        "bg": "#0f172a",
+        "textColor": "#f7f6f2",
+        "accentColor": "#6366f1",
+        "menuStyle": "simple"
+      }
+    },
+    {
+      "id": "b_s000002",
+      "type": "orbsHero",
+      "props": {
+        "headline": "The future of ",
+        "words": [
+          { "text": "workflows ", "gradient": "lime" },
+          { "text": "productivity ", "gradient": "teal" },
+          { "text": "teamwork ", "gradient": "rose" },
+          { "text": "growth ", "gradient": "coffee" }
+        ],
+        "subtext": "We're building the all-in-one platform that replaces your entire tool stack. Be first in line.",
+        "ctaText": "Join the Waitlist",
+        "orbs": [
+          { "color": "#6366f1", "size": 25, "x": 10, "y": 15, "opacity": 0.2 },
+          { "color": "#818cf8", "size": 15, "x": 65, "y": 55, "opacity": 0.15 },
+          { "color": "#a5b4fc", "size": 10, "x": 35, "y": 75, "opacity": 0.1 },
+          { "color": "#6366f1", "size": 8, "x": 80, "y": 30, "opacity": 0.12 }
+        ],
+        "wordSpeed": 2500,
+        "bg": "#0f172a",
+        "accentColor": "#6366f1",
+        "textColor": "#f7f6f2"
+      }
+    },
+    {
+      "id": "b_s000003",
+      "type": "features",
+      "props": {
+        "label": "The Problem",
+        "headline": "Too many tools.\nZero clarity.",
+        "items": [
+          {
+            "icon": "\uD83D\uDD04",
+            "title": "One Platform",
+            "desc": "Replace 12+ tools with a single, unified workspace."
+          },
+          {
+            "icon": "\uD83E\uDDE0",
+            "title": "AI-First",
+            "desc": "Intelligent automation that learns and adapts to your team."
+          },
+          {
+            "icon": "\uD83D\uDE80",
+            "title": "Ship Faster",
+            "desc": "Cut project delivery time by 60% with smart workflows."
+          },
+          {
+            "icon": "\uD83D\uDCC8",
+            "title": "Real Insights",
+            "desc": "Live analytics that actually help you make decisions."
+          }
+        ],
+        "bg": "#1e293b",
+        "textColor": "#f7f6f2",
+        "accentColor": "#6366f1"
+      }
+    },
+    {
+      "id": "b_s000004",
+      "type": "metricBox",
+      "props": {
+        "label": "Time to ship",
+        "before": "4 weeks",
+        "after": "3 days",
+        "note": "93% reduction with Launch\u2191",
+        "arrow": "\u2192",
+        "bg": "rgba(99,102,241,0.1)",
+        "accentColor": "#6366f1",
+        "textColor": "#f7f6f2",
+        "animateCounter": true
+      }
+    },
+    {
+      "id": "b_s000005",
+      "type": "team",
+      "props": {
+        "label": "Our team.",
+        "headline": "The people behind the product.",
+        "members": [
+          {
+            "name": "Alex Chen",
+            "role": "CEO & Co-founder",
+            "bio": "Ex-Google. 2x founder. YC alum."
+          },
+          {
+            "name": "Sam Rivera",
+            "role": "CTO & Co-founder",
+            "bio": "Ex-Stripe. Built infrastructure at scale."
+          },
+          {
+            "name": "Jordan Taylor",
+            "role": "Head of Design",
+            "bio": "Ex-Figma. Obsessed with developer experience."
+          }
+        ],
+        "bg": "#0f172a",
+        "textColor": "#f7f6f2",
+        "accentColor": "#6366f1"
+      }
+    },
+    {
+      "id": "b_s000006",
+      "type": "testimonial",
+      "props": {
+        "quote": "Launch\u2191 is exactly what the market needs. Their approach to workflow unification is genuinely innovative \u2014 and the team has the track record to deliver.",
+        "attribution": "David Park \u2014 Partner, Sequoia Capital",
+        "bg": "#1e293b",
+        "accentColor": "#6366f1"
+      }
+    },
+    {
+      "id": "b_s000007",
+      "type": "cta",
+      "props": {
+        "headline": "Be first in<br><em>line.</em>",
+        "btnText": "Join Waitlist \u2192",
+        "bg": "#6366f1",
+        "textColor": "#ffffff",
+        "buttonStyle": "filled"
+      }
+    },
+    {
+      "id": "b_s000008",
+      "type": "footer",
+      "props": {
+        "logoText": "Launch\u2191",
+        "tagline": "Building the future of work.",
+        "cols": [
+          { "heading": "Product", "links": ["Features", "Roadmap", "Pricing"] },
+          { "heading": "Company", "links": ["About", "Blog", "Careers"] },
+          { "heading": "Legal", "links": ["Privacy", "Terms"] }
+        ],
+        "copyright": "\u00A9 2026 Launch\u2191 Inc. All rights reserved.",
+        "bg": "#0f172a",
+        "accentColor": "#6366f1",
+        "layoutStyle": "columns"
+      }
+    }
+  ]
+}

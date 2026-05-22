@@ -1,0 +1,124 @@
+{
+  "name": "Minimal Portfolio",
+  "version": 1,
+  "created": "2026-05-21T00:00:00Z",
+  "blocks": [
+    {
+      "id": "b_m000001",
+      "type": "nav",
+      "props": {
+        "logoText": "elena.",
+        "links": ["Portfolio", "About", "Contact"],
+        "ctaText": "",
+        "bg": "#ffffff",
+        "textColor": "#111111",
+        "accentColor": "#2563eb",
+        "menuStyle": "simple"
+      }
+    },
+    {
+      "id": "b_m000002",
+      "type": "orbsHero",
+      "props": {
+        "headline": "Capturing ",
+        "words": [
+          { "text": "light ", "gradient": "lime" },
+          { "text": "moments ", "gradient": "teal" },
+          { "text": "stories ", "gradient": "rose" },
+          { "text": "emotion ", "gradient": "coffee" }
+        ],
+        "subtext": "Fine art photography and visual narratives for brands that value authenticity and restraint.",
+        "ctaText": "View Portfolio",
+        "orbs": [
+          { "color": "#2563eb", "size": 20, "x": 15, "y": 20, "opacity": 0.15 },
+          { "color": "#3b82f6", "size": 12, "x": 70, "y": 60, "opacity": 0.1 },
+          { "color": "#60a5fa", "size": 8, "x": 40, "y": 80, "opacity": 0.08 }
+        ],
+        "wordSpeed": 3000,
+        "bg": "#ffffff",
+        "accentColor": "#2563eb",
+        "textColor": "#111111"
+      }
+    },
+    {
+      "id": "b_m000003",
+      "type": "portfolioGrid",
+      "props": {
+        "label": "Selected work.",
+        "headline": "Recent projects.",
+        "items": [
+          {
+            "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600",
+            "title": "Vogue Feature",
+            "category": "Editorial"
+          },
+          {
+            "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600",
+            "title": "Aesop Campaign",
+            "category": "Brand"
+          },
+          {
+            "image": "https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=600",
+            "title": "Faces of Tokyo",
+            "category": "Portrait"
+          },
+          {
+            "image": "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600",
+            "title": "Brutalist London",
+            "category": "Architecture"
+          },
+          {
+            "image": "https://images.unsplash.com/photo-1542744094-3a31f272c490?w=600",
+            "title": "Icelandic Light",
+            "category": "Nature"
+          },
+          {
+            "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600",
+            "title": "Silent Spaces",
+            "category": "Minimal"
+          }
+        ],
+        "bg": "#f9fafb",
+        "accentColor": "#2563eb",
+        "textColor": "#111111"
+      }
+    },
+    {
+      "id": "b_m000004",
+      "type": "testimonial",
+      "props": {
+        "quote": "Elena's eye for composition is unmatched. She transformed our brand campaign into a visual masterpiece that resonated deeply with our audience.",
+        "attribution": "James Liu \u2014 Creative Director, Vogue",
+        "bg": "#ffffff",
+        "accentColor": "#2563eb"
+      }
+    },
+    {
+      "id": "b_m000005",
+      "type": "cta",
+      "props": {
+        "headline": "Let's create<br>together.",
+        "btnText": "Start a Conversation",
+        "bg": "#2563eb",
+        "textColor": "#ffffff",
+        "buttonStyle": "filled"
+      }
+    },
+    {
+      "id": "b_m000006",
+      "type": "footer",
+      "props": {
+        "logoText": "elena.",
+        "tagline": "Photography & Visual Arts.",
+        "cols": [
+          { "heading": "Pages", "links": ["Portfolio", "About", "Contact"] },
+          { "heading": "Social", "links": ["Instagram", "Behance", "Twitter"] }
+        ],
+        "copyright": "\u00A9 2026 Elena Voss. All rights reserved.",
+        "bg": "#ffffff",
+        "accentColor": "#2563eb",
+        "layoutStyle": "columns"
+      }
+    }
+  ]
+}

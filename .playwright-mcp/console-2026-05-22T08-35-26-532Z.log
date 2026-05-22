@@ -1,0 +1,51 @@
+[     355ms] TypeError: Cannot read properties of undefined (reading 'replace')
+    at Object.renderBlockHTML (http://localhost:8082/js/canvas.js?v=99:204:20)
+    at Object._renderBlock (http://localhost:8082/js/canvas.js?v=99:2969:33)
+    at http://localhost:8082/js/canvas.js?v=99:3203:15
+    at Array.forEach (<anonymous>)
+    at Object.render (http://localhost:8082/js/canvas.js?v=99:3200:13)
+    at HTMLDocument.<anonymous> (http://localhost:8082/js/app.js?v=3:20:13)
+[   51642ms] TypeError: Cannot read properties of undefined (reading 'replace')
+    at Object.renderBlockHTML (http://localhost:8082/js/canvas.js?v=99:204:20)
+    at Object._renderBlock (http://localhost:8082/js/canvas.js?v=99:2969:33)
+    at http://localhost:8082/js/canvas.js?v=99:3203:15
+    at Array.forEach (<anonymous>)
+    at Object.render (http://localhost:8082/js/canvas.js?v=99:3200:13)
+    at HTMLDocument.<anonymous> (http://localhost:8082/js/app.js?v=3:20:13)
+[   72948ms] TypeError: Cannot read properties of undefined (reading 'replace')
+    at Object.renderBlockHTML (http://localhost:8082/js/canvas.js?v=99:204:20)
+    at Object._renderBlock (http://localhost:8082/js/canvas.js?v=99:2969:33)
+    at http://localhost:8082/js/canvas.js?v=99:3203:15
+    at Array.forEach (<anonymous>)
+    at Object.render (http://localhost:8082/js/canvas.js?v=99:3200:13)
+    at HTMLDocument.<anonymous> (http://localhost:8082/js/app.js?v=3:20:13)
+[   75963ms] [LOG] RESIZE: mousedown fired @ :5
+[   75963ms] [LOG] RESIZE: dispatched mousedown @ :10
+[   84753ms] TypeError: Cannot read properties of undefined (reading 'replace')
+    at Object.renderBlockHTML (http://localhost:8082/js/canvas.js?v=99:204:20)
+    at Object._renderBlock (http://localhost:8082/js/canvas.js?v=99:2969:33)
+    at http://localhost:8082/js/canvas.js?v=99:3203:15
+    at Array.forEach (<anonymous>)
+    at Object.render (http://localhost:8082/js/canvas.js?v=99:3200:13)
+    at HTMLDocument.<anonymous> (http://localhost:8082/js/app.js?v=3:20:13)
+[  123958ms] TypeError: Cannot read properties of undefined (reading 'replace')
+    at Object.renderBlockHTML (http://localhost:8082/js/canvas.js?v=99:204:20)
+    at Object._renderBlock (http://localhost:8082/js/canvas.js?v=99:2969:33)
+    at http://localhost:8082/js/canvas.js?v=99:3203:15
+    at Array.forEach (<anonymous>)
+    at Object.render (http://localhost:8082/js/canvas.js?v=99:3200:13)
+    at HTMLDocument.<anonymous> (http://localhost:8082/js/app.js?v=3:20:13)
+[  159428ms] TypeError: Cannot read properties of undefined (reading 'replace')
+    at Object.renderBlockHTML (http://localhost:8082/js/canvas.js?v=99:204:20)
+    at Object._renderBlock (http://localhost:8082/js/canvas.js?v=99:2969:33)
+    at http://localhost:8082/js/canvas.js?v=99:3203:15
+    at Array.forEach (<anonymous>)
+    at Object.render (http://localhost:8082/js/canvas.js?v=99:3200:13)
+    at HTMLDocument.<anonymous> (http://localhost:8082/js/app.js?v=3:20:13)
+[  179919ms] TypeError: Cannot read properties of undefined (reading 'replace')
+    at Object.renderBlockHTML (http://localhost:8082/js/canvas.js?v=99:204:20)
+    at Object._renderBlock (http://localhost:8082/js/canvas.js?v=99:2969:33)
+    at http://localhost:8082/js/canvas.js?v=99:3203:15
+    at Array.forEach (<anonymous>)
+    at Object.render (http://localhost:8082/js/canvas.js?v=99:3200:13)
+    at HTMLDocument.<anonymous> (http://localhost:8082/js/app.js?v=3:20:13)

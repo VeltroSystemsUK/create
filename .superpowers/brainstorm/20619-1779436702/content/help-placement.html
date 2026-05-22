@@ -1,0 +1,278 @@
+<h2>Where does the Help button live?</h2>
+<p class="subtitle">
+  The toolbar is already fairly full — where does the "?" entry point fit best?
+</p>
+
+<div class="cards">
+  <div class="card" data-choice="topbar-right" onclick="toggleSelect(this)">
+    <div
+      class="card-image"
+      style="background: #111; border-radius: 8px; padding: 12px"
+    >
+      <div
+        style="
+          background: #1a1a1a;
+          border-radius: 6px;
+          padding: 8px 10px;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 10px;
+        "
+      >
+        <span style="color: #cdfe00; font-weight: 700; font-size: 11px"
+          >Framework <span style="color: #fff">Builder</span></span
+        >
+        <div
+          style="
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            color: #666;
+          "
+        >
+          <span style="background: #222; padding: 3px 6px; border-radius: 3px"
+            >🖥</span
+          >
+          <span style="background: #222; padding: 3px 6px; border-radius: 3px"
+            >📱</span
+          >
+          <span style="color: #333">|</span>
+          <span style="background: #222; padding: 3px 6px; border-radius: 3px"
+            >↩</span
+          >
+          <span style="background: #222; padding: 3px 6px; border-radius: 3px"
+            >↪</span
+          >
+          <span style="color: #333">|</span>
+          <span style="background: #222; padding: 3px 6px; border-radius: 3px"
+            >⚙</span
+          >
+        </div>
+        <div style="display: flex; align-items: center; gap: 4px">
+          <span style="color: #666">☀</span>
+          <span style="color: #666">🇬🇧</span>
+          <span
+            style="
+              background: #cdfe00;
+              color: #111;
+              font-weight: 700;
+              padding: 3px 8px;
+              border-radius: 3px;
+              font-size: 10px;
+            "
+            >Export</span
+          >
+          <span
+            style="
+              background: #cdfe00;
+              color: #111;
+              font-weight: 700;
+              width: 20px;
+              height: 20px;
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 11px;
+            "
+            >?</span
+          >
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Top-right, next to Export</h3>
+      <p>
+        Sits at the far right of the toolbar alongside the Export button. Always
+        visible, consistent with where users expect "about / help" controls.
+      </p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="topbar-settings" onclick="toggleSelect(this)">
+    <div
+      class="card-image"
+      style="background: #111; border-radius: 8px; padding: 12px"
+    >
+      <div
+        style="
+          background: #1a1a1a;
+          border-radius: 6px;
+          padding: 8px 10px;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 10px;
+        "
+      >
+        <span style="color: #cdfe00; font-weight: 700; font-size: 11px"
+          >Framework <span style="color: #fff">Builder</span></span
+        >
+        <div
+          style="
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            color: #666;
+          "
+        >
+          <span style="background: #222; padding: 3px 6px; border-radius: 3px"
+            >🖥</span
+          >
+          <span style="background: #222; padding: 3px 6px; border-radius: 3px"
+            >📱</span
+          >
+          <span style="color: #333">|</span>
+          <span style="background: #222; padding: 3px 6px; border-radius: 3px"
+            >↩</span
+          >
+          <span style="background: #222; padding: 3px 6px; border-radius: 3px"
+            >↪</span
+          >
+          <span style="color: #333">|</span>
+          <span style="background: #222; padding: 3px 6px; border-radius: 3px"
+            >⚙</span
+          >
+          <span
+            style="
+              background: #cdfe00;
+              color: #111;
+              font-weight: 700;
+              width: 20px;
+              height: 20px;
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 11px;
+            "
+            >?</span
+          >
+        </div>
+        <div style="display: flex; align-items: center; gap: 4px">
+          <span style="color: #666">☀</span>
+          <span style="color: #666">🇬🇧</span>
+          <span
+            style="
+              background: #cdfe00;
+              color: #111;
+              font-weight: 700;
+              padding: 3px 8px;
+              border-radius: 3px;
+              font-size: 10px;
+            "
+            >Export</span
+          >
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Centre toolbar, next to Settings</h3>
+      <p>
+        Lives beside the ⚙ Settings button in the main toolbar cluster. Grouped
+        with app controls rather than export actions.
+      </p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="fab" onclick="toggleSelect(this)">
+    <div
+      class="card-image"
+      style="
+        background: #111;
+        border-radius: 8px;
+        padding: 12px;
+        position: relative;
+      "
+    >
+      <div
+        style="
+          background: #1a1a1a;
+          border-radius: 6px;
+          padding: 8px 10px;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 10px;
+          margin-bottom: 8px;
+        "
+      >
+        <span style="color: #cdfe00; font-weight: 700; font-size: 11px"
+          >Framework <span style="color: #fff">Builder</span></span
+        >
+        <div
+          style="
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            color: #666;
+          "
+        >
+          <span style="background: #222; padding: 3px 6px; border-radius: 3px"
+            >⚙</span
+          >
+        </div>
+        <span
+          style="
+            background: #222;
+            color: #aaa;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+          "
+          >Export</span
+        >
+      </div>
+      <div
+        style="
+          background: #1e1e1e;
+          border-radius: 6px;
+          height: 60px;
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #555;
+          font-size: 10px;
+        "
+      >
+        Canvas
+        <div
+          style="
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: #cdfe00;
+            color: #111;
+            font-weight: 700;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            box-shadow: 0 2px 8px rgba(205, 254, 0, 0.4);
+          "
+        >
+          ?
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Floating button over canvas</h3>
+      <p>
+        A pill/circle pinned to the bottom-right corner of the canvas. Always
+        accessible without cluttering the toolbar further.
+      </p>
+    </div>
+  </div>
+</div>
