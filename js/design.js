@@ -311,3 +311,636 @@ FB.design.canvas = (function () {
     zoomFit: zoomFit,
   };
 })();
+
+FB.design.tools = (function () {
+  var _active = "select";
+  var _drawing = false;
+  var _startX, _startY, _drawObj;
+
+  var TOOLS = [
+    { id: "select", label: "▶", title: "Select (V)" },
+    { id: "rect", label: "⬛", title: "Rectangle (R)" },
+    { id: "circle", label: "⬤", title: "Circle (O)" },
+    { id: "tri", label: "▲", title: "Triangle" },
+    { id: "poly", label: "⬡", title: "Polygon" },
+    { id: "line", label: "—", title: "Line" },
+    { id: "arrow", label: "→", title: "Arrow" },
+    { id: "text", label: "T", title: "Text (T)" },
+    { id: "image", label: "🖼", title: "Image (I)" },
+  ];
+
+  function render() {
+    var el = document.getElementById("ds-tools");
+    el.innerHTML =
+      '<div class="ds-tools-grid">' +
+      TOOLS.map(function (t) {
+        return (
+          '<button class="ds-tool-btn' +
+          (t.id === _active ? " active" : "") +
+          '" title="' +
+          t.title +
+          '" onclick="FB.design.tools.setTool(\'' +
+          t.id +
+          "')\">" +
+          t.label +
+          "</button>"
+        );
+      }).join("") +
+      "</div>";
+  }
+
+  function setTool(id) {
+    _active = id;
+    var fc = FB.design.canvas.get();
+    if (!fc) {
+      render();
+      return;
+    }
+    fc.isDrawingMode = false;
+    fc.selection = id === "select";
+    fc.defaultCursor = id === "select" ? "default" : "crosshair";
+    if (id === "image") {
+      _triggerImageUpload();
+    }
+    render();
+  }
+
+  function _triggerImageUpload() {
+    var inp = document.createElement("input");
+    inp.type = "file";
+    inp.accept = "image/*";
+    inp.onchange = function () {
+      var file = inp.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function (ev) {
+        fabric.Image.fromURL(ev.target.result, function (img) {
+          var fc = FB.design.canvas.get();
+          var maxW = fc.getWidth() * 0.5;
+          if (img.width > maxW) img.scaleToWidth(maxW);
+          img.set({
+            left: fc.getWidth() / 2 - img.getScaledWidth() / 2,
+            top: fc.getHeight() / 2 - img.getScaledHeight() / 2,
+            name: "Image",
+          });
+          fc.add(img);
+          fc.setActiveObject(img);
+          fc.renderAll();
+          FB.design.tools.setTool("select");
+        });
+      };
+      reader.readAsDataURL(file);
+    };
+    inp.click();
+  }
+
+  function bindMouseDraw() {
+    var fc = FB.design.canvas.get();
+    fc.on("mouse:down", function (opt) {
+      if (_active === "select" || _active === "image" || _active === "text")
+        return;
+      if (opt.target) return;
+      _drawing = true;
+      var p = fc.getPointer(opt.e);
+      _startX = p.x;
+      _startY = p.y;
+      _drawObj = _createShape(_active, p.x, p.y);
+      if (_drawObj) fc.add(_drawObj);
+    });
+
+    fc.on("mouse:move", function (opt) {
+      if (!_drawing || !_drawObj) return;
+      var p = fc.getPointer(opt.e);
+      _updateShape(_drawObj, _startX, _startY, p.x, p.y);
+      fc.renderAll();
+    });
+
+    fc.on("mouse:up", function () {
+      if (!_drawing) return;
+      _drawing = false;
+      if (_drawObj) {
+        _drawObj.setCoords();
+        fc.setActiveObject(_drawObj);
+        _drawObj = null;
+      }
+      FB.design.tools.setTool("select");
+      fc.renderAll();
+    });
+
+    fc.on("mouse:dblclick", function (opt) {
+      if (
+        _active !== "text" &&
+        !(_active === "select" && opt.target && opt.target.type === "i-text")
+      )
+        return;
+      if (opt.target && opt.target.type === "i-text") {
+        opt.target.enterEditing();
+        return;
+      }
+      var p = fc.getPointer(opt.e);
+      var txt = new fabric.IText("Text", {
+        left: p.x,
+        top: p.y,
+        fontFamily: "Lexend",
+        fontSize: 32,
+        fill: "#000000",
+        name: "Text",
+        editable: true,
+      });
+      fc.add(txt);
+      fc.setActiveObject(txt);
+      txt.enterEditing();
+      FB.design.tools.setTool("select");
+    });
+  }
+
+  function _createShape(type, x, y) {
+    var opts = {
+      left: x,
+      top: y,
+      fill: "#4a90e2",
+      stroke: "transparent",
+      strokeWidth: 0,
+      originX: "left",
+      originY: "top",
+    };
+    if (type === "rect")
+      return new fabric.Rect(
+        Object.assign({ width: 1, height: 1, name: "Rectangle" }, opts),
+      );
+    if (type === "circle")
+      return new fabric.Ellipse(
+        Object.assign({ rx: 1, ry: 1, name: "Circle" }, opts),
+      );
+    if (type === "tri")
+      return new fabric.Triangle(
+        Object.assign({ width: 1, height: 1, name: "Triangle" }, opts),
+      );
+    if (type === "poly")
+      return new fabric.Polygon(
+        [
+          { x: 0, y: 50 },
+          { x: 50, y: 0 },
+          { x: 100, y: 50 },
+          { x: 75, y: 100 },
+          { x: 25, y: 100 },
+        ],
+        Object.assign({ name: "Polygon" }, opts),
+      );
+    if (type === "line")
+      return new fabric.Line([x, y, x, y], {
+        stroke: "#4a90e2",
+        strokeWidth: 2,
+        name: "Line",
+      });
+    if (type === "arrow") {
+      var line = new fabric.Line([x, y, x, y], {
+        stroke: "#4a90e2",
+        strokeWidth: 2,
+        name: "Arrow",
+      });
+      line._isArrow = true;
+      return line;
+    }
+    return null;
+  }
+
+  function _updateShape(obj, x1, y1, x2, y2) {
+    var w = x2 - x1,
+      h = y2 - y1;
+    if (obj.type === "rect" || obj.type === "triangle") {
+      obj.set({
+        width: Math.abs(w),
+        height: Math.abs(h),
+        left: Math.min(x1, x2),
+        top: Math.min(y1, y2),
+      });
+    } else if (obj.type === "ellipse") {
+      obj.set({
+        rx: Math.abs(w) / 2,
+        ry: Math.abs(h) / 2,
+        left: Math.min(x1, x2),
+        top: Math.min(y1, y2),
+      });
+    } else if (obj.type === "line") {
+      obj.set({ x2: x2, y2: y2 });
+    }
+  }
+
+  return {
+    render: render,
+    setTool: setTool,
+    bindMouseDraw: bindMouseDraw,
+    active: function () {
+      return _active;
+    },
+  };
+})();
+
+FB.design.layers = (function () {
+  var _typeIcon = {
+    rect: "⬛",
+    ellipse: "⬤",
+    triangle: "▲",
+    polygon: "⬡",
+    line: "—",
+    "i-text": "T",
+    image: "🖼",
+    group: "⊞",
+    path: "✒",
+  };
+
+  function render() {
+    var fc = FB.design.canvas.get();
+    if (!fc) return;
+    var objs = fc.getObjects().slice().reverse();
+    var active = fc.getActiveObjects();
+    var el = document.getElementById("ds-layers-list");
+    el.innerHTML = objs
+      .map(function (obj, i) {
+        var icon = _typeIcon[obj.type] || "◆";
+        var name = obj.name || obj.type || "Object";
+        var isActive = active.indexOf(obj) !== -1;
+        var isHidden = obj.visible === false;
+        return (
+          '<div class="ds-layer-row' +
+          (isActive ? " selected" : "") +
+          '" ' +
+          'data-idx="' +
+          (objs.length - 1 - i) +
+          '" ' +
+          'onclick="FB.design.layers.select(' +
+          (objs.length - 1 - i) +
+          ')" ' +
+          'oncontextmenu="FB.design.layers.ctxMenu(event,' +
+          (objs.length - 1 - i) +
+          ');return false">' +
+          "<span>" +
+          icon +
+          "</span>" +
+          '<span class="ds-layer-name">' +
+          name +
+          "</span>" +
+          '<button class="ds-layer-vis" onclick="FB.design.layers.toggleVis(event,' +
+          (objs.length - 1 - i) +
+          ')">' +
+          (isHidden ? "🚫" : "👁") +
+          "</button>" +
+          "</div>"
+        );
+      })
+      .join("");
+  }
+
+  function select(idx) {
+    var fc = FB.design.canvas.get();
+    var obj = fc.item(idx);
+    if (!obj) return;
+    fc.setActiveObject(obj);
+    fc.renderAll();
+    FB.design.props.render();
+    render();
+  }
+
+  function toggleVis(e, idx) {
+    e.stopPropagation();
+    var fc = FB.design.canvas.get();
+    var obj = fc.item(idx);
+    if (!obj) return;
+    obj.visible = !obj.visible;
+    fc.renderAll();
+    render();
+  }
+
+  function ctxMenu(e, idx) {
+    var fc = FB.design.canvas.get();
+    var obj = fc.item(idx);
+    if (!obj) return;
+    var name = prompt("Rename layer:", obj.name || obj.type);
+    if (name !== null) {
+      obj.name = name;
+      render();
+    }
+  }
+
+  return {
+    render: render,
+    select: select,
+    toggleVis: toggleVis,
+    ctxMenu: ctxMenu,
+  };
+})();
+
+FB.design.props = (function () {
+  var GOOGLE_FONTS = [
+    "Lexend",
+    "Inter",
+    "Roboto",
+    "Open Sans",
+    "Lato",
+    "Montserrat",
+    "Poppins",
+    "Raleway",
+    "Playfair Display",
+    "Merriweather",
+    "Lora",
+    "Bebas Neue",
+    "Oswald",
+    "Space Grotesk",
+    "DM Sans",
+  ];
+
+  function render() {
+    var fc = FB.design.canvas.get();
+    var el = document.getElementById("ds-props");
+    if (!fc) {
+      el.innerHTML = "";
+      return;
+    }
+    var obj = fc.getActiveObject();
+    if (!obj) {
+      el.innerHTML = _canvasProps(fc);
+      return;
+    }
+    if (obj.type === "i-text") {
+      el.innerHTML = _textProps(obj);
+      return;
+    }
+    if (obj.type === "image") {
+      el.innerHTML = _imageProps(obj);
+      return;
+    }
+    el.innerHTML = _shapeProps(obj);
+  }
+
+  function _posSize(obj) {
+    return (
+      '<div class="ds-prop-group">' +
+      '<div class="ds-prop-label">Position</div>' +
+      '<div class="ds-prop-row">' +
+      '<input class="ds-input" style="width:48%" type="number" value="' +
+      Math.round(obj.left) +
+      '" onchange="FB.design.props.setProp(\'left\',+this.value)" placeholder="X"/>' +
+      '<input class="ds-input" style="width:48%" type="number" value="' +
+      Math.round(obj.top) +
+      '" onchange="FB.design.props.setProp(\'top\',+this.value)" placeholder="Y"/>' +
+      "</div>" +
+      '<div class="ds-prop-row">' +
+      '<input class="ds-input" style="width:48%" type="number" value="' +
+      Math.round(obj.getScaledWidth()) +
+      '" onchange="FB.design.props.setWidth(+this.value)" placeholder="W"/>' +
+      '<input class="ds-input" style="width:48%" type="number" value="' +
+      Math.round(obj.getScaledHeight()) +
+      '" onchange="FB.design.props.setHeight(+this.value)" placeholder="H"/>' +
+      "</div>" +
+      "</div>"
+    );
+  }
+
+  function _shapeProps(obj) {
+    var fill = typeof obj.fill === "string" ? obj.fill : "#4a90e2";
+    var stroke = obj.stroke || "transparent";
+    var sw = obj.strokeWidth || 0;
+    var op = Math.round((obj.opacity || 1) * 100);
+    var html = _posSize(obj);
+    html +=
+      '<div class="ds-prop-group"><div class="ds-prop-label">Fill</div>' +
+      '<div class="ds-color-row"><input type="color" class="ds-color-swatch" value="' +
+      fill +
+      '" onchange="FB.design.props.setProp(\'fill\',this.value)"/>' +
+      '<input class="ds-input" value="' +
+      fill +
+      '" onchange="FB.design.props.setProp(\'fill\',this.value)"/></div></div>';
+    html +=
+      '<div class="ds-prop-group"><div class="ds-prop-label">Stroke</div>' +
+      '<div class="ds-prop-row">' +
+      '<input type="color" class="ds-color-swatch" value="' +
+      (stroke === "transparent" ? "#000000" : stroke) +
+      '" onchange="FB.design.props.setProp(\'stroke\',this.value)"/>' +
+      '<input class="ds-input" type="number" value="' +
+      sw +
+      '" placeholder="Width" onchange="FB.design.props.setProp(\'strokeWidth\',+this.value)"/>' +
+      "</div></div>";
+    html +=
+      '<div class="ds-prop-group"><div class="ds-prop-label">Opacity</div>' +
+      '<input class="ds-input" type="range" min="0" max="100" value="' +
+      op +
+      '" oninput="FB.design.props.setProp(\'opacity\',this.value/100)"/></div>';
+    if (obj.type === "rect") {
+      html +=
+        '<div class="ds-prop-group"><div class="ds-prop-label">Corner Radius</div>' +
+        '<input class="ds-input" type="number" value="' +
+        (obj.rx || 0) +
+        "\" onchange=\"FB.design.props.setPropXY('rx','ry',+this.value)\"/></div>";
+    }
+    return html;
+  }
+
+  function _textProps(obj) {
+    var html = _posSize(obj);
+    html +=
+      '<div class="ds-prop-group"><div class="ds-prop-label">Font</div>' +
+      '<select class="ds-select" onchange="FB.design.props.setProp(\'fontFamily\',this.value)">' +
+      GOOGLE_FONTS.map(function (f) {
+        return (
+          "<option" +
+          (obj.fontFamily === f ? " selected" : "") +
+          ">" +
+          f +
+          "</option>"
+        );
+      }).join("") +
+      "</select></div>";
+    html +=
+      '<div class="ds-prop-group"><div class="ds-prop-label">Size / Weight</div><div class="ds-prop-row">' +
+      '<input class="ds-input" style="width:48%" type="number" value="' +
+      (obj.fontSize || 32) +
+      '" onchange="FB.design.props.setProp(\'fontSize\',+this.value)"/>' +
+      '<input class="ds-input" style="width:48%" type="number" value="' +
+      (obj.fontWeight || 400) +
+      '" onchange="FB.design.props.setProp(\'fontWeight\',+this.value)"/>' +
+      "</div></div>";
+    html +=
+      '<div class="ds-prop-group"><div class="ds-prop-label">Colour</div>' +
+      '<div class="ds-color-row"><input type="color" class="ds-color-swatch" value="' +
+      (obj.fill || "#000000") +
+      '" onchange="FB.design.props.setProp(\'fill\',this.value)"/>' +
+      '<input class="ds-input" value="' +
+      (obj.fill || "#000000") +
+      '" onchange="FB.design.props.setProp(\'fill\',this.value)"/></div></div>';
+    html +=
+      '<div class="ds-prop-group"><div class="ds-prop-label">Align</div><div class="ds-btn-row">' +
+      ["left", "center", "right"]
+        .map(function (a) {
+          return (
+            '<button class="ds-sm-btn' +
+            (obj.textAlign === a ? " active" : "") +
+            "\" onclick=\"FB.design.props.setProp('textAlign','" +
+            a +
+            "')\">" +
+            a[0].toUpperCase() +
+            "</button>"
+          );
+        })
+        .join("") +
+      "</div></div>";
+    return html;
+  }
+
+  function _imageProps(obj) {
+    var op = Math.round((obj.opacity || 1) * 100);
+    var html = _posSize(obj);
+    html +=
+      '<div class="ds-prop-group"><div class="ds-prop-label">Opacity</div>' +
+      '<input class="ds-input" type="range" min="0" max="100" value="' +
+      op +
+      '" oninput="FB.design.props.setProp(\'opacity\',this.value/100)"/></div>';
+    html +=
+      '<div class="ds-prop-group"><div class="ds-prop-label">Flip</div><div class="ds-btn-row">' +
+      '<button class="ds-sm-btn" onclick="FB.design.props.flip(\'X\')">Flip H</button>' +
+      '<button class="ds-sm-btn" onclick="FB.design.props.flip(\'Y\')">Flip V</button>' +
+      "</div></div>";
+    return html;
+  }
+
+  function _canvasProps(fc) {
+    return (
+      '<div class="ds-prop-group"><div class="ds-prop-label">Canvas Background</div>' +
+      '<div class="ds-color-row"><input type="color" class="ds-color-swatch" value="' +
+      (fc.backgroundColor || "#ffffff") +
+      '" onchange="FB.design.props.setCanvasBg(this.value)"/>' +
+      '<input class="ds-input" value="' +
+      (fc.backgroundColor || "#ffffff") +
+      '" onchange="FB.design.props.setCanvasBg(this.value)"/></div></div>'
+    );
+  }
+
+  function setProp(key, val) {
+    var fc = FB.design.canvas.get();
+    var obj = fc.getActiveObject();
+    if (!obj) return;
+    obj.set(key, val);
+    fc.renderAll();
+  }
+
+  function setPropXY(kx, ky, val) {
+    var fc = FB.design.canvas.get();
+    var obj = fc.getActiveObject();
+    if (!obj) return;
+    obj.set(kx, val);
+    obj.set(ky, val);
+    fc.renderAll();
+  }
+
+  function setWidth(val) {
+    var fc = FB.design.canvas.get();
+    var obj = fc.getActiveObject();
+    if (!obj) return;
+    obj.scaleToWidth(val);
+    fc.renderAll();
+  }
+
+  function setHeight(val) {
+    var fc = FB.design.canvas.get();
+    var obj = fc.getActiveObject();
+    if (!obj) return;
+    obj.scaleToHeight(val);
+    fc.renderAll();
+  }
+
+  function flip(axis) {
+    var fc = FB.design.canvas.get();
+    var obj = fc.getActiveObject();
+    if (!obj) return;
+    obj.set("flip" + axis, !obj["flip" + axis]);
+    fc.renderAll();
+  }
+
+  function setCanvasBg(val) {
+    var fc = FB.design.canvas.get();
+    fc.setBackgroundColor(val, fc.renderAll.bind(fc));
+  }
+
+  return {
+    render: render,
+    setProp: setProp,
+    setPropXY: setPropXY,
+    setWidth: setWidth,
+    setHeight: setHeight,
+    flip: flip,
+    setCanvasBg: setCanvasBg,
+  };
+})();
+
+FB.design.align = (function () {
+  function run(action) {
+    var fc = FB.design.canvas.get();
+    var objs = fc.getActiveObjects();
+    if (!objs.length) return;
+    var cW = fc.getWidth(),
+      cH = fc.getHeight();
+
+    objs.forEach(function (obj) {
+      var w = obj.getScaledWidth(),
+        h = obj.getScaledHeight();
+      if (action === "left") obj.set("left", 0);
+      if (action === "centerH") obj.set("left", cW / 2 - w / 2);
+      if (action === "right") obj.set("left", cW - w);
+      if (action === "top") obj.set("top", 0);
+      if (action === "centerV") obj.set("top", cH / 2 - h / 2);
+      if (action === "bottom") obj.set("top", cH - h);
+      if (action === "bringForward") fc.bringForward(obj);
+      if (action === "sendBack") fc.sendBackwards(obj);
+      if (action === "bringToFront") fc.bringToFront(obj);
+      if (action === "sendToBack") fc.sendToBack(obj);
+      obj.setCoords();
+    });
+
+    if (action === "distributeH" && objs.length >= 3) {
+      var sorted = objs.slice().sort(function (a, b) {
+        return a.left - b.left;
+      });
+      var totalW = sorted.reduce(function (s, o) {
+        return s + o.getScaledWidth();
+      }, 0);
+      var gap =
+        (sorted[sorted.length - 1].left +
+          sorted[sorted.length - 1].getScaledWidth() -
+          sorted[0].left -
+          totalW) /
+        (sorted.length - 1);
+      var x = sorted[0].left;
+      sorted.forEach(function (o) {
+        o.set("left", x);
+        x += o.getScaledWidth() + gap;
+        o.setCoords();
+      });
+    }
+
+    if (action === "distributeV" && objs.length >= 3) {
+      var sortedV = objs.slice().sort(function (a, b) {
+        return a.top - b.top;
+      });
+      var totalH = sortedV.reduce(function (s, o) {
+        return s + o.getScaledHeight();
+      }, 0);
+      var gapV =
+        (sortedV[sortedV.length - 1].top +
+          sortedV[sortedV.length - 1].getScaledHeight() -
+          sortedV[0].top -
+          totalH) /
+        (sortedV.length - 1);
+      var y = sortedV[0].top;
+      sortedV.forEach(function (o) {
+        o.set("top", y);
+        y += o.getScaledHeight() + gapV;
+        o.setCoords();
+      });
+    }
+
+    fc.renderAll();
+    FB.design.layers.render();
+  }
+
+  return { run: run };
+})();
