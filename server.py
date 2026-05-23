@@ -322,8 +322,13 @@ SCRAPED CONTENT:
                 continue
         self._json_response(results)
 
+    def _validate_slug(self, slug):
+        return bool(re.fullmatch(r'[a-z0-9-]+', slug))
+
     def _handle_design_get(self, slug):
-        slug = slug.replace('/', '').replace('..', '')
+        if not self._validate_slug(slug):
+            self.send_error(HTTPStatus.NOT_FOUND)
+            return
         path = os.path.join(STATIC_DIR, 'designs', slug + '.json')
         if not os.path.exists(path):
             self.send_error(HTTPStatus.NOT_FOUND)
@@ -347,7 +352,9 @@ SCRAPED CONTENT:
         self._json_response({'ok': True, 'slug': slug})
 
     def _handle_design_delete(self, slug):
-        slug = slug.replace('/', '').replace('..', '')
+        if not self._validate_slug(slug):
+            self._json_response({'ok': True})
+            return
         path = os.path.join(STATIC_DIR, 'designs', slug + '.json')
         if os.path.exists(path):
             os.remove(path)

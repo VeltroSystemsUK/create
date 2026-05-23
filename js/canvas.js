@@ -3929,6 +3929,7 @@ FB.canvas.setDevice = function (device, btn) {
 
 FB.canvas.initKeyboard = function () {
   document.addEventListener("keydown", function (e) {
+    if (FB.design && FB.design._mode) return;
     var tag = document.activeElement ? document.activeElement.tagName : "";
     var isEditing =
       tag === "INPUT" ||

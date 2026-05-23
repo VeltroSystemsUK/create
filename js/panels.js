@@ -2738,20 +2738,25 @@ FB.panels.loadBuilderDesigns = function () {
     .then(function (list) {
       var grid = document.getElementById("builder-designs-grid");
       if (!grid) return;
+      var esc = FB.design._esc;
       grid.innerHTML = list.length
         ? list
             .map(function (d) {
               return (
                 '<div class="ds-builder-thumb" onclick="FB.panels.insertDesignBlock(\'' +
-                d.slug +
+                esc(d.slug) +
                 '\')" title="' +
-                d.name +
+                esc(d.name) +
                 '">' +
                 (d.thumbnail
-                  ? '<img src="' + d.thumbnail + '" alt="' + d.name + '">'
+                  ? '<img src="' +
+                    esc(d.thumbnail) +
+                    '" alt="' +
+                    esc(d.name) +
+                    '">'
                   : '<div style="height:60px;background:#1a1a2a"></div>') +
                 '<div class="ds-builder-thumb-label">' +
-                d.name +
+                esc(d.name) +
                 "</div></div>"
               );
             })

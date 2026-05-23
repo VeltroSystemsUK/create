@@ -1,6 +1,12 @@
 FB.design = {};
 FB.design._mode = false;
 
+FB.design._esc = function (s) {
+  var d = document.createElement("div");
+  d.textContent = String(s);
+  return d.innerHTML;
+};
+
 FB.design.init = function () {
   // Submodules initialised in their own tasks
 };
@@ -59,7 +65,16 @@ FB.design.history = (function () {
     });
   }
 
-  return { push: push, undo: undo, redo: redo };
+  function silent(fn) {
+    _paused = true;
+    try {
+      fn();
+    } finally {
+      _paused = false;
+    }
+  }
+
+  return { push: push, undo: undo, redo: redo, silent: silent };
 })();
 
 FB.design.canvas = (function () {
@@ -93,6 +108,7 @@ FB.design.canvas = (function () {
     _bindKeys();
     FB.design.tools.render();
     FB.design.tools.bindMouseDraw();
+    FB.design.history.push();
   }
 
   function applyPreset(key) {
@@ -138,8 +154,15 @@ FB.design.canvas = (function () {
     });
 
     var _panning = false;
+    var _spaceDown = false;
+    document.addEventListener("keydown", function (e) {
+      if (e.code === "Space" && FB.design._mode) _spaceDown = true;
+    });
+    document.addEventListener("keyup", function (e) {
+      if (e.code === "Space") _spaceDown = false;
+    });
     _fc.on("mouse:down", function (opt) {
-      if (opt.e.spaceKey || opt.e.button === 1) {
+      if (_spaceDown || opt.e.button === 1) {
         _panning = true;
         _fc.selection = false;
       }
@@ -987,18 +1010,23 @@ FB.design.library = (function () {
       })
       .then(function (list) {
         var grid = document.getElementById("ds-library-grid");
+        var esc = FB.design._esc;
         grid.innerHTML = list.length
           ? list
               .map(function (d) {
                 return (
                   '<div class="ds-template-thumb" onclick="FB.design.library.loadDesign(\'' +
-                  d.slug +
+                  esc(d.slug) +
                   "')\">" +
                   (d.thumbnail
-                    ? '<img src="' + d.thumbnail + '" alt="' + d.name + '">'
+                    ? '<img src="' +
+                      esc(d.thumbnail) +
+                      '" alt="' +
+                      esc(d.name) +
+                      '">'
                     : '<div style="height:80px;background:#1a1a2a"></div>') +
                   '<div class="ds-thumb-label">' +
-                  d.name +
+                  esc(d.name) +
                   "</div></div>"
                 );
               })
@@ -1022,13 +1050,16 @@ FB.design.library = (function () {
         var fc = FB.design.canvas.get();
         fc.setWidth(d.width);
         fc.setHeight(d.height);
-        fc.loadFromJSON(d.fabric, function () {
-          fc.renderAll();
-          FB.design.layers.render();
-          FB.design.props.render();
-          _currentName = d.name;
-          closePicker();
-          FB.util.showToast("Loaded: " + d.name);
+        FB.design.history.silent(function () {
+          fc.loadFromJSON(d.fabric, function () {
+            fc.renderAll();
+            FB.design.layers.render();
+            FB.design.props.render();
+            _currentName = d.name;
+            FB.design.history.push();
+            closePicker();
+            FB.util.showToast("Loaded: " + d.name);
+          });
         });
       });
   }
@@ -1121,11 +1152,14 @@ FB.design.templates = (function () {
       return;
     fc.setWidth(tpl.width);
     fc.setHeight(tpl.height);
-    fc.loadFromJSON(tpl.fabric, function () {
-      fc.renderAll();
-      FB.design.layers.render();
-      FB.design.canvas.zoomFit();
-      close();
+    FB.design.history.silent(function () {
+      fc.loadFromJSON(tpl.fabric, function () {
+        fc.renderAll();
+        FB.design.layers.render();
+        FB.design.canvas.zoomFit();
+        FB.design.history.push();
+        close();
+      });
     });
   }
 
