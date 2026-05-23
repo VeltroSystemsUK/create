@@ -21,6 +21,8 @@
       href="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css"
     />
     <link rel="stylesheet" href="css/help.css" />
+    <link rel="stylesheet" href="css/design.css?v=1" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
     <link
       rel="icon"
       href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23CDFE00'><rect width='8' height='8' x='2' y='2'/><rect width='8' height='8' x='14' y='2'/><rect width='8' height='8' x='2' y='14'/><rect width='8' height='8' x='14' y='14'/></svg>"
@@ -122,6 +124,26 @@
               <line x1="3" y1="6" x2="21" y2="6" />
               <line x1="3" y1="12" x2="21" y2="12" />
               <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+          <button
+            class="tb-btn"
+            id="ds-mode-btn"
+            onclick="FB.panels.setMode('design')"
+            title="Design Studio"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M12 20h9" />
+              <path
+                d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"
+              />
             </svg>
           </button>
           <button
@@ -595,6 +617,194 @@
       </div>
     </div>
 
+    <!-- DESIGN STUDIO -->
+    <div id="design-studio" style="display: none">
+      <div id="ds-left-panel">
+        <div id="ds-tools"></div>
+        <div id="ds-layers-panel">
+          <div class="ds-panel-label">Layers</div>
+          <div id="ds-layers-list"></div>
+        </div>
+        <div id="ds-actions">
+          <button class="ds-action-btn" onclick="FB.design.templates.open()">
+            ⊞ Templates
+          </button>
+          <button class="ds-action-btn" onclick="FB.design.ai.open()">
+            ✦ AI Generate
+          </button>
+          <button
+            class="ds-action-btn"
+            onclick="FB.design.library.openPicker()"
+          >
+            📁 My Designs
+          </button>
+        </div>
+      </div>
+      <div id="ds-canvas-column">
+        <div id="ds-topbar">
+          <button
+            class="ds-back-btn"
+            onclick="FB.panels.setMode('builder')"
+            title="Back to Builder"
+          >
+            ← Builder
+          </button>
+          <div id="ds-size-label"></div>
+          <select
+            id="ds-preset-select"
+            onchange="FB.design.canvas.applyPreset(this.value)"
+          >
+            <option value="hero">Hero Banner (1920×600)</option>
+            <option value="og">OG Image (1200×630)</option>
+            <option value="card">Feature Card (800×600)</option>
+            <option value="square">Square (1080×1080)</option>
+            <option value="wide">Wide (1920×1080)</option>
+            <option value="custom">Custom…</option>
+          </select>
+          <div id="ds-zoom-controls">
+            <button onclick="FB.design.canvas.zoomOut()">−</button>
+            <span id="ds-zoom-label">100%</span>
+            <button onclick="FB.design.canvas.zoomIn()">+</button>
+            <button onclick="FB.design.canvas.zoomFit()">Fit</button>
+          </div>
+          <div id="ds-topbar-right">
+            <div class="ds-export-wrap">
+              <button
+                class="ds-export-btn"
+                onclick="FB.design.library.exportPNG()"
+              >
+                Export PNG
+              </button>
+              <button
+                class="ds-export-btn"
+                onclick="FB.design.library.exportSVG()"
+              >
+                Export SVG
+              </button>
+            </div>
+            <button class="ds-save-btn" onclick="FB.design.library.save()">
+              Save
+            </button>
+          </div>
+        </div>
+        <div id="ds-align-bar" style="display: none">
+          <button onclick="FB.design.align.run('left')" title="Align left">
+            ⊢L
+          </button>
+          <button onclick="FB.design.align.run('centerH')" title="Center H">
+            ⊣C
+          </button>
+          <button onclick="FB.design.align.run('right')" title="Align right">
+            R⊣
+          </button>
+          <button onclick="FB.design.align.run('top')" title="Align top">
+            ⊤T
+          </button>
+          <button onclick="FB.design.align.run('centerV')" title="Center V">
+            ≡M
+          </button>
+          <button onclick="FB.design.align.run('bottom')" title="Align bottom">
+            ⊥B
+          </button>
+          <span class="ds-sep"></span>
+          <button
+            onclick="FB.design.align.run('bringForward')"
+            title="Bring forward"
+          >
+            ↑Fwd
+          </button>
+          <button onclick="FB.design.align.run('sendBack')" title="Send back">
+            ↓Back
+          </button>
+          <button
+            onclick="FB.design.align.run('bringToFront')"
+            title="Bring to front"
+          >
+            ⊤Front
+          </button>
+          <button
+            onclick="FB.design.align.run('sendToBack')"
+            title="Send to back"
+          >
+            ⊥Back
+          </button>
+          <span class="ds-sep"></span>
+          <button
+            id="ds-dist-h"
+            onclick="FB.design.align.run('distributeH')"
+            title="Distribute H"
+            style="display: none"
+          >
+            H-Dist
+          </button>
+          <button
+            id="ds-dist-v"
+            onclick="FB.design.align.run('distributeV')"
+            title="Distribute V"
+            style="display: none"
+          >
+            V-Dist
+          </button>
+        </div>
+        <div id="ds-canvas-wrap">
+          <canvas id="ds-canvas"></canvas>
+        </div>
+      </div>
+      <div id="ds-right-panel">
+        <div id="ds-props"></div>
+        <div id="ds-insert-actions">
+          <button
+            class="ds-insert-btn"
+            onclick="FB.design.library.insertIntoPage()"
+          >
+            Insert into page →
+          </button>
+          <button class="ds-action-btn" onclick="FB.design.library.exportPNG()">
+            Export PNG
+          </button>
+          <button class="ds-action-btn" onclick="FB.design.library.exportSVG()">
+            Export SVG
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DESIGN STUDIO OVERLAYS -->
+    <div id="ds-template-overlay" style="display: none">
+      <div id="ds-template-modal">
+        <div class="ds-modal-head">
+          <span>Choose a Template</span>
+          <button onclick="FB.design.templates.close()">✕</button>
+        </div>
+        <div id="ds-template-grid"></div>
+      </div>
+    </div>
+    <div id="ds-ai-overlay" style="display: none">
+      <div id="ds-ai-modal">
+        <div class="ds-modal-head">
+          <span>✦ AI Image Generation</span>
+          <button onclick="FB.design.ai.close()">✕</button>
+        </div>
+        <textarea
+          id="ds-ai-prompt"
+          placeholder="Describe the image you want to generate…"
+        ></textarea>
+        <button class="ds-save-btn" onclick="FB.design.ai.generate()">
+          Generate
+        </button>
+        <div id="ds-ai-status"></div>
+      </div>
+    </div>
+    <div id="ds-library-overlay" style="display: none">
+      <div id="ds-library-modal">
+        <div class="ds-modal-head">
+          <span>My Designs</span>
+          <button onclick="FB.design.library.closePicker()">✕</button>
+        </div>
+        <div id="ds-library-grid"></div>
+      </div>
+    </div>
+
     <!-- EXPORT MODAL -->
     <div id="modal-overlay">
       <div id="modal">
@@ -647,12 +857,12 @@
     <script src="js/pages.js?v=1"></script>
     <script src="js/blocks.js?v=99"></script>
     <script src="js/theme.js?v=1"></script>
-    <script src="js/canvas.js?v=99"></script>
-    <script src="js/panels.js?v=99"></script>
+    <script src="js/canvas.js?v=100"></script>
+    <script src="js/panels.js?v=100"></script>
     <script src="js/export.js?v=3"></script>
     <script src="js/templates.js?v=2"></script>
     <script src="js/scraper.js?v=2"></script>
-    <script src="js/widgets.js?v=2"></script>
+    <script src="js/widgets.js?v=3"></script>
     <script src="widgets/basic.js?v=2"></script>
     <script src="widgets/content.js?v=2"></script>
     <script src="widgets/media.js?v=2"></script>
@@ -660,12 +870,14 @@
     <script src="widgets/interactive.js?v=2"></script>
     <script src="widgets/gallery-like.js?v=2"></script>
     <script src="widgets/embed.js?v=2"></script>
-    <script src="widgets/veltro.js?v=3"></script>
+    <script src="widgets/veltro.js?v=10"></script>
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
     <script src="js/help.js"></script>
     <script src="js/app.js?v=3"></script>
     <script src="js/theme-toggle.js?v=1"></script>
     <script src="js/language.js?v=1"></script>
+    <script src="js/design.js?v=1"></script>
+    <script src="widgets/design-templates.js?v=1"></script>
     <div id="google-translate-root" style="display: none"></div>
     <script>
       function googleTranslateElementInit() {
