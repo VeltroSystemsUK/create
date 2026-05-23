@@ -18,6 +18,50 @@ FB.design._showAlignBar = function (show) {
   if (dv) dv.style.display = n >= 3 ? "inline-block" : "none";
 };
 
+FB.design.history = (function () {
+  var _stack = [];
+  var _future = [];
+  var _paused = false;
+
+  function push() {
+    if (_paused) return;
+    var fc = FB.design.canvas.get();
+    if (!fc) return;
+    _stack.push(JSON.stringify(fc.toJSON(["id", "name"])));
+    if (_stack.length > 50) _stack.shift();
+    _future = [];
+  }
+
+  function undo() {
+    var fc = FB.design.canvas.get();
+    if (!fc || _stack.length < 2) return;
+    _future.push(_stack.pop());
+    _paused = true;
+    fc.loadFromJSON(JSON.parse(_stack[_stack.length - 1]), function () {
+      fc.renderAll();
+      FB.design.layers.render();
+      FB.design.props.render();
+      _paused = false;
+    });
+  }
+
+  function redo() {
+    var fc = FB.design.canvas.get();
+    if (!fc || !_future.length) return;
+    var state = _future.pop();
+    _stack.push(state);
+    _paused = true;
+    fc.loadFromJSON(JSON.parse(state), function () {
+      fc.renderAll();
+      FB.design.layers.render();
+      FB.design.props.render();
+      _paused = false;
+    });
+  }
+
+  return { push: push, undo: undo, redo: redo };
+})();
+
 FB.design.canvas = (function () {
   var _fc = null;
   var _inited = false;
