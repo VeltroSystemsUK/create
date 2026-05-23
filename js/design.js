@@ -1196,25 +1196,21 @@ FB.design.ai = (function () {
           return;
         }
         status.textContent = "Placing image…";
-        fabric.Image.fromURL(
-          d.url,
-          function (img) {
-            var fc = FB.design.canvas.get();
-            var maxW = fc.getWidth() * 0.6;
-            if (img.width > maxW) img.scaleToWidth(maxW);
-            img.set({
-              left: fc.getWidth() / 2 - img.getScaledWidth() / 2,
-              top: fc.getHeight() / 2 - img.getScaledHeight() / 2,
-              name: "AI: " + prompt.slice(0, 30),
-            });
-            fc.add(img);
-            fc.setActiveObject(img);
-            fc.renderAll();
-            close();
-            FB.util.showToast("AI image added to canvas");
-          },
-          { crossOrigin: "anonymous" },
-        );
+        fabric.Image.fromURL(d.url, function (img) {
+          var fc = FB.design.canvas.get();
+          var maxW = fc.getWidth() * 0.6;
+          if (img.width > maxW) img.scaleToWidth(maxW);
+          img.set({
+            left: fc.getWidth() / 2 - img.getScaledWidth() / 2,
+            top: fc.getHeight() / 2 - img.getScaledHeight() / 2,
+            name: "AI: " + prompt.slice(0, 30),
+          });
+          fc.add(img);
+          fc.setActiveObject(img);
+          fc.renderAll();
+          close();
+          FB.util.showToast("AI image added to canvas");
+        });
       })
       .catch(function (err) {
         status.textContent = "Request failed: " + err.message;

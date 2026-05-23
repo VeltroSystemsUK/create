@@ -364,25 +364,32 @@ SCRAPED CONTENT:
         length = int(self.headers.get('Content-Length', 0))
         body = json.loads(self.rfile.read(length)) if length else {}
         prompt = body.get('prompt', '').strip()
-        api_key = body.get('apiKey', os.environ.get('OPENAI_API_KEY', ''))
+        api_key = body.get('apiKey', os.environ.get('GEMINI_API_KEY', ''))
         if not prompt:
             self._json_response({'error': 'Missing prompt'}, 400)
             return
         if not api_key:
-            self._json_response({'error': 'No OpenAI API key. Set OPENAI_API_KEY or pass apiKey in the request.'}, 400)
+            self._json_response({'error': 'No Gemini API key. Set GEMINI_API_KEY or pass apiKey in the request.'}, 400)
             return
         try:
-            req_data = json.dumps({'model': 'dall-e-3', 'prompt': prompt, 'n': 1, 'size': '1024x1024'}).encode()
+            url = 'https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=' + urllib.parse.quote(api_key, safe='')
+            req_data = json.dumps({
+                'instances': [{'prompt': prompt}],
+                'parameters': {'sampleCount': 1},
+            }).encode()
             req = urllib.request.Request(
-                'https://api.openai.com/v1/images/generations',
+                url,
                 data=req_data,
-                headers={'Content-Type': 'application/json', 'Authorization': 'Bearer ' + api_key},
+                headers={'Content-Type': 'application/json'},
             )
             with urllib.request.urlopen(req, timeout=60) as resp:
                 data = json.loads(resp.read())
-            self._json_response({'url': data['data'][0]['url']})
+            prediction = data['predictions'][0]
+            mime = prediction.get('mimeType', 'image/png')
+            b64 = prediction['bytesBase64Encoded']
+            self._json_response({'url': 'data:' + mime + ';base64,' + b64})
         except urllib.error.HTTPError as e:
-            self._json_response({'error': 'OpenAI error: ' + e.read().decode()[:200]}, 500)
+            self._json_response({'error': 'Gemini error: ' + e.read().decode()[:200]}, 500)
         except Exception as e:
             self._json_response({'error': str(e)[:200]}, 500)
 
