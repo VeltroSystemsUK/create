@@ -2708,3 +2708,21 @@ FB.panels.renderLayers = function () {
   var sel = list.querySelector(".layer-item.selected");
   if (sel) sel.scrollIntoView({ block: "nearest" });
 };
+
+FB.panels.setMode = function (mode) {
+  var isDesign = mode === "design";
+  document.getElementById("design-studio").style.display = isDesign
+    ? "flex"
+    : "none";
+  document.getElementById("app").style.display = isDesign ? "none" : "flex";
+  var modeBtn = document.getElementById("ds-mode-btn");
+  if (modeBtn) modeBtn.classList.toggle("active", isDesign);
+  FB.design._mode = isDesign;
+  if (isDesign && FB.design.canvas && FB.design.canvas.init) {
+    FB.design.canvas.init();
+  }
+};
+
+FB.panels.exitDesignMode = function () {
+  FB.panels.setMode("builder");
+};

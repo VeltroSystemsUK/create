@@ -45,6 +45,12 @@ FB.init = function () {
 
   // Cmd+C / Cmd+V for block copy-paste (not handled in canvas.initKeyboard)
   document.addEventListener("keydown", function (e) {
+    if (FB.design && FB.design._mode) {
+      if (e.key === "Escape") {
+        FB.panels.setMode("builder");
+      }
+      return;
+    }
     var tag = document.activeElement ? document.activeElement.tagName : "";
     var isEditing =
       tag === "INPUT" ||
