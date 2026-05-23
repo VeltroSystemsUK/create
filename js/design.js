@@ -944,3 +944,248 @@ FB.design.align = (function () {
 
   return { run: run };
 })();
+
+FB.design.library = (function () {
+  var _currentName = "Untitled";
+
+  function save() {
+    var fc = FB.design.canvas.get();
+    if (!fc) return;
+    var name = prompt("Save design as:", _currentName);
+    if (!name) return;
+    _currentName = name;
+    var thumbnail = fc.toDataURL({
+      format: "png",
+      multiplier: Math.min(1, 320 / fc.getWidth()),
+    });
+    var payload = {
+      name: name,
+      width: fc.getWidth(),
+      height: fc.getHeight(),
+      thumbnail: thumbnail,
+      fabric: fc.toJSON(["name"]),
+    };
+    fetch("/api/designs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    })
+      .then(function (r) {
+        return r.json();
+      })
+      .then(function (d) {
+        if (d.ok) {
+          FB.util.showToast("Saved: " + name);
+        }
+      });
+  }
+
+  function openPicker() {
+    fetch("/api/designs")
+      .then(function (r) {
+        return r.json();
+      })
+      .then(function (list) {
+        var grid = document.getElementById("ds-library-grid");
+        grid.innerHTML = list.length
+          ? list
+              .map(function (d) {
+                return (
+                  '<div class="ds-template-thumb" onclick="FB.design.library.loadDesign(\'' +
+                  d.slug +
+                  "')\">" +
+                  (d.thumbnail
+                    ? '<img src="' + d.thumbnail + '" alt="' + d.name + '">'
+                    : '<div style="height:80px;background:#1a1a2a"></div>') +
+                  '<div class="ds-thumb-label">' +
+                  d.name +
+                  "</div></div>"
+                );
+              })
+              .join("")
+          : '<p style="color:#666;padding:16px;font-size:12px">No saved designs yet.</p>';
+        document.getElementById("ds-library-overlay").style.display = "flex";
+      });
+  }
+
+  function closePicker() {
+    document.getElementById("ds-library-overlay").style.display = "none";
+  }
+
+  function loadDesign(slug) {
+    if (!confirm("Load this design? Unsaved changes will be lost.")) return;
+    fetch("/api/designs/" + slug)
+      .then(function (r) {
+        return r.json();
+      })
+      .then(function (d) {
+        var fc = FB.design.canvas.get();
+        fc.setWidth(d.width);
+        fc.setHeight(d.height);
+        fc.loadFromJSON(d.fabric, function () {
+          fc.renderAll();
+          FB.design.layers.render();
+          FB.design.props.render();
+          _currentName = d.name;
+          closePicker();
+          FB.util.showToast("Loaded: " + d.name);
+        });
+      });
+  }
+
+  function exportPNG() {
+    var fc = FB.design.canvas.get();
+    if (!fc) return;
+    var url = fc.toDataURL({ format: "png", multiplier: 1 });
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = (_currentName || "design") + ".png";
+    a.click();
+  }
+
+  function exportSVG() {
+    var fc = FB.design.canvas.get();
+    if (!fc) return;
+    var svg = fc.toSVG();
+    var blob = new Blob([svg], { type: "image/svg+xml" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = (_currentName || "design") + ".svg";
+    a.click();
+  }
+
+  function insertIntoPage() {
+    var fc = FB.design.canvas.get();
+    if (!fc) return;
+    var dataUrl = fc.toDataURL({ format: "png", multiplier: 1 });
+    FB.panels.setMode("builder");
+    FB.state.saveHistory();
+    FB.state.blocks.push({
+      id: FB.state.genId(),
+      type: "imageBlock",
+      props: { src: dataUrl, alt: _currentName, objectFit: "contain" },
+    });
+    FB.canvas.render();
+    FB.util.showToast("Design inserted as image block");
+  }
+
+  return {
+    save: save,
+    openPicker: openPicker,
+    closePicker: closePicker,
+    loadDesign: loadDesign,
+    exportPNG: exportPNG,
+    exportSVG: exportSVG,
+    insertIntoPage: insertIntoPage,
+  };
+})();
+
+FB.design.templates = (function () {
+  function open() {
+    var grid = document.getElementById("ds-template-grid");
+    var list = FB.design.TEMPLATES || [];
+    grid.innerHTML = list
+      .map(function (t) {
+        return (
+          '<div class="ds-template-thumb" onclick="FB.design.templates.load(\'' +
+          t.key +
+          "')\">" +
+          '<div style="height:80px;background:#1a1a2a;display:flex;align-items:center;justify-content:center;font-size:10px;color:#666">' +
+          t.width +
+          "×" +
+          t.height +
+          "</div>" +
+          '<div class="ds-thumb-label">' +
+          t.name +
+          "</div></div>"
+        );
+      })
+      .join("");
+    document.getElementById("ds-template-overlay").style.display = "flex";
+  }
+
+  function close() {
+    document.getElementById("ds-template-overlay").style.display = "none";
+  }
+
+  function load(key) {
+    var tpl = (FB.design.TEMPLATES || []).filter(function (t) {
+      return t.key === key;
+    })[0];
+    if (!tpl) return;
+    var fc = FB.design.canvas.get();
+    if (
+      fc.getObjects().length &&
+      !confirm("Replace current canvas with this template?")
+    )
+      return;
+    fc.setWidth(tpl.width);
+    fc.setHeight(tpl.height);
+    fc.loadFromJSON(tpl.fabric, function () {
+      fc.renderAll();
+      FB.design.layers.render();
+      FB.design.canvas.zoomFit();
+      close();
+    });
+  }
+
+  return { open: open, close: close, load: load };
+})();
+
+FB.design.ai = (function () {
+  function open() {
+    document.getElementById("ds-ai-overlay").style.display = "flex";
+    document.getElementById("ds-ai-status").textContent = "";
+  }
+
+  function close() {
+    document.getElementById("ds-ai-overlay").style.display = "none";
+  }
+
+  function generate() {
+    var prompt = document.getElementById("ds-ai-prompt").value.trim();
+    if (!prompt) return;
+    var status = document.getElementById("ds-ai-status");
+    status.textContent = "Generating…";
+
+    fetch("/api/ai-image", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt: prompt }),
+    })
+      .then(function (r) {
+        return r.json();
+      })
+      .then(function (d) {
+        if (d.error) {
+          status.textContent = "Error: " + d.error;
+          return;
+        }
+        status.textContent = "Placing image…";
+        fabric.Image.fromURL(
+          d.url,
+          function (img) {
+            var fc = FB.design.canvas.get();
+            var maxW = fc.getWidth() * 0.6;
+            if (img.width > maxW) img.scaleToWidth(maxW);
+            img.set({
+              left: fc.getWidth() / 2 - img.getScaledWidth() / 2,
+              top: fc.getHeight() / 2 - img.getScaledHeight() / 2,
+              name: "AI: " + prompt.slice(0, 30),
+            });
+            fc.add(img);
+            fc.setActiveObject(img);
+            fc.renderAll();
+            close();
+            FB.util.showToast("AI image added to canvas");
+          },
+          { crossOrigin: "anonymous" },
+        );
+      })
+      .catch(function (err) {
+        status.textContent = "Request failed: " + err.message;
+      });
+  }
+
+  return { open: open, close: close, generate: generate };
+})();
