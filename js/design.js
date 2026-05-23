@@ -423,14 +423,15 @@ FB.design.tools = (function () {
 
   function bindMouseDraw() {
     var fc = FB.design.canvas.get();
+
     fc.on("mouse:down", function (opt) {
+      var p = fc.getPointer(opt.e);
+      _startX = p.x;
+      _startY = p.y;
       if (_active === "select" || _active === "image" || _active === "text")
         return;
       if (opt.target) return;
       _drawing = true;
-      var p = fc.getPointer(opt.e);
-      _startX = p.x;
-      _startY = p.y;
       _drawObj = _createShape(_active, p.x, p.y);
       if (_drawObj) fc.add(_drawObj);
     });
@@ -442,42 +443,55 @@ FB.design.tools = (function () {
       fc.renderAll();
     });
 
-    fc.on("mouse:up", function () {
+    fc.on("mouse:up", function (opt) {
+      // Text tool: single click places a text object
+      if (_active === "text") {
+        var p = fc.getPointer(opt.e);
+        var dx = p.x - _startX,
+          dy = p.y - _startY;
+        if (Math.sqrt(dx * dx + dy * dy) < 5 && !opt.target) {
+          var txt = new fabric.IText("Text", {
+            left: _startX,
+            top: _startY,
+            fontFamily: "Lexend",
+            fontSize: 32,
+            fill: "#000000",
+            name: "Text",
+          });
+          fc.add(txt);
+          fc.setActiveObject(txt);
+          txt.enterEditing();
+          FB.design.tools.setTool("select");
+          fc.renderAll();
+        }
+        return;
+      }
+
       if (!_drawing) return;
       _drawing = false;
+
       if (_drawObj) {
-        _drawObj.setCoords();
-        fc.setActiveObject(_drawObj);
+        var w = _drawObj.getScaledWidth();
+        var h = _drawObj.getScaledHeight();
+        // Discard accidental misclick shapes smaller than 4px
+        if (w < 4 && h < 4) {
+          fc.remove(_drawObj);
+        } else {
+          _drawObj.setCoords();
+          fc.setActiveObject(_drawObj);
+        }
         _drawObj = null;
       }
+
       FB.design.tools.setTool("select");
       fc.renderAll();
     });
 
+    // Double-click on existing i-text to enter editing
     fc.on("mouse:dblclick", function (opt) {
-      if (
-        _active !== "text" &&
-        !(_active === "select" && opt.target && opt.target.type === "i-text")
-      )
-        return;
       if (opt.target && opt.target.type === "i-text") {
         opt.target.enterEditing();
-        return;
       }
-      var p = fc.getPointer(opt.e);
-      var txt = new fabric.IText("Text", {
-        left: p.x,
-        top: p.y,
-        fontFamily: "Lexend",
-        fontSize: 32,
-        fill: "#000000",
-        name: "Text",
-        editable: true,
-      });
-      fc.add(txt);
-      fc.setActiveObject(txt);
-      txt.enterEditing();
-      FB.design.tools.setTool("select");
     });
   }
 
@@ -546,6 +560,14 @@ FB.design.tools = (function () {
       obj.set({
         rx: Math.abs(w) / 2,
         ry: Math.abs(h) / 2,
+        left: Math.min(x1, x2),
+        top: Math.min(y1, y2),
+      });
+    } else if (obj.type === "polygon") {
+      var size = Math.max(Math.abs(w), Math.abs(h), 1);
+      obj.set({
+        scaleX: size / 100,
+        scaleY: size / 100,
         left: Math.min(x1, x2),
         top: Math.min(y1, y2),
       });
