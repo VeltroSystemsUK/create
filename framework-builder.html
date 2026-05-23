@@ -583,6 +583,29 @@
         <div class="lp-accordion">
           <div
             class="lp-acc-header"
+            data-acc="mydesigns"
+            onclick="FB.panels.toggleLeftAccordion(this)"
+          >
+            <span class="lp-acc-icon">✏</span>
+            <span class="lp-acc-label">My Designs</span>
+            <span class="lp-acc-arrow">▶</span>
+          </div>
+          <div class="lp-acc-body" id="lp-body-mydesigns">
+            <div id="builder-designs-grid" class="ds-builder-thumb-grid"></div>
+            <div style="padding: 0 8px 8px">
+              <button
+                class="rp-btn"
+                onclick="FB.panels.loadBuilderDesigns()"
+                style="width: 100%"
+              >
+                Refresh
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="lp-accordion">
+          <div
+            class="lp-acc-header"
             data-acc="theme"
             onclick="FB.panels.toggleLeftAccordion(this)"
           >

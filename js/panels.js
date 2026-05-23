@@ -2506,6 +2506,9 @@ FB.panels.toggleLeftAccordion = function (headerEl) {
   if (!body) return;
   var isOpen = headerEl.classList.toggle("open");
   body.classList.toggle("open", isOpen);
+  if (headerEl.dataset.acc === "mydesigns" && isOpen) {
+    FB.panels.loadBuilderDesigns();
+  }
 };
 
 FB.panels.toggleRightPanel = function () {
@@ -2725,4 +2728,59 @@ FB.panels.setMode = function (mode) {
 
 FB.panels.exitDesignMode = function () {
   FB.panels.setMode("builder");
+};
+
+FB.panels.loadBuilderDesigns = function () {
+  fetch("/api/designs")
+    .then(function (r) {
+      return r.json();
+    })
+    .then(function (list) {
+      var grid = document.getElementById("builder-designs-grid");
+      if (!grid) return;
+      grid.innerHTML = list.length
+        ? list
+            .map(function (d) {
+              return (
+                '<div class="ds-builder-thumb" onclick="FB.panels.insertDesignBlock(\'' +
+                d.slug +
+                '\')" title="' +
+                d.name +
+                '">' +
+                (d.thumbnail
+                  ? '<img src="' + d.thumbnail + '" alt="' + d.name + '">'
+                  : '<div style="height:60px;background:#1a1a2a"></div>') +
+                '<div class="ds-builder-thumb-label">' +
+                d.name +
+                "</div></div>"
+              );
+            })
+            .join("")
+        : '<p style="color:#666;padding:8px;font-size:10px">No saved designs.</p>';
+    });
+};
+
+FB.panels.insertDesignBlock = function (slug) {
+  fetch("/api/designs/" + slug)
+    .then(function (r) {
+      return r.json();
+    })
+    .then(function (d) {
+      var tmpCanvas = new fabric.StaticCanvas(null, {
+        width: d.width,
+        height: d.height,
+      });
+      tmpCanvas.loadFromJSON(d.fabric, function () {
+        var dataUrl = tmpCanvas.toDataURL({ format: "png", multiplier: 1 });
+        tmpCanvas.dispose();
+        FB.state.saveHistory();
+        FB.state.blocks.push({
+          id: FB.state.genId(),
+          type: "imageBlock",
+          props: { src: dataUrl, alt: d.name, objectFit: "contain" },
+        });
+        FB.canvas.render();
+        FB.util.showToast("Inserted: " + d.name);
+      });
+    });
 };

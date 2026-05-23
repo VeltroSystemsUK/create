@@ -2426,6 +2426,19 @@ FB.canvas.renderBlockHTML = function (block) {
         "</div></div>"
       );
 
+    case "imageBlock":
+      return (
+        '<div class="fw-image-block" style="text-align:center">' +
+        '<img src="' +
+        (p.src || "") +
+        '" alt="' +
+        (p.alt || "") +
+        '" style="max-width:100%;height:auto;object-fit:' +
+        (p.objectFit || "contain") +
+        '">' +
+        "</div>"
+      );
+
     default:
       return (
         '<div style="padding:2rem;color:#999">Unknown block type: ' +
