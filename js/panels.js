@@ -2722,7 +2722,9 @@ FB.panels.setMode = function (mode) {
   if (modeBtn) modeBtn.classList.toggle("active", isDesign);
   FB.design._mode = isDesign;
   if (isDesign && FB.design.canvas && FB.design.canvas.init) {
-    FB.design.canvas.init();
+    requestAnimationFrame(function () {
+      FB.design.canvas.init();
+    });
   }
 };
 

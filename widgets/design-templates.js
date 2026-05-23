@@ -34,6 +34,7 @@ FB.design.TEMPLATES = [
           fontSize: 80,
           fontWeight: 700,
           fill: "#ffffff",
+          styles: {},
           name: "Headline",
         },
         {
@@ -44,6 +45,7 @@ FB.design.TEMPLATES = [
           fontFamily: "Lexend",
           fontSize: 28,
           fill: "#aaaaaa",
+          styles: {},
           name: "Subhead",
         },
         {
@@ -66,6 +68,7 @@ FB.design.TEMPLATES = [
           fontSize: 20,
           fontWeight: 700,
           fill: "#000000",
+          styles: {},
           name: "CTA label",
         },
       ],
@@ -107,6 +110,7 @@ FB.design.TEMPLATES = [
           fontSize: 72,
           fontWeight: 800,
           fill: "#ffffff",
+          styles: {},
           name: "Title",
         },
         {
@@ -117,6 +121,7 @@ FB.design.TEMPLATES = [
           fontFamily: "Lexend",
           fontSize: 28,
           fill: "#CDFE00",
+          styles: {},
           name: "URL",
         },
       ],
@@ -159,6 +164,7 @@ FB.design.TEMPLATES = [
           fontFamily: "Lexend",
           fontSize: 28,
           fill: "#CDFE00",
+          styles: {},
           name: "Icon",
         },
         {
@@ -170,6 +176,7 @@ FB.design.TEMPLATES = [
           fontSize: 36,
           fontWeight: 700,
           fill: "#ffffff",
+          styles: {},
           name: "Title",
         },
         {
@@ -180,6 +187,7 @@ FB.design.TEMPLATES = [
           fontFamily: "Lexend",
           fontSize: 18,
           fill: "#888888",
+          styles: {},
           name: "Description",
         },
       ],
@@ -222,6 +230,7 @@ FB.design.TEMPLATES = [
           fontWeight: 800,
           fill: "#ffffff",
           textAlign: "left",
+          styles: {},
           name: "Headline",
         },
         {
@@ -233,6 +242,7 @@ FB.design.TEMPLATES = [
           fontSize: 40,
           fontWeight: 700,
           fill: "#000000",
+          styles: {},
           name: "URL",
         },
       ],
@@ -274,6 +284,7 @@ FB.design.TEMPLATES = [
           fontSize: 100,
           fontWeight: 800,
           fill: "#ffffff",
+          styles: {},
           name: "Title",
         },
         {
@@ -284,6 +295,7 @@ FB.design.TEMPLATES = [
           fontFamily: "Lexend",
           fontSize: 40,
           fill: "#888888",
+          styles: {},
           name: "Subtitle",
         },
       ],

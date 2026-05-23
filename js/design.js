@@ -126,14 +126,17 @@ FB.design.canvas = (function () {
 
   function _resizeTo(w, h) {
     var wrap = document.getElementById("ds-canvas-wrap");
-    var maxW = wrap.clientWidth - 40;
-    var maxH = wrap.clientHeight - 40;
+    var maxW = Math.max(wrap.clientWidth - 40, 200);
+    var maxH = Math.max(wrap.clientHeight - 40, 200);
     var scale = Math.min(1, maxW / w, maxH / h);
+    scale = Math.max(scale, 0.01);
     _fc.setWidth(w);
     _fc.setHeight(h);
     _fc.setZoom(scale);
-    _fc.wrapperEl.style.width = Math.round(w * scale) + "px";
-    _fc.wrapperEl.style.height = Math.round(h * scale) + "px";
+    if (_fc.wrapperEl) {
+      _fc.wrapperEl.style.width = Math.round(w * scale) + "px";
+      _fc.wrapperEl.style.height = Math.round(h * scale) + "px";
+    }
     document.getElementById("ds-size-label").textContent = w + " \xd7 " + h;
     document.getElementById("ds-zoom-label").textContent =
       Math.round(scale * 100) + "%";
@@ -312,9 +315,10 @@ FB.design.canvas = (function () {
     var h = _fc.getHeight();
     var wrap = document.getElementById("ds-canvas-wrap");
     var scale = Math.min(
-      (wrap.clientWidth - 40) / w,
-      (wrap.clientHeight - 40) / h,
+      Math.max(wrap.clientWidth - 40, 200) / w,
+      Math.max(wrap.clientHeight - 40, 200) / h,
     );
+    scale = Math.max(scale, 0.01);
     _fc.setZoom(scale);
     document.getElementById("ds-zoom-label").textContent =
       Math.round(scale * 100) + "%";
