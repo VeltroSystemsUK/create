@@ -177,7 +177,7 @@ FB.design.canvas = (function () {
     });
     _fc.on("mouse:up", function () {
       _panning = false;
-      _fc.selection = true;
+      _fc.selection = FB.design.tools.active() === "select";
     });
   }
 
@@ -278,15 +278,11 @@ FB.design.canvas = (function () {
   }
 
   function _groupSelected() {
-    if (_fc.getActiveObjects().length < 2) return;
-    var objs = _fc.getActiveObjects();
-    var group = new fabric.Group(objs, { canvas: _fc });
-    objs.forEach(function (o) {
-      _fc.remove(o);
-    });
-    _fc.add(group);
+    var active = _fc.getActiveObject();
+    if (!active || active.type !== "activeSelection") return;
+    var group = active.toGroup();
     _fc.setActiveObject(group);
-    _fc.renderAll();
+    _fc.requestRenderAll();
   }
 
   function _ungroupSelected() {
@@ -869,7 +865,9 @@ FB.design.props = (function () {
     var obj = fc.getActiveObject();
     if (!obj) return;
     obj.set(key, val);
+    obj.setCoords();
     fc.renderAll();
+    FB.design.history.push();
   }
 
   function setPropXY(kx, ky, val) {
@@ -878,7 +876,9 @@ FB.design.props = (function () {
     if (!obj) return;
     obj.set(kx, val);
     obj.set(ky, val);
+    obj.setCoords();
     fc.renderAll();
+    FB.design.history.push();
   }
 
   function setWidth(val) {
@@ -886,7 +886,9 @@ FB.design.props = (function () {
     var obj = fc.getActiveObject();
     if (!obj) return;
     obj.scaleToWidth(val);
+    obj.setCoords();
     fc.renderAll();
+    FB.design.history.push();
   }
 
   function setHeight(val) {
@@ -894,7 +896,9 @@ FB.design.props = (function () {
     var obj = fc.getActiveObject();
     if (!obj) return;
     obj.scaleToHeight(val);
+    obj.setCoords();
     fc.renderAll();
+    FB.design.history.push();
   }
 
   function flip(axis) {
@@ -903,11 +907,15 @@ FB.design.props = (function () {
     if (!obj) return;
     obj.set("flip" + axis, !obj["flip" + axis]);
     fc.renderAll();
+    FB.design.history.push();
   }
 
   function setCanvasBg(val) {
     var fc = FB.design.canvas.get();
-    fc.setBackgroundColor(val, fc.renderAll.bind(fc));
+    fc.setBackgroundColor(val, function () {
+      fc.renderAll();
+      FB.design.history.push();
+    });
   }
 
   return {
