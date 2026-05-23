@@ -31,9 +31,27 @@ class FrameworkHandler(http.server.SimpleHTTPRequestHandler):
     def do_OPTIONS(self):
         self.send_response(HTTPStatus.NO_CONTENT)
         self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.end_headers()
+
+    def do_GET(self):
+        parsed = urllib.parse.urlparse(self.path)
+        if parsed.path == '/api/designs':
+            self._handle_designs_list()
+        elif parsed.path.startswith('/api/designs/'):
+            slug = parsed.path.split('/api/designs/')[1]
+            self._handle_design_get(slug)
+        else:
+            super().do_GET()
+
+    def do_DELETE(self):
+        parsed = urllib.parse.urlparse(self.path)
+        if parsed.path.startswith('/api/designs/'):
+            slug = parsed.path.split('/api/designs/')[1]
+            self._handle_design_delete(slug)
+        else:
+            self.send_error(HTTPStatus.NOT_FOUND)
 
     def do_POST(self):
         parsed = urllib.parse.urlparse(self.path)
@@ -43,6 +61,10 @@ class FrameworkHandler(http.server.SimpleHTTPRequestHandler):
             self._handle_fetch()
         elif parsed.path == "/api/ai-import":
             self._handle_ai_import()
+        elif parsed.path == '/api/designs':
+            self._handle_design_save()
+        elif parsed.path == '/api/ai-image':
+            self._handle_ai_image()
         else:
             self.send_error(HTTPStatus.NOT_FOUND)
 
@@ -275,6 +297,87 @@ SCRAPED CONTENT:
                 except (KeyError, TypeError):
                     continue
         raise Exception("Gemini API failed. Verify your key at https://aistudio.google.com/apikey")
+
+    def _handle_designs_list(self):
+        designs_dir = os.path.join(STATIC_DIR, 'designs')
+        if not os.path.exists(designs_dir):
+            self._json_response([])
+            return
+        results = []
+        for fname in sorted(os.listdir(designs_dir)):
+            if not fname.endswith('.json'):
+                continue
+            try:
+                with open(os.path.join(designs_dir, fname), 'r') as f:
+                    d = json.load(f)
+                results.append({
+                    'name': d.get('name', fname),
+                    'slug': d.get('slug', fname[:-5]),
+                    'thumbnail': d.get('thumbnail', ''),
+                    'modified': d.get('modified', ''),
+                    'width': d.get('width', 0),
+                    'height': d.get('height', 0),
+                })
+            except Exception:
+                continue
+        self._json_response(results)
+
+    def _handle_design_get(self, slug):
+        slug = slug.replace('/', '').replace('..', '')
+        path = os.path.join(STATIC_DIR, 'designs', slug + '.json')
+        if not os.path.exists(path):
+            self.send_error(HTTPStatus.NOT_FOUND)
+            return
+        with open(path, 'r') as f:
+            self._json_response(json.load(f))
+
+    def _handle_design_save(self):
+        import datetime
+        length = int(self.headers.get('Content-Length', 0))
+        body = json.loads(self.rfile.read(length)) if length else {}
+        name = (body.get('name') or 'Untitled').strip()
+        slug = re.sub(r'[^a-z0-9]+', '-', name.lower()).strip('-') or 'untitled'
+        designs_dir = os.path.join(STATIC_DIR, 'designs')
+        os.makedirs(designs_dir, exist_ok=True)
+        body['slug'] = slug
+        body['name'] = name
+        body['modified'] = datetime.datetime.utcnow().isoformat() + 'Z'
+        with open(os.path.join(designs_dir, slug + '.json'), 'w') as f:
+            json.dump(body, f)
+        self._json_response({'ok': True, 'slug': slug})
+
+    def _handle_design_delete(self, slug):
+        slug = slug.replace('/', '').replace('..', '')
+        path = os.path.join(STATIC_DIR, 'designs', slug + '.json')
+        if os.path.exists(path):
+            os.remove(path)
+        self._json_response({'ok': True})
+
+    def _handle_ai_image(self):
+        length = int(self.headers.get('Content-Length', 0))
+        body = json.loads(self.rfile.read(length)) if length else {}
+        prompt = body.get('prompt', '').strip()
+        api_key = body.get('apiKey', os.environ.get('OPENAI_API_KEY', ''))
+        if not prompt:
+            self._json_response({'error': 'Missing prompt'}, 400)
+            return
+        if not api_key:
+            self._json_response({'error': 'No OpenAI API key. Set OPENAI_API_KEY or pass apiKey in the request.'}, 400)
+            return
+        try:
+            req_data = json.dumps({'model': 'dall-e-3', 'prompt': prompt, 'n': 1, 'size': '1024x1024'}).encode()
+            req = urllib.request.Request(
+                'https://api.openai.com/v1/images/generations',
+                data=req_data,
+                headers={'Content-Type': 'application/json', 'Authorization': 'Bearer ' + api_key},
+            )
+            with urllib.request.urlopen(req, timeout=60) as resp:
+                data = json.loads(resp.read())
+            self._json_response({'url': data['data'][0]['url']})
+        except urllib.error.HTTPError as e:
+            self._json_response({'error': 'OpenAI error: ' + e.read().decode()[:200]}, 500)
+        except Exception as e:
+            self._json_response({'error': str(e)[:200]}, 500)
 
     def _json_response(self, data, status=200):
         self.send_response(status)
