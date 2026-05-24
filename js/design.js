@@ -984,6 +984,8 @@ FB.design.canvas = (function () {
     zoomIn: zoomIn,
     zoomOut: zoomOut,
     zoomFit: zoomFit,
+    group: _groupSelected,
+    ungroup: _ungroupSelected,
   };
 })();
 
@@ -1326,15 +1328,61 @@ FB.design.props = (function () {
       el.innerHTML = _canvasProps(fc);
       return;
     }
-    if (obj.type === "i-text") {
-      el.innerHTML = _textProps(obj);
-      return;
-    }
-    if (obj.type === "image") {
-      el.innerHTML = _imageProps(obj);
-      return;
-    }
-    el.innerHTML = _shapeProps(obj);
+    var body =
+      obj.type === "i-text"
+        ? _textProps(obj)
+        : obj.type === "image"
+          ? _imageProps(obj)
+          : _shapeProps(obj);
+    el.innerHTML = _actionBar(obj) + body;
+  }
+
+  function _actionBar(obj) {
+    var isGroup = obj.type === "group";
+    return (
+      '<div class="ds-action-bar">' +
+      '<button class="ds-action-btn" title="Duplicate (Ctrl+D)" onclick="FB.design.props.duplicate()">⧉ Dupe</button>' +
+      '<button class="ds-action-btn ds-action-danger" title="Delete (Del)" onclick="FB.design.props.deleteSelected()">🗑 Del</button>' +
+      (isGroup
+        ? '<button class="ds-action-btn" title="Ungroup (Ctrl+Shift+G)" onclick="FB.design.canvas.ungroup()">⊟ Ungroup</button>'
+        : '<button class="ds-action-btn" title="Group (Ctrl+G)" onclick="FB.design.canvas.group()">⊞ Group</button>') +
+      "</div>"
+    );
+  }
+
+  function _shadowSection(obj) {
+    var has = !!obj.shadow;
+    var sh = obj.shadow || {};
+    var color = sh.color && sh.color.charAt(0) === "#" ? sh.color : "#000000";
+    return (
+      '<div class="ds-prop-group">' +
+      '<div class="ds-prop-label" style="display:flex;justify-content:space-between;align-items:center;">' +
+      "Shadow" +
+      '<button class="ds-sm-btn' +
+      (has ? " active" : "") +
+      '" style="padding:2px 8px;font-size:9px;" onclick="FB.design.props.toggleShadow()">' +
+      (has ? "On" : "Off") +
+      "</button></div>" +
+      (has
+        ? '<div class="ds-shadow-row">' +
+          '<input class="ds-input" type="number" value="' +
+          (sh.offsetX || 4) +
+          '" placeholder="X" title="X offset" onchange="FB.design.props.setShadow(\'offsetX\',+this.value)"/>' +
+          '<input class="ds-input" type="number" value="' +
+          (sh.offsetY || 4) +
+          '" placeholder="Y" title="Y offset" onchange="FB.design.props.setShadow(\'offsetY\',+this.value)"/>' +
+          "</div>" +
+          '<div class="ds-shadow-row">' +
+          '<input class="ds-input" type="number" value="' +
+          (sh.blur || 10) +
+          '" placeholder="Blur" title="Blur" onchange="FB.design.props.setShadow(\'blur\',+this.value)"/>' +
+          '<input type="color" class="ds-color-swatch" style="width:100%;border-radius:4px" value="' +
+          color +
+          '" title="Shadow colour" onchange="FB.design.props.setShadow(\'color\',this.value)"/>' +
+          "</div>"
+        : "") +
+      "</div>"
+    );
   }
 
   function _posSize(obj) {
@@ -1397,11 +1445,19 @@ FB.design.props = (function () {
         (obj.rx || 0) +
         "\" onchange=\"FB.design.props.setPropXY('rx','ry',+this.value)\"/></div>";
     }
+    html += _shadowSection(obj);
     return html;
   }
 
   function _textProps(obj) {
+    var isBold = obj.fontWeight === "bold" || +obj.fontWeight >= 700;
+    var isItalic = obj.fontStyle === "italic";
+    var isUnder = !!obj.underline;
+    var lineH = +(obj.lineHeight || 1.2).toFixed(1);
+    var spacing = +(obj.charSpacing || 0);
     var html = _posSize(obj);
+
+    // Font family
     html +=
       '<div class="ds-prop-group"><div class="ds-prop-label">Font</div>' +
       '<select class="ds-select" onchange="FB.design.props.setProp(\'fontFamily\',this.value)">' +
@@ -1415,15 +1471,31 @@ FB.design.props = (function () {
         );
       }).join("") +
       "</select></div>";
+
+    // Size + B/I/U
     html +=
-      '<div class="ds-prop-group"><div class="ds-prop-label">Size / Weight</div><div class="ds-prop-row">' +
-      '<input class="ds-input" style="width:48%" type="number" value="' +
+      '<div class="ds-prop-group"><div class="ds-prop-label">Size &amp; Style</div>' +
+      '<div class="ds-prop-row" style="align-items:center;">' +
+      '<input class="ds-input" style="width:60px;flex-shrink:0" type="number" value="' +
       (obj.fontSize || 32) +
       '" onchange="FB.design.props.setProp(\'fontSize\',+this.value)"/>' +
-      '<input class="ds-input" style="width:48%" type="number" value="' +
-      (obj.fontWeight || 400) +
-      '" onchange="FB.design.props.setProp(\'fontWeight\',+this.value)"/>' +
-      "</div></div>";
+      '<div style="display:flex;gap:3px;margin-left:4px;">' +
+      '<button class="ds-toggle-btn' +
+      (isBold ? " active" : "") +
+      '" title="Bold" onclick="FB.design.props.toggleBold()"><b>B</b></button>' +
+      '<button class="ds-toggle-btn' +
+      (isItalic ? " active" : "") +
+      '" title="Italic" onclick="FB.design.props.setProp(\'fontStyle\',\'' +
+      (isItalic ? "normal" : "italic") +
+      "')\"><i>I</i></button>" +
+      '<button class="ds-toggle-btn' +
+      (isUnder ? " active" : "") +
+      '" title="Underline" onclick="FB.design.props.setProp(\'underline\',' +
+      !isUnder +
+      ')"><u>U</u></button>' +
+      "</div></div></div>";
+
+    // Colour
     html +=
       '<div class="ds-prop-group"><div class="ds-prop-label">Colour</div>' +
       '<div class="ds-color-row"><input type="color" class="ds-color-swatch" value="' +
@@ -1432,22 +1504,54 @@ FB.design.props = (function () {
       '<input class="ds-input" value="' +
       (obj.fill || "#000000") +
       '" onchange="FB.design.props.setProp(\'fill\',this.value)"/></div></div>';
+
+    // Align
     html +=
       '<div class="ds-prop-group"><div class="ds-prop-label">Align</div><div class="ds-btn-row">' +
-      ["left", "center", "right"]
+      [
+        ["left", "⊢"],
+        ["center", "≡"],
+        ["right", "⊣"],
+      ]
         .map(function (a) {
           return (
             '<button class="ds-sm-btn' +
-            (obj.textAlign === a ? " active" : "") +
+            (obj.textAlign === a[0] ? " active" : "") +
             "\" onclick=\"FB.design.props.setProp('textAlign','" +
-            a +
+            a[0] +
             "')\">" +
-            a[0].toUpperCase() +
+            a[1] +
             "</button>"
           );
         })
         .join("") +
       "</div></div>";
+
+    // Line height
+    html +=
+      '<div class="ds-prop-group">' +
+      '<div class="ds-prop-label" style="display:flex;justify-content:space-between">Line Height <output style="font-size:9px;color:#aaa">' +
+      lineH +
+      "</output></div>" +
+      '<input class="ds-input" type="range" min="0.8" max="3.0" step="0.1" value="' +
+      lineH +
+      "\" oninput=\"this.previousElementSibling.querySelector('output').value=parseFloat(this.value).toFixed(1);FB.design.props.setProp('lineHeight',+this.value)\"/>" +
+      "</div>";
+
+    // Letter spacing
+    html +=
+      '<div class="ds-prop-group">' +
+      '<div class="ds-prop-label" style="display:flex;justify-content:space-between">Letter Spacing <output style="font-size:9px;color:#aaa">' +
+      spacing +
+      "</output></div>" +
+      '<input class="ds-input" type="range" min="-100" max="500" step="10" value="' +
+      spacing +
+      "\" oninput=\"this.previousElementSibling.querySelector('output').value=this.value;FB.design.props.setProp('charSpacing',+this.value)\"/>" +
+      "</div>";
+
+    // Shadow
+    html += _shadowSection(obj);
+
     return html;
   }
 
@@ -1537,6 +1641,84 @@ FB.design.props = (function () {
     });
   }
 
+  function duplicate() {
+    var fc = FB.design.canvas.get();
+    var objs = fc.getActiveObjects();
+    if (!objs.length) return;
+    var last;
+    objs.forEach(function (obj) {
+      obj.clone(function (clone) {
+        clone.set({ left: obj.left + 20, top: obj.top + 20 });
+        fc.add(clone);
+        last = clone;
+      });
+    });
+    if (last) fc.setActiveObject(last);
+    fc.renderAll();
+    FB.design.history.push();
+  }
+
+  function deleteSelected() {
+    var fc = FB.design.canvas.get();
+    var objs = fc.getActiveObjects();
+    if (!objs.length) return;
+    objs.forEach(function (o) {
+      fc.remove(o);
+    });
+    fc.discardActiveObject();
+    fc.renderAll();
+    FB.design.history.push();
+  }
+
+  function toggleBold() {
+    var fc = FB.design.canvas.get();
+    var obj = fc.getActiveObject();
+    if (!obj) return;
+    var isBold = obj.fontWeight === "bold" || +obj.fontWeight >= 700;
+    obj.set("fontWeight", isBold ? 400 : 700);
+    obj.setCoords();
+    fc.renderAll();
+    FB.design.history.push();
+  }
+
+  function toggleShadow() {
+    var fc = FB.design.canvas.get();
+    var obj = fc.getActiveObject();
+    if (!obj) return;
+    if (obj.shadow) {
+      obj.set("shadow", null);
+    } else {
+      obj.set(
+        "shadow",
+        new fabric.Shadow({
+          color: "#000000",
+          blur: 10,
+          offsetX: 4,
+          offsetY: 4,
+        }),
+      );
+    }
+    fc.renderAll();
+    FB.design.history.push();
+    render();
+  }
+
+  function setShadow(key, val) {
+    var fc = FB.design.canvas.get();
+    var obj = fc.getActiveObject();
+    if (!obj || !obj.shadow) return;
+    var sh = {
+      color: obj.shadow.color,
+      blur: obj.shadow.blur,
+      offsetX: obj.shadow.offsetX,
+      offsetY: obj.shadow.offsetY,
+    };
+    sh[key] = val;
+    obj.set("shadow", new fabric.Shadow(sh));
+    fc.renderAll();
+    FB.design.history.push();
+  }
+
   return {
     render: render,
     setProp: setProp,
@@ -1545,6 +1727,11 @@ FB.design.props = (function () {
     setHeight: setHeight,
     flip: flip,
     setCanvasBg: setCanvasBg,
+    duplicate: duplicate,
+    deleteSelected: deleteSelected,
+    toggleBold: toggleBold,
+    toggleShadow: toggleShadow,
+    setShadow: setShadow,
   };
 })();
 

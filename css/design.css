@@ -749,3 +749,67 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* ── PROPS ACTION BAR ─────────────────────────────────────── */
+.ds-action-bar {
+  display: flex;
+  gap: 4px;
+  padding: 8px 10px 6px;
+  border-bottom: 1px solid #1e1e2e;
+  flex-shrink: 0;
+}
+.ds-action-btn {
+  background: #1a1a2a;
+  border: 1px solid #2a2a3a;
+  border-radius: 5px;
+  color: #888;
+  flex: 1;
+  padding: 5px 2px;
+  cursor: pointer;
+  font-size: 10px;
+  text-align: center;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.ds-action-btn:hover {
+  border-color: #555;
+  color: #fff;
+}
+.ds-action-danger:hover {
+  border-color: #e74c3c;
+  color: #e74c3c;
+}
+
+/* ── TEXT STYLE TOGGLES (B / I / U) ──────────────────────── */
+.ds-toggle-btn {
+  background: #1a1a2a;
+  border: 1px solid #2a2a3a;
+  border-radius: 4px;
+  color: #666;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.ds-toggle-btn:hover {
+  border-color: #555;
+  color: #ccc;
+}
+.ds-toggle-btn.active {
+  background: rgba(205, 254, 0, 0.12);
+  border-color: #cdfe00;
+  color: #cdfe00;
+}
+
+/* ── SHADOW INPUTS ────────────────────────────────────────── */
+.ds-shadow-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin-top: 4px;
+}
