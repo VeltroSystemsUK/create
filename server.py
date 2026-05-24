@@ -54,6 +54,23 @@ class FrameworkHandler(http.server.SimpleHTTPRequestHandler):
             self._handle_cms_media_list()
         elif parsed.path == '/admin' or parsed.path.startswith('/admin/'):
             self._handle_admin_serve()
+        elif parsed.path.startswith('/media/'):
+            media_path = os.path.join(STATIC_DIR, parsed.path.lstrip('/'))
+            if os.path.exists(media_path) and os.path.isfile(media_path):
+                ext = os.path.splitext(media_path)[1].lower()
+                content_types = {
+                    '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg',
+                    '.png': 'image/png', '.gif': 'image/gif',
+                    '.webp': 'image/webp', '.svg': 'image/svg+xml',
+                }
+                self.send_response(200)
+                self.send_header('Content-Type', content_types.get(ext, 'application/octet-stream'))
+                self.send_header('Cache-Control', 'public, max-age=3600')
+                self.end_headers()
+                with open(media_path, 'rb') as f:
+                    self.wfile.write(f.read())
+            else:
+                self.send_error(HTTPStatus.NOT_FOUND)
         else:
             super().do_GET()
 

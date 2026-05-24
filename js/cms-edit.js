@@ -159,6 +159,11 @@
             e.preventDefault();
             handleImageClick(el, currentPageId, blockSchema.blockId, fieldName);
           });
+          el.addEventListener("error", function () {
+            this.style.border = "2px solid #ff6b6b";
+            this.style.opacity = "0.5";
+            this.title = "Image not found";
+          });
         } else {
           el.contentEditable = true;
           el.classList.add("cms-editable");
