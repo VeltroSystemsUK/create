@@ -14,14 +14,14 @@
     <link rel="stylesheet" href="css/components.css?v=2" />
     <link rel="stylesheet" href="css/blocks.css?v=99" />
     <link rel="stylesheet" href="css/canvas.css?v=2" />
-    <link rel="stylesheet" href="css/widgets.css?v=2" />
+    <link rel="stylesheet" href="css/widgets.css?v=3" />
     <link rel="stylesheet" href="css/grids.css?v=2" />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css"
     />
     <link rel="stylesheet" href="css/help.css" />
-    <link rel="stylesheet" href="css/design.css?v=1" />
+    <link rel="stylesheet" href="css/design.css?v=2" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
     <link
       rel="icon"
@@ -642,37 +642,36 @@
 
     <!-- DESIGN STUDIO -->
     <div id="design-studio" style="display: none">
-      <div id="ds-left-panel">
-        <div id="ds-tools"></div>
-        <div id="ds-layers-panel">
-          <div class="ds-panel-label">Layers</div>
-          <div id="ds-layers-list"></div>
-        </div>
-        <div id="ds-actions">
-          <button class="ds-action-btn" onclick="FB.design.templates.open()">
-            ⊞ Templates
-          </button>
-          <button class="ds-action-btn" onclick="FB.design.ai.open()">
-            ✦ AI Generate
-          </button>
-          <button
-            class="ds-action-btn"
-            onclick="FB.design.library.openPicker()"
-          >
-            📁 My Designs
-          </button>
-        </div>
-      </div>
-      <div id="ds-canvas-column">
-        <div id="ds-topbar">
-          <button
-            class="ds-back-btn"
-            onclick="FB.panels.setMode('builder')"
-            title="Back to Builder"
-          >
-            ← Builder
-          </button>
-          <div id="ds-size-label"></div>
+      <!-- TOP BAR -->
+      <div id="ds-topbar">
+        <button class="ds-back-btn" onclick="FB.panels.setMode('builder')">
+          ← Builder
+        </button>
+        <div class="ds-divider"></div>
+        <input id="ds-title" class="ds-title-input" value="Untitled Design" />
+        <div class="ds-divider"></div>
+        <button
+          class="ds-icon-btn"
+          title="Undo (Ctrl+Z)"
+          onclick="FB.design.history.undo()"
+        >
+          ↩
+        </button>
+        <button
+          class="ds-icon-btn"
+          title="Redo (Ctrl+Y)"
+          onclick="FB.design.history.redo()"
+        >
+          ↪
+        </button>
+        <div
+          style="
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          "
+        >
           <select
             id="ds-preset-select"
             onchange="FB.design.canvas.applyPreset(this.value)"
@@ -690,104 +689,138 @@
             <button onclick="FB.design.canvas.zoomIn()">+</button>
             <button onclick="FB.design.canvas.zoomFit()">Fit</button>
           </div>
-          <div id="ds-topbar-right">
-            <div class="ds-export-wrap">
-              <button
-                class="ds-export-btn"
-                onclick="FB.design.library.exportPNG()"
-              >
-                Export PNG
-              </button>
-              <button
-                class="ds-export-btn"
-                onclick="FB.design.library.exportSVG()"
-              >
-                Export SVG
-              </button>
+          <div class="ds-divider"></div>
+          <span id="ds-size-label"></span>
+          <button class="ds-save-btn" onclick="FB.design.library.save()">
+            Save
+          </button>
+        </div>
+      </div>
+
+      <!-- MAIN AREA -->
+      <div id="ds-main">
+        <!-- LEFT PANEL -->
+        <div id="ds-left-panel">
+          <div class="ds-tab-row" id="ds-left-tabs">
+            <button
+              class="ds-tab active"
+              data-tab="elements"
+              onclick="FB.design.switchLeftTab('elements')"
+            >
+              Elements
+            </button>
+            <button
+              class="ds-tab"
+              data-tab="layers"
+              onclick="FB.design.switchLeftTab('layers')"
+            >
+              Layers
+            </button>
+            <button
+              class="ds-tab"
+              data-tab="assets"
+              onclick="FB.design.switchLeftTab('assets')"
+            >
+              Assets
+            </button>
+          </div>
+
+          <div id="ds-tab-elements" class="ds-tab-content active">
+            <div id="ds-tool-row"></div>
+            <div id="ds-elements-body"></div>
+          </div>
+
+          <div id="ds-tab-layers" class="ds-tab-content">
+            <div id="ds-layers-list"></div>
+          </div>
+
+          <div id="ds-tab-assets" class="ds-tab-content">
+            <button class="ds-full-btn" onclick="FB.design.templates.open()">
+              ⊞ Browse Templates
+            </button>
+            <div class="ds-section-label" style="padding: 8px 8px 4px">
+              My Designs
             </div>
-            <button class="ds-save-btn" onclick="FB.design.library.save()">
-              Save
+            <div id="ds-assets-designs"></div>
+            <button
+              class="ds-full-btn"
+              style="margin: 6px 8px"
+              onclick="FB.design._loadAssets()"
+            >
+              ↻ Refresh
             </button>
           </div>
         </div>
-        <div id="ds-align-bar" style="display: none">
-          <button onclick="FB.design.align.run('left')" title="Align left">
-            ⊢L
-          </button>
-          <button onclick="FB.design.align.run('centerH')" title="Center H">
-            ⊣C
-          </button>
-          <button onclick="FB.design.align.run('right')" title="Align right">
-            R⊣
-          </button>
-          <button onclick="FB.design.align.run('top')" title="Align top">
-            ⊤T
-          </button>
-          <button onclick="FB.design.align.run('centerV')" title="Center V">
-            ≡M
-          </button>
-          <button onclick="FB.design.align.run('bottom')" title="Align bottom">
-            ⊥B
-          </button>
-          <span class="ds-sep"></span>
-          <button
-            onclick="FB.design.align.run('bringForward')"
-            title="Bring forward"
-          >
-            ↑Fwd
-          </button>
-          <button onclick="FB.design.align.run('sendBack')" title="Send back">
-            ↓Back
-          </button>
-          <button
-            onclick="FB.design.align.run('bringToFront')"
-            title="Bring to front"
-          >
-            ⊤Front
-          </button>
-          <button
-            onclick="FB.design.align.run('sendToBack')"
-            title="Send to back"
-          >
-            ⊥Back
-          </button>
-          <span class="ds-sep"></span>
-          <button
-            id="ds-dist-h"
-            onclick="FB.design.align.run('distributeH')"
-            title="Distribute H"
-            style="display: none"
-          >
-            H-Dist
-          </button>
-          <button
-            id="ds-dist-v"
-            onclick="FB.design.align.run('distributeV')"
-            title="Distribute V"
-            style="display: none"
-          >
-            V-Dist
-          </button>
+
+        <!-- CANVAS -->
+        <div id="ds-canvas-column">
+          <div id="ds-canvas-wrap">
+            <canvas id="ds-canvas"></canvas>
+          </div>
         </div>
-        <div id="ds-canvas-wrap">
-          <canvas id="ds-canvas"></canvas>
-        </div>
-      </div>
-      <div id="ds-right-panel">
-        <div id="ds-props"></div>
-        <div id="ds-insert-actions">
-          <button
-            class="ds-insert-btn"
-            onclick="FB.design.library.insertIntoPage()"
-          >
-            Insert into page →
-          </button>
-          <button class="ds-action-btn" onclick="FB.design.library.exportPNG()">
-            Export PNG
-          </button>
-          <button class="ds-action-btn" onclick="FB.design.library.exportSVG()">
-            Export SVG
-          </button>
+
+        <!-- RIGHT PANEL -->
+        <div id="ds-right-panel">
+          <div class="ds-tab-row" id="ds-right-tabs">
+            <button
+              class="ds-tab active"
+              data-tab="design"
+              onclick="FB.design.switchRightTab('design')"
+            >
+              Design
+            </button>
+            <button
+              class="ds-tab"
+              data-tab="align"
+              onclick="FB.design.switchRightTab('align')"
+            >
+              Align
+            </button>
+            <button
+              class="ds-tab"
+              data-tab="export"
+              onclick="FB.design.switchRightTab('export')"
+            >
+              Export
+            </button>
+          </div>
+
+          <div id="ds-tab-design" class="ds-tab-content active">
+            <div id="ds-props"></div>
+          </div>
+
+          <div id="ds-tab-align" class="ds-tab-content">
+            <div id="ds-align-panel"></div>
+          </div>
+
+          <div id="ds-tab-export" class="ds-tab-content">
+            <div id="ds-export-panel">
+              <button
+                class="ds-insert-btn"
+                onclick="FB.design.library.insertIntoPage()"
+              >
+                Insert into Page →
+              </button>
+              <div class="ds-export-row">
+                <button
+                  class="ds-export-btn"
+                  onclick="FB.design.library.exportPNG()"
+                >
+                  Export PNG
+                </button>
+                <button
+                  class="ds-export-btn"
+                  onclick="FB.design.library.exportSVG()"
+                >
+                  Export SVG
+                </button>
+              </div>
+              <div class="ds-section-label" style="padding: 12px 0 4px">
+                Canvas Background
+              </div>
+              <div id="ds-canvas-bg-picker"></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -818,16 +851,6 @@
         <div id="ds-ai-status"></div>
       </div>
     </div>
-    <div id="ds-library-overlay" style="display: none">
-      <div id="ds-library-modal">
-        <div class="ds-modal-head">
-          <span>My Designs</span>
-          <button onclick="FB.design.library.closePicker()">✕</button>
-        </div>
-        <div id="ds-library-grid"></div>
-      </div>
-    </div>
-
     <!-- EXPORT MODAL -->
     <div id="modal-overlay">
       <div id="modal">
@@ -881,7 +904,7 @@
     <script src="js/blocks.js?v=99"></script>
     <script src="js/theme.js?v=1"></script>
     <script src="js/canvas.js?v=100"></script>
-    <script src="js/panels.js?v=100"></script>
+    <script src="js/panels.js?v=101"></script>
     <script src="js/export.js?v=3"></script>
     <script src="js/templates.js?v=2"></script>
     <script src="js/scraper.js?v=2"></script>
@@ -893,13 +916,13 @@
     <script src="widgets/interactive.js?v=2"></script>
     <script src="widgets/gallery-like.js?v=2"></script>
     <script src="widgets/embed.js?v=2"></script>
-    <script src="widgets/veltro.js?v=10"></script>
+    <script src="widgets/veltro.js?v=11"></script>
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
     <script src="js/help.js"></script>
     <script src="js/app.js?v=3"></script>
     <script src="js/theme-toggle.js?v=1"></script>
     <script src="js/language.js?v=1"></script>
-    <script src="js/design.js?v=1"></script>
+    <script src="js/design.js?v=2"></script>
     <script src="widgets/design-templates.js?v=1"></script>
     <div id="google-translate-root" style="display: none"></div>
     <script>
