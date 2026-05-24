@@ -8,7 +8,80 @@ FB.design._esc = function (s) {
 };
 
 FB.design.init = function () {
-  // Submodules initialised in their own tasks
+  // Submodules initialised in canvas.init
+};
+
+FB.design.switchLeftTab = function (tab) {
+  document.querySelectorAll("#ds-left-tabs .ds-tab").forEach(function (b) {
+    b.classList.toggle("active", b.dataset.tab === tab);
+  });
+  document
+    .querySelectorAll("#ds-tab-elements,#ds-tab-layers,#ds-tab-assets")
+    .forEach(function (el) {
+      el.classList.toggle("active", el.id === "ds-tab-" + tab);
+    });
+  if (tab === "assets") FB.design._loadAssets();
+};
+
+FB.design.switchRightTab = function (tab) {
+  document.querySelectorAll("#ds-right-tabs .ds-tab").forEach(function (b) {
+    b.classList.toggle("active", b.dataset.tab === tab);
+  });
+  document
+    .querySelectorAll("#ds-tab-design,#ds-tab-align,#ds-tab-export")
+    .forEach(function (el) {
+      el.classList.toggle("active", el.id === "ds-tab-" + tab);
+    });
+  if (tab === "export") FB.design.renderExportTab();
+};
+
+FB.design._loadAssets = function () {
+  fetch("/api/designs")
+    .then(function (r) {
+      return r.json();
+    })
+    .then(function (list) {
+      var esc = FB.design._esc;
+      var el = document.getElementById("ds-assets-designs");
+      if (!el) return;
+      el.innerHTML = list.length
+        ? list
+            .map(function (d) {
+              return (
+                '<div class="ds-builder-thumb" onclick="FB.design.library.loadDesign(\'' +
+                esc(d.slug) +
+                "')\">" +
+                (d.thumbnail
+                  ? '<img src="' +
+                    esc(d.thumbnail) +
+                    '" alt="' +
+                    esc(d.name) +
+                    '">'
+                  : '<div style="height:60px;background:#1a1a2a"></div>') +
+                '<div class="ds-builder-thumb-label">' +
+                esc(d.name) +
+                "</div></div>"
+              );
+            })
+            .join("")
+        : '<p style="color:#555;font-size:10px;padding:8px;">No saved designs yet.</p>';
+    });
+};
+
+FB.design.renderExportTab = function () {
+  var fc = FB.design.canvas.get();
+  if (!fc) return;
+  var bg =
+    typeof fc.backgroundColor === "string" ? fc.backgroundColor : "#ffffff";
+  var el = document.getElementById("ds-canvas-bg-picker");
+  if (!el) return;
+  el.innerHTML =
+    '<input type="color" class="ds-color-swatch" value="' +
+    (bg.charAt(0) === "#" ? bg : "#ffffff") +
+    '" onchange="FB.design.props.setCanvasBg(this.value)"/>' +
+    '<input class="ds-input" style="flex:1" value="' +
+    FB.design._esc(bg) +
+    '" onchange="FB.design.props.setCanvasBg(this.value)"/>';
 };
 
 FB.design._showAlignBar = function (show) {
