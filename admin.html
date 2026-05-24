@@ -1,0 +1,1354 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CMS Admin</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: #111;
+        color: #e0e0e0;
+        min-height: 100vh;
+      }
+      input,
+      textarea,
+      button {
+        font-family: inherit;
+        font-size: inherit;
+      }
+
+      /* Login Screen */
+      #login-screen {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #111;
+        z-index: 1000;
+      }
+      #login-screen.hidden {
+        display: none;
+      }
+      .login-box {
+        background: #1a1a2e;
+        padding: 40px;
+        border-radius: 12px;
+        width: 340px;
+      }
+      .login-box h1 {
+        font-size: 22px;
+        margin-bottom: 8px;
+        color: #fff;
+      }
+      .login-box p {
+        font-size: 13px;
+        color: #888;
+        margin-bottom: 24px;
+      }
+      .login-box label {
+        display: block;
+        font-size: 12px;
+        color: #aaa;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .login-box input[type="password"] {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #333;
+        border-radius: 6px;
+        background: #111;
+        color: #fff;
+        font-size: 15px;
+        outline: none;
+      }
+      .login-box input[type="password"]:focus {
+        border-color: #cdfe00;
+      }
+      .login-box .btn-primary {
+        width: 100%;
+        margin-top: 20px;
+        padding: 10px;
+        background: #cdfe00;
+        color: #111;
+        border: none;
+        border-radius: 6px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .login-box .btn-primary:hover {
+        opacity: 0.9;
+      }
+      .login-error {
+        color: #ff6b6b;
+        font-size: 13px;
+        margin-top: 10px;
+        display: none;
+      }
+
+      /* App Layout */
+      #app {
+        display: none;
+        height: 100vh;
+        flex-direction: column;
+      }
+      #app.visible {
+        display: flex;
+      }
+
+      /* Header */
+      .header {
+        display: flex;
+        align-items: center;
+        padding: 10px 20px;
+        background: #1a1a2e;
+        border-bottom: 1px solid #222;
+        height: 52px;
+      }
+      .header h1 {
+        font-size: 16px;
+        font-weight: 600;
+        color: #fff;
+        flex: 1;
+      }
+      .header a {
+        color: #cdfe00;
+        text-decoration: none;
+        font-size: 13px;
+        margin-right: 16px;
+      }
+      .header a:hover {
+        text-decoration: underline;
+      }
+      .header .btn-logout {
+        background: none;
+        border: 1px solid #444;
+        color: #ccc;
+        padding: 5px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 12px;
+      }
+      .header .btn-logout:hover {
+        background: #333;
+      }
+
+      /* Body */
+      .app-body {
+        display: flex;
+        flex: 1;
+        overflow: hidden;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 180px;
+        background: #1a1a2e;
+        border-right: 1px solid #222;
+        padding: 8px 0;
+        flex-shrink: 0;
+      }
+      .sidebar button {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 10px 20px;
+        background: none;
+        border: none;
+        color: #888;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .sidebar button:hover {
+        background: rgba(255, 255, 255, 0.04);
+        color: #e0e0e0;
+      }
+      .sidebar button.active {
+        background: rgba(205, 254, 0, 0.08);
+        color: #cdfe00;
+        border-right: 2px solid #cdfe00;
+      }
+
+      /* Main Content */
+      .main-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px;
+      }
+      .main-content .tab-content {
+        display: none;
+      }
+      .main-content .tab-content.active {
+        display: block;
+      }
+
+      /* Spinner */
+      .spinner {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 0;
+      }
+      .spinner::after {
+        content: "";
+        width: 32px;
+        height: 32px;
+        border: 3px solid #333;
+        border-top-color: #cdfe00;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Page Cards */
+      .page-card {
+        background: #1a1a2e;
+        border-radius: 10px;
+        margin-bottom: 16px;
+        overflow: hidden;
+      }
+      .page-card-header {
+        display: flex;
+        align-items: center;
+        padding: 14px 18px;
+        cursor: pointer;
+        user-select: none;
+      }
+      .page-card-header:hover {
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .page-card-header .arrow {
+        margin-right: 10px;
+        transition: transform 0.2s;
+        font-size: 12px;
+      }
+      .page-card-header .arrow.open {
+        transform: rotate(90deg);
+      }
+      .page-card-header .page-name {
+        font-size: 15px;
+        font-weight: 500;
+        color: #fff;
+      }
+      .page-card-body {
+        display: none;
+        padding: 0 18px 18px;
+      }
+      .page-card-body.open {
+        display: block;
+      }
+
+      /* Block Groups */
+      .block-group {
+        margin-bottom: 20px;
+      }
+      .block-group-header {
+        font-size: 11px;
+        font-weight: 700;
+        color: #4caf50;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-bottom: 10px;
+        padding-bottom: 4px;
+        border-bottom: 1px solid #2a2a3e;
+      }
+
+      /* Fields */
+      .field-row {
+        margin-bottom: 12px;
+      }
+      .field-label {
+        font-size: 11px;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        margin-bottom: 4px;
+      }
+      .field-row input[type="text"],
+      .field-row textarea {
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid #333;
+        border-radius: 6px;
+        background: #111;
+        color: #e0e0e0;
+        font-size: 13px;
+        outline: none;
+      }
+      .field-row input[type="text"]:focus,
+      .field-row textarea:focus {
+        border-color: #cdfe00;
+      }
+      .field-row textarea {
+        min-height: 80px;
+        resize: vertical;
+      }
+
+      /* Image Field */
+      .image-field {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .image-field img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 6px;
+        background: #222;
+      }
+      .image-field .btn-replace {
+        background: #333;
+        border: none;
+        color: #ccc;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        cursor: pointer;
+      }
+      .image-field .btn-replace:hover {
+        background: #444;
+      }
+      .image-field .no-image {
+        width: 60px;
+        height: 60px;
+        border-radius: 6px;
+        background: #222;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: #555;
+      }
+
+      /* List Field */
+      .list-field .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 6px;
+      }
+      .list-field .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #2a2a3e;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        color: #ccc;
+      }
+      .list-field .tag .remove {
+        background: none;
+        border: none;
+        color: #ff6b6b;
+        cursor: pointer;
+        font-size: 14px;
+        padding: 0 2px;
+      }
+      .list-field .tag-input {
+        width: 100%;
+        padding: 6px 10px;
+        border: 1px solid #333;
+        border-radius: 6px;
+        background: #111;
+        color: #e0e0e0;
+        font-size: 13px;
+        outline: none;
+      }
+      .list-field .tag-input:focus {
+        border-color: #cdfe00;
+      }
+
+      /* Empty State */
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #666;
+        font-size: 14px;
+      }
+
+      /* Media Tab */
+      .upload-area {
+        border: 2px dashed #333;
+        border-radius: 10px;
+        padding: 40px;
+        text-align: center;
+        cursor: pointer;
+        margin-bottom: 24px;
+        transition: border-color 0.2s;
+      }
+      .upload-area:hover {
+        border-color: #cdfe00;
+      }
+      .upload-area p {
+        color: #888;
+        font-size: 14px;
+        margin-top: 8px;
+      }
+      .upload-area .icon {
+        font-size: 36px;
+      }
+      .upload-area input[type="file"] {
+        display: none;
+      }
+
+      .media-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 16px;
+      }
+      .media-item {
+        background: #1a1a2e;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .media-item img {
+        width: 100%;
+        height: 140px;
+        object-fit: cover;
+        display: block;
+        background: #222;
+      }
+      .media-item .info {
+        padding: 8px 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .media-item .info .name {
+        font-size: 11px;
+        color: #aaa;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        flex: 1;
+      }
+      .media-item .info .btn-del {
+        background: none;
+        border: none;
+        color: #ff6b6b;
+        cursor: pointer;
+        font-size: 16px;
+        padding: 0 4px;
+      }
+
+      /* Settings Tab */
+      .settings-form {
+        max-width: 400px;
+      }
+      .settings-form label {
+        display: block;
+        font-size: 12px;
+        color: #aaa;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+      .settings-form input[type="password"] {
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid #333;
+        border-radius: 6px;
+        background: #111;
+        color: #fff;
+        font-size: 14px;
+        outline: none;
+        margin-bottom: 14px;
+      }
+      .settings-form input[type="password"]:focus {
+        border-color: #cdfe00;
+      }
+      .settings-form .btn-primary {
+        background: #cdfe00;
+        color: #111;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .settings-form .btn-primary:hover {
+        opacity: 0.9;
+      }
+      .settings-form .field-row {
+        margin-bottom: 16px;
+      }
+      .settings-error {
+        color: #ff6b6b;
+        font-size: 13px;
+        margin-top: 10px;
+        display: none;
+      }
+      .settings-success {
+        color: #4caf50;
+        font-size: 13px;
+        margin-top: 10px;
+        display: none;
+      }
+
+      /* Toast */
+      .toast-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+      }
+      .toast {
+        background: #1a1a2e;
+        border: 1px solid #333;
+        color: #e0e0e0;
+        padding: 10px 18px;
+        border-radius: 8px;
+        font-size: 13px;
+        margin-top: 8px;
+        animation: toastIn 0.25s ease;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      }
+      .toast.success {
+        border-color: #4caf50;
+      }
+      .toast.error {
+        border-color: #ff6b6b;
+      }
+      @keyframes toastIn {
+        from {
+          transform: translateY(10px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      /* Confirm Modal */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9998;
+      }
+      .modal-box {
+        background: #1a1a2e;
+        border: 1px solid #333;
+        border-radius: 10px;
+        padding: 24px;
+        min-width: 300px;
+      }
+      .modal-box p {
+        margin-bottom: 18px;
+        font-size: 14px;
+        color: #e0e0e0;
+      }
+      .modal-box .btn-row {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+      }
+      .modal-box .btn-row button {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        font-size: 13px;
+        cursor: pointer;
+      }
+      .modal-box .btn-row .btn-cancel {
+        background: #333;
+        color: #ccc;
+      }
+      .modal-box .btn-row .btn-confirm {
+        background: #ff6b6b;
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="login-screen">
+      <div class="login-box">
+        <h1>CMS Login</h1>
+        <p>Enter password to access the content manager.</p>
+        <label for="login-password">Password</label>
+        <input
+          type="password"
+          id="login-password"
+          placeholder="Enter password"
+          onkeydown="if (event.key === 'Enter') login();"
+        />
+        <button class="btn-primary" onclick="login()">Sign In</button>
+        <div class="login-error" id="login-error"></div>
+      </div>
+    </div>
+
+    <div id="app">
+      <div class="header">
+        <h1>📝 CMS — <span id="site-name">Site</span></h1>
+        <a href="/" target="_blank">View Site →</a>
+        <button class="btn-logout" onclick="logout()">Logout</button>
+      </div>
+      <div class="app-body">
+        <div class="sidebar">
+          <button class="active" onclick="switchTab('pages')">📄 Pages</button>
+          <button onclick="switchTab('media')">🖼️ Media</button>
+          <button onclick="switchTab('settings')">⚙️ Settings</button>
+        </div>
+        <div class="main-content">
+          <div class="tab-content active" id="tab-pages">
+            <div id="pages-content"></div>
+          </div>
+          <div class="tab-content" id="tab-media">
+            <div id="media-content"></div>
+          </div>
+          <div class="tab-content" id="tab-settings">
+            <div id="settings-content"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast-container" id="toast-container"></div>
+
+    <script>
+      var currentSiteName = "Site";
+
+      function escHtml(s) {
+        if (s == null) return "";
+        var d = document.createElement("div");
+        d.textContent = s;
+        return d.innerHTML;
+      }
+
+      async function api(path, method, body) {
+        var opts = { method: method, headers: {} };
+        if (body != null && !(body instanceof FormData)) {
+          opts.headers["Content-Type"] = "application/json";
+          opts.body = JSON.stringify(body);
+        } else if (body instanceof FormData) {
+          opts.body = body;
+        }
+        var res = await fetch(path, opts);
+        var data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Request failed");
+        return data;
+      }
+
+      function showToast(msg, type) {
+        type = type || "success";
+        var el = document.createElement("div");
+        el.className = "toast " + type;
+        el.textContent = msg;
+        document.getElementById("toast-container").appendChild(el);
+        setTimeout(function () {
+          if (el.parentNode) el.parentNode.removeChild(el);
+        }, 2500);
+      }
+
+      function getCookie(name) {
+        var m = document.cookie.match(
+          new RegExp("(?:^| )" + name + "=([^;]+)"),
+        );
+        return m ? m[1] : null;
+      }
+
+      function showLogin() {
+        document.getElementById("login-screen").classList.remove("hidden");
+        document.getElementById("app").classList.remove("visible");
+      }
+
+      function showApp() {
+        document.getElementById("login-screen").classList.add("hidden");
+        document.getElementById("app").classList.add("visible");
+        document.getElementById("site-name").textContent = currentSiteName;
+        loadApp();
+      }
+
+      function showLoginError(msg) {
+        var el = document.getElementById("login-error");
+        el.textContent = msg;
+        el.style.display = "block";
+      }
+
+      async function login() {
+        var password = document.getElementById("login-password").value;
+        if (!password) return;
+        document.getElementById("login-error").style.display = "none";
+        try {
+          var res = await api("/api/cms/auth/login", "POST", {
+            password: password,
+          });
+          if (res.success) {
+            document.cookie = "cms_session=" + res.session + "; path=/";
+            if (res.firstTime) showToast("Password set successfully!");
+            showApp();
+          } else {
+            showLoginError(res.error || "Invalid password");
+          }
+        } catch (e) {
+          showLoginError(e.message);
+        }
+      }
+
+      async function checkAuth() {
+        try {
+          var res = await api("/api/cms/auth/check", "POST");
+          return res.authenticated === true;
+        } catch (e) {
+          return false;
+        }
+      }
+
+      function logout() {
+        document.cookie =
+          "cms_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        showLogin();
+        document.getElementById("login-password").value = "";
+      }
+
+      async function loadApp() {
+        switchTab("pages");
+      }
+
+      function switchTab(tab) {
+        document.querySelectorAll(".sidebar button").forEach(function (b) {
+          b.classList.remove("active");
+        });
+        document.querySelectorAll(".tab-content").forEach(function (t) {
+          t.classList.remove("active");
+        });
+        var btn = document.querySelector(
+          '.sidebar button[onclick*="' + tab + '"]',
+        );
+        if (btn) btn.classList.add("active");
+        document.getElementById("tab-" + tab).classList.add("active");
+        if (tab === "pages") loadPages();
+        else if (tab === "media") loadMedia();
+        else if (tab === "settings") loadSettings();
+      }
+
+      /* ======================== PAGES TAB ======================== */
+
+      var _currentSchema = null;
+      var _currentContent = null;
+
+      async function loadPages() {
+        var el = document.getElementById("pages-content");
+        el.innerHTML = '<div class="spinner"></div>';
+        try {
+          var results = await Promise.all([
+            api("/api/cms/schema", "GET"),
+            api("/api/cms/content", "GET"),
+          ]);
+          _currentSchema = results[0];
+          _currentContent = results[1];
+          renderPages();
+        } catch (e) {
+          el.innerHTML =
+            '<div class="empty-state">Error loading content: ' +
+            escHtml(e.message) +
+            "</div>";
+        }
+      }
+
+      function renderPages() {
+        var el = document.getElementById("pages-content");
+        var schema = _currentSchema;
+        if (!schema || !schema.pages || schema.pages.length === 0) {
+          el.innerHTML =
+            '<div class="empty-state">No CMS content found. Export your site with CMS enabled first.</div>';
+          return;
+        }
+        var content = _currentContent || {};
+        var html = "";
+        schema.pages.forEach(function (page) {
+          var pageContent = content[page.pageId] || { blocks: {} };
+          html += '<div class="page-card">';
+          html += '<div class="page-card-header" onclick="togglePage(this)">';
+          html += '<span class="arrow">▶</span>';
+          html += '<span class="page-name">' + escHtml(page.name) + "</span>";
+          html += "</div>";
+          html += '<div class="page-card-body">';
+          page.blocks.forEach(function (block) {
+            var blockContent = pageContent.blocks[block.blockId] || {};
+            html += '<div class="block-group">';
+            html +=
+              '<div class="block-group-header">' +
+              escHtml(block.type) +
+              " Block</div>";
+            Object.keys(block.fields).forEach(function (fieldName) {
+              var f = block.fields[fieldName];
+              if (!f.editable) return;
+              var val = blockContent[fieldName];
+              html += renderField(
+                page.pageId,
+                block.blockId,
+                fieldName,
+                f,
+                val,
+              );
+            });
+            html += "</div>";
+          });
+          html += "</div>";
+          html += "</div>";
+        });
+        el.innerHTML = html;
+      }
+
+      function renderField(pageId, blockId, field, f, val) {
+        var label = f.label || field;
+        var html = '<div class="field-row">';
+        html += '<div class="field-label">' + escHtml(label) + "</div>";
+        if (f.type === "image") {
+          var imgUrl = val || "";
+          html +=
+            '<div class="image-field" id="img-field-' +
+            field +
+            "-" +
+            blockId +
+            '">';
+          if (imgUrl) {
+            html +=
+              '<img src="' +
+              escHtml(imgUrl) +
+              '" alt="" onerror="this.src=\'\'">';
+          } else {
+            html += '<div class="no-image">🖼</div>';
+          }
+          html +=
+            '<button class="btn-replace" onclick="replaceImage(this,\'' +
+            pageId +
+            "','" +
+            blockId +
+            "','" +
+            field +
+            "')\">" +
+            (imgUrl ? "Replace Image" : "Add Image") +
+            "</button>";
+          html += "</div>";
+        } else if (f.type === "richtext") {
+          html +=
+            "<textarea onchange=\"saveField('" +
+            pageId +
+            "','" +
+            blockId +
+            "','" +
+            field +
+            "',this.value)\">" +
+            escHtml(val) +
+            "</textarea>";
+        } else if (f.type === "list") {
+          var items = Array.isArray(val) ? val : [];
+          html +=
+            '<div class="list-field" id="list-field-' +
+            field +
+            "-" +
+            blockId +
+            '">';
+          html += '<div class="tags">';
+          items.forEach(function (item, idx) {
+            html +=
+              '<span class="tag"><span>' +
+              escHtml(item) +
+              '</span><button class="remove" onclick="removeListItem(\'' +
+              pageId +
+              "','" +
+              blockId +
+              "','" +
+              field +
+              "'," +
+              idx +
+              ')">×</button></span>';
+          });
+          html += "</div>";
+          html +=
+            '<input class="tag-input" type="text" placeholder="Add item..." onkeydown="addListItem(event,\'' +
+            pageId +
+            "','" +
+            blockId +
+            "','" +
+            field +
+            "')\">";
+          html += "</div>";
+        } else if (f.type === "collection") {
+          var items = Array.isArray(val) ? val : [];
+          var ifields = f.itemFields || {};
+          html +=
+            '<div class="collection-field" id="coll-field-' +
+            field +
+            "-" +
+            blockId +
+            '">';
+          items.forEach(function (item, idx) {
+            html +=
+              '<div style="background:#0d0d1a;border-radius:6px;padding:10px;margin-bottom:8px;">';
+            html +=
+              '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">';
+            html +=
+              '<span style="font-size:11px;color:#888;">Item ' +
+              (idx + 1) +
+              "</span>";
+            html +=
+              '<button style="background:none;border:none;color:#ff6b6b;cursor:pointer;font-size:14px;" onclick="removeCollectionItem(\'' +
+              pageId +
+              "','" +
+              blockId +
+              "','" +
+              field +
+              "'," +
+              idx +
+              ')">×</button>';
+            html += "</div>";
+            Object.keys(ifields).forEach(function (ifn) {
+              var iff = ifields[ifn];
+              var iv = item[ifn] || "";
+              if (iff.type === "image") {
+                html += '<div style="margin-bottom:6px;">';
+                html +=
+                  '<div style="font-size:10px;color:#666;margin-bottom:2px;">' +
+                  escHtml(iff.label || ifn) +
+                  "</div>";
+                if (iv)
+                  html +=
+                    '<img src="' +
+                    escHtml(iv) +
+                    '" alt="" style="width:48px;height:48px;object-fit:cover;border-radius:4px;background:#222;margin-bottom:4px;">';
+                html +=
+                  '<input type="text" value="' +
+                  escHtml(iv) +
+                  '" style="width:100%;padding:5px 8px;border:1px solid #333;border-radius:4px;background:#111;color:#e0e0e0;font-size:12px;outline:none;" onchange="saveCollectionItem(\'' +
+                  pageId +
+                  "','" +
+                  blockId +
+                  "','" +
+                  field +
+                  "'," +
+                  idx +
+                  ",'" +
+                  ifn +
+                  "',this.value)\">";
+                html += "</div>";
+              } else {
+                html += '<div style="margin-bottom:6px;">';
+                html +=
+                  '<div style="font-size:10px;color:#666;margin-bottom:2px;">' +
+                  escHtml(iff.label || ifn) +
+                  "</div>";
+                if (iff.type === "richtext") {
+                  html +=
+                    "<textarea onchange=\"saveCollectionItem('" +
+                    pageId +
+                    "','" +
+                    blockId +
+                    "','" +
+                    field +
+                    "'," +
+                    idx +
+                    ",'" +
+                    ifn +
+                    '\',this.value)" style="width:100%;padding:5px 8px;border:1px solid #333;border-radius:4px;background:#111;color:#e0e0e0;font-size:12px;outline:none;min-height:50px;resize:vertical;">' +
+                    escHtml(iv) +
+                    "</textarea>";
+                } else {
+                  html +=
+                    '<input type="text" value="' +
+                    escHtml(iv) +
+                    '" style="width:100%;padding:5px 8px;border:1px solid #333;border-radius:4px;background:#111;color:#e0e0e0;font-size:12px;outline:none;" onchange="saveCollectionItem(\'' +
+                    pageId +
+                    "','" +
+                    blockId +
+                    "','" +
+                    field +
+                    "'," +
+                    idx +
+                    ",'" +
+                    ifn +
+                    "',this.value)\">";
+                }
+                html += "</div>";
+              }
+            });
+            html += "</div>";
+          });
+          html +=
+            '<button style="background:#333;border:none;color:#ccc;padding:5px 12px;border-radius:4px;font-size:12px;cursor:pointer;" onclick="addCollectionItem(\'' +
+            pageId +
+            "','" +
+            blockId +
+            "','" +
+            field +
+            "')\">+ Add Item</button>";
+          html += "</div>";
+        } else {
+          var sv = val != null ? String(val) : "";
+          html +=
+            '<input type="text" value="' +
+            escHtml(sv) +
+            '" onchange="saveField(\'' +
+            pageId +
+            "','" +
+            blockId +
+            "','" +
+            field +
+            "',this.value)\">";
+        }
+        html += "</div>";
+        return html;
+      }
+
+      function togglePage(el) {
+        var body = el.parentNode.querySelector(".page-card-body");
+        var arrow = el.querySelector(".arrow");
+        if (body.classList.contains("open")) {
+          body.classList.remove("open");
+          arrow.classList.remove("open");
+        } else {
+          body.classList.add("open");
+          arrow.classList.add("open");
+        }
+      }
+
+      async function saveField(pageId, blockId, field, value) {
+        try {
+          await api("/api/cms/content", "PUT", {
+            pageId: pageId,
+            blockId: blockId,
+            field: field,
+            value: value,
+          });
+          if (_currentContent) {
+            if (!_currentContent[pageId])
+              _currentContent[pageId] = { blocks: {} };
+            if (!_currentContent[pageId].blocks[blockId])
+              _currentContent[pageId].blocks[blockId] = {};
+            _currentContent[pageId].blocks[blockId][field] = value;
+          }
+          showToast("Saved");
+        } catch (e) {
+          showToast("Save failed: " + e.message, "error");
+        }
+      }
+
+      function replaceImage(el, pageId, blockId, field) {
+        var input = document.createElement("input");
+        input.type = "file";
+        input.accept = "image/*";
+        input.onchange = async function () {
+          var file = input.files[0];
+          if (!file) return;
+          var fd = new FormData();
+          fd.append("file", file);
+          try {
+            var res = await api("/api/cms/media/upload", "POST", fd);
+            var url = res.media.url;
+            await saveField(pageId, blockId, field, url);
+            var container = document.getElementById(
+              "img-field-" + field + "-" + blockId,
+            );
+            if (container) {
+              container.innerHTML =
+                '<img src="' +
+                escHtml(url) +
+                '" alt="" onerror="this.src=\'\'"><button class="btn-replace" onclick="replaceImage(this,\'' +
+                pageId +
+                "','" +
+                blockId +
+                "','" +
+                field +
+                "')\">Replace Image</button>";
+            }
+          } catch (e) {
+            showToast("Upload failed: " + e.message, "error");
+          }
+        };
+        input.click();
+      }
+
+      async function removeListItem(pageId, blockId, field, idx) {
+        var el = document.getElementById("list-field-" + field + "-" + blockId);
+        if (!el) return;
+        var tags = el.querySelector(".tags");
+        var currItems = [];
+        tags.querySelectorAll(".tag").forEach(function (t) {
+          currItems.push(t.querySelector("span").textContent);
+        });
+        currItems.splice(idx, 1);
+        await saveField(pageId, blockId, field, currItems);
+        renderFieldValue(pageId, blockId, field, currItems);
+      }
+
+      async function addListItem(event, pageId, blockId, field) {
+        if (event.key !== "Enter") return;
+        var input = event.target;
+        var val = input.value.trim();
+        if (!val) return;
+        var el = document.getElementById("list-field-" + field + "-" + blockId);
+        var tags = el.querySelector(".tags");
+        var currItems = [];
+        tags.querySelectorAll(".tag").forEach(function (t) {
+          currItems.push(t.querySelector("span").textContent);
+        });
+        currItems.push(val);
+        await saveField(pageId, blockId, field, currItems);
+        renderFieldValue(pageId, blockId, field, currItems);
+        input.value = "";
+      }
+
+      function renderFieldValue(pageId, blockId, field, value) {
+        var el = document.getElementById("list-field-" + field + "-" + blockId);
+        if (!el) return;
+        var tags = el.querySelector(".tags");
+        if (!tags) return;
+        var html = "";
+        value.forEach(function (item, idx) {
+          html +=
+            '<span class="tag"><span>' +
+            escHtml(item) +
+            '</span><button class="remove" onclick="removeListItem(\'' +
+            pageId +
+            "','" +
+            blockId +
+            "','" +
+            field +
+            "'," +
+            idx +
+            ')">×</button></span>';
+        });
+        tags.innerHTML = html;
+      }
+
+      async function getCollectionArray(pageId, blockId, field) {
+        if (
+          _currentContent &&
+          _currentContent[pageId] &&
+          _currentContent[pageId].blocks[blockId]
+        ) {
+          var v = _currentContent[pageId].blocks[blockId][field];
+          return Array.isArray(v) ? v : [];
+        }
+        return [];
+      }
+
+      async function saveCollectionItem(
+        pageId,
+        blockId,
+        field,
+        idx,
+        subField,
+        value,
+      ) {
+        var arr = await getCollectionArray(pageId, blockId, field);
+        if (!arr[idx]) arr[idx] = {};
+        arr[idx][subField] = value;
+        await saveField(pageId, blockId, field, arr);
+      }
+
+      async function removeCollectionItem(pageId, blockId, field, idx) {
+        var arr = await getCollectionArray(pageId, blockId, field);
+        arr.splice(idx, 1);
+        await saveField(pageId, blockId, field, arr);
+        loadPages();
+      }
+
+      async function addCollectionItem(pageId, blockId, field) {
+        var arr = await getCollectionArray(pageId, blockId, field);
+        var schema = _currentSchema;
+        var newItem = {};
+        if (schema && schema.pages) {
+          for (var pi = 0; pi < schema.pages.length; pi++) {
+            if (schema.pages[pi].pageId === pageId) {
+              var blocks = schema.pages[pi].blocks;
+              for (var bi = 0; bi < blocks.length; bi++) {
+                if (blocks[bi].blockId === blockId) {
+                  var ifields = blocks[bi].fields[field].itemFields || {};
+                  Object.keys(ifields).forEach(function (k) {
+                    if (ifields[k].type === "list") newItem[k] = [];
+                    else newItem[k] = "";
+                  });
+                }
+              }
+            }
+          }
+        }
+        arr.push(newItem);
+        await saveField(pageId, blockId, field, arr);
+        loadPages();
+      }
+
+      /* ======================== MEDIA TAB ======================== */
+
+      async function loadMedia() {
+        var el = document.getElementById("media-content");
+        el.innerHTML = '<div class="spinner"></div>';
+        try {
+          var res = await api("/api/cms/media", "GET");
+          renderMedia(res.media || []);
+        } catch (e) {
+          el.innerHTML =
+            '<div class="empty-state">Error loading media: ' +
+            escHtml(e.message) +
+            "</div>";
+        }
+      }
+
+      function renderMedia(mediaItems) {
+        var el = document.getElementById("media-content");
+        var html = "";
+        html +=
+          '<div class="upload-area" onclick="document.getElementById(\'media-upload-input\').click()">';
+        html += '<div class="icon">📁</div>';
+        html += "<p>Click to upload images</p>";
+        html +=
+          '<input type="file" id="media-upload-input" accept="image/*" multiple onchange="uploadMedia()">';
+        html += "</div>";
+        if (mediaItems.length === 0) {
+          html += '<div class="empty-state">No media uploaded yet.</div>';
+        } else {
+          html += '<div class="media-grid">';
+          mediaItems.forEach(function (item) {
+            html +=
+              '<div class="media-item" id="media-item-' +
+              escHtml(item.id) +
+              '">';
+            html +=
+              '<img src="' + escHtml(item.url) + '" alt="" loading="lazy">';
+            html += '<div class="info">';
+            html +=
+              '<span class="name" title="' +
+              escHtml(item.filename) +
+              '">' +
+              escHtml(item.filename) +
+              "</span>";
+            html +=
+              '<button class="btn-del" onclick="deleteMedia(\'' +
+              item.id +
+              '\',this)" title="Delete">🗑</button>';
+            html += "</div>";
+            html += "</div>";
+          });
+          html += "</div>";
+        }
+        el.innerHTML = html;
+      }
+
+      async function uploadMedia() {
+        var input = document.getElementById("media-upload-input");
+        var files = input.files;
+        if (!files || files.length === 0) return;
+        var el = document.getElementById("media-content");
+        el.innerHTML = '<div class="spinner"></div>';
+        try {
+          for (var i = 0; i < files.length; i++) {
+            var fd = new FormData();
+            fd.append("file", files[i]);
+            await api("/api/cms/media/upload", "POST", fd);
+          }
+          showToast("Uploaded " + files.length + " file(s)");
+          loadMedia();
+        } catch (e) {
+          showToast("Upload failed: " + e.message, "error");
+          loadMedia();
+        }
+        input.value = "";
+      }
+
+      function deleteMedia(id, btn) {
+        showConfirm("Delete this image?", async function () {
+          try {
+            await api("/api/cms/media/" + id, "DELETE");
+            var item = document.getElementById("media-item-" + id);
+            if (item) item.remove();
+            showToast("Deleted");
+          } catch (e) {
+            showToast("Delete failed: " + e.message, "error");
+          }
+        });
+      }
+
+      function showConfirm(msg, onConfirm) {
+        var overlay = document.createElement("div");
+        overlay.className = "modal-overlay";
+        overlay.innerHTML =
+          '<div class="modal-box"><p>' +
+          escHtml(msg) +
+          '</p><div class="btn-row"><button class="btn-cancel">Cancel</button><button class="btn-confirm">Delete</button></div></div>';
+        overlay.querySelector(".btn-cancel").onclick = function () {
+          overlay.remove();
+        };
+        overlay.querySelector(".btn-confirm").onclick = function () {
+          overlay.remove();
+          onConfirm();
+        };
+        document.body.appendChild(overlay);
+      }
+
+      /* ======================== SETTINGS TAB ======================== */
+
+      function loadSettings() {
+        var el = document.getElementById("settings-content");
+        el.innerHTML =
+          '<div class="settings-form"><div class="field-row"><label for="new-password">New Password</label><input type="password" id="new-password" placeholder="Enter new password"></div><div class="field-row"><label for="confirm-password">Confirm Password</label><input type="password" id="confirm-password" placeholder="Confirm new password"></div><button class="btn-primary" onclick="saveSettings()">Save Password</button><div class="settings-error" id="settings-error"></div><div class="settings-success" id="settings-success"></div></div>';
+      }
+
+      async function saveSettings() {
+        var np = document.getElementById("new-password").value;
+        var cp = document.getElementById("confirm-password").value;
+        document.getElementById("settings-error").style.display = "none";
+        document.getElementById("settings-success").style.display = "none";
+        if (!np) {
+          document.getElementById("settings-error").textContent =
+            "Please enter a new password.";
+          document.getElementById("settings-error").style.display = "block";
+          return;
+        }
+        if (np !== cp) {
+          document.getElementById("settings-error").textContent =
+            "Passwords do not match.";
+          document.getElementById("settings-error").style.display = "block";
+          return;
+        }
+        try {
+          await api("/api/cms/auth/login", "POST", { password: np });
+          document.getElementById("new-password").value = "";
+          document.getElementById("confirm-password").value = "";
+          document.getElementById("settings-success").textContent =
+            "Password updated successfully.";
+          document.getElementById("settings-success").style.display = "block";
+          showToast("Password updated");
+        } catch (e) {
+          document.getElementById("settings-error").textContent = e.message;
+          document.getElementById("settings-error").style.display = "block";
+        }
+      }
+
+      /* ======================== INIT ======================== */
+
+      (async function init() {
+        var authed = await checkAuth();
+        if (authed) {
+          showApp();
+        }
+      })();
+    </script>
+  </body>
+</html>
