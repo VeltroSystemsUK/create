@@ -84,19 +84,6 @@ FB.design.renderExportTab = function () {
     '" onchange="FB.design.props.setCanvasBg(this.value)"/>';
 };
 
-FB.design._showAlignBar = function (show) {
-  var bar = document.getElementById("ds-align-bar");
-  if (!bar) return;
-  bar.style.display = show ? "flex" : "none";
-  var fc =
-    FB.design.canvas && FB.design.canvas.get ? FB.design.canvas.get() : null;
-  var n = fc ? fc.getActiveObjects().length : 0;
-  var dh = document.getElementById("ds-dist-h");
-  var dv = document.getElementById("ds-dist-v");
-  if (dh) dh.style.display = n >= 3 ? "inline-block" : "none";
-  if (dv) dv.style.display = n >= 3 ? "inline-block" : "none";
-};
-
 FB.design.elements = (function () {
   var FRAMES = [
     { key: "hero", name: "Hero Banner", w: 1920, h: 600 },
@@ -690,8 +677,10 @@ FB.design.canvas = (function () {
     _bindZoomPan();
     _bindEvents();
     _bindKeys();
-    FB.design.tools.render();
     FB.design.tools.bindMouseDraw();
+    FB.design.elements.render();
+    FB.design.align.renderPanel();
+    FB.design.renderExportTab();
     FB.design.history.push();
   }
 
@@ -769,17 +758,17 @@ FB.design.canvas = (function () {
     _fc.on("selection:created", function () {
       FB.design.props.render();
       FB.design.layers.render();
-      FB.design._showAlignBar(true);
+      FB.design.align.renderPanel();
     });
     _fc.on("selection:updated", function () {
       FB.design.props.render();
       FB.design.layers.render();
-      FB.design._showAlignBar(true);
+      FB.design.align.renderPanel();
     });
     _fc.on("selection:cleared", function () {
       FB.design.props.render();
       FB.design.layers.render();
-      FB.design._showAlignBar(false);
+      FB.design.align.renderPanel();
     });
     _fc.on("object:added", function () {
       FB.design.layers.render();
@@ -924,38 +913,6 @@ FB.design.tools = (function () {
   var _drawing = false;
   var _startX, _startY, _drawObj;
 
-  var TOOLS = [
-    { id: "select", label: "▶", title: "Select (V)" },
-    { id: "rect", label: "⬛", title: "Rectangle (R)" },
-    { id: "circle", label: "⬤", title: "Circle (O)" },
-    { id: "tri", label: "▲", title: "Triangle" },
-    { id: "poly", label: "⬡", title: "Polygon" },
-    { id: "line", label: "—", title: "Line" },
-    { id: "arrow", label: "→", title: "Arrow" },
-    { id: "text", label: "T", title: "Text (T)" },
-    { id: "image", label: "🖼", title: "Image (I)" },
-  ];
-
-  function render() {
-    var el = document.getElementById("ds-tools");
-    el.innerHTML =
-      '<div class="ds-tools-grid">' +
-      TOOLS.map(function (t) {
-        return (
-          '<button class="ds-tool-btn' +
-          (t.id === _active ? " active" : "") +
-          '" title="' +
-          t.title +
-          '" onclick="FB.design.tools.setTool(\'' +
-          t.id +
-          "')\">" +
-          t.label +
-          "</button>"
-        );
-      }).join("") +
-      "</div>";
-  }
-
   function setTool(id) {
     _active = id;
     var fc = FB.design.canvas.get();
@@ -969,7 +926,7 @@ FB.design.tools = (function () {
     if (id === "image") {
       _triggerImageUpload();
     }
-    render();
+    if (FB.design.elements) FB.design.elements._renderToolRow();
   }
 
   function _triggerImageUpload() {
@@ -1157,7 +1114,6 @@ FB.design.tools = (function () {
   }
 
   return {
-    render: render,
     setTool: setTool,
     bindMouseDraw: bindMouseDraw,
     active: function () {
@@ -1583,7 +1539,62 @@ FB.design.align = (function () {
     FB.design.layers.render();
   }
 
-  return { run: run };
+  function renderPanel() {
+    var fc = FB.design.canvas.get();
+    var n = fc ? fc.getActiveObjects().length : 0;
+    var el = document.getElementById("ds-align-panel");
+    if (!el) return;
+    el.innerHTML =
+      '<div class="ds-align-group-label">Align Objects</div>' +
+      '<div class="ds-align-grid">' +
+      [
+        ["left", "⊢ Left"],
+        ["centerH", "⊣⊢ Centre"],
+        ["right", "⊣ Right"],
+        ["top", "⊤ Top"],
+        ["centerV", "≡ Mid"],
+        ["bottom", "⊥ Bottom"],
+      ]
+        .map(function (a) {
+          return (
+            '<button class="ds-align-btn" onclick="FB.design.align.run(\'' +
+            a[0] +
+            "')\">" +
+            a[1] +
+            "</button>"
+          );
+        })
+        .join("") +
+      "</div>" +
+      '<div class="ds-align-group-label" style="margin-top:8px;">Layer Order</div>' +
+      '<div class="ds-order-grid">' +
+      [
+        ["bringToFront", "⤒ Front"],
+        ["bringForward", "↑ Fwd"],
+        ["sendBack", "↓ Back"],
+        ["sendToBack", "⤓ Base"],
+      ]
+        .map(function (a) {
+          return (
+            '<button class="ds-align-btn" onclick="FB.design.align.run(\'' +
+            a[0] +
+            "')\">" +
+            a[1] +
+            "</button>"
+          );
+        })
+        .join("") +
+      "</div>" +
+      (n >= 3
+        ? '<div class="ds-align-group-label" style="margin-top:8px;">Distribute</div>' +
+          '<div class="ds-dist-row">' +
+          '<button class="ds-align-btn" onclick="FB.design.align.run(\'distributeH\')">⇔ H</button>' +
+          '<button class="ds-align-btn" onclick="FB.design.align.run(\'distributeV\')">⇕ V</button>' +
+          "</div>"
+        : "");
+  }
+
+  return { run: run, renderPanel: renderPanel };
 })();
 
 FB.design.library = (function () {
