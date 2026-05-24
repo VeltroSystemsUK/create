@@ -97,6 +97,516 @@ FB.design._showAlignBar = function (show) {
   if (dv) dv.style.display = n >= 3 ? "inline-block" : "none";
 };
 
+FB.design.elements = (function () {
+  var FRAMES = [
+    { key: "hero", name: "Hero Banner", w: 1920, h: 600 },
+    { key: "og", name: "OG Image", w: 1200, h: 630 },
+    { key: "card", name: "Feature Card", w: 800, h: 600 },
+    { key: "square", name: "Square Post", w: 1080, h: 1080 },
+    { key: "wide", name: "Wide 16:9", w: 1920, h: 1080 },
+  ];
+
+  var SHAPES = [
+    { type: "rect", label: "▬", title: "Rectangle" },
+    { type: "rect-r", label: "▭", title: "Rounded Rect" },
+    { type: "circle", label: "⬤", title: "Circle" },
+    { type: "tri", label: "▲", title: "Triangle" },
+    { type: "poly", label: "⬡", title: "Polygon" },
+    { type: "star", label: "★", title: "Star" },
+    { type: "line", label: "—", title: "Line" },
+    { type: "arrow", label: "→", title: "Arrow" },
+    { type: "dashed", label: "╌", title: "Dashed Line" },
+    { type: "heart", label: "♡", title: "Heart" },
+  ];
+
+  var TEXT_PRESETS = [
+    {
+      id: "heading",
+      label: "Add a Heading",
+      fontSize: 64,
+      fontWeight: 800,
+      fill: "#ffffff",
+    },
+    {
+      id: "subheading",
+      label: "Add a Subheading",
+      fontSize: 36,
+      fontWeight: 600,
+      fill: "#cccccc",
+    },
+    {
+      id: "body",
+      label: "Add body text",
+      fontSize: 18,
+      fontWeight: 400,
+      fill: "#aaaaaa",
+    },
+    {
+      id: "caption",
+      label: "Add a caption",
+      fontSize: 13,
+      fontWeight: 400,
+      fill: "#888888",
+    },
+  ];
+
+  var ICONS = [
+    { char: "☰", name: "menu", tags: ["hamburger", "nav", "list"] },
+    { char: "✕", name: "close", tags: ["x", "cancel", "delete"] },
+    { char: "✓", name: "check", tags: ["tick", "done", "complete"] },
+    { char: "⚙", name: "settings", tags: ["gear", "config", "options"] },
+    { char: "♡", name: "heart", tags: ["love", "like", "favourite"] },
+    { char: "★", name: "star", tags: ["favourite", "rating", "award"] },
+    { char: "✉", name: "email", tags: ["mail", "message", "envelope"] },
+    { char: "☎", name: "phone", tags: ["call", "contact", "telephone"] },
+    { char: "⊕", name: "plus-circle", tags: ["add", "new", "create"] },
+    { char: "⊖", name: "minus-circle", tags: ["remove", "delete", "subtract"] },
+    { char: "→", name: "arrow-right", tags: ["next", "forward", "navigate"] },
+    { char: "←", name: "arrow-left", tags: ["back", "previous", "navigate"] },
+    { char: "↑", name: "arrow-up", tags: ["up", "navigate", "scroll"] },
+    { char: "↓", name: "arrow-down", tags: ["down", "navigate", "scroll"] },
+    { char: "⬆", name: "upload", tags: ["up", "send", "export"] },
+    { char: "⬇", name: "download", tags: ["down", "save", "import"] },
+    { char: "↗", name: "external", tags: ["link", "open", "new-tab"] },
+    { char: "⟳", name: "refresh", tags: ["reload", "sync", "repeat"] },
+    { char: "◉", name: "target", tags: ["aim", "focus", "goal"] },
+    { char: "◈", name: "diamond", tags: ["gem", "premium", "special"] },
+    { char: "⚡", name: "lightning", tags: ["fast", "energy", "power"] },
+    { char: "🔒", name: "lock", tags: ["secure", "private", "password"] },
+    { char: "🔓", name: "unlock", tags: ["open", "access", "public"] },
+    { char: "🔗", name: "link", tags: ["chain", "connect", "url"] },
+    { char: "📋", name: "clipboard", tags: ["copy", "paste", "notes"] },
+    { char: "📊", name: "chart", tags: ["graph", "data", "analytics"] },
+    { char: "📷", name: "camera", tags: ["photo", "image", "media"] },
+    { char: "🎯", name: "bullseye", tags: ["target", "goal", "aim"] },
+    { char: "💡", name: "lightbulb", tags: ["idea", "insight", "tip"] },
+    { char: "🛒", name: "cart", tags: ["shop", "ecommerce", "buy"] },
+    { char: "📍", name: "pin", tags: ["location", "map", "place"] },
+    { char: "📱", name: "mobile", tags: ["phone", "app", "device"] },
+    { char: "💻", name: "laptop", tags: ["computer", "device", "tech"] },
+    { char: "🖥", name: "desktop", tags: ["screen", "monitor", "computer"] },
+    { char: "🎨", name: "palette", tags: ["design", "art", "color"] },
+    { char: "✏", name: "pencil", tags: ["edit", "write", "draw"] },
+    { char: "🗂", name: "folder", tags: ["files", "organise", "directory"] },
+    { char: "🔔", name: "bell", tags: ["notification", "alert", "reminder"] },
+    { char: "👁", name: "eye", tags: ["view", "visible", "watch"] },
+    { char: "⊞", name: "grid", tags: ["layout", "tiles", "gallery"] },
+    { char: "≡", name: "align", tags: ["center", "justify", "text"] },
+    { char: "⊢", name: "align-left", tags: ["left", "text", "layout"] },
+    { char: "⊣", name: "align-right", tags: ["right", "text", "layout"] },
+    { char: "◐", name: "half-circle", tags: ["half", "split", "contrast"] },
+    { char: "▦", name: "grid-fill", tags: ["pattern", "texture", "layout"] },
+    { char: "◆", name: "diamond-fill", tags: ["shape", "bullet", "mark"] },
+    { char: "⬢", name: "hexagon", tags: ["shape", "honeycomb", "tech"] },
+    { char: "▣", name: "square-dot", tags: ["layout", "placeholder", "frame"] },
+    { char: "∞", name: "infinity", tags: ["loop", "unlimited", "forever"] },
+    { char: "©", name: "copyright", tags: ["legal", "brand", "rights"] },
+    { char: "®", name: "registered", tags: ["trademark", "brand", "legal"] },
+    { char: "™", name: "trademark", tags: ["brand", "legal", "mark"] },
+    { char: "‣", name: "bullet", tags: ["list", "point", "item"] },
+    { char: "»", name: "chevron-right", tags: ["next", "more", "arrow"] },
+    { char: "«", name: "chevron-left", tags: ["back", "prev", "arrow"] },
+    { char: "⋮", name: "more-vertical", tags: ["menu", "dots", "options"] },
+    { char: "…", name: "ellipsis", tags: ["more", "dots", "continue"] },
+    { char: "✦", name: "sparkle", tags: ["ai", "magic", "star", "highlight"] },
+    { char: "⊗", name: "cross-circle", tags: ["close", "error", "cancel"] },
+  ];
+
+  var BACKGROUNDS = [
+    { value: "#111111", label: "Black" },
+    { value: "#ffffff", label: "White" },
+    { value: "#0d0d1a", label: "Deep Navy" },
+    { value: "#1a1a2a", label: "Dark Blue" },
+    { value: "#f5f5f0", label: "Off White" },
+    {
+      value: "linear-gradient(135deg,#0d0d1a 0%,#1a1a2a 100%)",
+      label: "Navy Fade",
+    },
+    {
+      value: "linear-gradient(135deg,#111111 0%,#cdfe0022 100%)",
+      label: "Neon Fade",
+    },
+    {
+      value: "linear-gradient(135deg,#1a1a2a 0%,#2a1a3a 100%)",
+      label: "Purple Dark",
+    },
+    {
+      value: "linear-gradient(to right,#0d0d1a,#1a2a1a)",
+      label: "Dark Forest",
+    },
+    {
+      value: "linear-gradient(135deg,#f5f5f0 0%,#e8e8e0 100%)",
+      label: "Paper",
+    },
+  ];
+
+  var _iconQuery = "";
+
+  function render() {
+    _renderToolRow();
+    _renderElementsBody();
+  }
+
+  function _renderToolRow() {
+    var active = FB.design.tools.active();
+    var el = document.getElementById("ds-tool-row");
+    if (!el) return;
+    el.innerHTML = [
+      { id: "select", label: "▶", title: "Select (V)" },
+      { id: "text", label: "T", title: "Text (T)" },
+      { id: "image", label: "🖼", title: "Upload Image (I)" },
+      { id: "ai", label: "✦", title: "AI Generate" },
+    ]
+      .map(function (t) {
+        var isActive = t.id === active;
+        return (
+          '<button class="ds-tool-btn' +
+          (isActive ? " active" : "") +
+          '" ' +
+          'title="' +
+          t.title +
+          '" ' +
+          'onclick="' +
+          (t.id === "ai"
+            ? "FB.design.ai.open()"
+            : "FB.design.tools.setTool('" + t.id + "')") +
+          '">' +
+          t.label +
+          "</button>"
+        );
+      })
+      .join("");
+  }
+
+  function _renderElementsBody() {
+    var el = document.getElementById("ds-elements-body");
+    if (!el) return;
+    el.innerHTML =
+      _framesHtml() +
+      _shapesHtml() +
+      _textHtml() +
+      _iconsHtml() +
+      _backgroundsHtml();
+  }
+
+  function _framesHtml() {
+    return (
+      "<div>" +
+      '<div class="ds-section-label">Frames</div>' +
+      '<div class="ds-frame-grid">' +
+      FRAMES.map(function (f) {
+        return (
+          '<div class="ds-frame-tile" onclick="FB.design.canvas.applyPreset(\'' +
+          f.key +
+          "')\">" +
+          '<div class="ds-frame-name">' +
+          f.name +
+          "</div>" +
+          '<div class="ds-frame-size">' +
+          f.w +
+          "×" +
+          f.h +
+          "</div></div>"
+        );
+      }).join("") +
+      "</div></div>"
+    );
+  }
+
+  function _shapesHtml() {
+    return (
+      "<div>" +
+      '<div class="ds-section-label">Shapes</div>' +
+      '<div class="ds-shape-grid">' +
+      SHAPES.map(function (s) {
+        return (
+          '<div class="ds-shape-tile" title="' +
+          s.title +
+          '" ' +
+          "onclick=\"FB.design.elements.addShape('" +
+          s.type +
+          "')\">" +
+          s.label +
+          "</div>"
+        );
+      }).join("") +
+      "</div></div>"
+    );
+  }
+
+  function _textHtml() {
+    return (
+      "<div>" +
+      '<div class="ds-section-label">Text</div>' +
+      '<div class="ds-text-presets">' +
+      TEXT_PRESETS.map(function (p) {
+        return (
+          '<div class="ds-text-preset" onclick="FB.design.elements.addTextPreset(\'' +
+          p.id +
+          "')\">" +
+          '<span style="font-size:' +
+          Math.min(p.fontSize * 0.22, 15) +
+          "px;font-weight:" +
+          p.fontWeight +
+          ";color:" +
+          p.fill +
+          ';">' +
+          p.label +
+          "</span></div>"
+        );
+      }).join("") +
+      "</div></div>"
+    );
+  }
+
+  function _iconsHtml() {
+    var filtered = _iconQuery
+      ? ICONS.filter(function (ic) {
+          var q = _iconQuery.toLowerCase();
+          return (
+            ic.name.indexOf(q) !== -1 ||
+            ic.tags.some(function (t) {
+              return t.indexOf(q) !== -1;
+            })
+          );
+        })
+      : ICONS;
+    return (
+      "<div>" +
+      '<div class="ds-section-label">Icons</div>' +
+      '<input id="ds-icon-search" placeholder="Search icons…" value="' +
+      FB.design._esc(_iconQuery) +
+      '" ' +
+      'oninput="FB.design.elements._onIconSearch(this.value)" />' +
+      '<div class="ds-icon-grid">' +
+      filtered
+        .map(function (ic) {
+          return (
+            '<div class="ds-icon-tile" title="' +
+            ic.name +
+            '" ' +
+            "onclick=\"FB.design.elements.addIcon('" +
+            ic.char +
+            "','" +
+            ic.name +
+            "')\">" +
+            ic.char +
+            "</div>"
+          );
+        })
+        .join("") +
+      "</div></div>"
+    );
+  }
+
+  function _backgroundsHtml() {
+    return (
+      "<div>" +
+      '<div class="ds-section-label">Backgrounds</div>' +
+      '<div class="ds-bg-swatches">' +
+      BACKGROUNDS.map(function (bg) {
+        return (
+          '<div class="ds-bg-swatch" title="' +
+          bg.label +
+          '" style="background:' +
+          bg.value +
+          ';" ' +
+          "onclick=\"FB.design.elements.setBackground('" +
+          bg.value.replace(/'/g, "\\'") +
+          "')\">" +
+          "</div>"
+        );
+      }).join("") +
+      "</div></div>"
+    );
+  }
+
+  function _onIconSearch(q) {
+    _iconQuery = q;
+    _renderElementsBody();
+    var inp = document.getElementById("ds-icon-search");
+    if (inp) {
+      inp.focus();
+      inp.setSelectionRange(q.length, q.length);
+    }
+  }
+
+  function addShape(type) {
+    var fc = FB.design.canvas.get();
+    if (!fc) return;
+    var cx = fc.getWidth() / 2,
+      cy = fc.getHeight() / 2;
+    var defaults = {
+      left: cx - 60,
+      top: cy - 40,
+      fill: "#4a90e2",
+      stroke: "transparent",
+      strokeWidth: 0,
+      originX: "left",
+      originY: "top",
+    };
+    var obj;
+    if (type === "rect")
+      obj = new fabric.Rect(
+        Object.assign({ width: 120, height: 80, name: "Rectangle" }, defaults),
+      );
+    if (type === "rect-r")
+      obj = new fabric.Rect(
+        Object.assign(
+          { width: 120, height: 80, rx: 12, ry: 12, name: "Rounded Rect" },
+          defaults,
+        ),
+      );
+    if (type === "circle")
+      obj = new fabric.Ellipse(
+        Object.assign({ rx: 60, ry: 40, name: "Circle" }, defaults),
+      );
+    if (type === "tri")
+      obj = new fabric.Triangle(
+        Object.assign({ width: 120, height: 100, name: "Triangle" }, defaults),
+      );
+    if (type === "poly")
+      obj = new fabric.Polygon(
+        [
+          { x: 0, y: 50 },
+          { x: 50, y: 0 },
+          { x: 100, y: 50 },
+          { x: 75, y: 100 },
+          { x: 25, y: 100 },
+        ],
+        Object.assign({ name: "Polygon" }, defaults),
+      );
+    if (type === "star")
+      obj = new fabric.Polygon(
+        _starPoints(5, 60, 30),
+        Object.assign({ left: cx - 60, top: cy - 60, name: "Star" }, defaults),
+      );
+    if (type === "line")
+      obj = new fabric.Line([cx - 60, cy, cx + 60, cy], {
+        stroke: "#4a90e2",
+        strokeWidth: 3,
+        name: "Line",
+      });
+    if (type === "arrow") {
+      obj = new fabric.Line([cx - 60, cy, cx + 60, cy], {
+        stroke: "#4a90e2",
+        strokeWidth: 3,
+        name: "Arrow",
+      });
+      obj._isArrow = true;
+    }
+    if (type === "dashed")
+      obj = new fabric.Line([cx - 60, cy, cx + 60, cy], {
+        stroke: "#4a90e2",
+        strokeWidth: 3,
+        strokeDashArray: [10, 6],
+        name: "Dashed Line",
+      });
+    if (type === "heart")
+      obj = new fabric.IText("♡", {
+        left: cx - 20,
+        top: cy - 20,
+        fontSize: 80,
+        fill: "#e74c3c",
+        fontFamily: "Lexend",
+        name: "Heart",
+        styles: {},
+      });
+    if (!obj) return;
+    fc.add(obj);
+    fc.setActiveObject(obj);
+    fc.renderAll();
+    FB.design.tools.setTool("select");
+  }
+
+  function _starPoints(n, outerR, innerR) {
+    var pts = [],
+      step = Math.PI / n;
+    for (var i = 0; i < 2 * n; i++) {
+      var r = i % 2 === 0 ? outerR : innerR;
+      var a = i * step - Math.PI / 2;
+      pts.push({ x: r * Math.cos(a) + outerR, y: r * Math.sin(a) + outerR });
+    }
+    return pts;
+  }
+
+  function addTextPreset(id) {
+    var fc = FB.design.canvas.get();
+    if (!fc) return;
+    var preset = TEXT_PRESETS.filter(function (p) {
+      return p.id === id;
+    })[0];
+    if (!preset) return;
+    var txt = new fabric.IText(preset.label, {
+      left: fc.getWidth() / 2 - 150,
+      top: fc.getHeight() / 2 - preset.fontSize / 2,
+      fontFamily: "Lexend",
+      fontSize: preset.fontSize,
+      fontWeight: preset.fontWeight,
+      fill: preset.fill,
+      name: preset.id.charAt(0).toUpperCase() + preset.id.slice(1),
+      styles: {},
+    });
+    fc.add(txt);
+    fc.setActiveObject(txt);
+    fc.renderAll();
+    FB.design.tools.setTool("select");
+  }
+
+  function addIcon(char, name) {
+    var fc = FB.design.canvas.get();
+    if (!fc) return;
+    var ic = new fabric.IText(char, {
+      left: fc.getWidth() / 2 - 30,
+      top: fc.getHeight() / 2 - 30,
+      fontSize: 60,
+      fill: "#ffffff",
+      fontFamily: "Lexend",
+      name: name || "Icon",
+      styles: {},
+    });
+    fc.add(ic);
+    fc.setActiveObject(ic);
+    fc.renderAll();
+    FB.design.tools.setTool("select");
+  }
+
+  function setBackground(value) {
+    var fc = FB.design.canvas.get();
+    if (!fc) return;
+    if (value.indexOf("gradient") !== -1) {
+      var colours = value.match(/#[0-9a-fA-F]+/g) || ["#111111", "#222222"];
+      var grad = new fabric.Gradient({
+        type: "linear",
+        coords: { x1: 0, y1: 0, x2: fc.getWidth(), y2: fc.getHeight() },
+        colorStops: [
+          { offset: 0, color: colours[0] },
+          { offset: 1, color: colours[colours.length - 1] },
+        ],
+      });
+      fc.setBackgroundColor(grad, function () {
+        fc.renderAll();
+        FB.design.history.push();
+      });
+    } else {
+      fc.setBackgroundColor(value, function () {
+        fc.renderAll();
+        FB.design.history.push();
+      });
+    }
+  }
+
+  return {
+    render: render,
+    addShape: addShape,
+    addTextPreset: addTextPreset,
+    addIcon: addIcon,
+    setBackground: setBackground,
+    _onIconSearch: _onIconSearch,
+    _renderToolRow: _renderToolRow,
+  };
+})();
+
 FB.design.history = (function () {
   var _stack = [];
   var _future = [];
