@@ -72,6 +72,7 @@ FB.widgets.register("kineticText", {
   iconBg: "#0d0d1a",
   iconColor: "#cdfe00",
   category: "veltro",
+  subCategory: "typography",
   defaultProps: {
     text: "MOVE CLOSER",
     tag: "h2",
@@ -85,17 +86,217 @@ FB.widgets.register("kineticText", {
     fontFamily: "Inter",
     letterSpacing: -2,
     align: "center",
+    // Universal Advanced Options
+    bgType: "solid",
+    bgColor: "transparent",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#cdfe00",
+    bgGradientColor2: "#3b82f6",
+    bgImage: "",
+    borderRadius: 8,
+    borderWidth: 0,
+    borderColor: "#cdfe00",
+    borderStyle: "solid",
+    paddingV: 24,
+    paddingH: 24,
+    marginV: 0,
+    marginH: 0,
+    boxShadow: false,
+    shadowColor: "rgba(0,0,0,0.3)",
+    shadowBlur: 10,
+    shadowSpread: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    animDuration: 600,
+    animDelay: 0,
+    hoverEffect: "none",
+    hoverScale: 1.02,
+    hoverTransition: 300,
+    // Widget-Specific Advanced Enhancements
+    gradientText: false,
+    gradientTextColor1: "#cdfe00",
+    gradientTextColor2: "#3b82f6",
+    gradientTextDir: "135deg",
+    textTransform: "none",
+    textShadow: false,
+    textShadowColor: "rgba(0,0,0,0.5)",
+    textShadowBlur: 4,
+    textShadowOffsetX: 2,
+    textShadowOffsetY: 2,
+    glowEffect: false,
+    glowColor: "#cdfe00",
+    glowSize: 15,
+    lineHeight: 1.1,
+    charAnimation: "none",
+    charAnimationSpeed: 1,
+    splitBy: "none",
   },
   render: function (p) {
     var tag = p.tag || "h2";
     var font = p.fontFamily || "Inter";
-    var style =
+    var mode = p.mode || "proximity";
+
+    // Build container background
+    var containerBg = "";
+    if (p.bgType === "gradient") {
+      containerBg =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#cdfe00") +
+        "," +
+        (p.bgGradientColor2 || "#3b82f6") +
+        ");";
+    } else if (p.bgType === "image" && p.bgImage) {
+      containerBg = "background:url(" + p.bgImage + ") center/cover;";
+    } else if (p.bgColor && p.bgColor !== "transparent") {
+      containerBg = "background:" + p.bgColor + ";";
+    }
+
+    // Build container border
+    var containerBorder = "";
+    if (p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px " +
+        (p.borderStyle || "solid") +
+        " " +
+        (p.borderColor || "#cdfe00") +
+        ";";
+    }
+
+    // Build container shadow
+    var containerShadow = "";
+    if (p.boxShadow) {
+      var sx = p.shadowSpread || 0;
+      containerShadow =
+        "box-shadow:0 " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowBlur || 10) * 2 +
+        "px " +
+        sx +
+        "px " +
+        (p.shadowColor || "rgba(0,0,0,0.3)") +
+        ";";
+    }
+
+    // Build hover effect
+    var hoverClass = "";
+    var hoverStyle = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+      if (p.hoverEffect === "scale") {
+        hoverStyle =
+          "transition:transform " + (p.hoverTransition || 300) + "ms ease;";
+      } else if (p.hoverEffect === "lift") {
+        hoverStyle =
+          "transition:transform " +
+          (p.hoverTransition || 300) +
+          "ms ease,box-shadow " +
+          (p.hoverTransition || 300) +
+          "ms ease;";
+      } else if (p.hoverEffect === "glow") {
+        hoverStyle =
+          "transition:filter " + (p.hoverTransition || 300) + "ms ease;";
+      } else {
+        hoverStyle =
+          "transition:all " + (p.hoverTransition || 300) + "ms ease;";
+      }
+    }
+
+    // Build entrance animation
+    var animClass = "";
+    var animStyle = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+      animStyle =
+        "animation-duration:" +
+        (p.animDuration || 600) +
+        "ms;animation-delay:" +
+        (p.animDelay || 0) +
+        "ms;animation-fill-mode:both;";
+    }
+
+    // Build text colour (solid or gradient)
+    var textColor = "";
+    if (p.gradientText) {
+      textColor =
+        "background:linear-gradient(" +
+        (p.gradientTextDir || "135deg") +
+        "," +
+        (p.gradientTextColor1 || "#cdfe00") +
+        "," +
+        (p.gradientTextColor2 || "#3b82f6") +
+        ");-webkit-background-clip:text;background-clip:text;color:transparent;";
+    } else {
+      textColor = "color:" + (p.color || "#111") + ";";
+    }
+
+    // Build text shadow
+    var textShadowStyle = "";
+    if (p.textShadow) {
+      textShadowStyle =
+        "text-shadow:" +
+        (p.textShadowOffsetX || 2) +
+        "px " +
+        (p.textShadowOffsetY || 2) +
+        "px " +
+        (p.textShadowBlur || 4) +
+        "px " +
+        (p.textShadowColor || "rgba(0,0,0,0.5)") +
+        ";";
+    }
+
+    // Build glow effect
+    var glowStyle = "";
+    if (p.glowEffect) {
+      glowStyle =
+        "filter:drop-shadow(0 0 " +
+        (p.glowSize || 15) +
+        "px " +
+        (p.glowColor || "#cdfe00") +
+        ");";
+    }
+
+    // Build text transform
+    var textTransformStyle = "";
+    if (p.textTransform && p.textTransform !== "none") {
+      textTransformStyle = "text-transform:" + p.textTransform + ";";
+    }
+
+    // Build container style
+    var containerStyle =
+      containerBg +
+      containerBorder +
+      containerShadow +
+      hoverStyle +
+      animStyle +
+      "border-radius:" +
+      (p.borderRadius || 8) +
+      "px;" +
+      "padding:" +
+      (p.paddingV || 24) +
+      "px " +
+      (p.paddingH || 24) +
+      "px;" +
+      "margin:" +
+      (p.marginV || 0) +
+      "px " +
+      (p.marginH || 0) +
+      "px;" +
+      "opacity:" +
+      (p.opacity || 100) / 100 +
+      ";" +
+      "overflow:hidden;position:relative;";
+
+    // Build text style
+    var textStyle =
       "text-align:" +
       (p.align || "center") +
       ";" +
-      "color:" +
-      (p.color || "#111") +
-      ";" +
+      textColor +
       "font-size:" +
       (p.size || 56) +
       "px;" +
@@ -105,15 +306,60 @@ FB.widgets.register("kineticText", {
       "letter-spacing:" +
       (p.letterSpacing !== undefined ? p.letterSpacing : -2) +
       "px;" +
-      "line-height:1.1;" +
-      "margin:0;padding:1.5rem 1.5rem;" +
+      "line-height:" +
+      (p.lineHeight || 1.1) +
+      ";" +
+      "margin:0;" +
       "transition:font-variation-settings 0.1s,font-weight 0.1s;" +
       "font-family:'" +
       font +
-      "',sans-serif;";
-    if (p.mode === "scroll") {
-      style += "display:block;";
+      "',sans-serif;" +
+      textShadowStyle +
+      glowStyle +
+      textTransformStyle;
+
+    // Build text content with optional split animation
+    var textContent = p.text || "";
+    if (
+      p.splitBy &&
+      p.splitBy !== "none" &&
+      p.charAnimation &&
+      p.charAnimation !== "none"
+    ) {
+      var chars = [];
+      if (p.splitBy === "char") {
+        chars = textContent.split("");
+      } else if (p.splitBy === "word") {
+        chars = textContent.split(" ");
+      } else if (p.splitBy === "line") {
+        chars = textContent.split("\n");
+      }
+      textContent = chars
+        .map(function (c, i) {
+          var delay = i * (0.1 / (p.charAnimationSpeed || 1));
+          var animName = "veltro-char-" + p.charAnimation;
+          return (
+            '<span style="display:inline-block;animation:' +
+            animName +
+            " 0.6s ease " +
+            delay +
+            's both">' +
+            (p.splitBy === "word" && i < chars.length - 1 ? c + " " : c) +
+            "</span>"
+          );
+        })
+        .join("");
+    }
+
+    if (mode === "scroll") {
+      textStyle += "display:block;";
       return (
+        '<div class="veltro-kinetic-container' +
+        animClass +
+        hoverClass +
+        '" style="' +
+        containerStyle +
+        '">' +
         "<" +
         tag +
         ' class="veltro-kinetic-scroll" data-kinetic-mode="scroll"' +
@@ -127,23 +373,31 @@ FB.widgets.register("kineticText", {
         (p.maxWeight || 900) +
         '"' +
         ' style="' +
-        style +
+        textStyle +
         '" contenteditable data-field="text">' +
-        (p.text || "") +
+        textContent +
         "</" +
         tag +
-        ">"
+        "></div>"
       );
     }
-    if (p.mode === "path") {
-      var id = "kt-path-" + Date.now();
+    if (mode === "path") {
+      var pathId = "kt-path-" + Date.now();
+      var pathD = p.pathCurve || "M 0 150 Q 150 0 300 100 Q 450 200 600 50";
       return (
-        '<div style="padding:1rem;text-align:center">' +
+        '<div class="veltro-kinetic-container' +
+        animClass +
+        hoverClass +
+        '" style="' +
+        containerStyle +
+        'text-align:center">' +
         '<svg viewBox="0 0 600 200" style="width:100%;max-width:600px;overflow:visible">' +
         "<defs>" +
         '<path id="' +
-        id +
-        '" d="M 0 150 Q 150 0 300 100 Q 450 200 600 50"/>' +
+        pathId +
+        '" d="' +
+        pathD +
+        '"/>' +
         "</defs>" +
         "<text font-family=\"'" +
         font +
@@ -152,18 +406,35 @@ FB.widgets.register("kineticText", {
         '"' +
         ' font-weight="' +
         (p.weight || 400) +
-        '" fill="' +
-        (p.color || "#111") +
-        '">' +
+        '" ' +
+        (p.gradientText
+          ? 'fill="url(#kt-grad-' + pathId + ')"'
+          : 'fill="' + (p.color || "#111") + '"') +
+        ">" +
+        (p.gradientText
+          ? '<defs><linearGradient id="kt-grad-' +
+            pathId +
+            '" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:' +
+            (p.gradientTextColor1 || "#cdfe00") +
+            '"/><stop offset="100%" style="stop-color:' +
+            (p.gradientTextColor2 || "#3b82f6") +
+            '"/></linearGradient></defs>'
+          : "") +
         '<textPath href="#' +
-        id +
+        pathId +
         '" startOffset="0%">' +
-        (p.text || "Text on a path") +
+        textContent +
         "</textPath></text></svg></div>"
       );
     }
     // Default: proximity mode
     return (
+      '<div class="veltro-kinetic-container' +
+      animClass +
+      hoverClass +
+      '" style="' +
+      containerStyle +
+      '">' +
       "<" +
       tag +
       ' class="veltro-kinetic-prox" data-kinetic-mode="proximity"' +
@@ -177,141 +448,463 @@ FB.widgets.register("kineticText", {
       (p.maxWeight || 900) +
       '"' +
       ' style="' +
-      style +
+      textStyle +
       '" contenteditable data-field="text">' +
-      (p.text || "") +
+      textContent +
       "</" +
       tag +
-      ">"
+      "></div>"
     );
   },
   editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Text</label><input type="text" value="' +
+    var html = "";
+
+    // ── Core Typography Controls ──
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Typography</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Text</label><textarea rows="2" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','text',this.value)\">" +
       (p.text || "") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
+      "</textarea></div>";
+    html +=
+      '<div class="rp-row"><label>Mode</label><select onchange="FB.panels.updateWidgetProp(\'' +
       id +
-      "','text',this.value)\"></div>" +
-      '<div class="rp-row"><label>Mode</label>' +
-      "<select onchange=\"FB.panels.updateWidgetProp('" +
+      "','mode',this.value)\"><option value=\"proximity\"" +
+      (p.mode === "proximity" ? " selected" : "") +
+      '>Proximity (mouse)</option><option value="scroll"' +
+      (p.mode === "scroll" ? " selected" : "") +
+      '>Scroll-based</option><option value="path"' +
+      (p.mode === "path" ? " selected" : "") +
+      ">Text on path</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>HTML Tag</label><select onchange="FB.panels.updateWidgetProp(\'' +
       id +
-      "','mode',this.value)\">" +
-      ["proximity", "scroll", "path"]
-        .map(function (m) {
-          return (
-            '<option value="' +
-            m +
-            '"' +
-            (p.mode === m ? " selected" : "") +
-            ">" +
-            m.charAt(0).toUpperCase() +
-            m.slice(1) +
-            "</option>"
-          );
-        })
-        .join("") +
-      "</select></div>" +
-      '<div class="rp-row"><label>Tag</label>' +
-      "<select onchange=\"FB.panels.updateWidgetProp('" +
+      "','tag',this.value)\"><option value=\"h1\"" +
+      (p.tag === "h1" ? " selected" : "") +
+      '>H1</option><option value="h2"' +
+      (p.tag === "h2" ? " selected" : "") +
+      '>H2</option><option value="h3"' +
+      (p.tag === "h3" ? " selected" : "") +
+      '>H3</option><option value="h4"' +
+      (p.tag === "h4" ? " selected" : "") +
+      '>H4</option><option value="p"' +
+      (p.tag === "p" ? " selected" : "") +
+      '>Paragraph</option><option value="div"' +
+      (p.tag === "div" ? " selected" : "") +
+      ">Div</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Font Family</label><select onchange="FB.panels.updateWidgetProp(\'' +
       id +
-      "','tag',this.value)\">" +
-      ["h1", "h2", "h3", "h4", "p", "div"]
-        .map(function (t) {
-          return (
-            '<option value="' +
-            t +
-            '"' +
-            (p.tag === t ? " selected" : "") +
-            ">" +
-            t.toUpperCase() +
-            "</option>"
-          );
-        })
-        .join("") +
-      "</select></div>" +
-      '<div class="rp-row"><label>Font Family</label>' +
-      "<select onchange=\"FB.panels.updateWidgetProp('" +
+      "','fontFamily',this.value)\"><option value=\"Inter\"" +
+      (p.fontFamily === "Inter" ? " selected" : "") +
+      '>Inter</option><option value="Lexend"' +
+      (p.fontFamily === "Lexend" ? " selected" : "") +
+      '>Lexend</option><option value="Georgia"' +
+      (p.fontFamily === "Georgia" ? " selected" : "") +
+      '>Georgia</option><option value="monospace"' +
+      (p.fontFamily === "monospace" ? " selected" : "") +
+      '>Monospace</option><option value="Arial"' +
+      (p.fontFamily === "Arial" ? " selected" : "") +
+      ">Arial</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Size: ' +
+      (p.size || 56) +
+      'px</label><input type="range" min="16" max="120" value="' +
+      (p.size || 56) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
       id +
-      "','fontFamily',this.value)\">" +
-      (
-        FB.panels.GOOGLE_FONTS || [
-          "Inter",
-          "Roboto",
-          "Oswald",
-          "Bebas Neue",
-          "Playfair Display",
-        ]
-      )
-        .map(function (f) {
-          return (
-            '<option value="' +
-            f +
-            '"' +
-            (p.fontFamily === f ? " selected" : "") +
-            ">" +
-            (f || "— default —") +
-            "</option>"
-          );
-        })
-        .join("") +
-      "</select></div>" +
-      '<div class="rp-row"><label>Colour</label>' +
-      '<input type="color" value="' +
+      "','size',+this.value);this.previousElementSibling.textContent='Size: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Weight: ' +
+      (p.weight || 400) +
+      '</label><input type="range" min="100" max="900" step="100" value="' +
+      (p.weight || 400) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','weight',+this.value);this.previousElementSibling.textContent='Weight: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Letter Spacing: ' +
+      (p.letterSpacing !== undefined ? p.letterSpacing : -2) +
+      'px</label><input type="range" min="-10" max="20" value="' +
+      (p.letterSpacing !== undefined ? p.letterSpacing : -2) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','letterSpacing',+this.value);this.previousElementSibling.textContent='Letter Spacing: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Line Height: ' +
+      (p.lineHeight || 1.1) +
+      '</label><input type="range" min="0.8" max="2" step="0.1" value="' +
+      (p.lineHeight || 1.1) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','lineHeight',+this.value);this.previousElementSibling.textContent='Line Height: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Align</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','align',this.value)\"><option value=\"left\"" +
+      (p.align === "left" ? " selected" : "") +
+      '>Left</option><option value="center"' +
+      (p.align === "center" ? " selected" : "") +
+      '>Center</option><option value="right"' +
+      (p.align === "right" ? " selected" : "") +
+      ">Right</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Text Transform</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','textTransform',this.value)\"><option value=\"none\"" +
+      (p.textTransform === "none" ? " selected" : "") +
+      '>None</option><option value="uppercase"' +
+      (p.textTransform === "uppercase" ? " selected" : "") +
+      '>UPPERCASE</option><option value="lowercase"' +
+      (p.textTransform === "lowercase" ? " selected" : "") +
+      '>lowercase</option><option value="capitalize"' +
+      (p.textTransform === "capitalize" ? " selected" : "") +
+      ">Capitalize</option></select></div>";
+    html += "</div></div>";
+
+    // ── Colour & Effects ──
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Colour & Effects</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Text Colour</label><div class="rp-colour-row"><input type="color" value="' +
       (p.color || "#111111") +
       '" onchange="FB.panels.updateWidgetProp(\'' +
       id +
-      "','color',this.value)\"></div>" +
-      '<div class="rp-row"><label>Size: ' +
-      (p.size || 56) +
-      "px</label>" +
-      '<input type="range" min="16" max="180" value="' +
-      (p.size || 56) +
+      '\',\'color\',this.value)"><input type="text" value="' +
+      (p.color || "#111111") +
+      '" style="flex:1" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','color',this.value)\"></div></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.gradientText ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','gradientText',this.checked)\"> Gradient Text</label></div>";
+    if (p.gradientText) {
+      html +=
+        '<div class="rp-row"><label>Gradient Colour 1</label><input type="color" value="' +
+        (p.gradientTextColor1 || "#cdfe00") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','gradientTextColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Colour 2</label><input type="color" value="' +
+        (p.gradientTextColor2 || "#3b82f6") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','gradientTextColor2',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','gradientTextDir',this.value)\"><option value=\"135deg\"" +
+        (p.gradientTextDir === "135deg" ? " selected" : "") +
+        '>135°</option><option value="90deg"' +
+        (p.gradientTextDir === "90deg" ? " selected" : "") +
+        '>90°</option><option value="180deg"' +
+        (p.gradientTextDir === "180deg" ? " selected" : "") +
+        '>180°</option><option value="45deg"' +
+        (p.gradientTextDir === "45deg" ? " selected" : "") +
+        ">45°</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.textShadow ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','textShadow',this.checked)\"> Text Shadow</label></div>";
+    if (p.textShadow) {
+      html +=
+        '<div class="rp-row"><label>Shadow Colour</label><input type="color" value="' +
+        (p.textShadowColor || "#000000").replace(/rgba?\([^)]*\)/, "#000000") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','textShadowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Shadow Blur: ' +
+        (p.textShadowBlur || 4) +
+        '</label><input type="range" min="0" max="20" value="' +
+        (p.textShadowBlur || 4) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','textShadowBlur',+this.value);this.previousElementSibling.textContent='Shadow Blur: '+this.value'\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.glowEffect ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','glowEffect',this.checked)\"> Glow Effect</label></div>";
+    if (p.glowEffect) {
+      html +=
+        '<div class="rp-row"><label>Glow Colour</label><input type="color" value="' +
+        (p.glowColor || "#cdfe00") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','glowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Glow Size: ' +
+        (p.glowSize || 15) +
+        'px</label><input type="range" min="5" max="50" value="' +
+        (p.glowSize || 15) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','glowSize',+this.value);this.previousElementSibling.textContent='Glow Size: '+this.value+'px'\"></div>";
+    }
+    html += "</div></div>";
+
+    // ── Kinetic Settings ──
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Kinetic Settings</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Proximity Radius: ' +
+      (p.radius || 300) +
+      'px</label><input type="range" min="100" max="600" value="' +
+      (p.radius || 300) +
       '" oninput="FB.panels.updateWidgetProp(\'' +
       id +
-      "','size',+this.value);this.previousElementSibling.textContent='Size: '+this.value+'px'\"></div>" +
-      '<div class="rp-row"><label>Base Weight: ' +
-      (p.weight || 400) +
-      "</label>" +
-      '<input type="range" min="100" max="900" step="100" value="' +
-      (p.weight || 400) +
+      "','radius',+this.value);this.previousElementSibling.textContent='Proximity Radius: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Min Weight: ' +
+      (p.minWeight || 100) +
+      '</label><input type="range" min="100" max="900" step="100" value="' +
+      (p.minWeight || 100) +
       '" oninput="FB.panels.updateWidgetProp(\'' +
       id +
-      "','weight',+this.value);this.previousElementSibling.textContent='Base Weight: '+this.value\"></div>" +
-      (p.mode === "proximity"
-        ? '<div class="rp-row"><label>Min Weight: ' +
-          (p.minWeight || 100) +
-          "</label>" +
-          '<input type="range" min="100" max="900" step="100" value="' +
-          (p.minWeight || 100) +
-          '" oninput="FB.panels.updateWidgetProp(\'' +
-          id +
-          "','minWeight',+this.value);this.previousElementSibling.textContent='Min Weight: '+this.value\"></div>" +
-          '<div class="rp-row"><label>Max Weight: ' +
-          (p.maxWeight || 900) +
-          "</label>" +
-          '<input type="range" min="100" max="900" step="100" value="' +
-          (p.maxWeight || 900) +
-          '" oninput="FB.panels.updateWidgetProp(\'' +
-          id +
-          "','maxWeight',+this.value);this.previousElementSibling.textContent='Max Weight: '+this.value\"></div>" +
-          '<div class="rp-row"><label>Effect Radius: ' +
-          (p.radius || 300) +
-          "px</label>" +
-          '<input type="range" min="50" max="800" step="10" value="' +
-          (p.radius || 300) +
-          '" oninput="FB.panels.updateWidgetProp(\'' +
-          id +
-          "','radius',+this.value);this.previousElementSibling.textContent='Effect Radius: '+this.value+'px'\"></div>"
-        : "") +
-      '<div class="rp-row"><label>Letter Spacing: ' +
-      (p.letterSpacing !== undefined ? p.letterSpacing : -2) +
-      "px</label>" +
-      '<input type="range" min="-10" max="20" step="0.5" value="' +
-      (p.letterSpacing !== undefined ? p.letterSpacing : -2) +
+      "','minWeight',+this.value);this.previousElementSibling.textContent='Min Weight: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Max Weight: ' +
+      (p.maxWeight || 900) +
+      '</label><input type="range" min="100" max="900" step="100" value="' +
+      (p.maxWeight || 900) +
       '" oninput="FB.panels.updateWidgetProp(\'' +
       id +
-      "','letterSpacing',+this.value);this.previousElementSibling.textContent='Letter Spacing: '+this.value+'px'\"></div>"
-    );
+      "','maxWeight',+this.value);this.previousElementSibling.textContent='Max Weight: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Split By</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','splitBy',this.value)\"><option value=\"none\"" +
+      (p.splitBy === "none" ? " selected" : "") +
+      '>None</option><option value="char"' +
+      (p.splitBy === "char" ? " selected" : "") +
+      '>Character</option><option value="word"' +
+      (p.splitBy === "word" ? " selected" : "") +
+      '>Word</option><option value="line"' +
+      (p.splitBy === "line" ? " selected" : "") +
+      ">Line</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Char Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','charAnimation',this.value)\"><option value=\"none\"" +
+      (p.charAnimation === "none" ? " selected" : "") +
+      '>None</option><option value="wave"' +
+      (p.charAnimation === "wave" ? " selected" : "") +
+      '>Wave</option><option value="stagger"' +
+      (p.charAnimation === "stagger" ? " selected" : "") +
+      ">Stagger</option></select></div>";
+    if (p.charAnimation && p.charAnimation !== "none") {
+      html +=
+        '<div class="rp-row"><label>Anim Speed: ' +
+        (p.charAnimationSpeed || 1) +
+        'x</label><input type="range" min="0.1" max="3" step="0.1" value="' +
+        (p.charAnimationSpeed || 1) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','charAnimationSpeed',+this.value);this.previousElementSibling.textContent='Anim Speed: '+this.value+'x'\"></div>";
+    }
+    html += "</div></div>";
+
+    // ── Container ──
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      (p.bgType === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      (p.bgType === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      (p.bgType === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if (p.bgType === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Colour</label><div class="rp-colour-row"><input type="color" value="' +
+        (p.bgColor === "transparent" ? "#ffffff" : p.bgColor || "#ffffff") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        '\',\'bgColor\',this.value)"><input type="text" value="' +
+        (p.bgColor || "transparent") +
+        '" style="flex:1" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgColor',this.value)\"></div></div>";
+    } else if (p.bgType === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Colour 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#cdfe00") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Colour 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#3b82f6") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        (p.bgGradientDir === "135deg" ? " selected" : "") +
+        '>135°</option><option value="90deg"' +
+        (p.bgGradientDir === "90deg" ? " selected" : "") +
+        '>90°</option><option value="180deg"' +
+        (p.bgGradientDir === "180deg" ? " selected" : "") +
+        ">180°</option></select></div>";
+    } else if (p.bgType === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImage || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImage',this.value)\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius: ' +
+      (p.borderRadius || 8) +
+      'px</label><input type="range" min="0" max="50" value="' +
+      (p.borderRadius || 8) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value);this.previousElementSibling.textContent='Border Radius: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width: ' +
+      (p.borderWidth || 0) +
+      'px</label><input type="range" min="0" max="8" value="' +
+      (p.borderWidth || 0) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value);this.previousElementSibling.textContent='Border Width: '+this.value+'px'\"></div>";
+    if (p.borderWidth > 0) {
+      html +=
+        '<div class="rp-row"><label>Border Colour</label><input type="color" value="' +
+        (p.borderColor || "#cdfe00") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','borderColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Border Style</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','borderStyle',this.value)\"><option value=\"solid\"" +
+        (p.borderStyle === "solid" ? " selected" : "") +
+        '>Solid</option><option value="dashed"' +
+        (p.borderStyle === "dashed" ? " selected" : "") +
+        '>Dashed</option><option value="dotted"' +
+        (p.borderStyle === "dotted" ? " selected" : "") +
+        ">Dotted</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Padding V: ' +
+      (p.paddingV || 24) +
+      'px</label><input type="range" min="0" max="80" value="' +
+      (p.paddingV || 24) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value);this.previousElementSibling.textContent='Padding V: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H: ' +
+      (p.paddingH || 24) +
+      'px</label><input type="range" min="0" max="80" value="' +
+      (p.paddingH || 24) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value);this.previousElementSibling.textContent='Padding H: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity: ' +
+      (p.opacity || 100) +
+      '%</label><input type="range" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value);this.previousElementSibling.textContent='Opacity: '+this.value+'%'\"></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.boxShadow ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','boxShadow',this.checked)\"> Box Shadow</label></div>";
+    if (p.boxShadow) {
+      html +=
+        '<div class="rp-row"><label>Shadow Blur: ' +
+        (p.shadowBlur || 10) +
+        '</label><input type="range" min="0" max="40" value="' +
+        (p.shadowBlur || 10) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value);this.previousElementSibling.textContent='Shadow Blur: '+this.value'\"></div>";
+    }
+    html += "</div></div>";
+
+    // ── Animation ──
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animation</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      (p.entranceAnim === "none" ? " selected" : "") +
+      '>None</option><option value="fade"' +
+      (p.entranceAnim === "fade" ? " selected" : "") +
+      '>Fade</option><option value="slide-up"' +
+      (p.entranceAnim === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="zoom"' +
+      (p.entranceAnim === "zoom" ? " selected" : "") +
+      ">Zoom</option></select></div>";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      html +=
+        '<div class="rp-row"><label>Duration: ' +
+        (p.animDuration || 600) +
+        'ms</label><input type="range" min="200" max="2000" step="100" value="' +
+        (p.animDuration || 600) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','animDuration',+this.value);this.previousElementSibling.textContent='Duration: '+this.value+'ms'\"></div>";
+      html +=
+        '<div class="rp-row"><label>Delay: ' +
+        (p.animDelay || 0) +
+        'ms</label><input type="range" min="0" max="1000" step="50" value="' +
+        (p.animDelay || 0) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','animDelay',+this.value);this.previousElementSibling.textContent='Delay: '+this.value+'ms'\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      (p.hoverEffect === "none" ? " selected" : "") +
+      '>None</option><option value="scale"' +
+      (p.hoverEffect === "scale" ? " selected" : "") +
+      '>Scale</option><option value="lift"' +
+      (p.hoverEffect === "lift" ? " selected" : "") +
+      '>Lift</option><option value="glow"' +
+      (p.hoverEffect === "glow" ? " selected" : "") +
+      ">Glow</option></select></div>";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      html +=
+        '<div class="rp-row"><label>Transition: ' +
+        (p.hoverTransition || 300) +
+        'ms</label><input type="range" min="100" max="1000" step="50" value="' +
+        (p.hoverTransition || 300) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','hoverTransition',+this.value);this.previousElementSibling.textContent='Transition: '+this.value+'ms'\"></div>";
+    }
+    html += "</div></div>";
+
+    return html;
   },
 });
 
@@ -323,6 +916,7 @@ FB.widgets.register("physicsSandbox", {
   iconBg: "#1a0d2e",
   iconColor: "#ff6b35",
   category: "veltro",
+  subCategory: "physics",
   defaultProps: {
     height: 400,
     gravity: 1,
@@ -332,12 +926,130 @@ FB.widgets.register("physicsSandbox", {
     bgColor: "#0d0d1a",
     textColor: "#cdfe00",
     wallColor: "#1a1a2e",
+    // Universal Advanced Options
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a0d2e",
+    bgImage: "",
+    borderRadius: 8,
+    borderWidth: 0,
+    borderColor: "#ff6b35",
+    borderStyle: "solid",
+    paddingV: 0,
+    paddingH: 0,
+    marginV: 0,
+    marginH: 0,
+    boxShadow: false,
+    shadowColor: "rgba(0,0,0,0.3)",
+    shadowBlur: 10,
+    shadowSpread: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    animDuration: 600,
+    animDelay: 0,
+    hoverEffect: "none",
+    hoverScale: 1.02,
+    hoverTransition: 300,
+    // Widget-Specific Advanced Enhancements
+    objectShape: "box",
+    collisionFlash: false,
+    gravityDirection: "down",
+    itemColors: "#cdfe00,#3b82f6,#ec4899,#f59e0b,#10b981",
+    fontSize: 14,
+    showHint: true,
+    hintColor: "#cdfe00",
+    hintOpacity: 0.4,
+    hintPosition: "bottom-right",
+    wallThickness: 2,
+    itemSpacing: 30,
   },
   render: function (p) {
     var wid = "phys-" + (p._blockId || Date.now());
     var itemsJson = JSON.stringify(p.items || ["Veltro", "Physics"]);
+
+    var containerBg = "";
+    if (p.bgType === "gradient") {
+      containerBg =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a0d2e") +
+        ");";
+    } else if (p.bgType === "image" && p.bgImage) {
+      containerBg = "background:url(" + p.bgImage + ") center/cover;";
+    } else {
+      containerBg = "background:" + (p.bgColor || "#0d0d1a") + ";";
+    }
+
+    var containerBorder = "";
+    if (p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px " +
+        (p.borderStyle || "solid") +
+        " " +
+        (p.borderColor || "#ff6b35") +
+        ";";
+    }
+
+    var containerShadow = "";
+    if (p.boxShadow) {
+      containerShadow =
+        "box-shadow:0 " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowBlur || 10) * 2 +
+        "px " +
+        (p.shadowSpread || 0) +
+        "px " +
+        (p.shadowColor || "rgba(0,0,0,0.3)") +
+        ";";
+    }
+
+    var hoverClass = "";
+    var hoverStyle = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+      hoverStyle = "transition:all " + (p.hoverTransition || 300) + "ms ease;";
+    }
+
+    var animClass = "";
+    var animStyle = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+      animStyle =
+        "animation-duration:" +
+        (p.animDuration || 600) +
+        "ms;animation-delay:" +
+        (p.animDelay || 0) +
+        "ms;animation-fill-mode:both;";
+    }
+
+    var hintHtml = "";
+    if (p.showHint !== false) {
+      var hintPos = "bottom:8px;right:10px;";
+      if (p.hintPosition === "bottom-left") hintPos = "bottom:8px;left:10px;";
+      else if (p.hintPosition === "top-right") hintPos = "top:8px;right:10px;";
+      else if (p.hintPosition === "top-left") hintPos = "top:8px;left:10px;";
+      hintHtml =
+        '<div style="position:absolute;' +
+        hintPos +
+        "font-size:10px;color:" +
+        (p.hintColor || "#cdfe00") +
+        ";opacity:" +
+        (p.hintOpacity || 0.4) +
+        ';letter-spacing:1px;pointer-events:none">CLICK TO INTERACT</div>';
+    }
+
     return (
-      '<div class="veltro-physics-wrap" id="' +
+      '<div class="veltro-physics-wrap' +
+      animClass +
+      hoverClass +
+      '" id="' +
       wid +
       '" data-gravity="' +
       (p.gravity || 1) +
@@ -353,75 +1065,15689 @@ FB.widgets.register("physicsSandbox", {
       ' data-text-color="' +
       (p.textColor || "#cdfe00") +
       '"' +
+      ' data-object-shape="' +
+      (p.objectShape || "box") +
+      '"' +
+      ' data-collision-flash="' +
+      (p.collisionFlash ? "1" : "0") +
+      '"' +
+      ' data-gravity-direction="' +
+      (p.gravityDirection || "down") +
+      '"' +
+      ' data-item-colors="' +
+      (p.itemColors || "#cdfe00,#3b82f6,#ec4899,#f59e0b,#10b981") +
+      '"' +
+      ' data-font-size="' +
+      (p.fontSize || 14) +
+      '"' +
+      ' data-wall-thickness="' +
+      (p.wallThickness || 2) +
+      '"' +
+      ' data-item-spacing="' +
+      (p.itemSpacing || 30) +
+      '"' +
       ' style="height:' +
       (p.height || 400) +
-      "px;background:" +
-      (p.bgColor || "#0d0d1a") +
-      ';position:relative;overflow:hidden;cursor:pointer;border-radius:4px;">' +
+      "px;" +
+      containerBg +
+      containerBorder +
+      containerShadow +
+      hoverStyle +
+      animStyle +
+      "border-radius:" +
+      (p.borderRadius || 8) +
+      "px;" +
+      "padding:" +
+      (p.paddingV || 0) +
+      "px " +
+      (p.paddingH || 0) +
+      "px;" +
+      "margin:" +
+      (p.marginV || 0) +
+      "px " +
+      (p.marginH || 0) +
+      "px;" +
+      "opacity:" +
+      (p.opacity || 100) / 100 +
+      ";" +
+      'position:relative;overflow:hidden;cursor:pointer;">' +
       '<canvas class="veltro-physics-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas>' +
       '<div class="veltro-physics-labels" style="position:absolute;inset:0;pointer-events:none"></div>' +
-      '<div style="position:absolute;bottom:8px;right:10px;font-size:10px;color:' +
-      (p.textColor || "#cdfe00") +
-      ';opacity:0.4;letter-spacing:1px">CLICK TO INTERACT</div>' +
+      hintHtml +
       "</div>"
     );
   },
   editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Items (one per line)</label>' +
-      '<textarea rows="5" onchange="FB.panels.updateWidgetProp(\'' +
+    var html = "";
+
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Physics</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Height: ' +
+      (p.height || 400) +
+      'px</label><input type="range" min="200" max="800" value="' +
+      (p.height || 400) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value);this.previousElementSibling.textContent='Height: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Gravity: ' +
+      (p.gravity || 1) +
+      '</label><input type="range" min="0" max="3" step="0.1" value="' +
+      (p.gravity || 1) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','gravity',+this.value);this.previousElementSibling.textContent='Gravity: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Gravity Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','gravityDirection',this.value)\"><option value=\"down\"" +
+      (p.gravityDirection === "down" ? " selected" : "") +
+      '>Down</option><option value="up"' +
+      (p.gravityDirection === "up" ? " selected" : "") +
+      '>Up</option><option value="left"' +
+      (p.gravityDirection === "left" ? " selected" : "") +
+      '>Left</option><option value="right"' +
+      (p.gravityDirection === "right" ? " selected" : "") +
+      ">Right</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Restitution: ' +
+      (p.restitution || 0.7) +
+      '</label><input type="range" min="0" max="1" step="0.05" value="' +
+      (p.restitution || 0.7) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','restitution',+this.value);this.previousElementSibling.textContent='Restitution: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Friction: ' +
+      (p.friction || 0.05) +
+      '</label><input type="range" min="0" max="1" step="0.01" value="' +
+      (p.friction || 0.05) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','friction',+this.value);this.previousElementSibling.textContent='Friction: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Object Shape</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','objectShape',this.value)\"><option value=\"box\"" +
+      (p.objectShape === "box" ? " selected" : "") +
+      '>Box</option><option value="circle"' +
+      (p.objectShape === "circle" ? " selected" : "") +
+      '>Circle</option><option value="triangle"' +
+      (p.objectShape === "triangle" ? " selected" : "") +
+      ">Triangle</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Wall Thickness: ' +
+      (p.wallThickness || 2) +
+      'px</label><input type="range" min="0" max="10" value="' +
+      (p.wallThickness || 2) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','wallThickness',+this.value);this.previousElementSibling.textContent='Wall Thickness: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Item Spacing: ' +
+      (p.itemSpacing || 30) +
+      'px</label><input type="range" min="10" max="80" value="' +
+      (p.itemSpacing || 30) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','itemSpacing',+this.value);this.previousElementSibling.textContent='Item Spacing: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.collisionFlash ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','collisionFlash',this.checked)\"> Collision Flash</label></div>";
+    html += "</div></div>";
+
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Content & Colours</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Items (one per line)</label><textarea rows="4" onchange="FB.panels.updateWidgetProp(\'' +
       id +
       "','items',this.value.split('\\n').filter(function(s){return s.trim()}))\">" +
       (p.items || []).join("\n") +
-      "</textarea></div>" +
-      '<div class="rp-row"><label>Height: ' +
-      (p.height || 400) +
-      "px</label>" +
-      '<input type="range" min="200" max="800" step="20" value="' +
-      (p.height || 400) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','height',+this.value);this.previousElementSibling.textContent='Height: '+this.value+'px'\"></div>" +
-      '<div class="rp-row"><label>Gravity: ' +
-      (p.gravity || 1) +
-      "</label>" +
-      '<input type="range" min="0" max="3" step="0.1" value="' +
-      (p.gravity || 1) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','gravity',+this.value);this.previousElementSibling.textContent='Gravity: '+this.value\"></div>" +
-      '<div class="rp-row"><label>Bounciness: ' +
-      (p.restitution || 0.7) +
-      "</label>" +
-      '<input type="range" min="0" max="1" step="0.05" value="' +
-      (p.restitution || 0.7) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','restitution',+this.value);this.previousElementSibling.textContent='Bounciness: '+this.value\"></div>" +
-      '<div class="rp-row"><label>Background</label>' +
-      '<input type="color" value="' +
-      (p.bgColor || "#0d0d1a") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','bgColor',this.value)\"></div>" +
-      '<div class="rp-row"><label>Label Colour</label>' +
-      '<input type="color" value="' +
+      "</textarea></div>";
+    html +=
+      '<div class="rp-row"><label>Text Colour</label><div class="rp-colour-row"><input type="color" value="' +
       (p.textColor || "#cdfe00") +
       '" onchange="FB.panels.updateWidgetProp(\'' +
       id +
-      "','textColor',this.value)\"></div>"
+      '\',\'textColor\',this.value)"><input type="text" value="' +
+      (p.textColor || "#cdfe00") +
+      '" style="flex:1" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','textColor',this.value)\"></div></div>";
+    html +=
+      '<div class="rp-row"><label>Item Colours (comma-separated)</label><input type="text" value="' +
+      (p.itemColors || "#cdfe00,#3b82f6,#ec4899,#f59e0b,#10b981") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','itemColors',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Size: ' +
+      (p.fontSize || 14) +
+      'px</label><input type="range" min="8" max="32" value="' +
+      (p.fontSize || 14) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontSize',+this.value);this.previousElementSibling.textContent='Font Size: '+this.value+'px'\"></div>";
+    html += "</div></div>";
+
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      (p.bgType === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      (p.bgType === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      (p.bgType === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if (p.bgType === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Colour</label><div class="rp-colour-row"><input type="color" value="' +
+        (p.bgColor || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        '\',\'bgColor\',this.value)"><input type="text" value="' +
+        (p.bgColor || "#0d0d1a") +
+        '" style="flex:1" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgColor',this.value)\"></div></div>";
+    } else if (p.bgType === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Colour 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Colour 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a0d2e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        (p.bgGradientDir === "135deg" ? " selected" : "") +
+        '>135°</option><option value="90deg"' +
+        (p.bgGradientDir === "90deg" ? " selected" : "") +
+        '>90°</option><option value="180deg"' +
+        (p.bgGradientDir === "180deg" ? " selected" : "") +
+        ">180°</option></select></div>";
+    } else if (p.bgType === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImage || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImage',this.value)\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius: ' +
+      (p.borderRadius || 8) +
+      'px</label><input type="range" min="0" max="50" value="' +
+      (p.borderRadius || 8) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value);this.previousElementSibling.textContent='Border Radius: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width: ' +
+      (p.borderWidth || 0) +
+      'px</label><input type="range" min="0" max="8" value="' +
+      (p.borderWidth || 0) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value);this.previousElementSibling.textContent='Border Width: '+this.value+'px'\"></div>";
+    if (p.borderWidth > 0) {
+      html +=
+        '<div class="rp-row"><label>Border Colour</label><input type="color" value="' +
+        (p.borderColor || "#ff6b35") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','borderColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Border Style</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','borderStyle',this.value)\"><option value=\"solid\"" +
+        (p.borderStyle === "solid" ? " selected" : "") +
+        '>Solid</option><option value="dashed"' +
+        (p.borderStyle === "dashed" ? " selected" : "") +
+        '>Dashed</option><option value="dotted"' +
+        (p.borderStyle === "dotted" ? " selected" : "") +
+        ">Dotted</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Padding V: ' +
+      (p.paddingV || 0) +
+      'px</label><input type="range" min="0" max="80" value="' +
+      (p.paddingV || 0) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value);this.previousElementSibling.textContent='Padding V: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H: ' +
+      (p.paddingH || 0) +
+      'px</label><input type="range" min="0" max="80" value="' +
+      (p.paddingH || 0) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value);this.previousElementSibling.textContent='Padding H: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity: ' +
+      (p.opacity || 100) +
+      '%</label><input type="range" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value);this.previousElementSibling.textContent='Opacity: '+this.value+'%'\"></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.boxShadow ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','boxShadow',this.checked)\"> Box Shadow</label></div>";
+    if (p.boxShadow) {
+      html +=
+        '<div class="rp-row"><label>Shadow Blur: ' +
+        (p.shadowBlur || 10) +
+        '</label><input type="range" min="0" max="40" value="' +
+        (p.shadowBlur || 10) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value);this.previousElementSibling.textContent='Shadow Blur: '+this.value'\"></div>";
+    }
+    html += "</div></div>";
+
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Hint & Animation</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.showHint !== false ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','showHint',this.checked)\"> Show Hint</label></div>";
+    if (p.showHint !== false) {
+      html +=
+        '<div class="rp-row"><label>Hint Colour</label><input type="color" value="' +
+        (p.hintColor || "#cdfe00") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','hintColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Hint Opacity: ' +
+        (p.hintOpacity || 0.4) +
+        '</label><input type="range" min="0" max="1" step="0.1" value="' +
+        (p.hintOpacity || 0.4) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','hintOpacity',+this.value);this.previousElementSibling.textContent='Hint Opacity: '+this.value'\"></div>";
+      html +=
+        '<div class="rp-row"><label>Hint Position</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','hintPosition',this.value)\"><option value=\"bottom-right\"" +
+        (p.hintPosition === "bottom-right" ? " selected" : "") +
+        '>Bottom Right</option><option value="bottom-left"' +
+        (p.hintPosition === "bottom-left" ? " selected" : "") +
+        '>Bottom Left</option><option value="top-right"' +
+        (p.hintPosition === "top-right" ? " selected" : "") +
+        '>Top Right</option><option value="top-left"' +
+        (p.hintPosition === "top-left" ? " selected" : "") +
+        ">Top Left</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      (p.entranceAnim === "none" ? " selected" : "") +
+      '>None</option><option value="fade"' +
+      (p.entranceAnim === "fade" ? " selected" : "") +
+      '>Fade</option><option value="slide-up"' +
+      (p.entranceAnim === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="zoom"' +
+      (p.entranceAnim === "zoom" ? " selected" : "") +
+      ">Zoom</option></select></div>";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      html +=
+        '<div class="rp-row"><label>Duration: ' +
+        (p.animDuration || 600) +
+        'ms</label><input type="range" min="200" max="2000" step="100" value="' +
+        (p.animDuration || 600) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','animDuration',+this.value);this.previousElementSibling.textContent='Duration: '+this.value+'ms'\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      (p.hoverEffect === "none" ? " selected" : "") +
+      '>None</option><option value="scale"' +
+      (p.hoverEffect === "scale" ? " selected" : "") +
+      '>Scale</option><option value="lift"' +
+      (p.hoverEffect === "lift" ? " selected" : "") +
+      '>Lift</option><option value="glow"' +
+      (p.hoverEffect === "glow" ? " selected" : "") +
+      ">Glow</option></select></div>";
+    html += "</div></div>";
+
+    return html;
+  },
+});
+
+// ── 3. TEXT SCRAMBLE ──
+FB.widgets.register("textScramble", {
+  label: "Text Scramble",
+  sublabel: "Hover decode",
+  icon: "§",
+  iconBg: "#1a0d1a",
+  iconColor: "#f472b6",
+  category: "veltro",
+  subCategory: "typography",
+  defaultProps: {
+    text: "DECODE ME",
+    fontSize: 64,
+    fontWeight: 800,
+    color: "#cdfe00",
+    bg: "#0d0d1a",
+    charset: "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*",
+    scrambleSpeed: 30,
+    // Universal Advanced Options
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a0d2e",
+    bgImage: "",
+    borderRadius: 8,
+    borderWidth: 0,
+    borderColor: "#f472b6",
+    borderStyle: "solid",
+    paddingV: 24,
+    paddingH: 24,
+    marginV: 0,
+    marginH: 0,
+    boxShadow: false,
+    shadowColor: "rgba(0,0,0,0.3)",
+    shadowBlur: 10,
+    shadowSpread: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    animDuration: 600,
+    animDelay: 0,
+    hoverEffect: "none",
+    hoverScale: 1.02,
+    hoverTransition: 300,
+    // Widget-Specific Advanced Enhancements
+    decodeTrigger: "hover",
+    scrambleIntensity: 0.5,
+    revealDelay: 0,
+    fontFamily: "monospace",
+    letterSpacing: 4,
+    autoScramble: false,
+    autoScrambleInterval: 3000,
+    cipherStyle: "random",
+  },
+  render: function (p) {
+    var id = "scramble-" + (p._blockId || Date.now());
+    var charset = p.charset || "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+
+    var containerBg = "";
+    if (p.bgType === "gradient") {
+      containerBg =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a0d2e") +
+        ");";
+    } else if (p.bgType === "image" && p.bgImage) {
+      containerBg = "background:url(" + p.bgImage + ") center/cover;";
+    } else {
+      containerBg = "background:" + (p.bg || "#0d0d1a") + ";";
+    }
+
+    var containerBorder = "";
+    if (p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px " +
+        (p.borderStyle || "solid") +
+        " " +
+        (p.borderColor || "#f472b6") +
+        ";";
+    }
+
+    var containerShadow = "";
+    if (p.boxShadow) {
+      containerShadow =
+        "box-shadow:0 " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowBlur || 10) * 2 +
+        "px " +
+        (p.shadowSpread || 0) +
+        "px " +
+        (p.shadowColor || "rgba(0,0,0,0.3)") +
+        ";";
+    }
+
+    var hoverClass = "";
+    var hoverStyle = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+      hoverStyle = "transition:all " + (p.hoverTransition || 300) + "ms ease;";
+    }
+
+    var animClass = "";
+    var animStyle = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+      animStyle =
+        "animation-duration:" +
+        (p.animDuration || 600) +
+        "ms;animation-delay:" +
+        (p.animDelay || 0) +
+        "ms;animation-fill-mode:both;";
+    }
+
+    return (
+      '<div class="veltro-scramble-wrap' +
+      animClass +
+      hoverClass +
+      '" id="' +
+      id +
+      '" data-text="' +
+      (p.text || "DECODE ME") +
+      '" data-charset="' +
+      charset +
+      '" data-speed="' +
+      (p.scrambleSpeed || 30) +
+      '" data-decode-trigger="' +
+      (p.decodeTrigger || "hover") +
+      '" data-scramble-intensity="' +
+      (p.scrambleIntensity || 0.5) +
+      '" data-reveal-delay="' +
+      (p.revealDelay || 0) +
+      '" data-auto-scramble="' +
+      (p.autoScramble ? "1" : "0") +
+      '" data-auto-interval="' +
+      (p.autoScrambleInterval || 3000) +
+      '" data-cipher-style="' +
+      (p.cipherStyle || "random") +
+      '" style="height:200px;' +
+      containerBg +
+      containerBorder +
+      containerShadow +
+      hoverStyle +
+      animStyle +
+      "border-radius:" +
+      (p.borderRadius || 8) +
+      "px;" +
+      "padding:" +
+      (p.paddingV || 24) +
+      "px " +
+      (p.paddingH || 24) +
+      "px;" +
+      "margin:" +
+      (p.marginV || 0) +
+      "px " +
+      (p.marginH || 0) +
+      "px;" +
+      "opacity:" +
+      (p.opacity || 100) / 100 +
+      ";" +
+      'display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;"><span class="veltro-scramble-text" style="font-size:' +
+      (p.fontSize || 64) +
+      "px;font-weight:" +
+      (p.fontWeight || 800) +
+      ";color:" +
+      (p.color || "#cdfe00") +
+      ";font-family:'" +
+      (p.fontFamily || "monospace") +
+      "',sans-serif;user-select:none;cursor:pointer;letter-spacing:" +
+      (p.letterSpacing !== undefined ? p.letterSpacing : 4) +
+      "px" +
+      '">' +
+      (p.text || "DECODE ME") +
+      "</span></div>"
     );
+  },
+  editPanel: function (id, p) {
+    var html = "";
+
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Text & Scramble</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Text</label><input type="text" value="' +
+      (p.text || "DECODE ME") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','text',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Size: ' +
+      (p.fontSize || 64) +
+      'px</label><input type="range" min="24" max="120" value="' +
+      (p.fontSize || 64) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontSize',+this.value);this.previousElementSibling.textContent='Font Size: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Weight: ' +
+      (p.fontWeight || 800) +
+      '</label><input type="range" min="100" max="900" step="100" value="' +
+      (p.fontWeight || 800) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontWeight',+this.value);this.previousElementSibling.textContent='Font Weight: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Family</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontFamily',this.value)\"><option value=\"monospace\"" +
+      (p.fontFamily === "monospace" ? " selected" : "") +
+      '>Monospace</option><option value="Inter"' +
+      (p.fontFamily === "Inter" ? " selected" : "") +
+      '>Inter</option><option value="Lexend"' +
+      (p.fontFamily === "Lexend" ? " selected" : "") +
+      ">Lexend</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Letter Spacing: ' +
+      (p.letterSpacing !== undefined ? p.letterSpacing : 4) +
+      'px</label><input type="range" min="-5" max="20" value="' +
+      (p.letterSpacing !== undefined ? p.letterSpacing : 4) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','letterSpacing',+this.value);this.previousElementSibling.textContent='Letter Spacing: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Scramble Speed: ' +
+      (p.scrambleSpeed || 30) +
+      'ms</label><input type="range" min="10" max="100" value="' +
+      (p.scrambleSpeed || 30) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','scrambleSpeed',+this.value);this.previousElementSibling.textContent='Scramble Speed: '+this.value+'ms'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Decode Trigger</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','decodeTrigger',this.value)\"><option value=\"hover\"" +
+      (p.decodeTrigger === "hover" ? " selected" : "") +
+      '>Hover</option><option value="click"' +
+      (p.decodeTrigger === "click" ? " selected" : "") +
+      '>Click</option><option value="auto"' +
+      (p.decodeTrigger === "auto" ? " selected" : "") +
+      ">Auto (on load)</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Scramble Intensity: ' +
+      (p.scrambleIntensity || 0.5) +
+      '</label><input type="range" min="0" max="1" step="0.1" value="' +
+      (p.scrambleIntensity || 0.5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','scrambleIntensity',+this.value);this.previousElementSibling.textContent='Scramble Intensity: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Reveal Delay: ' +
+      (p.revealDelay || 0) +
+      'ms</label><input type="range" min="0" max="2000" step="100" value="' +
+      (p.revealDelay || 0) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','revealDelay',+this.value);this.previousElementSibling.textContent='Reveal Delay: '+this.value+'ms'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Cipher Style</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','cipherStyle',this.value)\"><option value=\"random\"" +
+      (p.cipherStyle === "random" ? " selected" : "") +
+      '>Random</option><option value="matrix"' +
+      (p.cipherStyle === "matrix" ? " selected" : "") +
+      '>Matrix</option><option value="binary"' +
+      (p.cipherStyle === "binary" ? " selected" : "") +
+      ">Binary</option></select></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.autoScramble ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','autoScramble',this.checked)\"> Auto Re-scramble</label></div>";
+    if (p.autoScramble) {
+      html +=
+        '<div class="rp-row"><label>Re-scramble Interval: ' +
+        (p.autoScrambleInterval || 3000) +
+        'ms</label><input type="range" min="1000" max="10000" step="500" value="' +
+        (p.autoScrambleInterval || 3000) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','autoScrambleInterval',+this.value);this.previousElementSibling.textContent='Re-scramble Interval: '+this.value+'ms'\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Charset</label><input type="text" value="' +
+      (p.charset || "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','charset',this.value)\"></div>";
+    html += "</div></div>";
+
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Colour</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Text Colour</label><div class="rp-colour-row"><input type="color" value="' +
+      (p.color || "#cdfe00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      '\',\'color\',this.value)"><input type="text" value="' +
+      (p.color || "#cdfe00") +
+      '" style="flex:1" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','color',this.value)\"></div></div>";
+    html += "</div></div>";
+
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      (p.bgType === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      (p.bgType === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      (p.bgType === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if (p.bgType === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Colour</label><div class="rp-colour-row"><input type="color" value="' +
+        (p.bg || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        '\',\'bg\',this.value)"><input type="text" value="' +
+        (p.bg || "#0d0d1a") +
+        '" style="flex:1" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bg',this.value)\"></div></div>";
+    } else if (p.bgType === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Colour 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Colour 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a0d2e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        (p.bgGradientDir === "135deg" ? " selected" : "") +
+        '>135°</option><option value="90deg"' +
+        (p.bgGradientDir === "90deg" ? " selected" : "") +
+        '>90°</option><option value="180deg"' +
+        (p.bgGradientDir === "180deg" ? " selected" : "") +
+        ">180°</option></select></div>";
+    } else if (p.bgType === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImage || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImage',this.value)\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius: ' +
+      (p.borderRadius || 8) +
+      'px</label><input type="range" min="0" max="50" value="' +
+      (p.borderRadius || 8) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value);this.previousElementSibling.textContent='Border Radius: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width: ' +
+      (p.borderWidth || 0) +
+      'px</label><input type="range" min="0" max="8" value="' +
+      (p.borderWidth || 0) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value);this.previousElementSibling.textContent='Border Width: '+this.value+'px'\"></div>";
+    if (p.borderWidth > 0) {
+      html +=
+        '<div class="rp-row"><label>Border Colour</label><input type="color" value="' +
+        (p.borderColor || "#f472b6") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','borderColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Border Style</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','borderStyle',this.value)\"><option value=\"solid\"" +
+        (p.borderStyle === "solid" ? " selected" : "") +
+        '>Solid</option><option value="dashed"' +
+        (p.borderStyle === "dashed" ? " selected" : "") +
+        '>Dashed</option><option value="dotted"' +
+        (p.borderStyle === "dotted" ? " selected" : "") +
+        ">Dotted</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Padding V: ' +
+      (p.paddingV || 24) +
+      'px</label><input type="range" min="0" max="80" value="' +
+      (p.paddingV || 24) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value);this.previousElementSibling.textContent='Padding V: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H: ' +
+      (p.paddingH || 24) +
+      'px</label><input type="range" min="0" max="80" value="' +
+      (p.paddingH || 24) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value);this.previousElementSibling.textContent='Padding H: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity: ' +
+      (p.opacity || 100) +
+      '%</label><input type="range" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value);this.previousElementSibling.textContent='Opacity: '+this.value+'%'\"></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.boxShadow ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','boxShadow',this.checked)\"> Box Shadow</label></div>";
+    if (p.boxShadow) {
+      html +=
+        '<div class="rp-row"><label>Shadow Blur: ' +
+        (p.shadowBlur || 10) +
+        '</label><input type="range" min="0" max="40" value="' +
+        (p.shadowBlur || 10) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value);this.previousElementSibling.textContent='Shadow Blur: '+this.value'\"></div>";
+    }
+    html += "</div></div>";
+
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animation</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      (p.entranceAnim === "none" ? " selected" : "") +
+      '>None</option><option value="fade"' +
+      (p.entranceAnim === "fade" ? " selected" : "") +
+      '>Fade</option><option value="slide-up"' +
+      (p.entranceAnim === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="zoom"' +
+      (p.entranceAnim === "zoom" ? " selected" : "") +
+      ">Zoom</option></select></div>";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      html +=
+        '<div class="rp-row"><label>Duration: ' +
+        (p.animDuration || 600) +
+        'ms</label><input type="range" min="200" max="2000" step="100" value="' +
+        (p.animDuration || 600) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','animDuration',+this.value);this.previousElementSibling.textContent='Duration: '+this.value+'ms'\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      (p.hoverEffect === "none" ? " selected" : "") +
+      '>None</option><option value="scale"' +
+      (p.hoverEffect === "scale" ? " selected" : "") +
+      '>Scale</option><option value="lift"' +
+      (p.hoverEffect === "lift" ? " selected" : "") +
+      '>Lift</option><option value="glow"' +
+      (p.hoverEffect === "glow" ? " selected" : "") +
+      ">Glow</option></select></div>";
+    html += "</div></div>";
+
+    return html;
+  },
+});
+
+// ── 4. TYPEWRITER REVEAL ──
+FB.widgets.register("typewriterReveal", {
+  label: "Typewriter Reveal",
+  sublabel: "Typing effect",
+  icon: "▶",
+  iconBg: "#0d1a0d",
+  iconColor: "#34d399",
+  category: "veltro",
+  subCategory: "typography",
+  defaultProps: {
+    text: "Hello, World!",
+    speed: 80,
+    cursor: true,
+    color: "#cdfe00",
+    bg: "#0d0d1a",
+    fontSize: 48,
+    fontWeight: 700,
+    loop: true,
+    delay: 2000,
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a0d2e",
+    bgImage: "",
+    borderRadius: 8,
+    borderWidth: 0,
+    borderColor: "#34d399",
+    borderStyle: "solid",
+    paddingV: 24,
+    paddingH: 24,
+    marginV: 0,
+    marginH: 0,
+    boxShadow: false,
+    shadowColor: "rgba(0,0,0,0.3)",
+    shadowBlur: 10,
+    shadowSpread: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    animDuration: 600,
+    animDelay: 0,
+    hoverEffect: "none",
+    hoverScale: 1.02,
+    hoverTransition: 300,
+    cursorStyle: "blink",
+    cursorColor: "",
+    fontFamily: "monospace",
+    letterSpacing: 0,
+    multiText: "",
+    multiTextDelay: 2000,
+    textTransform: "none",
+    textAlign: "center",
+    glowEffect: false,
+    glowColor: "#cdfe00",
+    glowSize: 15,
+  },
+  render: function (p) {
+    var id = "tw-" + (p._blockId || Date.now());
+    var containerBg = "";
+    if (p.bgType === "gradient") {
+      containerBg =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a0d2e") +
+        ");";
+    } else if (p.bgType === "image" && p.bgImage) {
+      containerBg = "background:url(" + p.bgImage + ") center/cover;";
+    } else {
+      containerBg = "background:" + (p.bg || "#0d0d1a") + ";";
+    }
+    var containerBorder = "";
+    if (p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px " +
+        (p.borderStyle || "solid") +
+        " " +
+        (p.borderColor || "#34d399") +
+        ";";
+    }
+    var containerShadow = "";
+    if (p.boxShadow) {
+      containerShadow =
+        "box-shadow:0 " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowBlur || 10) * 2 +
+        "px " +
+        (p.shadowSpread || 0) +
+        "px " +
+        (p.shadowColor || "rgba(0,0,0,0.3)") +
+        ";";
+    }
+    var hoverClass = "";
+    var hoverStyle = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+      hoverStyle = "transition:all " + (p.hoverTransition || 300) + "ms ease;";
+    }
+    var animClass = "";
+    var animStyle = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+      animStyle =
+        "animation-duration:" +
+        (p.animDuration || 600) +
+        "ms;animation-delay:" +
+        (p.animDelay || 0) +
+        "ms;animation-fill-mode:both;";
+    }
+    var glowStyle = "";
+    if (p.glowEffect) {
+      glowStyle =
+        "filter:drop-shadow(0 0 " +
+        (p.glowSize || 15) +
+        "px " +
+        (p.glowColor || "#cdfe00") +
+        ");";
+    }
+    var textTransformStyle = "";
+    if (p.textTransform && p.textTransform !== "none") {
+      textTransformStyle = "text-transform:" + p.textTransform + ";";
+    }
+    var cursorCol = p.cursorColor || p.color || "#cdfe00";
+    var cursorAnim = "vtblink 1s step-end infinite";
+    if (p.cursorStyle === "underscore")
+      cursorAnim = "vtblink 0.8s step-end infinite";
+    else if (p.cursorStyle === "block")
+      cursorAnim = "vtblink 0.6s step-end infinite";
+    var cursorWidth = p.cursorStyle === "block" ? "0.6em" : "2px";
+    var multiTexts = p.multiText
+      ? p.multiText
+          .split(",")
+          .map(function (s) {
+            return s.trim();
+          })
+          .filter(Boolean)
+      : [];
+    var dataMulti =
+      multiTexts.length > 0
+        ? ' data-multi-text="' +
+          multiTexts.join(",") +
+          '" data-multi-delay="' +
+          (p.multiTextDelay || 2000) +
+          '"'
+        : "";
+    return (
+      '<div class="veltro-typewriter-wrap' +
+      animClass +
+      hoverClass +
+      '" id="' +
+      id +
+      '" data-text="' +
+      (p.text || "Hello, World!") +
+      '" data-speed="' +
+      (p.speed || 80) +
+      '" data-cursor="' +
+      (p.cursor !== false ? "1" : "0") +
+      '" data-loop="' +
+      (p.loop !== false ? "1" : "0") +
+      '" data-delay="' +
+      (p.delay || 2000) +
+      dataMulti +
+      '" style="height:200px;' +
+      containerBg +
+      containerBorder +
+      containerShadow +
+      hoverStyle +
+      animStyle +
+      "border-radius:" +
+      (p.borderRadius || 8) +
+      "px;" +
+      "padding:" +
+      (p.paddingV || 24) +
+      "px " +
+      (p.paddingH || 24) +
+      "px;" +
+      "margin:" +
+      (p.marginV || 0) +
+      "px " +
+      (p.marginH || 0) +
+      "px;" +
+      "opacity:" +
+      (p.opacity || 100) / 100 +
+      ";" +
+      'display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;"><div class="veltro-typewriter" style="font-size:' +
+      (p.fontSize || 48) +
+      "px;font-weight:" +
+      (p.fontWeight || 700) +
+      ";color:" +
+      (p.color || "#cdfe00") +
+      ";font-family:'" +
+      (p.fontFamily || "monospace") +
+      "',sans-serif;user-select:none;letter-spacing:" +
+      (p.letterSpacing || 0) +
+      "px;text-align:" +
+      (p.textAlign || "center") +
+      ";" +
+      glowStyle +
+      textTransformStyle +
+      '"><span class="veltro-typewriter-text"></span>' +
+      (p.cursor !== false
+        ? '<span class="veltro-typewriter-cursor" style="display:inline-block;width:' +
+          cursorWidth +
+          ";height:1em;background:" +
+          cursorCol +
+          ";margin-left:2px;animation:" +
+          cursorAnim +
+          '">&nbsp;</span>'
+        : "") +
+      "</div></div>"
+    );
+  },
+  editPanel: function (id, p) {
+    var html = "";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Text & Typing</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Text</label><input type="text" value="' +
+      (p.text || "Hello, World!") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','text',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Speed: ' +
+      (p.speed || 80) +
+      'ms</label><input type="range" min="20" max="200" value="' +
+      (p.speed || 80) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','speed',+this.value);this.previousElementSibling.textContent='Speed: '+this.value+'ms'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Delay: ' +
+      (p.delay || 2000) +
+      'ms</label><input type="range" min="500" max="5000" step="100" value="' +
+      (p.delay || 2000) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','delay',+this.value);this.previousElementSibling.textContent='Delay: '+this.value+'ms'\"></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.loop !== false ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','loop',this.checked)\"> Loop</label></div>";
+    html +=
+      '<div class="rp-row"><label>Multi-Text (comma-separated)</label><input type="text" value="' +
+      (p.multiText || "") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','multiText',this.value)\"></div>";
+    if (p.multiText) {
+      html +=
+        '<div class="rp-row"><label>Multi-Text Delay: ' +
+        (p.multiTextDelay || 2000) +
+        'ms</label><input type="range" min="1000" max="5000" step="100" value="' +
+        (p.multiTextDelay || 2000) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','multiTextDelay',+this.value);this.previousElementSibling.textContent='Multi-Text Delay: '+this.value+'ms'\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Cursor</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.cursor !== false ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','cursor',this.checked)\"> Show Cursor</label></div>";
+    if (p.cursor !== false) {
+      html +=
+        '<div class="rp-row"><label>Cursor Style</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','cursorStyle',this.value)\"><option value=\"blink\"" +
+        (p.cursorStyle === "blink" ? " selected" : "") +
+        '>Blink</option><option value="underscore"' +
+        (p.cursorStyle === "underscore" ? " selected" : "") +
+        '>Underscore</option><option value="block"' +
+        (p.cursorStyle === "block" ? " selected" : "") +
+        ">Block</option></select></div>";
+      html +=
+        '<div class="rp-row"><label>Cursor Colour</label><input type="color" value="' +
+        (p.cursorColor || p.color || "#cdfe00") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','cursorColor',this.value)\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Typography & Effects</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Font Size: ' +
+      (p.fontSize || 48) +
+      'px</label><input type="range" min="16" max="120" value="' +
+      (p.fontSize || 48) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontSize',+this.value);this.previousElementSibling.textContent='Font Size: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Weight: ' +
+      (p.fontWeight || 700) +
+      '</label><input type="range" min="100" max="900" step="100" value="' +
+      (p.fontWeight || 700) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontWeight',+this.value);this.previousElementSibling.textContent='Font Weight: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Family</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontFamily',this.value)\"><option value=\"monospace\"" +
+      (p.fontFamily === "monospace" ? " selected" : "") +
+      '>Monospace</option><option value="Inter"' +
+      (p.fontFamily === "Inter" ? " selected" : "") +
+      '>Inter</option><option value="Lexend"' +
+      (p.fontFamily === "Lexend" ? " selected" : "") +
+      ">Lexend</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Letter Spacing: ' +
+      (p.letterSpacing || 0) +
+      'px</label><input type="range" min="-5" max="20" value="' +
+      (p.letterSpacing || 0) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','letterSpacing',+this.value);this.previousElementSibling.textContent='Letter Spacing: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Text Align</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','textAlign',this.value)\"><option value=\"left\"" +
+      (p.textAlign === "left" ? " selected" : "") +
+      '>Left</option><option value="center"' +
+      (p.textAlign === "center" ? " selected" : "") +
+      '>Center</option><option value="right"' +
+      (p.textAlign === "right" ? " selected" : "") +
+      ">Right</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Text Transform</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','textTransform',this.value)\"><option value=\"none\"" +
+      (p.textTransform === "none" ? " selected" : "") +
+      '>None</option><option value="uppercase"' +
+      (p.textTransform === "uppercase" ? " selected" : "") +
+      '>UPPERCASE</option><option value="lowercase"' +
+      (p.textTransform === "lowercase" ? " selected" : "") +
+      '>lowercase</option><option value="capitalize"' +
+      (p.textTransform === "capitalize" ? " selected" : "") +
+      ">Capitalize</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Text Colour</label><div class="rp-colour-row"><input type="color" value="' +
+      (p.color || "#cdfe00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      '\',\'color\',this.value)"><input type="text" value="' +
+      (p.color || "#cdfe00") +
+      '" style="flex:1" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','color',this.value)\"></div></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.glowEffect ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','glowEffect',this.checked)\"> Glow Effect</label></div>";
+    if (p.glowEffect) {
+      html +=
+        '<div class="rp-row"><label>Glow Colour</label><input type="color" value="' +
+        (p.glowColor || "#cdfe00") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','glowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Glow Size: ' +
+        (p.glowSize || 15) +
+        'px</label><input type="range" min="5" max="50" value="' +
+        (p.glowSize || 15) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','glowSize',+this.value);this.previousElementSibling.textContent='Glow Size: '+this.value+'px'\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      (p.bgType === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      (p.bgType === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      (p.bgType === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if (p.bgType === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Colour</label><div class="rp-colour-row"><input type="color" value="' +
+        (p.bg || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        '\',\'bg\',this.value)"><input type="text" value="' +
+        (p.bg || "#0d0d1a") +
+        '" style="flex:1" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bg',this.value)\"></div></div>";
+    } else if (p.bgType === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Colour 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Colour 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a0d2e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        (p.bgGradientDir === "135deg" ? " selected" : "") +
+        '>135°</option><option value="90deg"' +
+        (p.bgGradientDir === "90deg" ? " selected" : "") +
+        '>90°</option><option value="180deg"' +
+        (p.bgGradientDir === "180deg" ? " selected" : "") +
+        ">180°</option></select></div>";
+    } else if (p.bgType === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImage || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImage',this.value)\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius: ' +
+      (p.borderRadius || 8) +
+      'px</label><input type="range" min="0" max="50" value="' +
+      (p.borderRadius || 8) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value);this.previousElementSibling.textContent='Border Radius: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width: ' +
+      (p.borderWidth || 0) +
+      'px</label><input type="range" min="0" max="8" value="' +
+      (p.borderWidth || 0) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value);this.previousElementSibling.textContent='Border Width: '+this.value+'px'\"></div>";
+    if (p.borderWidth > 0) {
+      html +=
+        '<div class="rp-row"><label>Border Colour</label><input type="color" value="' +
+        (p.borderColor || "#34d399") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','borderColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Border Style</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','borderStyle',this.value)\"><option value=\"solid\"" +
+        (p.borderStyle === "solid" ? " selected" : "") +
+        '>Solid</option><option value="dashed"' +
+        (p.borderStyle === "dashed" ? " selected" : "") +
+        '>Dashed</option><option value="dotted"' +
+        (p.borderStyle === "dotted" ? " selected" : "") +
+        ">Dotted</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Padding V: ' +
+      (p.paddingV || 24) +
+      'px</label><input type="range" min="0" max="80" value="' +
+      (p.paddingV || 24) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value);this.previousElementSibling.textContent='Padding V: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H: ' +
+      (p.paddingH || 24) +
+      'px</label><input type="range" min="0" max="80" value="' +
+      (p.paddingH || 24) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value);this.previousElementSibling.textContent='Padding H: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity: ' +
+      (p.opacity || 100) +
+      '%</label><input type="range" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value);this.previousElementSibling.textContent='Opacity: '+this.value+'%'\"></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.boxShadow ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','boxShadow',this.checked)\"> Box Shadow</label></div>";
+    if (p.boxShadow) {
+      html +=
+        '<div class="rp-row"><label>Shadow Blur: ' +
+        (p.shadowBlur || 10) +
+        '</label><input type="range" min="0" max="40" value="' +
+        (p.shadowBlur || 10) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value);this.previousElementSibling.textContent='Shadow Blur: '+this.value'\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animation</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      (p.entranceAnim === "none" ? " selected" : "") +
+      '>None</option><option value="fade"' +
+      (p.entranceAnim === "fade" ? " selected" : "") +
+      '>Fade</option><option value="slide-up"' +
+      (p.entranceAnim === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="zoom"' +
+      (p.entranceAnim === "zoom" ? " selected" : "") +
+      ">Zoom</option></select></div>";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      html +=
+        '<div class="rp-row"><label>Duration: ' +
+        (p.animDuration || 600) +
+        'ms</label><input type="range" min="200" max="2000" step="100" value="' +
+        (p.animDuration || 600) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','animDuration',+this.value);this.previousElementSibling.textContent='Duration: '+this.value+'ms'\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      (p.hoverEffect === "none" ? " selected" : "") +
+      '>None</option><option value="scale"' +
+      (p.hoverEffect === "scale" ? " selected" : "") +
+      '>Scale</option><option value="lift"' +
+      (p.hoverEffect === "lift" ? " selected" : "") +
+      '>Lift</option><option value="glow"' +
+      (p.hoverEffect === "glow" ? " selected" : "") +
+      ">Glow</option></select></div>";
+    html += "</div></div>";
+    return html;
+  },
+});
+
+// ── 5. TEXT MASK ──
+FB.widgets.register("textMask", {
+  label: "Text Mask",
+  sublabel: "Background clip",
+  icon: "M",
+  iconBg: "#1a1a0d",
+  iconColor: "#fbbf24",
+  category: "veltro",
+  subCategory: "typography",
+  defaultProps: {
+    text: "MASKED",
+    fontSize: 80,
+    fontWeight: 900,
+    bgImage: "https://picsum.photos/800/400?random=1",
+    bg: "#0d0d1a",
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a0d2e",
+    bgImageContainer: "",
+    borderRadius: 8,
+    borderWidth: 0,
+    borderColor: "#fbbf24",
+    borderStyle: "solid",
+    paddingV: 24,
+    paddingH: 24,
+    marginV: 0,
+    marginH: 0,
+    boxShadow: false,
+    shadowColor: "rgba(0,0,0,0.3)",
+    shadowBlur: 10,
+    shadowSpread: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    animDuration: 600,
+    animDelay: 0,
+    hoverEffect: "none",
+    hoverScale: 1.02,
+    hoverTransition: 300,
+    maskBlendMode: "source-atop",
+    maskScale: 100,
+    maskAnimation: false,
+    maskAnimSpeed: 10,
+    maskPosition: "center",
+    maskRepeat: "no-repeat",
+    maskOpacity: 100,
+    textShadow: false,
+    textShadowColor: "rgba(0,0,0,0.5)",
+    textShadowBlur: 4,
+    fontFamily: "Lexend",
+    letterSpacing: 0,
+    textTransform: "none",
+    maskFallbackColor: "#fbbf24",
+    maskVideoUrl: "",
+  },
+  render: function (p) {
+    var containerBg = "";
+    if (p.bgType === "gradient") {
+      containerBg =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a0d2e") +
+        ");";
+    } else if (p.bgType === "image" && p.bgImageContainer) {
+      containerBg = "background:url(" + p.bgImageContainer + ") center/cover;";
+    } else {
+      containerBg = "background:" + (p.bg || "#0d0d1a") + ";";
+    }
+    var containerBorder = "";
+    if (p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px " +
+        (p.borderStyle || "solid") +
+        " " +
+        (p.borderColor || "#fbbf24") +
+        ";";
+    }
+    var containerShadow = "";
+    if (p.boxShadow) {
+      containerShadow =
+        "box-shadow:0 " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowBlur || 10) * 2 +
+        "px " +
+        (p.shadowSpread || 0) +
+        "px " +
+        (p.shadowColor || "rgba(0,0,0,0.3)") +
+        ";";
+    }
+    var hoverClass = "";
+    var hoverStyle = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+      hoverStyle = "transition:all " + (p.hoverTransition || 300) + "ms ease;";
+    }
+    var animClass = "";
+    var animStyle = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+      animStyle =
+        "animation-duration:" +
+        (p.animDuration || 600) +
+        "ms;animation-delay:" +
+        (p.animDelay || 0) +
+        "ms;animation-fill-mode:both;";
+    }
+    var textShadowStyle = "";
+    if (p.textShadow) {
+      textShadowStyle =
+        "text-shadow:" +
+        (p.textShadowBlur || 4) +
+        "px " +
+        (p.textShadowBlur || 4) +
+        "px " +
+        (p.textShadowBlur || 4) * 2 +
+        "px " +
+        (p.textShadowColor || "rgba(0,0,0,0.5)") +
+        ";";
+    }
+    var textTransformStyle = "";
+    if (p.textTransform && p.textTransform !== "none") {
+      textTransformStyle = "text-transform:" + p.textTransform + ";";
+    }
+    var maskAnimClass = p.maskAnimation ? " veltro-mask-anim" : "";
+    var maskAnimStyle = p.maskAnimation
+      ? "animation:vtmaskpan " +
+        10 / (p.maskAnimSpeed || 10) +
+        "s linear infinite;"
+      : "";
+    var maskPos = p.maskPosition || "center";
+    var maskBg = p.maskVideoUrl
+      ? "background:url(" +
+        p.maskVideoUrl +
+        ") " +
+        maskPos +
+        "/" +
+        (p.maskScale || 100) +
+        "% " +
+        (p.maskRepeat || "no-repeat") +
+        ";"
+      : "background:url(" +
+        (p.bgImage || "https://picsum.photos/800/400?random=1") +
+        ") " +
+        maskPos +
+        "/" +
+        (p.maskScale || 100) +
+        "% " +
+        (p.maskRepeat || "no-repeat") +
+        ";";
+    return (
+      '<div class="veltro-textmask-wrap' +
+      animClass +
+      hoverClass +
+      '" style="height:200px;' +
+      containerBg +
+      containerBorder +
+      containerShadow +
+      hoverStyle +
+      animStyle +
+      "border-radius:" +
+      (p.borderRadius || 8) +
+      "px;" +
+      "padding:" +
+      (p.paddingV || 24) +
+      "px " +
+      (p.paddingH || 24) +
+      "px;" +
+      "margin:" +
+      (p.marginV || 0) +
+      "px " +
+      (p.marginH || 0) +
+      "px;" +
+      "opacity:" +
+      (p.opacity || 100) / 100 +
+      ";" +
+      'display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;"><div class="veltro-textmask-text' +
+      maskAnimClass +
+      '" style="font-size:' +
+      (p.fontSize || 80) +
+      "px;font-weight:" +
+      (p.fontWeight || 900) +
+      ";" +
+      maskBg +
+      "-webkit-background-clip:text;background-clip:text;color:transparent;user-select:none;font-family:'" +
+      (p.fontFamily || "Lexend") +
+      "',sans-serif;letter-spacing:" +
+      (p.letterSpacing || 0) +
+      "px;" +
+      textShadowStyle +
+      textTransformStyle +
+      maskAnimStyle +
+      "opacity:" +
+      (p.maskOpacity || 100) / 100 +
+      '">' +
+      (p.text || "MASKED") +
+      '</div><noscript><div style="font-size:' +
+      (p.fontSize || 80) +
+      "px;font-weight:" +
+      (p.fontWeight || 900) +
+      ";color:" +
+      (p.maskFallbackColor || "#fbbf24") +
+      ";font-family:'" +
+      (p.fontFamily || "Lexend") +
+      "',sans-serif\">" +
+      (p.text || "MASKED") +
+      "</div></noscript></div>"
+    );
+  },
+  editPanel: function (id, p) {
+    var html = "";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Text & Mask</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Text</label><input type="text" value="' +
+      (p.text || "MASKED") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','text',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Size: ' +
+      (p.fontSize || 80) +
+      'px</label><input type="range" min="24" max="150" value="' +
+      (p.fontSize || 80) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontSize',+this.value);this.previousElementSibling.textContent='Font Size: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Weight: ' +
+      (p.fontWeight || 900) +
+      '</label><input type="range" min="100" max="900" step="100" value="' +
+      (p.fontWeight || 900) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontWeight',+this.value);this.previousElementSibling.textContent='Font Weight: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Family</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontFamily',this.value)\"><option value=\"Lexend\"" +
+      (p.fontFamily === "Lexend" ? " selected" : "") +
+      '>Lexend</option><option value="Inter"' +
+      (p.fontFamily === "Inter" ? " selected" : "") +
+      '>Inter</option><option value="Georgia"' +
+      (p.fontFamily === "Georgia" ? " selected" : "") +
+      ">Georgia</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Letter Spacing: ' +
+      (p.letterSpacing || 0) +
+      'px</label><input type="range" min="-5" max="20" value="' +
+      (p.letterSpacing || 0) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','letterSpacing',+this.value);this.previousElementSibling.textContent='Letter Spacing: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Text Transform</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','textTransform',this.value)\"><option value=\"none\"" +
+      (p.textTransform === "none" ? " selected" : "") +
+      '>None</option><option value="uppercase"' +
+      (p.textTransform === "uppercase" ? " selected" : "") +
+      '>UPPERCASE</option><option value="lowercase"' +
+      (p.textTransform === "lowercase" ? " selected" : "") +
+      ">lowercase</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Mask Image URL</label><input type="text" value="' +
+      (p.bgImage || "https://picsum.photos/800/400?random=1") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgImage',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Mask Scale: ' +
+      (p.maskScale || 100) +
+      '%</label><input type="range" min="50" max="300" value="' +
+      (p.maskScale || 100) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','maskScale',+this.value);this.previousElementSibling.textContent='Mask Scale: '+this.value+'%'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Mask Position</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','maskPosition',this.value)\"><option value=\"center\"" +
+      (p.maskPosition === "center" ? " selected" : "") +
+      '>Center</option><option value="top"' +
+      (p.maskPosition === "top" ? " selected" : "") +
+      '>Top</option><option value="bottom"' +
+      (p.maskPosition === "bottom" ? " selected" : "") +
+      '>Bottom</option><option value="left"' +
+      (p.maskPosition === "left" ? " selected" : "") +
+      '>Left</option><option value="right"' +
+      (p.maskPosition === "right" ? " selected" : "") +
+      ">Right</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Mask Opacity: ' +
+      (p.maskOpacity || 100) +
+      '%</label><input type="range" min="0" max="100" value="' +
+      (p.maskOpacity || 100) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','maskOpacity',+this.value);this.previousElementSibling.textContent='Mask Opacity: '+this.value+'%'\"></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.maskAnimation ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','maskAnimation',this.checked)\"> Animate Mask</label></div>";
+    if (p.maskAnimation) {
+      html +=
+        '<div class="rp-row"><label>Anim Speed: ' +
+        (p.maskAnimSpeed || 10) +
+        '</label><input type="range" min="1" max="30" value="' +
+        (p.maskAnimSpeed || 10) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','maskAnimSpeed',+this.value);this.previousElementSibling.textContent='Anim Speed: '+this.value'\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Effects</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.textShadow ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','textShadow',this.checked)\"> Text Shadow</label></div>";
+    if (p.textShadow) {
+      html +=
+        '<div class="rp-row"><label>Shadow Colour</label><input type="color" value="' +
+        (p.textShadowColor || "#000000") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','textShadowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Shadow Blur: ' +
+        (p.textShadowBlur || 4) +
+        '</label><input type="range" min="0" max="20" value="' +
+        (p.textShadowBlur || 4) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','textShadowBlur',+this.value);this.previousElementSibling.textContent='Shadow Blur: '+this.value'\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Mask Fallback Colour</label><input type="color" value="' +
+      (p.maskFallbackColor || "#fbbf24") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','maskFallbackColor',this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      (p.bgType === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      (p.bgType === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      (p.bgType === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if (p.bgType === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Colour</label><div class="rp-colour-row"><input type="color" value="' +
+        (p.bg || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        '\',\'bg\',this.value)"><input type="text" value="' +
+        (p.bg || "#0d0d1a") +
+        '" style="flex:1" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bg',this.value)\"></div></div>";
+    } else if (p.bgType === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Colour 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Colour 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a0d2e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        (p.bgGradientDir === "135deg" ? " selected" : "") +
+        '>135°</option><option value="90deg"' +
+        (p.bgGradientDir === "90deg" ? " selected" : "") +
+        ">90°</option></select></div>";
+    } else if (p.bgType === "image") {
+      html +=
+        '<div class="rp-row"><label>Container Image URL</label><input type="text" value="' +
+        (p.bgImageContainer || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageContainer',this.value)\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius: ' +
+      (p.borderRadius || 8) +
+      'px</label><input type="range" min="0" max="50" value="' +
+      (p.borderRadius || 8) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value);this.previousElementSibling.textContent='Border Radius: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width: ' +
+      (p.borderWidth || 0) +
+      'px</label><input type="range" min="0" max="8" value="' +
+      (p.borderWidth || 0) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value);this.previousElementSibling.textContent='Border Width: '+this.value+'px'\"></div>";
+    if (p.borderWidth > 0) {
+      html +=
+        '<div class="rp-row"><label>Border Colour</label><input type="color" value="' +
+        (p.borderColor || "#fbbf24") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','borderColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Border Style</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','borderStyle',this.value)\"><option value=\"solid\"" +
+        (p.borderStyle === "solid" ? " selected" : "") +
+        '>Solid</option><option value="dashed"' +
+        (p.borderStyle === "dashed" ? " selected" : "") +
+        '>Dashed</option><option value="dotted"' +
+        (p.borderStyle === "dotted" ? " selected" : "") +
+        ">Dotted</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Padding V: ' +
+      (p.paddingV || 24) +
+      'px</label><input type="range" min="0" max="80" value="' +
+      (p.paddingV || 24) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value);this.previousElementSibling.textContent='Padding V: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H: ' +
+      (p.paddingH || 24) +
+      'px</label><input type="range" min="0" max="80" value="' +
+      (p.paddingH || 24) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value);this.previousElementSibling.textContent='Padding H: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity: ' +
+      (p.opacity || 100) +
+      '%</label><input type="range" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value);this.previousElementSibling.textContent='Opacity: '+this.value+'%'\"></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.boxShadow ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','boxShadow',this.checked)\"> Box Shadow</label></div>";
+    if (p.boxShadow) {
+      html +=
+        '<div class="rp-row"><label>Shadow Blur: ' +
+        (p.shadowBlur || 10) +
+        '</label><input type="range" min="0" max="40" value="' +
+        (p.shadowBlur || 10) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value);this.previousElementSibling.textContent='Shadow Blur: '+this.value'\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animation</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      (p.entranceAnim === "none" ? " selected" : "") +
+      '>None</option><option value="fade"' +
+      (p.entranceAnim === "fade" ? " selected" : "") +
+      '>Fade</option><option value="slide-up"' +
+      (p.entranceAnim === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="zoom"' +
+      (p.entranceAnim === "zoom" ? " selected" : "") +
+      ">Zoom</option></select></div>";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      html +=
+        '<div class="rp-row"><label>Duration: ' +
+        (p.animDuration || 600) +
+        'ms</label><input type="range" min="200" max="2000" step="100" value="' +
+        (p.animDuration || 600) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','animDuration',+this.value);this.previousElementSibling.textContent='Duration: '+this.value+'ms'\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      (p.hoverEffect === "none" ? " selected" : "") +
+      '>None</option><option value="scale"' +
+      (p.hoverEffect === "scale" ? " selected" : "") +
+      '>Scale</option><option value="lift"' +
+      (p.hoverEffect === "lift" ? " selected" : "") +
+      '>Lift</option><option value="glow"' +
+      (p.hoverEffect === "glow" ? " selected" : "") +
+      ">Glow</option></select></div>";
+    html += "</div></div>";
+    return html;
+  },
+});
+
+// ── 6. MORPHING COUNTER ──
+FB.widgets.register("morphingCounter", {
+  label: "Morphing Counter",
+  sublabel: "Number animation",
+  icon: "0",
+  iconBg: "#0d1a1a",
+  iconColor: "#34d399",
+  category: "veltro",
+  subCategory: "typography",
+  defaultProps: {
+    value: 1000,
+    prefix: "",
+    suffix: "+",
+    duration: 2000,
+    color: "#cdfe00",
+    bg: "#0d0d1a",
+    fontSize: 72,
+    fontWeight: 800,
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a0d2e",
+    bgImage: "",
+    borderRadius: 8,
+    borderWidth: 0,
+    borderColor: "#34d399",
+    borderStyle: "solid",
+    paddingV: 24,
+    paddingH: 24,
+    marginV: 0,
+    marginH: 0,
+    boxShadow: false,
+    shadowColor: "rgba(0,0,0,0.3)",
+    shadowBlur: 10,
+    shadowSpread: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    animDuration: 600,
+    animDelay: 0,
+    hoverEffect: "none",
+    hoverScale: 1.02,
+    hoverTransition: 300,
+    separatorStyle: "none",
+    numberFormat: "plain",
+    easingCurve: "ease-out",
+    fontFamily: "Lexend",
+    letterSpacing: -2,
+    textAlign: "center",
+    textTransform: "none",
+    glowEffect: false,
+    glowColor: "#cdfe00",
+    glowSize: 15,
+    animateOnScroll: false,
+    startFrom: 0,
+  },
+  render: function (p) {
+    var id = "counter-" + (p._blockId || Date.now());
+    var containerBg = "";
+    if (p.bgType === "gradient") {
+      containerBg =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a0d2e") +
+        ");";
+    } else if (p.bgType === "image" && p.bgImage) {
+      containerBg = "background:url(" + p.bgImage + ") center/cover;";
+    } else {
+      containerBg = "background:" + (p.bg || "#0d0d1a") + ";";
+    }
+    var containerBorder = "";
+    if (p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px " +
+        (p.borderStyle || "solid") +
+        " " +
+        (p.borderColor || "#34d399") +
+        ";";
+    }
+    var containerShadow = "";
+    if (p.boxShadow) {
+      containerShadow =
+        "box-shadow:0 " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowBlur || 10) * 2 +
+        "px " +
+        (p.shadowSpread || 0) +
+        "px " +
+        (p.shadowColor || "rgba(0,0,0,0.3)") +
+        ";";
+    }
+    var hoverClass = "";
+    var hoverStyle = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+      hoverStyle = "transition:all " + (p.hoverTransition || 300) + "ms ease;";
+    }
+    var animClass = "";
+    var animStyle = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+      animStyle =
+        "animation-duration:" +
+        (p.animDuration || 600) +
+        "ms;animation-delay:" +
+        (p.animDelay || 0) +
+        "ms;animation-fill-mode:both;";
+    }
+    var glowStyle = "";
+    if (p.glowEffect) {
+      glowStyle =
+        "filter:drop-shadow(0 0 " +
+        (p.glowSize || 15) +
+        "px " +
+        (p.glowColor || "#cdfe00") +
+        ");";
+    }
+    var textTransformStyle = "";
+    if (p.textTransform && p.textTransform !== "none") {
+      textTransformStyle = "text-transform:" + p.textTransform + ";";
+    }
+    return (
+      '<div class="veltro-counter-wrap' +
+      animClass +
+      hoverClass +
+      '" id="' +
+      id +
+      '" data-value="' +
+      (p.value || 1000) +
+      '" data-prefix="' +
+      (p.prefix || "") +
+      '" data-suffix="' +
+      (p.suffix || "+") +
+      '" data-duration="' +
+      (p.duration || 2000) +
+      '" data-separator="' +
+      (p.separatorStyle || "none") +
+      '" data-format="' +
+      (p.numberFormat || "plain") +
+      '" data-easing="' +
+      (p.easingCurve || "ease-out") +
+      '" data-start-from="' +
+      (p.startFrom || 0) +
+      '" data-animate-scroll="' +
+      (p.animateOnScroll ? "1" : "0") +
+      '" style="height:200px;' +
+      containerBg +
+      containerBorder +
+      containerShadow +
+      hoverStyle +
+      animStyle +
+      "border-radius:" +
+      (p.borderRadius || 8) +
+      "px;" +
+      "padding:" +
+      (p.paddingV || 24) +
+      "px " +
+      (p.paddingH || 24) +
+      "px;" +
+      "margin:" +
+      (p.marginV || 0) +
+      "px " +
+      (p.marginH || 0) +
+      "px;" +
+      "opacity:" +
+      (p.opacity || 100) / 100 +
+      ";" +
+      'display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;"><div class="veltro-counter" style="font-size:' +
+      (p.fontSize || 72) +
+      "px;font-weight:" +
+      (p.fontWeight || 800) +
+      ";color:" +
+      (p.color || "#cdfe00") +
+      ";font-family:'" +
+      (p.fontFamily || "Lexend") +
+      "',sans-serif;user-select:none;font-variant-numeric:tabular-nums;letter-spacing:" +
+      (p.letterSpacing !== undefined ? p.letterSpacing : -2) +
+      "px;text-align:" +
+      (p.textAlign || "center") +
+      ";" +
+      glowStyle +
+      textTransformStyle +
+      '">' +
+      (p.prefix || "") +
+      "0" +
+      (p.suffix || "+") +
+      "</div></div>"
+    );
+  },
+  editPanel: function (id, p) {
+    var html = "";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Counter</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Target Value</label><input type="number" value="' +
+      (p.value || 1000) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','value',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Prefix</label><input type="text" value="' +
+      (p.prefix || "") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','prefix',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Suffix</label><input type="text" value="' +
+      (p.suffix || "+") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','suffix',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Duration: ' +
+      (p.duration || 2000) +
+      'ms</label><input type="range" min="500" max="5000" step="100" value="' +
+      (p.duration || 2000) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','duration',+this.value);this.previousElementSibling.textContent='Duration: '+this.value+'ms'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Start From</label><input type="number" value="' +
+      (p.startFrom || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','startFrom',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.animateOnScroll ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','animateOnScroll',this.checked)\"> Animate on Scroll</label></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Number Format</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Separator Style</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','separatorStyle',this.value)\"><option value=\"none\"" +
+      (p.separatorStyle === "none" ? " selected" : "") +
+      '>None</option><option value="comma"' +
+      (p.separatorStyle === "comma" ? " selected" : "") +
+      '>Comma (1,000)</option><option value="space"' +
+      (p.separatorStyle === "space" ? " selected" : "") +
+      '>Space (1 000)</option><option value="dot"' +
+      (p.separatorStyle === "dot" ? " selected" : "") +
+      ">Dot (1.000)</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Number Format</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','numberFormat',this.value)\"><option value=\"plain\"" +
+      (p.numberFormat === "plain" ? " selected" : "") +
+      '>Plain</option><option value="compact"' +
+      (p.numberFormat === "compact" ? " selected" : "") +
+      '>Compact (1K)</option><option value="scientific"' +
+      (p.numberFormat === "scientific" ? " selected" : "") +
+      ">Scientific</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Easing Curve</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','easingCurve',this.value)\"><option value=\"ease-out\"" +
+      (p.easingCurve === "ease-out" ? " selected" : "") +
+      '>Ease Out</option><option value="ease-in"' +
+      (p.easingCurve === "ease-in" ? " selected" : "") +
+      '>Ease In</option><option value="linear"' +
+      (p.easingCurve === "linear" ? " selected" : "") +
+      '>Linear</option><option value="bounce"' +
+      (p.easingCurve === "bounce" ? " selected" : "") +
+      ">Bounce</option></select></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Typography & Effects</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Font Size: ' +
+      (p.fontSize || 72) +
+      'px</label><input type="range" min="24" max="150" value="' +
+      (p.fontSize || 72) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontSize',+this.value);this.previousElementSibling.textContent='Font Size: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Weight: ' +
+      (p.fontWeight || 800) +
+      '</label><input type="range" min="100" max="900" step="100" value="' +
+      (p.fontWeight || 800) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontWeight',+this.value);this.previousElementSibling.textContent='Font Weight: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Family</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontFamily',this.value)\"><option value=\"Lexend\"" +
+      (p.fontFamily === "Lexend" ? " selected" : "") +
+      '>Lexend</option><option value="Inter"' +
+      (p.fontFamily === "Inter" ? " selected" : "") +
+      '>Inter</option><option value="monospace"' +
+      (p.fontFamily === "monospace" ? " selected" : "") +
+      ">Monospace</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Letter Spacing: ' +
+      (p.letterSpacing !== undefined ? p.letterSpacing : -2) +
+      'px</label><input type="range" min="-10" max="20" value="' +
+      (p.letterSpacing !== undefined ? p.letterSpacing : -2) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','letterSpacing',+this.value);this.previousElementSibling.textContent='Letter Spacing: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Text Align</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','textAlign',this.value)\"><option value=\"left\"" +
+      (p.textAlign === "left" ? " selected" : "") +
+      '>Left</option><option value="center"' +
+      (p.textAlign === "center" ? " selected" : "") +
+      '>Center</option><option value="right"' +
+      (p.textAlign === "right" ? " selected" : "") +
+      ">Right</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Text Transform</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','textTransform',this.value)\"><option value=\"none\"" +
+      (p.textTransform === "none" ? " selected" : "") +
+      '>None</option><option value="uppercase"' +
+      (p.textTransform === "uppercase" ? " selected" : "") +
+      ">UPPERCASE</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Text Colour</label><div class="rp-colour-row"><input type="color" value="' +
+      (p.color || "#cdfe00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      '\',\'color\',this.value)"><input type="text" value="' +
+      (p.color || "#cdfe00") +
+      '" style="flex:1" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','color',this.value)\"></div></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.glowEffect ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','glowEffect',this.checked)\"> Glow Effect</label></div>";
+    if (p.glowEffect) {
+      html +=
+        '<div class="rp-row"><label>Glow Colour</label><input type="color" value="' +
+        (p.glowColor || "#cdfe00") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','glowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Glow Size: ' +
+        (p.glowSize || 15) +
+        'px</label><input type="range" min="5" max="50" value="' +
+        (p.glowSize || 15) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','glowSize',+this.value);this.previousElementSibling.textContent='Glow Size: '+this.value+'px'\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      (p.bgType === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      (p.bgType === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      (p.bgType === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if (p.bgType === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Colour</label><div class="rp-colour-row"><input type="color" value="' +
+        (p.bg || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        '\',\'bg\',this.value)"><input type="text" value="' +
+        (p.bg || "#0d0d1a") +
+        '" style="flex:1" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bg',this.value)\"></div></div>";
+    } else if (p.bgType === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Colour 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Colour 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a0d2e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        (p.bgGradientDir === "135deg" ? " selected" : "") +
+        '>135°</option><option value="90deg"' +
+        (p.bgGradientDir === "90deg" ? " selected" : "") +
+        ">90°</option></select></div>";
+    } else if (p.bgType === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImage || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImage',this.value)\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius: ' +
+      (p.borderRadius || 8) +
+      'px</label><input type="range" min="0" max="50" value="' +
+      (p.borderRadius || 8) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value);this.previousElementSibling.textContent='Border Radius: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width: ' +
+      (p.borderWidth || 0) +
+      'px</label><input type="range" min="0" max="8" value="' +
+      (p.borderWidth || 0) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value);this.previousElementSibling.textContent='Border Width: '+this.value+'px'\"></div>";
+    if (p.borderWidth > 0) {
+      html +=
+        '<div class="rp-row"><label>Border Colour</label><input type="color" value="' +
+        (p.borderColor || "#34d399") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','borderColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Border Style</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','borderStyle',this.value)\"><option value=\"solid\"" +
+        (p.borderStyle === "solid" ? " selected" : "") +
+        '>Solid</option><option value="dashed"' +
+        (p.borderStyle === "dashed" ? " selected" : "") +
+        '>Dashed</option><option value="dotted"' +
+        (p.borderStyle === "dotted" ? " selected" : "") +
+        ">Dotted</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Padding V: ' +
+      (p.paddingV || 24) +
+      'px</label><input type="range" min="0" max="80" value="' +
+      (p.paddingV || 24) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value);this.previousElementSibling.textContent='Padding V: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H: ' +
+      (p.paddingH || 24) +
+      'px</label><input type="range" min="0" max="80" value="' +
+      (p.paddingH || 24) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value);this.previousElementSibling.textContent='Padding H: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity: ' +
+      (p.opacity || 100) +
+      '%</label><input type="range" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value);this.previousElementSibling.textContent='Opacity: '+this.value+'%'\"></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.boxShadow ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','boxShadow',this.checked)\"> Box Shadow</label></div>";
+    if (p.boxShadow) {
+      html +=
+        '<div class="rp-row"><label>Shadow Blur: ' +
+        (p.shadowBlur || 10) +
+        '</label><input type="range" min="0" max="40" value="' +
+        (p.shadowBlur || 10) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value);this.previousElementSibling.textContent='Shadow Blur: '+this.value'\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animation</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      (p.entranceAnim === "none" ? " selected" : "") +
+      '>None</option><option value="fade"' +
+      (p.entranceAnim === "fade" ? " selected" : "") +
+      '>Fade</option><option value="slide-up"' +
+      (p.entranceAnim === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="zoom"' +
+      (p.entranceAnim === "zoom" ? " selected" : "") +
+      ">Zoom</option></select></div>";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      html +=
+        '<div class="rp-row"><label>Duration: ' +
+        (p.animDuration || 600) +
+        'ms</label><input type="range" min="200" max="2000" step="100" value="' +
+        (p.animDuration || 600) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','animDuration',+this.value);this.previousElementSibling.textContent='Duration: '+this.value+'ms'\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      (p.hoverEffect === "none" ? " selected" : "") +
+      '>None</option><option value="scale"' +
+      (p.hoverEffect === "scale" ? " selected" : "") +
+      '>Scale</option><option value="lift"' +
+      (p.hoverEffect === "lift" ? " selected" : "") +
+      '>Lift</option><option value="glow"' +
+      (p.hoverEffect === "glow" ? " selected" : "") +
+      ">Glow</option></select></div>";
+    html += "</div></div>";
+    return html;
+  },
+});
+
+// ── 7. LIQUID TEXT ──
+FB.widgets.register("liquidText", {
+  label: "Liquid Text",
+  sublabel: "Wave distortion",
+  icon: "~",
+  iconBg: "#0d0d2e",
+  iconColor: "#60a5fa",
+  category: "veltro",
+  subCategory: "typography",
+  defaultProps: {
+    text: "LIQUID",
+    fontSize: 80,
+    fontWeight: 900,
+    color: "#3b82f6",
+    bg: "#0d0d1a",
+    amplitude: 10,
+    frequency: 0.05,
+    speed: 0.02,
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a0d2e",
+    bgImage: "",
+    borderRadius: 8,
+    borderWidth: 0,
+    borderColor: "#60a5fa",
+    borderStyle: "solid",
+    paddingV: 24,
+    paddingH: 24,
+    marginV: 0,
+    marginH: 0,
+    boxShadow: false,
+    shadowColor: "rgba(0,0,0,0.3)",
+    shadowBlur: 10,
+    shadowSpread: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    animDuration: 600,
+    animDelay: 0,
+    hoverEffect: "none",
+    hoverScale: 1.02,
+    hoverTransition: 300,
+    waveType: "sine",
+    perCharRandom: false,
+    filterIntensity: 1,
+    fontFamily: "Lexend",
+    letterSpacing: 0,
+    textTransform: "none",
+    glowEffect: false,
+    glowColor: "#3b82f6",
+    glowSize: 15,
+    textShadow: false,
+    textShadowColor: "rgba(0,0,0,0.5)",
+    textShadowBlur: 4,
+    dualColour: false,
+    dualColour2: "#ec4899",
+  },
+  render: function (p) {
+    var id = "liquid-" + (p._blockId || Date.now());
+    var chars = (p.text || "LIQUID").split("");
+    var charHtml = chars
+      .map(function (c, i) {
+        var col = "";
+        if (p.dualColour) {
+          var colors = [p.color || "#3b82f6", p.dualColour2 || "#ec4899"];
+          col = "color:" + colors[i % 2] + ";";
+        }
+        return (
+          '<span class="veltro-liquid-char" data-index="' +
+          i +
+          '" style="display:inline-block;transition:none;' +
+          col +
+          '">' +
+          c +
+          "</span>"
+        );
+      })
+      .join("");
+    var containerBg = "";
+    if (p.bgType === "gradient") {
+      containerBg =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a0d2e") +
+        ");";
+    } else if (p.bgType === "image" && p.bgImage) {
+      containerBg = "background:url(" + p.bgImage + ") center/cover;";
+    } else {
+      containerBg = "background:" + (p.bg || "#0d0d1a") + ";";
+    }
+    var containerBorder = "";
+    if (p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px " +
+        (p.borderStyle || "solid") +
+        " " +
+        (p.borderColor || "#60a5fa") +
+        ";";
+    }
+    var containerShadow = "";
+    if (p.boxShadow) {
+      containerShadow =
+        "box-shadow:0 " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowBlur || 10) * 2 +
+        "px " +
+        (p.shadowSpread || 0) +
+        "px " +
+        (p.shadowColor || "rgba(0,0,0,0.3)") +
+        ";";
+    }
+    var hoverClass = "";
+    var hoverStyle = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+      hoverStyle = "transition:all " + (p.hoverTransition || 300) + "ms ease;";
+    }
+    var animClass = "";
+    var animStyle = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+      animStyle =
+        "animation-duration:" +
+        (p.animDuration || 600) +
+        "ms;animation-delay:" +
+        (p.animDelay || 0) +
+        "ms;animation-fill-mode:both;";
+    }
+    var glowStyle = "";
+    if (p.glowEffect) {
+      glowStyle =
+        "filter:drop-shadow(0 0 " +
+        (p.glowSize || 15) +
+        "px " +
+        (p.glowColor || "#3b82f6") +
+        ");";
+    }
+    var textShadowStyle = "";
+    if (p.textShadow) {
+      textShadowStyle =
+        "text-shadow:" +
+        (p.textShadowBlur || 4) +
+        "px " +
+        (p.textShadowBlur || 4) +
+        "px " +
+        (p.textShadowBlur || 4) * 2 +
+        "px " +
+        (p.textShadowColor || "rgba(0,0,0,0.5)") +
+        ";";
+    }
+    var textTransformStyle = "";
+    if (p.textTransform && p.textTransform !== "none") {
+      textTransformStyle = "text-transform:" + p.textTransform + ";";
+    }
+    var filterScale = (p.amplitude || 10) * (p.filterIntensity || 1);
+    return (
+      '<div class="veltro-liquid-wrap' +
+      animClass +
+      hoverClass +
+      '" id="' +
+      id +
+      '" data-amplitude="' +
+      (p.amplitude || 10) +
+      '" data-frequency="' +
+      (p.frequency || 0.05) +
+      '" data-speed="' +
+      (p.speed || 0.02) +
+      '" data-wave-type="' +
+      (p.waveType || "sine") +
+      '" data-per-char="' +
+      (p.perCharRandom ? "1" : "0") +
+      '" data-filter-intensity="' +
+      (p.filterIntensity || 1) +
+      '" data-dual-colour="' +
+      (p.dualColour ? "1" : "0") +
+      '" style="height:200px;' +
+      containerBg +
+      containerBorder +
+      containerShadow +
+      hoverStyle +
+      animStyle +
+      "border-radius:" +
+      (p.borderRadius || 8) +
+      "px;" +
+      "padding:" +
+      (p.paddingV || 24) +
+      "px " +
+      (p.paddingH || 24) +
+      "px;" +
+      "margin:" +
+      (p.marginV || 0) +
+      "px " +
+      (p.marginH || 0) +
+      "px;" +
+      "opacity:" +
+      (p.opacity || 100) / 100 +
+      ";" +
+      'display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;"><div class="veltro-liquid-text" style="font-size:' +
+      (p.fontSize || 80) +
+      "px;font-weight:" +
+      (p.fontWeight || 900) +
+      ";color:" +
+      (p.color || "#3b82f6") +
+      ";font-family:'" +
+      (p.fontFamily || "Lexend") +
+      "',sans-serif;user-select:none;letter-spacing:" +
+      (p.letterSpacing || 0) +
+      "px;" +
+      textShadowStyle +
+      textTransformStyle +
+      glowStyle +
+      "filter:url(#liquid-filter-" +
+      id +
+      ')">' +
+      charHtml +
+      '</div><svg style="position:absolute;width:0;height:0"><defs><filter id="liquid-filter-' +
+      id +
+      '"><feTurbulence type="fractalNoise" baseFrequency="' +
+      (p.frequency || 0.05) +
+      '" numOctaves="2" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="' +
+      filterScale +
+      '" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    var html = "";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Text & Wave</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Text</label><input type="text" value="' +
+      (p.text || "LIQUID") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','text',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Size: ' +
+      (p.fontSize || 80) +
+      'px</label><input type="range" min="24" max="150" value="' +
+      (p.fontSize || 80) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontSize',+this.value);this.previousElementSibling.textContent='Font Size: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Weight: ' +
+      (p.fontWeight || 900) +
+      '</label><input type="range" min="100" max="900" step="100" value="' +
+      (p.fontWeight || 900) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontWeight',+this.value);this.previousElementSibling.textContent='Font Weight: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Family</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontFamily',this.value)\"><option value=\"Lexend\"" +
+      (p.fontFamily === "Lexend" ? " selected" : "") +
+      '>Lexend</option><option value="Inter"' +
+      (p.fontFamily === "Inter" ? " selected" : "") +
+      ">Inter</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Letter Spacing: ' +
+      (p.letterSpacing || 0) +
+      'px</label><input type="range" min="-5" max="20" value="' +
+      (p.letterSpacing || 0) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','letterSpacing',+this.value);this.previousElementSibling.textContent='Letter Spacing: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Text Transform</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','textTransform',this.value)\"><option value=\"none\"" +
+      (p.textTransform === "none" ? " selected" : "") +
+      '>None</option><option value="uppercase"' +
+      (p.textTransform === "uppercase" ? " selected" : "") +
+      ">UPPERCASE</option></select></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Distortion</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Wave Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','waveType',this.value)\"><option value=\"sine\"" +
+      (p.waveType === "sine" ? " selected" : "") +
+      '>Sine</option><option value="square"' +
+      (p.waveType === "square" ? " selected" : "") +
+      '>Square</option><option value="triangle"' +
+      (p.waveType === "triangle" ? " selected" : "") +
+      ">Triangle</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Amplitude: ' +
+      (p.amplitude || 10) +
+      '</label><input type="range" min="0" max="30" step="0.5" value="' +
+      (p.amplitude || 10) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','amplitude',+this.value);this.previousElementSibling.textContent='Amplitude: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Frequency: ' +
+      (p.frequency || 0.05) +
+      '</label><input type="range" min="0.01" max="0.2" step="0.01" value="' +
+      (p.frequency || 0.05) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','frequency',+this.value);this.previousElementSibling.textContent='Frequency: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Speed: ' +
+      (p.speed || 0.02) +
+      '</label><input type="range" min="0.005" max="0.1" step="0.005" value="' +
+      (p.speed || 0.02) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','speed',+this.value);this.previousElementSibling.textContent='Speed: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Filter Intensity: ' +
+      (p.filterIntensity || 1) +
+      'x</label><input type="range" min="0" max="3" step="0.1" value="' +
+      (p.filterIntensity || 1) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','filterIntensity',+this.value);this.previousElementSibling.textContent='Filter Intensity: '+this.value+'x'\"></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.perCharRandom ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','perCharRandom',this.checked)\"> Per-Char Random</label></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Colour & Effects</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Text Colour</label><div class="rp-colour-row"><input type="color" value="' +
+      (p.color || "#3b82f6") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      '\',\'color\',this.value)"><input type="text" value="' +
+      (p.color || "#3b82f6") +
+      '" style="flex:1" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','color',this.value)\"></div></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.dualColour ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','dualColour',this.checked)\"> Dual Colour</label></div>";
+    if (p.dualColour) {
+      html +=
+        '<div class="rp-row"><label>Colour 2</label><input type="color" value="' +
+        (p.dualColour2 || "#ec4899") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','dualColour2',this.value)\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.glowEffect ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','glowEffect',this.checked)\"> Glow Effect</label></div>";
+    if (p.glowEffect) {
+      html +=
+        '<div class="rp-row"><label>Glow Colour</label><input type="color" value="' +
+        (p.glowColor || "#3b82f6") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','glowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Glow Size: ' +
+        (p.glowSize || 15) +
+        'px</label><input type="range" min="5" max="50" value="' +
+        (p.glowSize || 15) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','glowSize',+this.value);this.previousElementSibling.textContent='Glow Size: '+this.value+'px'\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.textShadow ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','textShadow',this.checked)\"> Text Shadow</label></div>";
+    if (p.textShadow) {
+      html +=
+        '<div class="rp-row"><label>Shadow Colour</label><input type="color" value="' +
+        (p.textShadowColor || "#000000") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','textShadowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Shadow Blur: ' +
+        (p.textShadowBlur || 4) +
+        '</label><input type="range" min="0" max="20" value="' +
+        (p.textShadowBlur || 4) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','textShadowBlur',+this.value);this.previousElementSibling.textContent='Shadow Blur: '+this.value'\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      (p.bgType === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      (p.bgType === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      (p.bgType === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if (p.bgType === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Colour</label><div class="rp-colour-row"><input type="color" value="' +
+        (p.bg || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        '\',\'bg\',this.value)"><input type="text" value="' +
+        (p.bg || "#0d0d1a") +
+        '" style="flex:1" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bg',this.value)\"></div></div>";
+    } else if (p.bgType === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Colour 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Colour 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a0d2e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        (p.bgGradientDir === "135deg" ? " selected" : "") +
+        '>135°</option><option value="90deg"' +
+        (p.bgGradientDir === "90deg" ? " selected" : "") +
+        ">90°</option></select></div>";
+    } else if (p.bgType === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImage || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImage',this.value)\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius: ' +
+      (p.borderRadius || 8) +
+      'px</label><input type="range" min="0" max="50" value="' +
+      (p.borderRadius || 8) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value);this.previousElementSibling.textContent='Border Radius: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width: ' +
+      (p.borderWidth || 0) +
+      'px</label><input type="range" min="0" max="8" value="' +
+      (p.borderWidth || 0) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value);this.previousElementSibling.textContent='Border Width: '+this.value+'px'\"></div>";
+    if (p.borderWidth > 0) {
+      html +=
+        '<div class="rp-row"><label>Border Colour</label><input type="color" value="' +
+        (p.borderColor || "#60a5fa") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','borderColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Border Style</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','borderStyle',this.value)\"><option value=\"solid\"" +
+        (p.borderStyle === "solid" ? " selected" : "") +
+        '>Solid</option><option value="dashed"' +
+        (p.borderStyle === "dashed" ? " selected" : "") +
+        ">Dashed</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Padding V: ' +
+      (p.paddingV || 24) +
+      'px</label><input type="range" min="0" max="80" value="' +
+      (p.paddingV || 24) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value);this.previousElementSibling.textContent='Padding V: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H: ' +
+      (p.paddingH || 24) +
+      'px</label><input type="range" min="0" max="80" value="' +
+      (p.paddingH || 24) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value);this.previousElementSibling.textContent='Padding H: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity: ' +
+      (p.opacity || 100) +
+      '%</label><input type="range" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value);this.previousElementSibling.textContent='Opacity: '+this.value+'%'\"></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.boxShadow ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','boxShadow',this.checked)\"> Box Shadow</label></div>";
+    if (p.boxShadow) {
+      html +=
+        '<div class="rp-row"><label>Shadow Blur: ' +
+        (p.shadowBlur || 10) +
+        '</label><input type="range" min="0" max="40" value="' +
+        (p.shadowBlur || 10) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value);this.previousElementSibling.textContent='Shadow Blur: '+this.value'\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animation</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      (p.entranceAnim === "none" ? " selected" : "") +
+      '>None</option><option value="fade"' +
+      (p.entranceAnim === "fade" ? " selected" : "") +
+      '>Fade</option><option value="slide-up"' +
+      (p.entranceAnim === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="zoom"' +
+      (p.entranceAnim === "zoom" ? " selected" : "") +
+      ">Zoom</option></select></div>";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      html +=
+        '<div class="rp-row"><label>Duration: ' +
+        (p.animDuration || 600) +
+        'ms</label><input type="range" min="200" max="2000" step="100" value="' +
+        (p.animDuration || 600) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','animDuration',+this.value);this.previousElementSibling.textContent='Duration: '+this.value+'ms'\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      (p.hoverEffect === "none" ? " selected" : "") +
+      '>None</option><option value="scale"' +
+      (p.hoverEffect === "scale" ? " selected" : "") +
+      '>Scale</option><option value="lift"' +
+      (p.hoverEffect === "lift" ? " selected" : "") +
+      ">Lift</option></select></div>";
+    html += "</div></div>";
+    return html;
+  },
+});
+
+// ── 8. IMAGE PHYSICS ──
+FB.widgets.register("imagePhysics", {
+  label: "Image Physics",
+  sublabel: "Matter.js images",
+  icon: "◈",
+  iconBg: "#1a0d2e",
+  iconColor: "#a78bfa",
+  category: "veltro",
+  subCategory: "physics",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    images: [
+      "https://picsum.photos/100/100?random=1",
+      "https://picsum.photos/100/100?random=2",
+      "https://picsum.photos/100/100?random=3",
+    ],
+    gravity: 1,
+    restitution: 0.5,
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a1a3e",
+    bgImageUrl: "",
+    bgImageOpacity: 30,
+    bgImageSize: "cover",
+    borderRadius: 4,
+    borderWidth: 0,
+    borderColor: "#ffffff",
+    boxShadow: "none",
+    shadowColor: "#000000",
+    shadowBlur: 10,
+    shadowOffsetX: 0,
+    shadowOffsetY: 4,
+    paddingV: 0,
+    paddingH: 0,
+    marginV: 0,
+    marginH: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    hoverEffect: "none",
+    hoverTransition: 300,
+    animDuration: 600,
+    imageShape: "square",
+    imageBorderRadius: 8,
+    imageBorderWidth: 0,
+    imageBorderColor: "#ffffff",
+    physicsEnabled: true,
+    mouseInteraction: true,
+    mouseForce: 5,
+    windEnabled: false,
+    windStrength: 0,
+  },
+  render: function (p) {
+    var id = "iphys-" + (p._blockId || Date.now());
+    var imagesJson = JSON.stringify(
+      p.images || ["https://picsum.photos/100/100?random=1"],
+    );
+    var bgType = p.bgType || "solid";
+    var bgStyle = "";
+    if (bgType === "gradient") {
+      bgStyle =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        ");";
+    } else if (bgType === "image" && p.bgImageUrl) {
+      bgStyle =
+        "background:url('" +
+        p.bgImageUrl +
+        "') center/" +
+        (p.bgImageSize || "cover") +
+        " no-repeat;background-color:" +
+        (p.bg || "#0d0d1a") +
+        ";";
+    } else {
+      bgStyle = "background:" + (p.bg || "#0d0d1a") + ";";
+    }
+    var containerBorder = "";
+    if (p.borderWidth && p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px solid " +
+        (p.borderColor || "#ffffff") +
+        ";";
+    }
+    var containerShadow = "";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      containerShadow =
+        "box-shadow:" +
+        (p.shadowOffsetX || 0) +
+        "px " +
+        (p.shadowOffsetY || 4) +
+        "px " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowColor || "#000000") +
+        ";";
+    }
+    var hoverClass = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+    }
+    var animClass = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+    }
+    var padStyle =
+      "padding:" + (p.paddingV || 0) + "px " + (p.paddingH || 0) + "px;";
+    var margStyle =
+      "margin:" + (p.marginV || 0) + "px " + (p.marginH || 0) + "px;";
+    var opStyle =
+      p.opacity && p.opacity < 100 ? "opacity:" + p.opacity / 100 + ";" : "";
+    return (
+      '<div class="veltro-iphys-wrap' +
+      animClass +
+      hoverClass +
+      '" id="' +
+      id +
+      '" data-images="' +
+      imagesJson.replace(/"/g, "&quot;") +
+      '" data-gravity="' +
+      (p.gravity || 1) +
+      '" data-restitution="' +
+      (p.restitution || 0.5) +
+      '" data-image-shape="' +
+      (p.imageShape || "square") +
+      '" data-image-border-radius="' +
+      (p.imageBorderRadius || 8) +
+      '" data-image-border-width="' +
+      (p.imageBorderWidth || 0) +
+      '" data-image-border-color="' +
+      (p.imageBorderColor || "#ffffff") +
+      '" data-physics-enabled="' +
+      (p.physicsEnabled !== false ? "true" : "false") +
+      '" data-mouse-interaction="' +
+      (p.mouseInteraction !== false ? "true" : "false") +
+      '" data-mouse-force="' +
+      (p.mouseForce || 5) +
+      '" data-wind-enabled="' +
+      (p.windEnabled ? "true" : "false") +
+      '" data-wind-strength="' +
+      (p.windStrength || 0) +
+      '" style="height:' +
+      p.height +
+      "px;" +
+      bgStyle +
+      "position:relative;overflow:hidden;border-radius:" +
+      (p.borderRadius || 4) +
+      "px;cursor:pointer;" +
+      containerBorder +
+      containerShadow +
+      padStyle +
+      margStyle +
+      opStyle +
+      '"><canvas class="veltro-iphys-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    var html = "";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Core Settings</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Height (px)</label><input type="number" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Gravity</label><input type="number" step="0.1" value="' +
+      (p.gravity || 1) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','gravity',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Restitution</label><input type="number" step="0.05" min="0" max="1" value="' +
+      (p.restitution || 0.5) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','restitution',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Background & Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      ((p.bgType || "solid") === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      ((p.bgType || "solid") === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      ((p.bgType || "solid") === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if ((p.bgType || "solid") === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Color</label><input type="color" value="' +
+        (p.bg || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bg',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        ((p.bgGradientDir || "135deg") === "135deg" ? " selected" : "") +
+        '>135°</option><option value="to right"' +
+        ((p.bgGradientDir || "135deg") === "to right" ? " selected" : "") +
+        '>Left→Right</option><option value="to bottom"' +
+        ((p.bgGradientDir || "135deg") === "to bottom" ? " selected" : "") +
+        '>Top→Bottom</option><option value="circle"' +
+        ((p.bgGradientDir || "135deg") === "circle" ? " selected" : "") +
+        ">Radial</option></select></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImageUrl || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageUrl',this.value)\" placeholder=\"https://...\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Opacity (%)</label><input type="number" min="0" max="100" value="' +
+        (p.bgImageOpacity || 30) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageOpacity',+this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Size</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageSize',this.value)\"><option value=\"cover\"" +
+        ((p.bgImageSize || "cover") === "cover" ? " selected" : "") +
+        '>Cover</option><option value="contain"' +
+        ((p.bgImageSize || "cover") === "contain" ? " selected" : "") +
+        '>Contain</option><option value="100% 100%"' +
+        ((p.bgImageSize || "cover") === "100% 100%" ? " selected" : "") +
+        ">Stretch</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius (px)</label><input type="number" value="' +
+      (p.borderRadius || 4) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width (px)</label><input type="number" value="' +
+      (p.borderWidth || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Color</label><input type="color" value="' +
+      (p.borderColor || "#ffffff") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderColor',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Box Shadow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','boxShadow',this.value)\"><option value=\"none\"" +
+      ((p.boxShadow || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="soft"' +
+      ((p.boxShadow || "none") === "soft" ? " selected" : "") +
+      '>Soft</option><option value="hard"' +
+      ((p.boxShadow || "none") === "hard" ? " selected" : "") +
+      '>Hard</option><option value="glow"' +
+      ((p.boxShadow || "none") === "glow" ? " selected" : "") +
+      ">Glow</option></select></div>";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      html +=
+        '<div class="rp-row"><label>Shadow Color</label><input type="color" value="' +
+        (p.shadowColor || "#000000") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Shadow Blur</label><input type="number" value="' +
+        (p.shadowBlur || 10) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value)\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Spacing & Display</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Padding V (px)</label><input type="number" value="' +
+      (p.paddingV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H (px)</label><input type="number" value="' +
+      (p.paddingH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin V (px)</label><input type="number" value="' +
+      (p.marginV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin H (px)</label><input type="number" value="' +
+      (p.marginH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity (%)</label><input type="number" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animations & Effects</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      ((p.entranceAnim || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="fade-in"' +
+      ((p.entranceAnim || "none") === "fade-in" ? " selected" : "") +
+      '>Fade In</option><option value="slide-up"' +
+      ((p.entranceAnim || "none") === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="slide-left"' +
+      ((p.entranceAnim || "none") === "slide-left" ? " selected" : "") +
+      '>Slide Left</option><option value="zoom-in"' +
+      ((p.entranceAnim || "none") === "zoom-in" ? " selected" : "") +
+      '>Zoom In</option><option value="flip-in"' +
+      ((p.entranceAnim || "none") === "flip-in" ? " selected" : "") +
+      ">Flip In</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Animation Duration (ms)</label><input type="number" value="' +
+      (p.animDuration || 600) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','animDuration',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      ((p.hoverEffect || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="lift"' +
+      ((p.hoverEffect || "none") === "lift" ? " selected" : "") +
+      '>Lift</option><option value="glow"' +
+      ((p.hoverEffect || "none") === "glow" ? " selected" : "") +
+      '>Glow</option><option value="scale"' +
+      ((p.hoverEffect || "none") === "scale" ? " selected" : "") +
+      '>Scale</option><option value="tilt"' +
+      ((p.hoverEffect || "none") === "tilt" ? " selected" : "") +
+      ">Tilt</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Transition (ms)</label><input type="number" value="' +
+      (p.hoverTransition || 300) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverTransition',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Advanced Physics Options</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Image Shape</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','imageShape',this.value)\"><option value=\"square\"" +
+      ((p.imageShape || "square") === "square" ? " selected" : "") +
+      '>Square</option><option value="circle"' +
+      ((p.imageShape || "square") === "circle" ? " selected" : "") +
+      ">Circle</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Image Border Radius</label><input type="number" value="' +
+      (p.imageBorderRadius || 8) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','imageBorderRadius',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Image Border Width</label><input type="number" value="' +
+      (p.imageBorderWidth || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','imageBorderWidth',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Image Border Color</label><input type="color" value="' +
+      (p.imageBorderColor || "#ffffff") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','imageBorderColor',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Physics Enabled</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','physicsEnabled',this.value)\"><option value=\"true\"" +
+      (p.physicsEnabled !== false ? " selected" : "") +
+      '>Enabled</option><option value="false"' +
+      (p.physicsEnabled === false ? " selected" : "") +
+      ">Disabled</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Mouse Interaction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','mouseInteraction',this.value)\"><option value=\"true\"" +
+      (p.mouseInteraction !== false ? " selected" : "") +
+      '>Enabled</option><option value="false"' +
+      (p.mouseInteraction === false ? " selected" : "") +
+      ">Disabled</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Mouse Force</label><input type="number" value="' +
+      (p.mouseForce || 5) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','mouseForce',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Wind Enabled</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','windEnabled',this.value)\"><option value=\"false\"" +
+      (!p.windEnabled ? " selected" : "") +
+      '>Off</option><option value="true"' +
+      (p.windEnabled ? " selected" : "") +
+      ">On</option></select></div>";
+    if (p.windEnabled) {
+      html +=
+        '<div class="rp-row"><label>Wind Strength</label><input type="number" step="0.1" value="' +
+        (p.windStrength || 0) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','windStrength',+this.value)\"></div>";
+    }
+    html += "</div></div>";
+    return html;
+  },
+});
+
+// ── 9. BUBBLE POP ──
+FB.widgets.register("bubblePop", {
+  label: "Bubble Pop",
+  sublabel: "Interactive bubbles",
+  icon: "○",
+  iconBg: "#0d1a2e",
+  iconColor: "#60a5fa",
+  category: "veltro",
+  subCategory: "physics",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    bubbleCount: 20,
+    minSize: 20,
+    maxSize: 60,
+    colors: "#ff6b35,#cdfe00,#3b82f6,#ec4899,#f59e0b",
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a1a3e",
+    bgImageUrl: "",
+    bgImageOpacity: 30,
+    bgImageSize: "cover",
+    borderRadius: 4,
+    borderWidth: 0,
+    borderColor: "#ffffff",
+    boxShadow: "none",
+    shadowColor: "#000000",
+    shadowBlur: 10,
+    shadowOffsetX: 0,
+    shadowOffsetY: 4,
+    paddingV: 0,
+    paddingH: 0,
+    marginV: 0,
+    marginH: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    hoverEffect: "none",
+    hoverTransition: 300,
+    animDuration: 600,
+    bubbleOpacity: 80,
+    bubbleGlow: true,
+    bubbleSpeed: 1,
+    bubbleRise: true,
+    bubbleMerge: false,
+    bubblePopSound: false,
+    bubbleShape: "circle",
+    contentTitle: "",
+    contentSubtitle: "",
+    contentColor: "#ffffff",
+    contentAlign: "center",
+    contentVAlign: "center",
+    bubbleStroke: false,
+    strokeColor: "#ffffff",
+    strokeWidth: 1,
+  },
+  render: function (p) {
+    var id = "bubble-" + (p._blockId || Date.now());
+    var bgType = p.bgType || "solid";
+    var bgStyle = "";
+    if (bgType === "gradient") {
+      bgStyle =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        ");";
+    } else if (bgType === "image" && p.bgImageUrl) {
+      bgStyle =
+        "background:url('" +
+        p.bgImageUrl +
+        "') center/" +
+        (p.bgImageSize || "cover") +
+        " no-repeat;background-color:" +
+        (p.bg || "#0d0d1a") +
+        ";";
+    } else {
+      bgStyle = "background:" + (p.bg || "#0d0d1a") + ";";
+    }
+    var containerBorder = "";
+    if (p.borderWidth && p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px solid " +
+        (p.borderColor || "#ffffff") +
+        ";";
+    }
+    var containerShadow = "";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      containerShadow =
+        "box-shadow:" +
+        (p.shadowOffsetX || 0) +
+        "px " +
+        (p.shadowOffsetY || 4) +
+        "px " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowColor || "#000000") +
+        ";";
+    }
+    var hoverClass = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+    }
+    var animClass = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+    }
+    var padStyle =
+      "padding:" + (p.paddingV || 0) + "px " + (p.paddingH || 0) + "px;";
+    var margStyle =
+      "margin:" + (p.marginV || 0) + "px " + (p.marginH || 0) + "px;";
+    var opStyle =
+      p.opacity && p.opacity < 100 ? "opacity:" + p.opacity / 100 + ";" : "";
+    return (
+      '<div class="veltro-bubble-wrap' +
+      animClass +
+      hoverClass +
+      '" id="' +
+      id +
+      '" data-bubble-count="' +
+      (p.bubbleCount || 20) +
+      '" data-min-size="' +
+      (p.minSize || 20) +
+      '" data-max-size="' +
+      (p.maxSize || 60) +
+      '" data-colors="' +
+      (p.colors || "#ff6b35,#cdfe00,#3b82f6,#ec4899,#f59e0b") +
+      '" data-bubble-opacity="' +
+      (p.bubbleOpacity || 80) +
+      '" data-bubble-glow="' +
+      (p.bubbleGlow !== false ? "true" : "false") +
+      '" data-bubble-speed="' +
+      (p.bubbleSpeed || 1) +
+      '" data-bubble-rise="' +
+      (p.bubbleRise !== false ? "true" : "false") +
+      '" data-bubble-merge="' +
+      (p.bubbleMerge ? "true" : "false") +
+      '" data-bubble-shape="' +
+      (p.bubbleShape || "circle") +
+      '" data-bubble-stroke="' +
+      (p.bubbleStroke ? "true" : "false") +
+      '" data-stroke-color="' +
+      (p.strokeColor || "#ffffff") +
+      '" data-stroke-width="' +
+      (p.strokeWidth || 1) +
+      '" style="height:' +
+      p.height +
+      "px;" +
+      bgStyle +
+      "position:relative;overflow:hidden;border-radius:" +
+      (p.borderRadius || 4) +
+      "px;cursor:pointer;" +
+      containerBorder +
+      containerShadow +
+      padStyle +
+      margStyle +
+      opStyle +
+      '"><canvas class="veltro-bubble-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas>' +
+      (p.contentTitle || p.contentSubtitle
+        ? '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:' +
+          (p.contentAlign === "left"
+            ? "flex-start"
+            : p.contentAlign === "right"
+              ? "flex-end"
+              : "center") +
+          ";justify-content:" +
+          (p.contentVAlign === "top"
+            ? "flex-start"
+            : p.contentVAlign === "bottom"
+              ? "flex-end"
+              : "center") +
+          ';padding:24px;pointer-events:none;z-index:2;">' +
+          (p.contentTitle
+            ? '<div style="color:' +
+              (p.contentColor || "#ffffff") +
+              ";font-size:2em;font-weight:700;text-align:" +
+              (p.contentAlign || "center") +
+              ';">' +
+              p.contentTitle +
+              "</div>"
+            : "") +
+          (p.contentSubtitle
+            ? '<div style="color:' +
+              (p.contentColor || "#ffffff") +
+              ";font-size:1.1em;opacity:0.8;margin-top:8px;text-align:" +
+              (p.contentAlign || "center") +
+              ';">' +
+              p.contentSubtitle +
+              "</div>"
+            : "") +
+          "</div>"
+        : "") +
+      "</div>"
+    );
+  },
+  editPanel: function (id, p) {
+    var html = "";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Core Settings</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Height (px)</label><input type="number" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Bubble Count</label><input type="number" value="' +
+      (p.bubbleCount || 20) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bubbleCount',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Min Size</label><input type="number" value="' +
+      (p.minSize || 20) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','minSize',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Max Size</label><input type="number" value="' +
+      (p.maxSize || 60) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','maxSize',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Colors (comma-sep)</label><input type="text" value="' +
+      (p.colors || "#ff6b35,#cdfe00,#3b82f6,#ec4899,#f59e0b") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','colors',this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Background & Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      ((p.bgType || "solid") === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      ((p.bgType || "solid") === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      ((p.bgType || "solid") === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if ((p.bgType || "solid") === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Color</label><input type="color" value="' +
+        (p.bg || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bg',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        ((p.bgGradientDir || "135deg") === "135deg" ? " selected" : "") +
+        '>135°</option><option value="to right"' +
+        ((p.bgGradientDir || "135deg") === "to right" ? " selected" : "") +
+        '>Left→Right</option><option value="to bottom"' +
+        ((p.bgGradientDir || "135deg") === "to bottom" ? " selected" : "") +
+        '>Top→Bottom</option><option value="circle"' +
+        ((p.bgGradientDir || "135deg") === "circle" ? " selected" : "") +
+        ">Radial</option></select></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImageUrl || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageUrl',this.value)\" placeholder=\"https://...\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Opacity (%)</label><input type="number" min="0" max="100" value="' +
+        (p.bgImageOpacity || 30) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageOpacity',+this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Size</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageSize',this.value)\"><option value=\"cover\"" +
+        ((p.bgImageSize || "cover") === "cover" ? " selected" : "") +
+        '>Cover</option><option value="contain"' +
+        ((p.bgImageSize || "cover") === "contain" ? " selected" : "") +
+        '>Contain</option><option value="100% 100%"' +
+        ((p.bgImageSize || "cover") === "100% 100%" ? " selected" : "") +
+        ">Stretch</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius (px)</label><input type="number" value="' +
+      (p.borderRadius || 4) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width (px)</label><input type="number" value="' +
+      (p.borderWidth || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Color</label><input type="color" value="' +
+      (p.borderColor || "#ffffff") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderColor',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Box Shadow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','boxShadow',this.value)\"><option value=\"none\"" +
+      ((p.boxShadow || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="soft"' +
+      ((p.boxShadow || "none") === "soft" ? " selected" : "") +
+      '>Soft</option><option value="hard"' +
+      ((p.boxShadow || "none") === "hard" ? " selected" : "") +
+      '>Hard</option><option value="glow"' +
+      ((p.boxShadow || "none") === "glow" ? " selected" : "") +
+      ">Glow</option></select></div>";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      html +=
+        '<div class="rp-row"><label>Shadow Color</label><input type="color" value="' +
+        (p.shadowColor || "#000000") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Shadow Blur</label><input type="number" value="' +
+        (p.shadowBlur || 10) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value)\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Spacing & Display</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Padding V (px)</label><input type="number" value="' +
+      (p.paddingV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H (px)</label><input type="number" value="' +
+      (p.paddingH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin V (px)</label><input type="number" value="' +
+      (p.marginV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin H (px)</label><input type="number" value="' +
+      (p.marginH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity (%)</label><input type="number" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animations & Effects</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      ((p.entranceAnim || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="fade-in"' +
+      ((p.entranceAnim || "none") === "fade-in" ? " selected" : "") +
+      '>Fade In</option><option value="slide-up"' +
+      ((p.entranceAnim || "none") === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="slide-left"' +
+      ((p.entranceAnim || "none") === "slide-left" ? " selected" : "") +
+      '>Slide Left</option><option value="zoom-in"' +
+      ((p.entranceAnim || "none") === "zoom-in" ? " selected" : "") +
+      '>Zoom In</option><option value="flip-in"' +
+      ((p.entranceAnim || "none") === "flip-in" ? " selected" : "") +
+      ">Flip In</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Animation Duration (ms)</label><input type="number" value="' +
+      (p.animDuration || 600) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','animDuration',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      ((p.hoverEffect || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="lift"' +
+      ((p.hoverEffect || "none") === "lift" ? " selected" : "") +
+      '>Lift</option><option value="glow"' +
+      ((p.hoverEffect || "none") === "glow" ? " selected" : "") +
+      '>Glow</option><option value="scale"' +
+      ((p.hoverEffect || "none") === "scale" ? " selected" : "") +
+      '>Scale</option><option value="tilt"' +
+      ((p.hoverEffect || "none") === "tilt" ? " selected" : "") +
+      ">Tilt</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Transition (ms)</label><input type="number" value="' +
+      (p.hoverTransition || 300) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverTransition',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Advanced Bubble Options</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Bubble Opacity (%)</label><input type="number" min="0" max="100" value="' +
+      (p.bubbleOpacity || 80) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bubbleOpacity',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Bubble Glow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bubbleGlow',this.value)\"><option value=\"true\"" +
+      (p.bubbleGlow !== false ? " selected" : "") +
+      '>On</option><option value="false"' +
+      (p.bubbleGlow === false ? " selected" : "") +
+      ">Off</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Bubble Speed</label><input type="number" step="0.1" value="' +
+      (p.bubbleSpeed || 1) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bubbleSpeed',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Bubble Rise</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bubbleRise',this.value)\"><option value=\"true\"" +
+      (p.bubbleRise !== false ? " selected" : "") +
+      '>Enabled</option><option value="false"' +
+      (p.bubbleRise === false ? " selected" : "") +
+      ">Static</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Bubble Merge</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bubbleMerge',this.value)\"><option value=\"false\"" +
+      (!p.bubbleMerge ? " selected" : "") +
+      '>Off</option><option value="true"' +
+      (p.bubbleMerge ? " selected" : "") +
+      ">On</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Pop Sound</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bubblePopSound',this.value)\"><option value=\"false\"" +
+      (!p.bubblePopSound ? " selected" : "") +
+      '>Off</option><option value="true"' +
+      (p.bubblePopSound ? " selected" : "") +
+      ">On</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Bubble Shape</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bubbleShape',this.value)\"><option value=\"circle\"" +
+      ((p.bubbleShape || "circle") === "circle" ? " selected" : "") +
+      '>Circle</option><option value="square"' +
+      ((p.bubbleShape || "circle") === "square" ? " selected" : "") +
+      '>Square</option><option value="hexagon"' +
+      ((p.bubbleShape || "circle") === "hexagon" ? " selected" : "") +
+      ">Hexagon</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Bubble Stroke</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bubbleStroke',this.value)\"><option value=\"false\"" +
+      (!p.bubbleStroke ? " selected" : "") +
+      '>Off</option><option value="true"' +
+      (p.bubbleStroke ? " selected" : "") +
+      ">On</option></select></div>";
+    if (p.bubbleStroke) {
+      html +=
+        '<div class="rp-row"><label>Stroke Color</label><input type="color" value="' +
+        (p.strokeColor || "#ffffff") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','strokeColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Stroke Width</label><input type="number" value="' +
+        (p.strokeWidth || 1) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','strokeWidth',+this.value)\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Content</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Title</label><input type="text" value="' +
+      (p.contentTitle || "") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','contentTitle',this.value)\" placeholder=\"Optional title...\"></div>";
+    html +=
+      '<div class="rp-row"><label>Subtitle</label><input type="text" value="' +
+      (p.contentSubtitle || "") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','contentSubtitle',this.value)\" placeholder=\"Optional subtitle...\"></div>";
+    html +=
+      '<div class="rp-row"><label>Text Color</label><input type="color" value="' +
+      (p.contentColor || "#ffffff") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','contentColor',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Align</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','contentAlign',this.value)\"><option value=\"center\"" +
+      ((p.contentAlign || "center") === "center" ? " selected" : "") +
+      '>Center</option><option value="left"' +
+      ((p.contentAlign || "center") === "left" ? " selected" : "") +
+      '>Left</option><option value="right"' +
+      ((p.contentAlign || "center") === "right" ? " selected" : "") +
+      ">Right</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Vertical Position</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','contentVAlign',this.value)\"><option value=\"center\"" +
+      ((p.contentVAlign || "center") === "center" ? " selected" : "") +
+      '>Middle</option><option value="top"' +
+      ((p.contentVAlign || "center") === "top" ? " selected" : "") +
+      '>Top</option><option value="bottom"' +
+      ((p.contentVAlign || "center") === "bottom" ? " selected" : "") +
+      ">Bottom</option></select></div>";
+    html += "</div></div>";
+    return html;
+  },
+});
+
+// ── 10. MAGNETIC CURSOR ──
+FB.widgets.register("magneticCursor", {
+  label: "Magnetic Cursor",
+  sublabel: "Elements attract to cursor",
+  icon: "◉",
+  iconBg: "#0d1a0d",
+  iconColor: "#34d399",
+  category: "veltro",
+  subCategory: "cursor",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    elementCount: 12,
+    magneticRadius: 150,
+    magneticStrength: 0.5,
+    elementColor: "#cdfe00",
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a0d2e",
+    bgImage: "",
+    borderRadius: 8,
+    borderWidth: 0,
+    borderColor: "#34d399",
+    borderStyle: "solid",
+    paddingV: 0,
+    paddingH: 0,
+    marginV: 0,
+    marginH: 0,
+    boxShadow: false,
+    shadowColor: "rgba(0,0,0,0.3)",
+    shadowBlur: 10,
+    shadowSpread: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    animDuration: 600,
+    animDelay: 0,
+    hoverEffect: "none",
+    hoverScale: 1.02,
+    hoverTransition: 300,
+    elementShape: "circle",
+    repelMode: false,
+    elementSize: 40,
+    elementColors: "#cdfe00,#3b82f6,#ec4899",
+    elasticBounce: true,
+    showCursor: true,
+    cursorSize: 20,
+    cursorColor: "#34d399",
+  },
+  render: function (p) {
+    var id = "mag-" + (p._blockId || Date.now());
+    var itemsHtml = "";
+    var colors = (p.elementColors || "#cdfe00,#3b82f6,#ec4899").split(",");
+    for (var i = 0; i < (p.elementCount || 12); i++) {
+      var col = colors[i % colors.length];
+      var shape =
+        p.elementShape === "square"
+          ? "border-radius:4px;"
+          : p.elementShape === "diamond"
+            ? "border-radius:4px;transform:rotate(45deg);"
+            : "border-radius:50%;";
+      itemsHtml +=
+        '<div class="veltro-mag-item" style="position:absolute;width:' +
+        (p.elementSize || 40) +
+        "px;height:" +
+        (p.elementSize || 40) +
+        "px;background:" +
+        col +
+        ";" +
+        shape +
+        "opacity:0.6;left:" +
+        (10 + Math.random() * 80) +
+        "%;top:" +
+        (10 + Math.random() * 80) +
+        '%"></div>';
+    }
+    var containerBg = "";
+    if (p.bgType === "gradient") {
+      containerBg =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a0d2e") +
+        ");";
+    } else if (p.bgType === "image" && p.bgImage) {
+      containerBg = "background:url(" + p.bgImage + ") center/cover;";
+    } else {
+      containerBg = "background:" + (p.bg || "#0d0d1a") + ";";
+    }
+    var containerBorder = "";
+    if (p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px " +
+        (p.borderStyle || "solid") +
+        " " +
+        (p.borderColor || "#34d399") +
+        ";";
+    }
+    var containerShadow = "";
+    if (p.boxShadow) {
+      containerShadow =
+        "box-shadow:0 " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowBlur || 10) * 2 +
+        "px " +
+        (p.shadowSpread || 0) +
+        "px " +
+        (p.shadowColor || "rgba(0,0,0,0.3)") +
+        ";";
+    }
+    var hoverClass = "";
+    var hoverStyle = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+      hoverStyle = "transition:all " + (p.hoverTransition || 300) + "ms ease;";
+    }
+    var animClass = "";
+    var animStyle = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+      animStyle =
+        "animation-duration:" +
+        (p.animDuration || 600) +
+        "ms;animation-delay:" +
+        (p.animDelay || 0) +
+        "ms;animation-fill-mode:both;";
+    }
+    var cursorHtml = p.showCursor
+      ? '<div class="veltro-mag-cursor" style="position:absolute;width:' +
+        (p.cursorSize || 20) +
+        "px;height:" +
+        (p.cursorSize || 20) +
+        "px;background:" +
+        (p.cursorColor || "#34d399") +
+        ";border-radius:50%;pointer-events:none;z-index:100;mix-blend-mode:difference" +
+        '"></div>'
+      : "";
+    return (
+      '<div class="veltro-magcursor-wrap' +
+      animClass +
+      hoverClass +
+      '" id="' +
+      id +
+      '" data-magnetic-radius="' +
+      (p.magneticRadius || 150) +
+      '" data-magnetic-strength="' +
+      (p.magneticStrength || 0.5) +
+      '" data-repel-mode="' +
+      (p.repelMode ? "1" : "0") +
+      '" data-elastic-bounce="' +
+      (p.elasticBounce ? "1" : "0") +
+      '" data-element-shape="' +
+      (p.elementShape || "circle") +
+      '" style="height:' +
+      (p.height || 400) +
+      "px;" +
+      containerBg +
+      containerBorder +
+      containerShadow +
+      hoverStyle +
+      animStyle +
+      "border-radius:" +
+      (p.borderRadius || 8) +
+      "px;" +
+      "padding:" +
+      (p.paddingV || 0) +
+      "px " +
+      (p.paddingH || 0) +
+      "px;" +
+      "margin:" +
+      (p.marginV || 0) +
+      "px " +
+      (p.marginH || 0) +
+      "px;" +
+      "opacity:" +
+      (p.opacity || 100) / 100 +
+      ";" +
+      'position:relative;overflow:hidden;cursor:none;">' +
+      itemsHtml +
+      cursorHtml +
+      "</div>"
+    );
+  },
+  editPanel: function (id, p) {
+    var html = "";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Magnetic</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Height: ' +
+      (p.height || 400) +
+      'px</label><input type="range" min="200" max="800" value="' +
+      (p.height || 400) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value);this.previousElementSibling.textContent='Height: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Element Count: ' +
+      (p.elementCount || 12) +
+      '</label><input type="range" min="4" max="30" value="' +
+      (p.elementCount || 12) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','elementCount',+this.value);this.previousElementSibling.textContent='Element Count: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Element Size: ' +
+      (p.elementSize || 40) +
+      'px</label><input type="range" min="10" max="80" value="' +
+      (p.elementSize || 40) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','elementSize',+this.value);this.previousElementSibling.textContent='Element Size: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Element Shape</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','elementShape',this.value)\"><option value=\"circle\"" +
+      (p.elementShape === "circle" ? " selected" : "") +
+      '>Circle</option><option value="square"' +
+      (p.elementShape === "square" ? " selected" : "") +
+      '>Square</option><option value="diamond"' +
+      (p.elementShape === "diamond" ? " selected" : "") +
+      ">Diamond</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Element Colours (comma-separated)</label><input type="text" value="' +
+      (p.elementColors || "#cdfe00,#3b82f6,#ec4899") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','elementColors',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Magnetic Radius: ' +
+      (p.magneticRadius || 150) +
+      'px</label><input type="range" min="50" max="300" value="' +
+      (p.magneticRadius || 150) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','magneticRadius',+this.value);this.previousElementSibling.textContent='Magnetic Radius: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Magnetic Strength: ' +
+      (p.magneticStrength || 0.5) +
+      '</label><input type="range" min="0" max="1" step="0.1" value="' +
+      (p.magneticStrength || 0.5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','magneticStrength',+this.value);this.previousElementSibling.textContent='Magnetic Strength: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.repelMode ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','repelMode',this.checked)\"> Repel Mode</label></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.elasticBounce ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','elasticBounce',this.checked)\"> Elastic Bounce</label></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Cursor</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.showCursor !== false ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','showCursor',this.checked)\"> Show Custom Cursor</label></div>";
+    if (p.showCursor !== false) {
+      html +=
+        '<div class="rp-row"><label>Cursor Size: ' +
+        (p.cursorSize || 20) +
+        'px</label><input type="range" min="8" max="50" value="' +
+        (p.cursorSize || 20) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','cursorSize',+this.value);this.previousElementSibling.textContent='Cursor Size: '+this.value+'px'\"></div>";
+      html +=
+        '<div class="rp-row"><label>Cursor Colour</label><input type="color" value="' +
+        (p.cursorColor || "#34d399") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','cursorColor',this.value)\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      (p.bgType === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      (p.bgType === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      (p.bgType === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if (p.bgType === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Colour</label><div class="rp-colour-row"><input type="color" value="' +
+        (p.bg || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        '\',\'bg\',this.value)"><input type="text" value="' +
+        (p.bg || "#0d0d1a") +
+        '" style="flex:1" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bg',this.value)\"></div></div>";
+    } else if (p.bgType === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Colour 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Colour 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a0d2e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        (p.bgGradientDir === "135deg" ? " selected" : "") +
+        '>135°</option><option value="90deg"' +
+        (p.bgGradientDir === "90deg" ? " selected" : "") +
+        ">90°</option></select></div>";
+    } else if (p.bgType === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImage || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImage',this.value)\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius: ' +
+      (p.borderRadius || 8) +
+      'px</label><input type="range" min="0" max="50" value="' +
+      (p.borderRadius || 8) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value);this.previousElementSibling.textContent='Border Radius: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width: ' +
+      (p.borderWidth || 0) +
+      'px</label><input type="range" min="0" max="8" value="' +
+      (p.borderWidth || 0) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value);this.previousElementSibling.textContent='Border Width: '+this.value+'px'\"></div>";
+    if (p.borderWidth > 0) {
+      html +=
+        '<div class="rp-row"><label>Border Colour</label><input type="color" value="' +
+        (p.borderColor || "#34d399") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','borderColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Border Style</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','borderStyle',this.value)\"><option value=\"solid\"" +
+        (p.borderStyle === "solid" ? " selected" : "") +
+        '>Solid</option><option value="dashed"' +
+        (p.borderStyle === "dashed" ? " selected" : "") +
+        ">Dashed</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Padding V: ' +
+      (p.paddingV || 0) +
+      'px</label><input type="range" min="0" max="80" value="' +
+      (p.paddingV || 0) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value);this.previousElementSibling.textContent='Padding V: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H: ' +
+      (p.paddingH || 0) +
+      'px</label><input type="range" min="0" max="80" value="' +
+      (p.paddingH || 0) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value);this.previousElementSibling.textContent='Padding H: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity: ' +
+      (p.opacity || 100) +
+      '%</label><input type="range" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value);this.previousElementSibling.textContent='Opacity: '+this.value+'%'\"></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.boxShadow ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','boxShadow',this.checked)\"> Box Shadow</label></div>";
+    if (p.boxShadow) {
+      html +=
+        '<div class="rp-row"><label>Shadow Blur: ' +
+        (p.shadowBlur || 10) +
+        '</label><input type="range" min="0" max="40" value="' +
+        (p.shadowBlur || 10) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value);this.previousElementSibling.textContent='Shadow Blur: '+this.value'\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animation</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      (p.entranceAnim === "none" ? " selected" : "") +
+      '>None</option><option value="fade"' +
+      (p.entranceAnim === "fade" ? " selected" : "") +
+      '>Fade</option><option value="slide-up"' +
+      (p.entranceAnim === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="zoom"' +
+      (p.entranceAnim === "zoom" ? " selected" : "") +
+      ">Zoom</option></select></div>";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      html +=
+        '<div class="rp-row"><label>Duration: ' +
+        (p.animDuration || 600) +
+        'ms</label><input type="range" min="200" max="2000" step="100" value="' +
+        (p.animDuration || 600) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','animDuration',+this.value);this.previousElementSibling.textContent='Duration: '+this.value+'ms'\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      (p.hoverEffect === "none" ? " selected" : "") +
+      '>None</option><option value="scale"' +
+      (p.hoverEffect === "scale" ? " selected" : "") +
+      '>Scale</option><option value="lift"' +
+      (p.hoverEffect === "lift" ? " selected" : "") +
+      ">Lift</option></select></div>";
+    html += "</div></div>";
+    return html;
+  },
+});
+
+// ── 11. PARTICLE TRAIL ──
+FB.widgets.register("particleTrail", {
+  label: "Particle Trail",
+  sublabel: "Cursor particles",
+  icon: "✦",
+  iconBg: "#1a0d2e",
+  iconColor: "#ff6b35",
+  category: "veltro",
+  subCategory: "cursor",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    particleCount: 30,
+    particleSize: 4,
+    particleColor: "#cdfe00",
+    fadeSpeed: 0.95,
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a1a3e",
+    bgImageUrl: "",
+    bgImageOpacity: 30,
+    bgImageSize: "cover",
+    borderRadius: 4,
+    borderWidth: 0,
+    borderColor: "#ffffff",
+    boxShadow: "none",
+    shadowColor: "#000000",
+    shadowBlur: 10,
+    shadowOffsetX: 0,
+    shadowOffsetY: 4,
+    paddingV: 0,
+    paddingH: 0,
+    marginV: 0,
+    marginH: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    hoverEffect: "none",
+    hoverTransition: 300,
+    animDuration: 600,
+    particleShape: "circle",
+    particleBlendMode: "normal",
+    particleGravity: 0,
+    particleTrail: true,
+    particleRandomSize: false,
+    particleRotation: 0,
+    particleScatter: 1,
+    particlePulse: false,
+  },
+  render: function (p) {
+    var id = "ptrail-" + (p._blockId || Date.now());
+    var bgType = p.bgType || "solid";
+    var bgStyle = "";
+    if (bgType === "gradient") {
+      bgStyle =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        ");";
+    } else if (bgType === "image" && p.bgImageUrl) {
+      bgStyle =
+        "background:url('" +
+        p.bgImageUrl +
+        "') center/" +
+        (p.bgImageSize || "cover") +
+        " no-repeat;background-color:" +
+        (p.bg || "#0d0d1a") +
+        ";";
+    } else {
+      bgStyle = "background:" + (p.bg || "#0d0d1a") + ";";
+    }
+    var containerBorder = "";
+    if (p.borderWidth && p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px solid " +
+        (p.borderColor || "#ffffff") +
+        ";";
+    }
+    var containerShadow = "";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      containerShadow =
+        "box-shadow:" +
+        (p.shadowOffsetX || 0) +
+        "px " +
+        (p.shadowOffsetY || 4) +
+        "px " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowColor || "#000000") +
+        ";";
+    }
+    var hoverClass = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+    }
+    var animClass = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+    }
+    var padStyle =
+      "padding:" + (p.paddingV || 0) + "px " + (p.paddingH || 0) + "px;";
+    var margStyle =
+      "margin:" + (p.marginV || 0) + "px " + (p.marginH || 0) + "px;";
+    var opStyle =
+      p.opacity && p.opacity < 100 ? "opacity:" + p.opacity / 100 + ";" : "";
+    return (
+      '<div class="veltro-ptrail-wrap' +
+      animClass +
+      hoverClass +
+      '" id="' +
+      id +
+      '" data-particle-count="' +
+      (p.particleCount || 30) +
+      '" data-particle-size="' +
+      (p.particleSize || 4) +
+      '" data-particle-color="' +
+      (p.particleColor || "#cdfe00") +
+      '" data-fade-speed="' +
+      (p.fadeSpeed || 0.95) +
+      '" data-particle-shape="' +
+      (p.particleShape || "circle") +
+      '" data-particle-blend-mode="' +
+      (p.particleBlendMode || "normal") +
+      '" data-particle-gravity="' +
+      (p.particleGravity || 0) +
+      '" data-particle-trail="' +
+      (p.particleTrail !== false ? "true" : "false") +
+      '" data-particle-random-size="' +
+      (p.particleRandomSize ? "true" : "false") +
+      '" data-particle-rotation="' +
+      (p.particleRotation || 0) +
+      '" data-particle-scatter="' +
+      (p.particleScatter || 1) +
+      '" data-particle-pulse="' +
+      (p.particlePulse ? "true" : "false") +
+      '" style="height:' +
+      p.height +
+      "px;" +
+      bgStyle +
+      "position:relative;overflow:hidden;border-radius:" +
+      (p.borderRadius || 4) +
+      "px;cursor:none;" +
+      containerBorder +
+      containerShadow +
+      padStyle +
+      margStyle +
+      opStyle +
+      '"><canvas class="veltro-ptrail-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    var html = "";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Core Settings</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Height (px)</label><input type="number" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Count</label><input type="number" value="' +
+      (p.particleCount || 30) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleCount',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Size</label><input type="number" value="' +
+      (p.particleSize || 4) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleSize',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Color</label><input type="color" value="' +
+      (p.particleColor || "#cdfe00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleColor',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Fade Speed</label><input type="number" step="0.01" min="0" max="1" value="' +
+      (p.fadeSpeed || 0.95) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fadeSpeed',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Background & Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      ((p.bgType || "solid") === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      ((p.bgType || "solid") === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      ((p.bgType || "solid") === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if ((p.bgType || "solid") === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Color</label><input type="color" value="' +
+        (p.bg || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bg',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        ((p.bgGradientDir || "135deg") === "135deg" ? " selected" : "") +
+        '>135°</option><option value="to right"' +
+        ((p.bgGradientDir || "135deg") === "to right" ? " selected" : "") +
+        '>Left→Right</option><option value="to bottom"' +
+        ((p.bgGradientDir || "135deg") === "to bottom" ? " selected" : "") +
+        '>Top→Bottom</option><option value="circle"' +
+        ((p.bgGradientDir || "135deg") === "circle" ? " selected" : "") +
+        ">Radial</option></select></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImageUrl || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageUrl',this.value)\" placeholder=\"https://...\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Opacity (%)</label><input type="number" min="0" max="100" value="' +
+        (p.bgImageOpacity || 30) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageOpacity',+this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Size</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageSize',this.value)\"><option value=\"cover\"" +
+        ((p.bgImageSize || "cover") === "cover" ? " selected" : "") +
+        '>Cover</option><option value="contain"' +
+        ((p.bgImageSize || "cover") === "contain" ? " selected" : "") +
+        '>Contain</option><option value="100% 100%"' +
+        ((p.bgImageSize || "cover") === "100% 100%" ? " selected" : "") +
+        ">Stretch</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius (px)</label><input type="number" value="' +
+      (p.borderRadius || 4) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width (px)</label><input type="number" value="' +
+      (p.borderWidth || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Color</label><input type="color" value="' +
+      (p.borderColor || "#ffffff") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderColor',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Box Shadow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','boxShadow',this.value)\"><option value=\"none\"" +
+      ((p.boxShadow || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="soft"' +
+      ((p.boxShadow || "none") === "soft" ? " selected" : "") +
+      '>Soft</option><option value="hard"' +
+      ((p.boxShadow || "none") === "hard" ? " selected" : "") +
+      '>Hard</option><option value="glow"' +
+      ((p.boxShadow || "none") === "glow" ? " selected" : "") +
+      ">Glow</option></select></div>";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      html +=
+        '<div class="rp-row"><label>Shadow Color</label><input type="color" value="' +
+        (p.shadowColor || "#000000") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Shadow Blur</label><input type="number" value="' +
+        (p.shadowBlur || 10) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value)\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Spacing & Display</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Padding V (px)</label><input type="number" value="' +
+      (p.paddingV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H (px)</label><input type="number" value="' +
+      (p.paddingH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin V (px)</label><input type="number" value="' +
+      (p.marginV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin H (px)</label><input type="number" value="' +
+      (p.marginH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity (%)</label><input type="number" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animations & Effects</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      ((p.entranceAnim || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="fade-in"' +
+      ((p.entranceAnim || "none") === "fade-in" ? " selected" : "") +
+      '>Fade In</option><option value="slide-up"' +
+      ((p.entranceAnim || "none") === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="slide-left"' +
+      ((p.entranceAnim || "none") === "slide-left" ? " selected" : "") +
+      '>Slide Left</option><option value="zoom-in"' +
+      ((p.entranceAnim || "none") === "zoom-in" ? " selected" : "") +
+      '>Zoom In</option><option value="flip-in"' +
+      ((p.entranceAnim || "none") === "flip-in" ? " selected" : "") +
+      ">Flip In</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Animation Duration (ms)</label><input type="number" value="' +
+      (p.animDuration || 600) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','animDuration',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      ((p.hoverEffect || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="lift"' +
+      ((p.hoverEffect || "none") === "lift" ? " selected" : "") +
+      '>Lift</option><option value="glow"' +
+      ((p.hoverEffect || "none") === "glow" ? " selected" : "") +
+      '>Glow</option><option value="scale"' +
+      ((p.hoverEffect || "none") === "scale" ? " selected" : "") +
+      '>Scale</option><option value="tilt"' +
+      ((p.hoverEffect || "none") === "tilt" ? " selected" : "") +
+      ">Tilt</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Transition (ms)</label><input type="number" value="' +
+      (p.hoverTransition || 300) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverTransition',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Advanced Particle Options</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Particle Shape</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleShape',this.value)\"><option value=\"circle\"" +
+      ((p.particleShape || "circle") === "circle" ? " selected" : "") +
+      '>Circle</option><option value="square"' +
+      ((p.particleShape || "circle") === "square" ? " selected" : "") +
+      '>Square</option><option value="triangle"' +
+      ((p.particleShape || "circle") === "triangle" ? " selected" : "") +
+      '>Triangle</option><option value="star"' +
+      ((p.particleShape || "circle") === "star" ? " selected" : "") +
+      '>Star</option><option value="diamond"' +
+      ((p.particleShape || "circle") === "diamond" ? " selected" : "") +
+      ">Diamond</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Blend Mode</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleBlendMode',this.value)\"><option value=\"normal\"" +
+      ((p.particleBlendMode || "normal") === "normal" ? " selected" : "") +
+      '>Normal</option><option value="screen"' +
+      ((p.particleBlendMode || "normal") === "screen" ? " selected" : "") +
+      '>Screen</option><option value="multiply"' +
+      ((p.particleBlendMode || "normal") === "multiply" ? " selected" : "") +
+      '>Multiply</option><option value="overlay"' +
+      ((p.particleBlendMode || "normal") === "overlay" ? " selected" : "") +
+      '>Overlay</option><option value="lighten"' +
+      ((p.particleBlendMode || "normal") === "lighten" ? " selected" : "") +
+      ">Lighten</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Gravity</label><input type="number" step="0.1" value="' +
+      (p.particleGravity || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleGravity',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Trail</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleTrail',this.value)\"><option value=\"true\"" +
+      (p.particleTrail !== false ? " selected" : "") +
+      '>Enabled</option><option value="false"' +
+      (p.particleTrail === false ? " selected" : "") +
+      ">Disabled</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Random Size</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleRandomSize',this.value)\"><option value=\"false\"" +
+      (!p.particleRandomSize ? " selected" : "") +
+      '>Uniform</option><option value="true"' +
+      (p.particleRandomSize ? " selected" : "") +
+      ">Random</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Rotation (deg)</label><input type="number" value="' +
+      (p.particleRotation || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleRotation',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Scatter Factor</label><input type="number" step="0.1" min="0.1" max="3" value="' +
+      (p.particleScatter || 1) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleScatter',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Pulse</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particlePulse',this.value)\"><option value=\"false\"" +
+      (!p.particlePulse ? " selected" : "") +
+      '>Off</option><option value="true"' +
+      (p.particlePulse ? " selected" : "") +
+      ">On</option></select></div>";
+    html += "</div></div>";
+    return html;
+  },
+});
+
+// ── 12. CURSOR RIPPLE ──
+FB.widgets.register("cursorRipple", {
+  label: "Cursor Ripple",
+  sublabel: "Click ripple effect",
+  icon: "◎",
+  iconBg: "#1a0d1a",
+  iconColor: "#f472b6",
+  category: "veltro",
+  subCategory: "cursor",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    rippleColor: "#cdfe00",
+    rippleSize: 100,
+    rippleDuration: 800,
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a1a3e",
+    bgImageUrl: "",
+    bgImageOpacity: 30,
+    bgImageSize: "cover",
+    borderRadius: 4,
+    borderWidth: 0,
+    borderColor: "#ffffff",
+    boxShadow: "none",
+    shadowColor: "#000000",
+    shadowBlur: 10,
+    shadowOffsetX: 0,
+    shadowOffsetY: 4,
+    paddingV: 0,
+    paddingH: 0,
+    marginV: 0,
+    marginH: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    hoverEffect: "none",
+    hoverTransition: 300,
+    animDuration: 600,
+    rippleShape: "circle",
+    rippleMultiple: true,
+    rippleDirection: "outward",
+    rippleBorderWidth: 2,
+    rippleText: "Click Anywhere",
+    rippleTextColor: "#ffffff",
+    rippleTextSize: 32,
+    rippleGlow: false,
+  },
+  render: function (p) {
+    var id = "ripple-" + (p._blockId || Date.now());
+    var bgType = p.bgType || "solid";
+    var bgStyle = "";
+    if (bgType === "gradient") {
+      bgStyle =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        ");";
+    } else if (bgType === "image" && p.bgImageUrl) {
+      bgStyle =
+        "background:url('" +
+        p.bgImageUrl +
+        "') center/" +
+        (p.bgImageSize || "cover") +
+        " no-repeat;background-color:" +
+        (p.bg || "#0d0d1a") +
+        ";";
+    } else {
+      bgStyle = "background:" + (p.bg || "#0d0d1a") + ";";
+    }
+    var containerBorder = "";
+    if (p.borderWidth && p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px solid " +
+        (p.borderColor || "#ffffff") +
+        ";";
+    }
+    var containerShadow = "";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      containerShadow =
+        "box-shadow:" +
+        (p.shadowOffsetX || 0) +
+        "px " +
+        (p.shadowOffsetY || 4) +
+        "px " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowColor || "#000000") +
+        ";";
+    }
+    var hoverClass = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+    }
+    var animClass = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+    }
+    var padStyle =
+      "padding:" + (p.paddingV || 0) + "px " + (p.paddingH || 0) + "px;";
+    var margStyle =
+      "margin:" + (p.marginV || 0) + "px " + (p.marginH || 0) + "px;";
+    var opStyle =
+      p.opacity && p.opacity < 100 ? "opacity:" + p.opacity / 100 + ";" : "";
+    return (
+      '<div class="veltro-ripple-wrap' +
+      animClass +
+      hoverClass +
+      '" id="' +
+      id +
+      '" data-ripple-color="' +
+      (p.rippleColor || "#cdfe00") +
+      '" data-ripple-size="' +
+      (p.rippleSize || 100) +
+      '" data-ripple-duration="' +
+      (p.rippleDuration || 800) +
+      '" data-ripple-shape="' +
+      (p.rippleShape || "circle") +
+      '" data-ripple-multiple="' +
+      (p.rippleMultiple !== false ? "true" : "false") +
+      '" data-ripple-direction="' +
+      (p.rippleDirection || "outward") +
+      '" data-ripple-border-width="' +
+      (p.rippleBorderWidth || 2) +
+      '" data-ripple-glow="' +
+      (p.rippleGlow ? "true" : "false") +
+      '" style="height:' +
+      p.height +
+      "px;" +
+      bgStyle +
+      "position:relative;overflow:hidden;border-radius:" +
+      (p.borderRadius || 4) +
+      "px;cursor:pointer;display:flex;align-items:center;justify-content:center;" +
+      containerBorder +
+      containerShadow +
+      padStyle +
+      margStyle +
+      opStyle +
+      '"><h2 style="color:' +
+      (p.rippleTextColor || "#ffffff") +
+      ";font-size:" +
+      (p.rippleTextSize || 32) +
+      'px;font-weight:700;margin:0;pointer-events:none">' +
+      (p.rippleText || "Click Anywhere") +
+      "</h2></div>"
+    );
+  },
+  editPanel: function (id, p) {
+    var html = "";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Core Settings</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Height (px)</label><input type="number" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Ripple Color</label><input type="color" value="' +
+      (p.rippleColor || "#cdfe00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','rippleColor',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Ripple Size</label><input type="number" value="' +
+      (p.rippleSize || 100) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','rippleSize',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Ripple Duration (ms)</label><input type="number" value="' +
+      (p.rippleDuration || 800) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','rippleDuration',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Ripple Text</label><input type="text" value="' +
+      (p.rippleText || "Click Anywhere") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','rippleText',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Text Color</label><input type="color" value="' +
+      (p.rippleTextColor || "#ffffff") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','rippleTextColor',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Text Size (px)</label><input type="number" value="' +
+      (p.rippleTextSize || 32) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','rippleTextSize',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Background & Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      ((p.bgType || "solid") === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      ((p.bgType || "solid") === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      ((p.bgType || "solid") === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if ((p.bgType || "solid") === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Color</label><input type="color" value="' +
+        (p.bg || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bg',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        ((p.bgGradientDir || "135deg") === "135deg" ? " selected" : "") +
+        '>135°</option><option value="to right"' +
+        ((p.bgGradientDir || "135deg") === "to right" ? " selected" : "") +
+        '>Left→Right</option><option value="to bottom"' +
+        ((p.bgGradientDir || "135deg") === "to bottom" ? " selected" : "") +
+        '>Top→Bottom</option><option value="circle"' +
+        ((p.bgGradientDir || "135deg") === "circle" ? " selected" : "") +
+        ">Radial</option></select></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImageUrl || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageUrl',this.value)\" placeholder=\"https://...\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Opacity (%)</label><input type="number" min="0" max="100" value="' +
+        (p.bgImageOpacity || 30) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageOpacity',+this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Size</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageSize',this.value)\"><option value=\"cover\"" +
+        ((p.bgImageSize || "cover") === "cover" ? " selected" : "") +
+        '>Cover</option><option value="contain"' +
+        ((p.bgImageSize || "cover") === "contain" ? " selected" : "") +
+        '>Contain</option><option value="100% 100%"' +
+        ((p.bgImageSize || "cover") === "100% 100%" ? " selected" : "") +
+        ">Stretch</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius (px)</label><input type="number" value="' +
+      (p.borderRadius || 4) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width (px)</label><input type="number" value="' +
+      (p.borderWidth || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Color</label><input type="color" value="' +
+      (p.borderColor || "#ffffff") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderColor',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Box Shadow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','boxShadow',this.value)\"><option value=\"none\"" +
+      ((p.boxShadow || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="soft"' +
+      ((p.boxShadow || "none") === "soft" ? " selected" : "") +
+      '>Soft</option><option value="hard"' +
+      ((p.boxShadow || "none") === "hard" ? " selected" : "") +
+      '>Hard</option><option value="glow"' +
+      ((p.boxShadow || "none") === "glow" ? " selected" : "") +
+      ">Glow</option></select></div>";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      html +=
+        '<div class="rp-row"><label>Shadow Color</label><input type="color" value="' +
+        (p.shadowColor || "#000000") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Shadow Blur</label><input type="number" value="' +
+        (p.shadowBlur || 10) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value)\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Spacing & Display</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Padding V (px)</label><input type="number" value="' +
+      (p.paddingV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H (px)</label><input type="number" value="' +
+      (p.paddingH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin V (px)</label><input type="number" value="' +
+      (p.marginV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin H (px)</label><input type="number" value="' +
+      (p.marginH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity (%)</label><input type="number" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animations & Effects</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      ((p.entranceAnim || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="fade-in"' +
+      ((p.entranceAnim || "none") === "fade-in" ? " selected" : "") +
+      '>Fade In</option><option value="slide-up"' +
+      ((p.entranceAnim || "none") === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="slide-left"' +
+      ((p.entranceAnim || "none") === "slide-left" ? " selected" : "") +
+      '>Slide Left</option><option value="zoom-in"' +
+      ((p.entranceAnim || "none") === "zoom-in" ? " selected" : "") +
+      '>Zoom In</option><option value="flip-in"' +
+      ((p.entranceAnim || "none") === "flip-in" ? " selected" : "") +
+      ">Flip In</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Animation Duration (ms)</label><input type="number" value="' +
+      (p.animDuration || 600) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','animDuration',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      ((p.hoverEffect || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="lift"' +
+      ((p.hoverEffect || "none") === "lift" ? " selected" : "") +
+      '>Lift</option><option value="glow"' +
+      ((p.hoverEffect || "none") === "glow" ? " selected" : "") +
+      '>Glow</option><option value="scale"' +
+      ((p.hoverEffect || "none") === "scale" ? " selected" : "") +
+      '>Scale</option><option value="tilt"' +
+      ((p.hoverEffect || "none") === "tilt" ? " selected" : "") +
+      ">Tilt</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Transition (ms)</label><input type="number" value="' +
+      (p.hoverTransition || 300) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverTransition',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Advanced Ripple Options</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Ripple Shape</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','rippleShape',this.value)\"><option value=\"circle\"" +
+      ((p.rippleShape || "circle") === "circle" ? " selected" : "") +
+      '>Circle</option><option value="square"' +
+      ((p.rippleShape || "circle") === "square" ? " selected" : "") +
+      '>Square</option><option value="diamond"' +
+      ((p.rippleShape || "circle") === "diamond" ? " selected" : "") +
+      ">Diamond</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Multiple Ripples</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','rippleMultiple',this.value)\"><option value=\"true\"" +
+      (p.rippleMultiple !== false ? " selected" : "") +
+      '>Enabled</option><option value="false"' +
+      (p.rippleMultiple === false ? " selected" : "") +
+      ">Single</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Ripple Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','rippleDirection',this.value)\"><option value=\"outward\"" +
+      ((p.rippleDirection || "outward") === "outward" ? " selected" : "") +
+      '>Outward</option><option value="inward"' +
+      ((p.rippleDirection || "outward") === "inward" ? " selected" : "") +
+      '>Inward</option><option value="both"' +
+      ((p.rippleDirection || "outward") === "both" ? " selected" : "") +
+      ">Both</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Ripple Border Width</label><input type="number" value="' +
+      (p.rippleBorderWidth || 2) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','rippleBorderWidth',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Ripple Glow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','rippleGlow',this.value)\"><option value=\"false\"" +
+      (!p.rippleGlow ? " selected" : "") +
+      '>Off</option><option value="true"' +
+      (p.rippleGlow ? " selected" : "") +
+      ">On</option></select></div>";
+    html += "</div></div>";
+    return html;
+  },
+});
+
+// ── 13. STICKY SCROLL STACK ──
+FB.widgets.register("stickyScrollStack", {
+  label: "Sticky Scroll Stack",
+  sublabel: "Sticky stacking",
+  icon: "☰",
+  iconBg: "#0d1a2e",
+  iconColor: "#60a5fa",
+  category: "veltro",
+  subCategory: "scroll",
+  defaultProps: {
+    height: 600,
+    bg: "#0d0d1a",
+    cardCount: 5,
+    cardHeight: 200,
+    cardColor: "#1a1a2e",
+  },
+  render: function (p) {
+    var id = "sticky-" + (p._blockId || Date.now());
+    var cardsHtml = "";
+    for (var i = 0; i < (p.cardCount || 5); i++) {
+      cardsHtml +=
+        '<div class="veltro-sticky-card" style="position:sticky;top:' +
+        i * 20 +
+        "px;height:" +
+        (p.cardHeight || 200) +
+        "px;background:" +
+        (p.cardColor || "#1a1a2e") +
+        ';border-radius:16px;margin-bottom:20px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.1)"><span style="font-size:2rem;font-weight:800;color:#fff">Card ' +
+        (i + 1) +
+        "</span></div>";
+    }
+    return (
+      '<div class="veltro-sticky-wrap" id="' +
+      id +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px;overflow-y:auto;padding:20px">' +
+      cardsHtml +
+      "</div>"
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// ── 14. SCROLL VELOCITY SKEW ──
+FB.widgets.register("scrollVelocitySkew", {
+  label: "Scroll Velocity Skew",
+  sublabel: "Skew on scroll",
+  icon: "⟋",
+  iconBg: "#1a0d1a",
+  iconColor: "#f472b6",
+  category: "veltro",
+  subCategory: "scroll",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    maxSkew: 15,
+    elasticity: 0.8,
+  },
+  render: function (p) {
+    var id = "velskew-" + (p._blockId || Date.now());
+    return (
+      '<div class="veltro-velskew-wrap" id="' +
+      id +
+      '" data-max-skew="' +
+      (p.maxSkew || 15) +
+      '" data-elasticity="' +
+      (p.elasticity || 0.8) +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px;overflow-y:auto"><div class="veltro-velskew-content" style="padding:40px" data-velskew-init="1"><div style="height:800px;display:flex;flex-direction:column;gap:20px"><div style="padding:30px;background:rgba(205,254,0,0.1);border-radius:12px"><h3 style="color:#cdfe00;margin:0">Scroll to see skew effect</h3></div><div style="padding:30px;background:rgba(60,165,250,0.1);border-radius:12px"><h3 style="color:#60a5fa;margin:0">Velocity affects skew</h3></div><div style="padding:30px;background:rgba(236,72,153,0.1);border-radius:12px"><h3 style="color:#ec4899;margin:0">Rubber band physics</h3></div><div style="padding:30px;background:rgba(251,191,36,0.1);border-radius:12px"><h3 style="color:#fbbf24;margin:0">Fast scroll = more skew</h3></div></div></div></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// ── 15. PARALLAX IMAGE STACK ──
+FB.widgets.register("parallaxImageStack", {
+  label: "Parallax Image Stack",
+  sublabel: "Layered parallax",
+  icon: "▣",
+  iconBg: "#0d1a0d",
+  iconColor: "#34d399",
+  category: "veltro",
+  subCategory: "scroll",
+  defaultProps: {
+    height: 500,
+    bg: "#0d0d1a",
+    layerCount: 5,
+    images:
+      "https://picsum.photos/400/300?random=1,https://picsum.photos/400/300?random=2,https://picsum.photos/400/300?random=3,https://picsum.photos/400/300?random=4,https://picsum.photos/400/300?random=5",
+  },
+  render: function (p) {
+    var id = "parstack-" + (p._blockId || Date.now());
+    var images = (p.images || "").split(",");
+    var layersHtml = "";
+    for (var i = 0; i < (p.layerCount || 5); i++) {
+      var img = images[i] || "https://picsum.photos/400/300?random=" + (i + 1);
+      layersHtml +=
+        '<div class="veltro-parstack-layer" data-depth="' +
+        (i + 1) * 0.2 +
+        '" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:' +
+        (0.3 + i * 0.15) +
+        '"><img src="' +
+        img +
+        '" style="width:300px;height:200px;object-fit:cover;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.5)" alt=""/></div>';
+    }
+    return (
+      '<div class="veltro-parstack-wrap" id="' +
+      id +
+      '" data-layer-count="' +
+      (p.layerCount || 5) +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px">' +
+      layersHtml +
+      "</div>"
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// ── 16. MOSAIC ASSEMBLE ──
+FB.widgets.register("mosaicAssemble", {
+  label: "Mosaic Assemble",
+  sublabel: "Grid assembles on scroll",
+  icon: "⊞",
+  iconBg: "#1a1a0d",
+  iconColor: "#fbbf24",
+  category: "veltro",
+  subCategory: "scroll",
+  defaultProps: {
+    height: 500,
+    bg: "#0d0d1a",
+    rows: 4,
+    cols: 4,
+    gap: 8,
+    image: "https://picsum.photos/800/800?random=1",
+  },
+  render: function (p) {
+    var id = "mosaic-" + (p._blockId || Date.now());
+    var cellsHtml = "";
+    for (var r = 0; r < (p.rows || 4); r++) {
+      for (var c = 0; c < (p.cols || 4); c++) {
+        var delay = (r * (p.cols || 4) + c) * 0.1;
+        cellsHtml +=
+          '<div class="veltro-mosaic-cell" data-row="' +
+          r +
+          '" data-col="' +
+          c +
+          '" style="background:url(' +
+          (p.image || "https://picsum.photos/800/800?random=1") +
+          ");background-size:" +
+          (p.cols || 4) * 100 +
+          "% " +
+          (p.rows || 4) * 100 +
+          "%;background-position:" +
+          c * (100 / ((p.cols || 4) - 1)) +
+          "% " +
+          r * (100 / ((p.rows || 4) - 1)) +
+          "%;border-radius:4px;opacity:0;transform:scale(0.8);transition:opacity 0.6s ease " +
+          delay +
+          "s,transform 0.6s ease " +
+          delay +
+          's\"></div>';
+      }
+    }
+    return (
+      '<div class="veltro-mosaic-wrap" id="' +
+      id +
+      '" data-rows="' +
+      (p.rows || 4) +
+      '" data-cols="' +
+      (p.cols || 4) +
+      '" data-gap="' +
+      (p.gap || 8) +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px;display:flex;align-items:center;justify-content:center"><div class="veltro-mosaic-grid" style="display:grid;grid-template-columns:repeat(' +
+      (p.cols || 4) +
+      ",1fr);grid-template-rows:repeat(" +
+      (p.rows || 4) +
+      ",1fr);gap:" +
+      (p.gap || 8) +
+      'px;width:300px;height:300px">' +
+      cellsHtml +
+      "</div></div>"
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// ── 17. SCROLL PROGRESS RING ──
+FB.widgets.register("scrollProgressRing", {
+  label: "Scroll Progress Ring",
+  sublabel: "SVG ring progress",
+  icon: "◯",
+  iconBg: "#0d0d2e",
+  iconColor: "#60a5fa",
+  category: "veltro",
+  subCategory: "scroll",
+  defaultProps: {
+    height: 200,
+    bg: "#0d0d1a",
+    ringColor: "#cdfe00",
+    ringSize: 80,
+    ringWidth: 8,
+  },
+  render: function (p) {
+    var id = "ring-" + (p._blockId || Date.now());
+    var r = p.ringSize || 80;
+    var circumference = 2 * Math.PI * r;
+    return (
+      '<div class="veltro-ring-wrap" id="' +
+      id +
+      '" data-ring-color="' +
+      (p.ringColor || "#cdfe00") +
+      '" data-ring-size="' +
+      r +
+      '" data-ring-width="' +
+      (p.ringWidth || 8) +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px;display:flex;align-items:center;justify-content:center"><svg width="' +
+      (r * 2 + 20) +
+      '" height="' +
+      (r * 2 + 20) +
+      '"><circle cx="' +
+      (r + 10) +
+      '" cy="' +
+      (r + 10) +
+      '" r="' +
+      r +
+      '" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="' +
+      (p.ringWidth || 8) +
+      '"></circle><circle class="veltro-progress-ring" cx="' +
+      (r + 10) +
+      '" cy="' +
+      (r + 10) +
+      '" r="' +
+      r +
+      '" fill="none" stroke="' +
+      (p.ringColor || "#cdfe00") +
+      '" stroke-width="' +
+      (p.ringWidth || 8) +
+      '" stroke-dasharray="' +
+      circumference +
+      '" stroke-dashoffset="' +
+      circumference +
+      '" stroke-linecap="round" style="transition:stroke-dashoffset 0.3s ease;transform:rotate(-90deg);transform-origin:center"></circle></svg></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// ── 18. MAGNETIC SCROLL ──
+FB.widgets.register("magneticScroll", {
+  label: "Magnetic Scroll",
+  sublabel: "Magnetic snap sections",
+  icon: "⊕",
+  iconBg: "#1a0d2e",
+  iconColor: "#a78bfa",
+  category: "veltro",
+  subCategory: "scroll",
+  defaultProps: {
+    height: 500,
+    bg: "#0d0d1a",
+    sectionCount: 4,
+    snapStrength: 0.5,
+    colors: "#1a1a2e,#1a0d1a,#0d1a1a,#0d0d2e",
+  },
+  render: function (p) {
+    var id = "mscroll-" + (p._blockId || Date.now());
+    var colors = (p.colors || "#1a1a2e,#1a0d1a,#0d1a1a,#0d0d2e").split(",");
+    var sectionsHtml = "";
+    for (var i = 0; i < (p.sectionCount || 4); i++) {
+      sectionsHtml +=
+        '<div class="veltro-mscroll-section" style="height:100%;display:flex;align-items:center;justify-content:center;background:' +
+        (colors[i % colors.length] || "#1a1a2e") +
+        ';border-radius:16px;margin:20px;font-size:2rem;font-weight:800;color:#fff">Section ' +
+        (i + 1) +
+        "</div>";
+    }
+    return (
+      '<div class="veltro-mscroll-wrap" id="' +
+      id +
+      '" data-section-count="' +
+      (p.sectionCount || 4) +
+      '" data-snap-strength="' +
+      (p.snapStrength || 0.5) +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px;overflow-y:auto;scroll-snap-type:y mandatory">' +
+      sectionsHtml +
+      "</div>"
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// ── 19. MORPH BLOB ──
+FB.widgets.register("morphBlob", {
+  label: "Morph Blob",
+  sublabel: "SVG blob morphing",
+  icon: "◉",
+  iconBg: "#0d1a2e",
+  iconColor: "#60a5fa",
+  category: "veltro",
+  subCategory: "backgrounds",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    color: "#cdfe00",
+    speed: 0.5,
+    complexity: 5,
+  },
+  render: function (p) {
+    var id = "blob-" + (p._blockId || Date.now());
+    return (
+      '<div class="veltro-blob-wrap" id="' +
+      id +
+      '" data-color="' +
+      (p.color || "#cdfe00") +
+      '" data-speed="' +
+      (p.speed || 0.5) +
+      '" data-complexity="' +
+      (p.complexity || 5) +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px;display:flex;align-items:center;justify-content:center"><svg class="veltro-blob-svg" viewBox="0 0 200 200" style="width:300px;height:300px"><path class="veltro-blob-path" fill="' +
+      (p.color || "#cdfe00") +
+      '" d="M47.5,-57.2C59.8,-47.3,67.1,-31.9,69.2,-16.1C71.3,-0.3,68.2,15.9,60.3,29.5C52.4,43.1,39.7,54.1,25.1,60.3C10.5,66.5,-6,67.9,-21.3,63.3C-36.6,58.7,-50.7,48.1,-59.9,34.1C-69.1,20.1,-73.4,2.7,-69.3,-12.5C-65.2,-27.7,-52.7,-40.7,-38.9,-50.2C-25.1,-59.7,-10,-65.7,3.6,-69.8C17.2,-73.9,35.2,-67.1,47.5,-57.2Z" transform="translate(100 100)" style="animation:vtmorph ' +
+      10 / (p.speed || 0.5) +
+      's ease-in-out infinite alternate"></path></svg></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// ── 20. NOISE GRAIN ──
+FB.widgets.register("noiseGrain", {
+  label: "Noise Grain",
+  sublabel: "Animated noise texture",
+  icon: "▒",
+  iconBg: "#1a1a0d",
+  iconColor: "#fbbf24",
+  category: "veltro",
+  subCategory: "backgrounds",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    opacity: 0.1,
+    speed: 0.5,
+  },
+  render: function (p) {
+    var id = "noise-" + (p._blockId || Date.now());
+    return (
+      '<div class="veltro-noise-wrap" id="' +
+      id +
+      '" data-opacity="' +
+      (p.opacity || 0.1) +
+      '" data-speed="' +
+      (p.speed || 0.5) +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px"><canvas class="veltro-noise-canvas" style="position:absolute;inset:0;width:100%;height:100%;opacity:' +
+      (p.opacity || 0.1) +
+      '"></canvas></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// ── 21. GRADIENT FLOW ──
+FB.widgets.register("gradientFlow", {
+  label: "Gradient Flow",
+  sublabel: "Flowing gradients",
+  icon: "≋",
+  iconBg: "#0d1a1a",
+  iconColor: "#34d399",
+  category: "veltro",
+  subCategory: "backgrounds",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    colors: "#ff6b35,#cdfe00,#3b82f6,#ec4899",
+    speed: 0.5,
+    angle: 45,
+  },
+  render: function (p) {
+    var id = "grad-" + (p._blockId || Date.now());
+    var colors = (p.colors || "#ff6b35,#cdfe00,#3b82f6,#ec4899").split(",");
+    var gradColors = colors.join(",");
+    return (
+      '<div class="veltro-grad-wrap" id="' +
+      id +
+      '" data-colors="' +
+      (p.colors || "#ff6b35,#cdfe00,#3b82f6,#ec4899") +
+      '" data-speed="' +
+      (p.speed || 0.5) +
+      '" data-angle="' +
+      (p.angle || 45) +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px;display:flex;align-items:center;justify-content:center"><div class="veltro-grad-flow" style="position:absolute;inset:0;background:linear-gradient(' +
+      (p.angle || 45) +
+      "deg," +
+      gradColors +
+      ");background-size:400% 400%;animation:vtgradflow " +
+      10 / (p.speed || 0.5) +
+      's ease infinite\"></div></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// ── 22. SECTION BACKGROUND ──
+FB.widgets.register("sectionBackground", {
+  label: "Section Background",
+  sublabel: "Animated section bg",
+  icon: "▣",
+  iconBg: "#0d0d2e",
+  iconColor: "#60a5fa",
+  category: "veltro",
+  subCategory: "backgrounds",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    pattern: "dots",
+    patternColor: "#1a1a2e",
+    patternSize: 20,
+  },
+  render: function (p) {
+    var id = "secbg-" + (p._blockId || Date.now());
+    var patternStyle = "";
+    if (p.pattern === "dots") {
+      patternStyle =
+        "background-image:radial-gradient(" +
+        (p.patternColor || "#1a1a2e") +
+        " 1px,transparent 1px);background-size:" +
+        (p.patternSize || 20) +
+        "px " +
+        (p.patternSize || 20) +
+        "px";
+    } else if (p.pattern === "grid") {
+      patternStyle =
+        "background-image:linear-gradient(" +
+        (p.patternColor || "#1a1a2e") +
+        " 1px,transparent 1px),linear-gradient(90deg," +
+        (p.patternColor || "#1a1a2e") +
+        " 1px,transparent 1px);background-size:" +
+        (p.patternSize || 20) +
+        "px " +
+        (p.patternSize || 20) +
+        "px";
+    } else if (p.pattern === "lines") {
+      patternStyle =
+        "background-image:repeating-linear-gradient(45deg," +
+        (p.patternColor || "#1a1a2e") +
+        " 0," +
+        (p.patternColor || "#1a1a2e") +
+        " 1px,transparent 0,transparent 50%);background-size:" +
+        (p.patternSize || 20) +
+        "px " +
+        (p.patternSize || 20) +
+        "px";
+    }
+    return (
+      '<div class="veltro-secbg-wrap" id="' +
+      id +
+      '" data-pattern="' +
+      (p.pattern || "dots") +
+      '" data-pattern-color="' +
+      (p.patternColor || "#1a1a2e") +
+      '" data-pattern-size="' +
+      (p.patternSize || 20) +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px"><div style="position:absolute;inset:0;' +
+      patternStyle +
+      '\"></div></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// ── 23. GLASSMORPHISM STACK ──
+FB.widgets.register("glassmorphismStack", {
+  label: "Glassmorphism Stack",
+  sublabel: "Frosted glass cards",
+  icon: "◊",
+  iconBg: "#1a0d1a",
+  iconColor: "#f472b6",
+  category: "veltro",
+  subCategory: "backgrounds",
+  defaultProps: {
+    height: 400,
+    bg: "linear-gradient(135deg,#667eea 0%,#764ba2 100%)",
+    cardCount: 3,
+    cardColor: "rgba(255,255,255,0.1)",
+    blur: 10,
+  },
+  render: function (p) {
+    var id = "glass-" + (p._blockId || Date.now());
+    var cardsHtml = "";
+    for (var i = 0; i < (p.cardCount || 3); i++) {
+      cardsHtml +=
+        '<div class="veltro-glass-card" style="width:200px;height:120px;background:' +
+        (p.cardColor || "rgba(255,255,255,0.1)") +
+        ";border-radius:16px;border:1px solid rgba(255,255,255,0.2);backdrop-filter:blur(" +
+        (p.blur || 10) +
+        'px);display:flex;align-items:center;justify-content:center;margin:10px;font-size:1.2rem;font-weight:700;color:#fff">Card ' +
+        (i + 1) +
+        "</div>";
+    }
+    return (
+      '<div class="veltro-glass-wrap" id="' +
+      id +
+      '" data-card-color="' +
+      (p.cardColor || "rgba(255,255,255,0.1)") +
+      '" data-blur="' +
+      (p.blur || 10) +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-direction:column">' +
+      cardsHtml +
+      "</div>"
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// ── 24. 3D TILT CARD ──
+FB.widgets.register("tiltCard3d", {
+  label: "3D Tilt Card",
+  sublabel: "Hover tilt effect",
+  icon: "◈",
+  iconBg: "#1a0d2e",
+  iconColor: "#a78bfa",
+  category: "veltro",
+  subCategory: "effects",
+  defaultProps: {
+    height: 300,
+    bg: "#0d0d1a",
+    cardBg: "linear-gradient(135deg,#667eea 0%,#764ba2 100%)",
+    cardWidth: 200,
+    cardHeight: 280,
+    maxTilt: 15,
+    perspective: 1000,
+  },
+  render: function (p) {
+    var id = "tilt-" + (p._blockId || Date.now());
+    return (
+      '<div class="veltro-tilt-wrap" id="' +
+      id +
+      '" data-max-tilt="' +
+      (p.maxTilt || 15) +
+      '" data-perspective="' +
+      (p.perspective || 1000) +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px;display:flex;align-items:center;justify-content:center"><div class="veltro-tilt-card" style="width:' +
+      (p.cardWidth || 200) +
+      "px;height:" +
+      (p.cardHeight || 280) +
+      "px;background:" +
+      (p.cardBg || "linear-gradient(135deg,#667eea 0%,#764ba2 100%)") +
+      ';border-radius:16px;transform-style:preserve-3d;transition:transform 0.1s ease;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:800;color:#fff">3D</div></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// ── 25. GLITCH SECTION ──
+FB.widgets.register("glitchSection", {
+  label: "Glitch Section",
+  sublabel: "Glitch effect",
+  icon: "⚡",
+  iconBg: "#1a1a0d",
+  iconColor: "#fbbf24",
+  category: "veltro",
+  subCategory: "effects",
+  defaultProps: {
+    height: 300,
+    bg: "#0d0d1a",
+    text: "GLITCH",
+    fontSize: 80,
+    fontWeight: 900,
+    color: "#cdfe00",
+    intensity: 0.5,
+  },
+  render: function (p) {
+    var id = "glitch-" + (p._blockId || Date.now());
+    return (
+      '<div class="veltro-glitch-wrap" id="' +
+      id +
+      '" data-text="' +
+      (p.text || "GLITCH") +
+      '" data-intensity="' +
+      (p.intensity || 0.5) +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px;display:flex;align-items:center;justify-content:center"><div class="veltro-glitch-text" style="font-size:' +
+      (p.fontSize || 80) +
+      "px;font-weight:" +
+      (p.fontWeight || 900) +
+      ";color:" +
+      (p.color || "#cdfe00") +
+      ';position:relative;user-select:none">' +
+      (p.text || "GLITCH") +
+      '<span style="position:absolute;left:2px;top:0;color:#ff0000;opacity:0.8;clip-path:inset(0 0 50% 0);animation:vtglitch1 ' +
+      2 / (p.intensity || 0.5) +
+      's infinite linear">' +
+      (p.text || "GLITCH") +
+      '</span><span style="position:absolute;left:-2px;top:0;color:#00ffff;opacity:0.8;clip-path:inset(50% 0 0 0);animation:vtglitch2 ' +
+      2 / (p.intensity || 0.5) +
+      's infinite linear">' +
+      (p.text || "GLITCH") +
+      "</span></div></div>"
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// ── 26. AUDIO VISUALIZER ──
+FB.widgets.register("audioVisualizer", {
+  label: "Audio Visualizer",
+  sublabel: "Animated audio bars",
+  icon: "▬",
+  iconBg: "#0d1a0d",
+  iconColor: "#34d399",
+  category: "veltro",
+  subCategory: "effects",
+  defaultProps: {
+    height: 300,
+    bg: "#0d0d1a",
+    barCount: 32,
+    barColor: "#cdfe00",
+    barWidth: 8,
+    barGap: 4,
+  },
+  render: function (p) {
+    var id = "audio-" + (p._blockId || Date.now());
+    var barsHtml = "";
+    for (var i = 0; i < (p.barCount || 32); i++) {
+      barsHtml +=
+        '<div class="veltro-audio-bar" style="width:' +
+        (p.barWidth || 8) +
+        "px;background:" +
+        (p.barColor || "#cdfe00") +
+        ';border-radius:4px;transition:height 0.1s ease\"></div>';
+    }
+    return (
+      '<div class="veltro-audio-wrap" id="' +
+      id +
+      '" data-bar-count="' +
+      (p.barCount || 32) +
+      '" data-bar-color="' +
+      (p.barColor || "#cdfe00") +
+      '" data-bar-width="' +
+      (p.barWidth || 8) +
+      '" data-bar-gap="' +
+      (p.barGap || 4) +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ";position:relative;overflow:hidden;border-radius:4px;display:flex;align-items:flex-end;justify-content:center;gap:" +
+      (p.barGap || 4) +
+      'px;padding:20px">' +
+      barsHtml +
+      "</div>"
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// ── 27. DEPTH OF FIELD ──
+FB.widgets.register("depthOfField", {
+  label: "Depth of Field",
+  sublabel: "Blur depth effect",
+  icon: "◯",
+  iconBg: "#0d0d2e",
+  iconColor: "#60a5fa",
+  category: "veltro",
+  subCategory: "effects",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    layers: 5,
+    blurAmount: 10,
+    image: "https://picsum.photos/800/400?random=1",
+  },
+  render: function (p) {
+    var id = "dof-" + (p._blockId || Date.now());
+    var layersHtml = "";
+    for (var i = 0; i < (p.layers || 5); i++) {
+      var blur =
+        i === 0 ? 0 : (i / ((p.layers || 5) - 1)) * (p.blurAmount || 10);
+      var scale = 1 + i * 0.05;
+      layersHtml +=
+        '<div class="veltro-dof-layer" style="position:absolute;inset:0;background:url(' +
+        (p.image || "https://picsum.photos/800/400?random=1") +
+        ");background-size:cover;filter:blur(" +
+        blur +
+        "px);transform:scale(" +
+        scale +
+        ");opacity:" +
+        (1 - i * 0.15) +
+        '\"></div>';
+    }
+    return (
+      '<div class="veltro-dof-wrap" id="' +
+      id +
+      '" data-layers="' +
+      (p.layers || 5) +
+      '" data-blur-amount="' +
+      (p.blurAmount || 10) +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px">' +
+      layersHtml +
+      "</div>"
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// ── 28. HOLOGRAPHIC CARD ──
+FB.widgets.register("holographicCard", {
+  label: "Holographic Card",
+  sublabel: "Holographic shimmer",
+  icon: "✦",
+  iconBg: "#1a0d2e",
+  iconColor: "#ff6b35",
+  category: "veltro",
+  subCategory: "effects",
+  defaultProps: {
+    height: 300,
+    bg: "#0d0d1a",
+    cardWidth: 200,
+    cardHeight: 280,
+    shimmerColor: "#cdfe00",
+    intensity: 0.5,
+  },
+  render: function (p) {
+    var id = "holo-" + (p._blockId || Date.now());
+    return (
+      '<div class="veltro-holo-wrap" id="' +
+      id +
+      '" data-shimmer-color="' +
+      (p.shimmerColor || "#cdfe00") +
+      '" data-intensity="' +
+      (p.intensity || 0.5) +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px;display:flex;align-items:center;justify-content:center"><div class="veltro-holo-card" style="width:' +
+      (p.cardWidth || 200) +
+      "px;height:" +
+      (p.cardHeight || 280) +
+      'px;background:linear-gradient(135deg,rgba(255,255,255,0.1) 0%,rgba(255,255,255,0.05) 100%);border-radius:16px;border:1px solid rgba(255,255,255,0.1);position:relative;overflow:hidden"><div class="veltro-holo-shimmer" style="position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,' +
+      (p.shimmerColor || "#cdfe00") +
+      " 50%,transparent 60%);opacity:" +
+      (p.intensity || 0.5) +
+      ';transform:translateX(-100%);animation:vtholo 3s infinite\"></div><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><span style="font-size:3rem">✦</span></div></div></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// ── 29. SOUND REACTIVE ──
+FB.widgets.register("soundReactive", {
+  label: "Sound Reactive",
+  sublabel: "Sound-reactive visualizer",
+  icon: "♪",
+  iconBg: "#0d1a1a",
+  iconColor: "#34d399",
+  category: "veltro",
+  subCategory: "effects",
+  defaultProps: {
+    height: 300,
+    bg: "#0d0d1a",
+    ringCount: 5,
+    ringColor: "#cdfe00",
+    sensitivity: 0.5,
+  },
+  render: function (p) {
+    var id = "sound-" + (p._blockId || Date.now());
+    var ringsHtml = "";
+    for (var i = 0; i < (p.ringCount || 5); i++) {
+      var size = 40 + i * 30;
+      ringsHtml +=
+        '<div class="veltro-sound-ring" style="position:absolute;width:' +
+        size +
+        "px;height:" +
+        size +
+        "px;border:2px solid " +
+        (p.ringColor || "#cdfe00") +
+        ";border-radius:50%;opacity:" +
+        (0.8 - i * 0.15) +
+        ";animation:vtsound " +
+        (2 + i * 0.3) +
+        's ease-in-out infinite\"></div>';
+    }
+    return (
+      '<div class="veltro-sound-wrap" id="' +
+      id +
+      '" data-ring-count="' +
+      (p.ringCount || 5) +
+      '" data-ring-color="' +
+      (p.ringColor || "#cdfe00") +
+      '" data-sensitivity="' +
+      (p.sensitivity || 0.5) +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px;display:flex;align-items:center;justify-content:center">' +
+      ringsHtml +
+      "</div>"
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// ── 30. MIRROR REFLECTION ──
+FB.widgets.register("mirrorReflection", {
+  label: "Mirror Reflection",
+  sublabel: "Mirror effect",
+  icon: "◎",
+  iconBg: "#1a0d1a",
+  iconColor: "#f472b6",
+  category: "veltro",
+  subCategory: "effects",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    image: "https://picsum.photos/400/300?random=1",
+    reflectionOpacity: 0.3,
+  },
+  render: function (p) {
+    var id = "mirror-" + (p._blockId || Date.now());
+    return (
+      '<div class="veltro-mirror-wrap" id="' +
+      id +
+      '" data-reflection-opacity="' +
+      (p.reflectionOpacity || 0.3) +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-direction:column"><div style="width:300px;height:200px;overflow:hidden;border-radius:8px"><img src="' +
+      (p.image || "https://picsum.photos/400/300?random=1") +
+      '" style="width:100%;height:100%;object-fit:cover" alt=""/></div><div class="veltro-mirror-reflection" style="width:300px;height:200px;overflow:hidden;border-radius:8px;transform:scaleY(-1);opacity:' +
+      (p.reflectionOpacity || 0.3) +
+      ';margin-top:4px"><img src="' +
+      (p.image || "https://picsum.photos/400/300?random=1") +
+      '" style="width:100%;height:100%;object-fit:cover;-webkit-mask-image:linear-gradient(transparent 0%,black 100%);mask-image:linear-gradient(transparent 0%,black 100%)" alt=""/></div></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// ── 31. CONSTELLATION LINES ──
+FB.widgets.register("constellationLines", {
+  label: "Constellation Lines",
+  sublabel: "Canvas constellation",
+  icon: "✦",
+  iconBg: "#0d1a2e",
+  iconColor: "#60a5fa",
+  category: "veltro",
+  subCategory: "effects",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    starCount: 80,
+    connectionDistance: 100,
+    starColor: "#cdfe00",
+    lineColor: "rgba(205,254,0,0.2)",
+  },
+  render: function (p) {
+    var id = "const-" + (p._blockId || Date.now());
+    return (
+      '<div class="veltro-const-wrap" id="' +
+      id +
+      '" data-star-count="' +
+      (p.starCount || 80) +
+      '" data-connection-distance="' +
+      (p.connectionDistance || 100) +
+      '" data-star-color="' +
+      (p.starColor || "#cdfe00") +
+      '" data-line-color="' +
+      (p.lineColor || "rgba(205,254,0,0.2)") +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px"><canvas class="veltro-const-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// ── 32. GEOMETRY DRAW ──
+FB.widgets.register("geometryDraw", {
+  label: "Geometry Draw",
+  sublabel: "Canvas drawing tools",
+  icon: "✎",
+  iconBg: "#0d1a0d",
+  iconColor: "#34d399",
+  category: "veltro",
+  subCategory: "spatial",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    tool: "line",
+    color: "#cdfe00",
+    lineWidth: 3,
+  },
+  render: function (p) {
+    var id = "geo-" + (p._blockId || Date.now());
+    return (
+      '<div class="veltro-geo-wrap" id="' +
+      id +
+      '" data-tool="' +
+      (p.tool || "line") +
+      '" data-color="' +
+      (p.color || "#cdfe00") +
+      '" data-line-width="' +
+      (p.lineWidth || 3) +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px"><canvas class="veltro-geo-canvas" style="position:absolute;inset:0;width:100%;height:100%;cursor:crosshair"></canvas></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// ── VELTRO ENGINE BATCH 1: CURSOR & INTERACTION (6 NEW WIDGETS) ──
+// 1. Multi-Shape Particle Trail
+FB.widgets.register("multiShapeTrail", {
+  label: "Multi-Shape Trail",
+  sublabel: "Morphing particles",
+  icon: "✦",
+  iconBg: "#1a0d2e",
+  iconColor: "#ff6b35",
+  category: "veltro",
+  subCategory: "cursor",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    particleSize: 8,
+    trailLength: 30,
+    shapes: "circle,square,triangle,star",
+    colors: "#ff6b35,#cdfe00,#3b82f6,#ec4899,#f59e0b",
+    speed: 1,
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a1a3e",
+    bgImageUrl: "",
+    bgImageOpacity: 30,
+    bgImageSize: "cover",
+    borderRadius: 4,
+    borderWidth: 0,
+    borderColor: "#ffffff",
+    boxShadow: "none",
+    shadowColor: "#000000",
+    shadowBlur: 10,
+    shadowOffsetX: 0,
+    shadowOffsetY: 4,
+    paddingV: 0,
+    paddingH: 0,
+    marginV: 0,
+    marginH: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    hoverEffect: "none",
+    hoverTransition: 300,
+    animDuration: 600,
+    morphSpeed: 500,
+    shapeOrder: "sequential",
+    shapeScale: 1,
+    shapeOpacity: 100,
+    shapeRotation: 0,
+    shapeEasing: "ease-out",
+    trailFade: true,
+    trailGlow: false,
+  },
+  render: function (p) {
+    var id = p._blockId || "multiTrail";
+    var bgType = p.bgType || "solid";
+    var bgStyle = "";
+    if (bgType === "gradient") {
+      bgStyle =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        ");";
+    } else if (bgType === "image" && p.bgImageUrl) {
+      bgStyle =
+        "background:url('" +
+        p.bgImageUrl +
+        "') center/" +
+        (p.bgImageSize || "cover") +
+        " no-repeat;background-color:" +
+        (p.bg || "#0d0d1a") +
+        ";";
+    } else {
+      bgStyle = "background:" + (p.bg || "#0d0d1a") + ";";
+    }
+    var containerBorder = "";
+    if (p.borderWidth && p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px solid " +
+        (p.borderColor || "#ffffff") +
+        ";";
+    }
+    var containerShadow = "";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      containerShadow =
+        "box-shadow:" +
+        (p.shadowOffsetX || 0) +
+        "px " +
+        (p.shadowOffsetY || 4) +
+        "px " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowColor || "#000000") +
+        ";";
+    }
+    var hoverClass = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+    }
+    var animClass = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+    }
+    var padStyle =
+      "padding:" + (p.paddingV || 0) + "px " + (p.paddingH || 0) + "px;";
+    var margStyle =
+      "margin:" + (p.marginV || 0) + "px " + (p.marginH || 0) + "px;";
+    var opStyle =
+      p.opacity && p.opacity < 100 ? "opacity:" + p.opacity / 100 + ";" : "";
+    return (
+      '<div class="veltro-multishape-wrap' +
+      animClass +
+      hoverClass +
+      '" id="multishape-' +
+      id +
+      '" data-trail-length="' +
+      (p.trailLength || 30) +
+      '" data-particle-size="' +
+      (p.particleSize || 8) +
+      '" data-shapes="' +
+      (p.shapes || "circle,square,triangle,star") +
+      '" data-colors="' +
+      (p.colors || "#ff6b35,#cdfe00,#3b82f6,#ec4899,#f59e0b") +
+      '" data-speed="' +
+      (p.speed || 1) +
+      '" data-morph-speed="' +
+      (p.morphSpeed || 500) +
+      '" data-shape-order="' +
+      (p.shapeOrder || "sequential") +
+      '" data-shape-scale="' +
+      (p.shapeScale || 1) +
+      '" data-shape-opacity="' +
+      (p.shapeOpacity || 100) +
+      '" data-shape-rotation="' +
+      (p.shapeRotation || 0) +
+      '" data-shape-easing="' +
+      (p.shapeEasing || "ease-out") +
+      '" data-trail-fade="' +
+      (p.trailFade !== false ? "true" : "false") +
+      '" data-trail-glow="' +
+      (p.trailGlow ? "true" : "false") +
+      '" style="height:' +
+      p.height +
+      "px;" +
+      bgStyle +
+      "position:relative;overflow:hidden;cursor:none;border-radius:" +
+      (p.borderRadius || 4) +
+      "px;" +
+      containerBorder +
+      containerShadow +
+      padStyle +
+      margStyle +
+      opStyle +
+      '"><canvas class="veltro-multishape-canvas" style="position:absolute;inset:0;width:100%;height:100%" data-multishape-init="1"></canvas></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    var html = "";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Core Settings</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Height (px)</label><input type="number" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Size</label><input type="number" value="' +
+      (p.particleSize || 8) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleSize',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Trail Length</label><input type="number" value="' +
+      (p.trailLength || 30) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','trailLength',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Shapes (comma-sep)</label><input type="text" value="' +
+      (p.shapes || "circle,square,triangle,star") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','shapes',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Colors (comma-sep)</label><input type="text" value="' +
+      (p.colors || "#ff6b35,#cdfe00,#3b82f6,#ec4899,#f59e0b") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','colors',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Speed</label><input type="number" step="0.1" value="' +
+      (p.speed || 1) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','speed',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Background & Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      ((p.bgType || "solid") === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      ((p.bgType || "solid") === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      ((p.bgType || "solid") === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if ((p.bgType || "solid") === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Color</label><input type="color" value="' +
+        (p.bg || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bg',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        ((p.bgGradientDir || "135deg") === "135deg" ? " selected" : "") +
+        '>135°</option><option value="to right"' +
+        ((p.bgGradientDir || "135deg") === "to right" ? " selected" : "") +
+        '>Left→Right</option><option value="to bottom"' +
+        ((p.bgGradientDir || "135deg") === "to bottom" ? " selected" : "") +
+        '>Top→Bottom</option><option value="circle"' +
+        ((p.bgGradientDir || "135deg") === "circle" ? " selected" : "") +
+        ">Radial</option></select></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImageUrl || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageUrl',this.value)\" placeholder=\"https://...\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Opacity (%)</label><input type="number" min="0" max="100" value="' +
+        (p.bgImageOpacity || 30) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageOpacity',+this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Size</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageSize',this.value)\"><option value=\"cover\"" +
+        ((p.bgImageSize || "cover") === "cover" ? " selected" : "") +
+        '>Cover</option><option value="contain"' +
+        ((p.bgImageSize || "cover") === "contain" ? " selected" : "") +
+        '>Contain</option><option value="100% 100%"' +
+        ((p.bgImageSize || "cover") === "100% 100%" ? " selected" : "") +
+        ">Stretch</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius (px)</label><input type="number" value="' +
+      (p.borderRadius || 4) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width (px)</label><input type="number" value="' +
+      (p.borderWidth || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Color</label><input type="color" value="' +
+      (p.borderColor || "#ffffff") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderColor',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Box Shadow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','boxShadow',this.value)\"><option value=\"none\"" +
+      ((p.boxShadow || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="soft"' +
+      ((p.boxShadow || "none") === "soft" ? " selected" : "") +
+      '>Soft</option><option value="hard"' +
+      ((p.boxShadow || "none") === "hard" ? " selected" : "") +
+      '>Hard</option><option value="glow"' +
+      ((p.boxShadow || "none") === "glow" ? " selected" : "") +
+      ">Glow</option></select></div>";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      html +=
+        '<div class="rp-row"><label>Shadow Color</label><input type="color" value="' +
+        (p.shadowColor || "#000000") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Shadow Blur</label><input type="number" value="' +
+        (p.shadowBlur || 10) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value)\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Spacing & Display</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Padding V (px)</label><input type="number" value="' +
+      (p.paddingV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H (px)</label><input type="number" value="' +
+      (p.paddingH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin V (px)</label><input type="number" value="' +
+      (p.marginV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin H (px)</label><input type="number" value="' +
+      (p.marginH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity (%)</label><input type="number" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animations & Effects</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      ((p.entranceAnim || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="fade-in"' +
+      ((p.entranceAnim || "none") === "fade-in" ? " selected" : "") +
+      '>Fade In</option><option value="slide-up"' +
+      ((p.entranceAnim || "none") === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="slide-left"' +
+      ((p.entranceAnim || "none") === "slide-left" ? " selected" : "") +
+      '>Slide Left</option><option value="zoom-in"' +
+      ((p.entranceAnim || "none") === "zoom-in" ? " selected" : "") +
+      '>Zoom In</option><option value="flip-in"' +
+      ((p.entranceAnim || "none") === "flip-in" ? " selected" : "") +
+      ">Flip In</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Animation Duration (ms)</label><input type="number" value="' +
+      (p.animDuration || 600) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','animDuration',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      ((p.hoverEffect || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="lift"' +
+      ((p.hoverEffect || "none") === "lift" ? " selected" : "") +
+      '>Lift</option><option value="glow"' +
+      ((p.hoverEffect || "none") === "glow" ? " selected" : "") +
+      '>Glow</option><option value="scale"' +
+      ((p.hoverEffect || "none") === "scale" ? " selected" : "") +
+      '>Scale</option><option value="tilt"' +
+      ((p.hoverEffect || "none") === "tilt" ? " selected" : "") +
+      ">Tilt</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Transition (ms)</label><input type="number" value="' +
+      (p.hoverTransition || 300) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverTransition',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Advanced Shape Options</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Morph Speed (ms)</label><input type="number" value="' +
+      (p.morphSpeed || 500) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','morphSpeed',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Shape Order</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','shapeOrder',this.value)\"><option value=\"sequential\"" +
+      ((p.shapeOrder || "sequential") === "sequential" ? " selected" : "") +
+      '>Sequential</option><option value="random"' +
+      ((p.shapeOrder || "sequential") === "random" ? " selected" : "") +
+      '>Random</option><option value="reverse"' +
+      ((p.shapeOrder || "sequential") === "reverse" ? " selected" : "") +
+      ">Reverse</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Shape Scale</label><input type="number" step="0.1" min="0.1" max="3" value="' +
+      (p.shapeScale || 1) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','shapeScale',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Shape Opacity (%)</label><input type="number" min="0" max="100" value="' +
+      (p.shapeOpacity || 100) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','shapeOpacity',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Shape Rotation (deg)</label><input type="number" value="' +
+      (p.shapeRotation || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','shapeRotation',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Shape Easing</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','shapeEasing',this.value)\"><option value=\"ease-out\"" +
+      ((p.shapeEasing || "ease-out") === "ease-out" ? " selected" : "") +
+      '>Ease Out</option><option value="ease-in"' +
+      ((p.shapeEasing || "ease-out") === "ease-in" ? " selected" : "") +
+      '>Ease In</option><option value="linear"' +
+      ((p.shapeEasing || "ease-out") === "linear" ? " selected" : "") +
+      '>Linear</option><option value="bounce"' +
+      ((p.shapeEasing || "ease-out") === "bounce" ? " selected" : "") +
+      ">Bounce</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Trail Fade</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','trailFade',this.value)\"><option value=\"true\"" +
+      (p.trailFade !== false ? " selected" : "") +
+      '>Enabled</option><option value="false"' +
+      (p.trailFade === false ? " selected" : "") +
+      ">Disabled</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Trail Glow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','trailGlow',this.value)\"><option value=\"false\"" +
+      (!p.trailGlow ? " selected" : "") +
+      '>Off</option><option value="true"' +
+      (p.trailGlow ? " selected" : "") +
+      ">On</option></select></div>";
+    html += "</div></div>";
+    return html;
+  },
+});
+
+// 2. Cursor Spotlight
+FB.widgets.register("cursorSpotlight", {
+  label: "Cursor Spotlight",
+  sublabel: "Dynamic light reveal",
+  icon: "💡",
+  iconBg: "#1a1a0d",
+  iconColor: "#fbbf24",
+  category: "veltro",
+  subCategory: "cursor",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    spotlightSize: 150,
+    spotlightColor: "#ffffff",
+    spotlightOpacity: 0.15,
+    edgeSoftness: 50,
+    content: "Hidden content revealed by spotlight",
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a1a3e",
+    bgImageUrl: "",
+    bgImageOpacity: 30,
+    bgImageSize: "cover",
+    borderRadius: 4,
+    borderWidth: 0,
+    borderColor: "#ffffff",
+    boxShadow: "none",
+    shadowColor: "#000000",
+    shadowBlur: 10,
+    shadowOffsetX: 0,
+    shadowOffsetY: 4,
+    paddingV: 0,
+    paddingH: 0,
+    marginV: 0,
+    marginH: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    hoverEffect: "none",
+    hoverTransition: 300,
+    animDuration: 600,
+    spotlightShape: "circle",
+    spotlightFollow: true,
+    spotlightMultiple: false,
+    spotlightBlendMode: "overlay",
+    spotlightText: "Hidden content revealed by spotlight",
+    spotlightTextColor: "#ffffff",
+    spotlightBgColor: "#1a1a2e",
+    spotlightRevealMode: "mask",
+  },
+  render: function (p) {
+    var id = p._blockId || "spotlight";
+    var bgType = p.bgType || "solid";
+    var bgStyle = "";
+    if (bgType === "gradient") {
+      bgStyle =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        ");";
+    } else if (bgType === "image" && p.bgImageUrl) {
+      bgStyle =
+        "background:url('" +
+        p.bgImageUrl +
+        "') center/" +
+        (p.bgImageSize || "cover") +
+        " no-repeat;background-color:" +
+        (p.bg || "#0d0d1a") +
+        ";";
+    } else {
+      bgStyle = "background:" + (p.bg || "#0d0d1a") + ";";
+    }
+    var containerBorder = "";
+    if (p.borderWidth && p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px solid " +
+        (p.borderColor || "#ffffff") +
+        ";";
+    }
+    var containerShadow = "";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      containerShadow =
+        "box-shadow:" +
+        (p.shadowOffsetX || 0) +
+        "px " +
+        (p.shadowOffsetY || 4) +
+        "px " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowColor || "#000000") +
+        ";";
+    }
+    var hoverClass = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+    }
+    var animClass = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+    }
+    var padStyle =
+      "padding:" + (p.paddingV || 0) + "px " + (p.paddingH || 0) + "px;";
+    var margStyle =
+      "margin:" + (p.marginV || 0) + "px " + (p.marginH || 0) + "px;";
+    var opStyle =
+      p.opacity && p.opacity < 100 ? "opacity:" + p.opacity / 100 + ";" : "";
+    var spotSize = p.spotlightSize || 150;
+    var edgeSoft = p.edgeSoftness || 50;
+    return (
+      '<div class="veltro-spotlight-wrap' +
+      animClass +
+      hoverClass +
+      '" id="spotlight-' +
+      id +
+      '" data-spotlight-size="' +
+      spotSize +
+      '" data-spotlight-color="' +
+      (p.spotlightColor || "#ffffff") +
+      '" data-spotlight-opacity="' +
+      (p.spotlightOpacity || 0.15) +
+      '" data-edge-softness="' +
+      edgeSoft +
+      '" data-spotlight-shape="' +
+      (p.spotlightShape || "circle") +
+      '" data-spotlight-follow="' +
+      (p.spotlightFollow !== false ? "true" : "false") +
+      '" data-spotlight-multiple="' +
+      (p.spotlightMultiple ? "true" : "false") +
+      '" data-spotlight-blend-mode="' +
+      (p.spotlightBlendMode || "overlay") +
+      '" data-spotlight-reveal-mode="' +
+      (p.spotlightRevealMode || "mask") +
+      '" style="height:' +
+      p.height +
+      "px;" +
+      bgStyle +
+      "position:relative;overflow:hidden;border-radius:" +
+      (p.borderRadius || 4) +
+      "px;" +
+      containerBorder +
+      containerShadow +
+      padStyle +
+      margStyle +
+      opStyle +
+      '"><div class="veltro-spotlight-content" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:' +
+      (p.spotlightTextColor || "#ffffff") +
+      ';font-size:1.5rem;font-weight:600;opacity:0.3">' +
+      (p.spotlightText || p.content || "Hidden content revealed by spotlight") +
+      '</div><div class="veltro-spotlight-mask" style="position:absolute;inset:0;background:radial-gradient(circle ' +
+      spotSize +
+      "px at var(--sx,50%) var(--sy,50%)," +
+      (p.spotlightColor || "#ffffff") +
+      " 0%,transparent " +
+      (spotSize + edgeSoft) +
+      "px);opacity:" +
+      (p.spotlightOpacity || 0.15) +
+      ";pointer-events:none;mix-blend-mode:" +
+      (p.spotlightBlendMode || "overlay") +
+      '" data-spotlight-init="1"></div></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    var html = "";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Core Settings</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Height (px)</label><input type="number" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Spotlight Size</label><input type="number" value="' +
+      (p.spotlightSize || 150) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','spotlightSize',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Spotlight Color</label><input type="color" value="' +
+      (p.spotlightColor || "#ffffff") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','spotlightColor',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Spotlight Opacity</label><input type="number" step="0.05" min="0" max="1" value="' +
+      (p.spotlightOpacity || 0.15) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','spotlightOpacity',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Edge Softness</label><input type="number" value="' +
+      (p.edgeSoftness || 50) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','edgeSoftness',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Spotlight Text</label><input type="text" value="' +
+      (p.spotlightText || p.content || "Hidden content revealed by spotlight") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','spotlightText',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Text Color</label><input type="color" value="' +
+      (p.spotlightTextColor || "#ffffff") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','spotlightTextColor',this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Background & Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      ((p.bgType || "solid") === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      ((p.bgType || "solid") === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      ((p.bgType || "solid") === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if ((p.bgType || "solid") === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Color</label><input type="color" value="' +
+        (p.bg || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bg',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        ((p.bgGradientDir || "135deg") === "135deg" ? " selected" : "") +
+        '>135°</option><option value="to right"' +
+        ((p.bgGradientDir || "135deg") === "to right" ? " selected" : "") +
+        '>Left→Right</option><option value="to bottom"' +
+        ((p.bgGradientDir || "135deg") === "to bottom" ? " selected" : "") +
+        '>Top→Bottom</option><option value="circle"' +
+        ((p.bgGradientDir || "135deg") === "circle" ? " selected" : "") +
+        ">Radial</option></select></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImageUrl || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageUrl',this.value)\" placeholder=\"https://...\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Opacity (%)</label><input type="number" min="0" max="100" value="' +
+        (p.bgImageOpacity || 30) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageOpacity',+this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Size</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageSize',this.value)\"><option value=\"cover\"" +
+        ((p.bgImageSize || "cover") === "cover" ? " selected" : "") +
+        '>Cover</option><option value="contain"' +
+        ((p.bgImageSize || "cover") === "contain" ? " selected" : "") +
+        '>Contain</option><option value="100% 100%"' +
+        ((p.bgImageSize || "cover") === "100% 100%" ? " selected" : "") +
+        ">Stretch</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius (px)</label><input type="number" value="' +
+      (p.borderRadius || 4) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width (px)</label><input type="number" value="' +
+      (p.borderWidth || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Color</label><input type="color" value="' +
+      (p.borderColor || "#ffffff") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderColor',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Box Shadow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','boxShadow',this.value)\"><option value=\"none\"" +
+      ((p.boxShadow || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="soft"' +
+      ((p.boxShadow || "none") === "soft" ? " selected" : "") +
+      '>Soft</option><option value="hard"' +
+      ((p.boxShadow || "none") === "hard" ? " selected" : "") +
+      '>Hard</option><option value="glow"' +
+      ((p.boxShadow || "none") === "glow" ? " selected" : "") +
+      ">Glow</option></select></div>";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      html +=
+        '<div class="rp-row"><label>Shadow Color</label><input type="color" value="' +
+        (p.shadowColor || "#000000") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Shadow Blur</label><input type="number" value="' +
+        (p.shadowBlur || 10) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value)\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Spacing & Display</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Padding V (px)</label><input type="number" value="' +
+      (p.paddingV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H (px)</label><input type="number" value="' +
+      (p.paddingH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin V (px)</label><input type="number" value="' +
+      (p.marginV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin H (px)</label><input type="number" value="' +
+      (p.marginH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity (%)</label><input type="number" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animations & Effects</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      ((p.entranceAnim || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="fade-in"' +
+      ((p.entranceAnim || "none") === "fade-in" ? " selected" : "") +
+      '>Fade In</option><option value="slide-up"' +
+      ((p.entranceAnim || "none") === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="slide-left"' +
+      ((p.entranceAnim || "none") === "slide-left" ? " selected" : "") +
+      '>Slide Left</option><option value="zoom-in"' +
+      ((p.entranceAnim || "none") === "zoom-in" ? " selected" : "") +
+      '>Zoom In</option><option value="flip-in"' +
+      ((p.entranceAnim || "none") === "flip-in" ? " selected" : "") +
+      ">Flip In</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Animation Duration (ms)</label><input type="number" value="' +
+      (p.animDuration || 600) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','animDuration',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      ((p.hoverEffect || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="lift"' +
+      ((p.hoverEffect || "none") === "lift" ? " selected" : "") +
+      '>Lift</option><option value="glow"' +
+      ((p.hoverEffect || "none") === "glow" ? " selected" : "") +
+      '>Glow</option><option value="scale"' +
+      ((p.hoverEffect || "none") === "scale" ? " selected" : "") +
+      '>Scale</option><option value="tilt"' +
+      ((p.hoverEffect || "none") === "tilt" ? " selected" : "") +
+      ">Tilt</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Transition (ms)</label><input type="number" value="' +
+      (p.hoverTransition || 300) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverTransition',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Advanced Spotlight Options</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Spotlight Shape</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','spotlightShape',this.value)\"><option value=\"circle\"" +
+      ((p.spotlightShape || "circle") === "circle" ? " selected" : "") +
+      '>Circle</option><option value="square"' +
+      ((p.spotlightShape || "circle") === "square" ? " selected" : "") +
+      '>Square</option><option value="ellipse"' +
+      ((p.spotlightShape || "circle") === "ellipse" ? " selected" : "") +
+      ">Ellipse</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Follow Cursor</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','spotlightFollow',this.value)\"><option value=\"true\"" +
+      (p.spotlightFollow !== false ? " selected" : "") +
+      '>Enabled</option><option value="false"' +
+      (p.spotlightFollow === false ? " selected" : "") +
+      ">Static</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Multiple Spotlights</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','spotlightMultiple',this.value)\"><option value=\"false\"" +
+      (!p.spotlightMultiple ? " selected" : "") +
+      '>Single</option><option value="true"' +
+      (p.spotlightMultiple ? " selected" : "") +
+      ">Multi</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Blend Mode</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','spotlightBlendMode',this.value)\"><option value=\"overlay\"" +
+      ((p.spotlightBlendMode || "overlay") === "overlay" ? " selected" : "") +
+      '>Overlay</option><option value="screen"' +
+      ((p.spotlightBlendMode || "overlay") === "screen" ? " selected" : "") +
+      '>Screen</option><option value="multiply"' +
+      ((p.spotlightBlendMode || "overlay") === "multiply" ? " selected" : "") +
+      '>Multiply</option><option value="soft-light"' +
+      ((p.spotlightBlendMode || "overlay") === "soft-light"
+        ? " selected"
+        : "") +
+      '>Soft Light</option><option value="hard-light"' +
+      ((p.spotlightBlendMode || "overlay") === "hard-light"
+        ? " selected"
+        : "") +
+      ">Hard Light</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Reveal Mode</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','spotlightRevealMode',this.value)\"><option value=\"mask\"" +
+      ((p.spotlightRevealMode || "mask") === "mask" ? " selected" : "") +
+      '>Mask</option><option value="highlight"' +
+      ((p.spotlightRevealMode || "mask") === "highlight" ? " selected" : "") +
+      '>Highlight</option><option value="invert"' +
+      ((p.spotlightRevealMode || "mask") === "invert" ? " selected" : "") +
+      ">Invert</option></select></div>";
+    html += "</div></div>";
+    return html;
+  },
+});
+
+// 3. Magnetic Text
+FB.widgets.register("magneticText", {
+  label: "Magnetic Text",
+  sublabel: "Characters attract to cursor",
+  icon: "Aa",
+  iconBg: "#0d1a2e",
+  iconColor: "#60a5fa",
+  category: "veltro",
+  subCategory: "cursor",
+  defaultProps: {
+    height: 300,
+    bg: "#0d0d1a",
+    text: "MAGNETIC",
+    fontSize: 72,
+    fontWeight: 800,
+    textColor: "#cdfe00",
+    magneticRadius: 150,
+    magneticStrength: 0.5,
+    letterSpacing: 8,
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a1a3e",
+    bgImageUrl: "",
+    bgImageOpacity: 30,
+    bgImageSize: "cover",
+    borderRadius: 4,
+    borderWidth: 0,
+    borderColor: "#ffffff",
+    boxShadow: "none",
+    shadowColor: "#000000",
+    shadowBlur: 10,
+    shadowOffsetX: 0,
+    shadowOffsetY: 4,
+    paddingV: 0,
+    paddingH: 0,
+    marginV: 0,
+    marginH: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    hoverEffect: "none",
+    hoverTransition: 300,
+    animDuration: 600,
+    fontFamily: "inherit",
+    textTransform: "uppercase",
+    magneticEasing: "ease-out",
+    magneticReturn: true,
+    textGlow: false,
+    glowColor: "#cdfe00",
+    glowBlur: 10,
+    letterSpacingAnim: false,
+  },
+  render: function (p) {
+    var id = p._blockId || "magText";
+    var chars = (p.text || "MAGNETIC").split("");
+    var charHtml = chars
+      .map(function (c, i) {
+        return (
+          '<span class="veltro-mag-char" data-magnetic="true" data-magnetic-radius="' +
+          (p.magneticRadius || 150) +
+          '" data-magnetic-strength="' +
+          (p.magneticStrength || 0.5) +
+          '" style="display:inline-block;transition:transform 0.3s ' +
+          (p.magneticEasing || "ease-out") +
+          '">' +
+          c +
+          "</span>"
+        );
+      })
+      .join("");
+    var bgType = p.bgType || "solid";
+    var bgStyle = "";
+    if (bgType === "gradient") {
+      bgStyle =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        ");";
+    } else if (bgType === "image" && p.bgImageUrl) {
+      bgStyle =
+        "background:url('" +
+        p.bgImageUrl +
+        "') center/" +
+        (p.bgImageSize || "cover") +
+        " no-repeat;background-color:" +
+        (p.bg || "#0d0d1a") +
+        ";";
+    } else {
+      bgStyle = "background:" + (p.bg || "#0d0d1a") + ";";
+    }
+    var containerBorder = "";
+    if (p.borderWidth && p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px solid " +
+        (p.borderColor || "#ffffff") +
+        ";";
+    }
+    var containerShadow = "";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      containerShadow =
+        "box-shadow:" +
+        (p.shadowOffsetX || 0) +
+        "px " +
+        (p.shadowOffsetY || 4) +
+        "px " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowColor || "#000000") +
+        ";";
+    }
+    var hoverClass = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+    }
+    var animClass = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+    }
+    var padStyle =
+      "padding:" + (p.paddingV || 0) + "px " + (p.paddingH || 0) + "px;";
+    var margStyle =
+      "margin:" + (p.marginV || 0) + "px " + (p.marginH || 0) + "px;";
+    var opStyle =
+      p.opacity && p.opacity < 100 ? "opacity:" + p.opacity / 100 + ";" : "";
+    var textGlowStyle = p.textGlow
+      ? "text-shadow:0 0 " +
+        (p.glowBlur || 10) +
+        "px " +
+        (p.glowColor || "#cdfe00") +
+        ";"
+      : "";
+    return (
+      '<div class="veltro-magtext-wrap' +
+      animClass +
+      hoverClass +
+      '" id="magtext-' +
+      id +
+      '" style="height:' +
+      p.height +
+      "px;" +
+      bgStyle +
+      "display:flex;align-items:center;justify-content:center;border-radius:" +
+      (p.borderRadius || 4) +
+      "px;overflow:hidden;" +
+      containerBorder +
+      containerShadow +
+      padStyle +
+      margStyle +
+      opStyle +
+      '"><div class="veltro-magtext-content" style="font-size:' +
+      (p.fontSize || 72) +
+      "px;font-weight:" +
+      (p.fontWeight || 800) +
+      ";color:" +
+      (p.textColor || "#cdfe00") +
+      ";letter-spacing:" +
+      (p.letterSpacing || 8) +
+      "px;user-select:none;font-family:" +
+      (p.fontFamily || "inherit") +
+      ";text-transform:" +
+      (p.textTransform || "uppercase") +
+      ";" +
+      textGlowStyle +
+      '" data-magtext-init="1">' +
+      charHtml +
+      "</div></div>"
+    );
+  },
+  editPanel: function (id, p) {
+    var html = "";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Core Settings</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Height (px)</label><input type="number" value="' +
+      (p.height || 300) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Text</label><input type="text" value="' +
+      (p.text || "MAGNETIC") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','text',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Size (px)</label><input type="number" value="' +
+      (p.fontSize || 72) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontSize',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Weight</label><input type="number" value="' +
+      (p.fontWeight || 800) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontWeight',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Text Color</label><input type="color" value="' +
+      (p.textColor || "#cdfe00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','textColor',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Letter Spacing (px)</label><input type="number" value="' +
+      (p.letterSpacing || 8) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','letterSpacing',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Magnetic Radius</label><input type="number" value="' +
+      (p.magneticRadius || 150) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','magneticRadius',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Magnetic Strength</label><input type="number" step="0.1" min="0" max="1" value="' +
+      (p.magneticStrength || 0.5) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','magneticStrength',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Background & Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      ((p.bgType || "solid") === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      ((p.bgType || "solid") === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      ((p.bgType || "solid") === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if ((p.bgType || "solid") === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Color</label><input type="color" value="' +
+        (p.bg || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bg',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        ((p.bgGradientDir || "135deg") === "135deg" ? " selected" : "") +
+        '>135°</option><option value="to right"' +
+        ((p.bgGradientDir || "135deg") === "to right" ? " selected" : "") +
+        '>Left→Right</option><option value="to bottom"' +
+        ((p.bgGradientDir || "135deg") === "to bottom" ? " selected" : "") +
+        '>Top→Bottom</option><option value="circle"' +
+        ((p.bgGradientDir || "135deg") === "circle" ? " selected" : "") +
+        ">Radial</option></select></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImageUrl || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageUrl',this.value)\" placeholder=\"https://...\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Opacity (%)</label><input type="number" min="0" max="100" value="' +
+        (p.bgImageOpacity || 30) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageOpacity',+this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Size</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageSize',this.value)\"><option value=\"cover\"" +
+        ((p.bgImageSize || "cover") === "cover" ? " selected" : "") +
+        '>Cover</option><option value="contain"' +
+        ((p.bgImageSize || "cover") === "contain" ? " selected" : "") +
+        '>Contain</option><option value="100% 100%"' +
+        ((p.bgImageSize || "cover") === "100% 100%" ? " selected" : "") +
+        ">Stretch</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius (px)</label><input type="number" value="' +
+      (p.borderRadius || 4) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width (px)</label><input type="number" value="' +
+      (p.borderWidth || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Color</label><input type="color" value="' +
+      (p.borderColor || "#ffffff") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderColor',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Box Shadow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','boxShadow',this.value)\"><option value=\"none\"" +
+      ((p.boxShadow || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="soft"' +
+      ((p.boxShadow || "none") === "soft" ? " selected" : "") +
+      '>Soft</option><option value="hard"' +
+      ((p.boxShadow || "none") === "hard" ? " selected" : "") +
+      '>Hard</option><option value="glow"' +
+      ((p.boxShadow || "none") === "glow" ? " selected" : "") +
+      ">Glow</option></select></div>";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      html +=
+        '<div class="rp-row"><label>Shadow Color</label><input type="color" value="' +
+        (p.shadowColor || "#000000") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Shadow Blur</label><input type="number" value="' +
+        (p.shadowBlur || 10) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value)\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Spacing & Display</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Padding V (px)</label><input type="number" value="' +
+      (p.paddingV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H (px)</label><input type="number" value="' +
+      (p.paddingH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin V (px)</label><input type="number" value="' +
+      (p.marginV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin H (px)</label><input type="number" value="' +
+      (p.marginH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity (%)</label><input type="number" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animations & Effects</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      ((p.entranceAnim || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="fade-in"' +
+      ((p.entranceAnim || "none") === "fade-in" ? " selected" : "") +
+      '>Fade In</option><option value="slide-up"' +
+      ((p.entranceAnim || "none") === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="slide-left"' +
+      ((p.entranceAnim || "none") === "slide-left" ? " selected" : "") +
+      '>Slide Left</option><option value="zoom-in"' +
+      ((p.entranceAnim || "none") === "zoom-in" ? " selected" : "") +
+      '>Zoom In</option><option value="flip-in"' +
+      ((p.entranceAnim || "none") === "flip-in" ? " selected" : "") +
+      ">Flip In</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Animation Duration (ms)</label><input type="number" value="' +
+      (p.animDuration || 600) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','animDuration',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      ((p.hoverEffect || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="lift"' +
+      ((p.hoverEffect || "none") === "lift" ? " selected" : "") +
+      '>Lift</option><option value="glow"' +
+      ((p.hoverEffect || "none") === "glow" ? " selected" : "") +
+      '>Glow</option><option value="scale"' +
+      ((p.hoverEffect || "none") === "scale" ? " selected" : "") +
+      '>Scale</option><option value="tilt"' +
+      ((p.hoverEffect || "none") === "tilt" ? " selected" : "") +
+      ">Tilt</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Transition (ms)</label><input type="number" value="' +
+      (p.hoverTransition || 300) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverTransition',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Advanced Typography Options</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Font Family</label><input type="text" value="' +
+      (p.fontFamily || "inherit") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontFamily',this.value)\" placeholder=\"inherit, sans-serif, serif...\"></div>";
+    html +=
+      '<div class="rp-row"><label>Text Transform</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','textTransform',this.value)\"><option value=\"uppercase\"" +
+      ((p.textTransform || "uppercase") === "uppercase" ? " selected" : "") +
+      '>UPPERCASE</option><option value="lowercase"' +
+      ((p.textTransform || "uppercase") === "lowercase" ? " selected" : "") +
+      '>lowercase</option><option value="capitalize"' +
+      ((p.textTransform || "uppercase") === "capitalize" ? " selected" : "") +
+      '>Capitalize</option><option value="none"' +
+      ((p.textTransform || "uppercase") === "none" ? " selected" : "") +
+      ">None</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Magnetic Easing</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','magneticEasing',this.value)\"><option value=\"ease-out\"" +
+      ((p.magneticEasing || "ease-out") === "ease-out" ? " selected" : "") +
+      '>Ease Out</option><option value="ease-in"' +
+      ((p.magneticEasing || "ease-out") === "ease-in" ? " selected" : "") +
+      '>Ease In</option><option value="linear"' +
+      ((p.magneticEasing || "ease-out") === "linear" ? " selected" : "") +
+      '>Linear</option><option value="bounce"' +
+      ((p.magneticEasing || "ease-out") === "bounce" ? " selected" : "") +
+      ">Bounce</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Magnetic Return</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','magneticReturn',this.value)\"><option value=\"true\"" +
+      (p.magneticReturn !== false ? " selected" : "") +
+      '>Enabled</option><option value="false"' +
+      (p.magneticReturn === false ? " selected" : "") +
+      ">Disabled</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Text Glow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','textGlow',this.value)\"><option value=\"false\"" +
+      (!p.textGlow ? " selected" : "") +
+      '>Off</option><option value="true"' +
+      (p.textGlow ? " selected" : "") +
+      ">On</option></select></div>";
+    if (p.textGlow) {
+      html +=
+        '<div class="rp-row"><label>Glow Color</label><input type="color" value="' +
+        (p.glowColor || "#cdfe00") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','glowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Glow Blur (px)</label><input type="number" value="' +
+        (p.glowBlur || 10) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','glowBlur',+this.value)\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Letter Spacing Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','letterSpacingAnim',this.value)\"><option value=\"false\"" +
+      (!p.letterSpacingAnim ? " selected" : "") +
+      '>Off</option><option value="true"' +
+      (p.letterSpacingAnim ? " selected" : "") +
+      ">On</option></select></div>";
+    html += "</div></div>";
+    return html;
+  },
+});
+
+// 4. Cursor Distortion Field
+FB.widgets.register("cursorDistortion", {
+  label: "Distortion Field",
+  sublabel: "Lens distortion effect",
+  icon: "◎",
+  iconBg: "#1a0d1a",
+  iconColor: "#a78bfa",
+  category: "veltro",
+  subCategory: "cursor",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    distortionRadius: 100,
+    distortionStrength: 0.3,
+    imageUrl: "https://picsum.photos/800/400?random=50",
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a1a3e",
+    bgImageUrl: "",
+    bgImageOpacity: 30,
+    bgImageSize: "cover",
+    borderRadius: 4,
+    borderWidth: 0,
+    borderColor: "#ffffff",
+    boxShadow: "none",
+    shadowColor: "#000000",
+    shadowBlur: 10,
+    shadowOffsetX: 0,
+    shadowOffsetY: 4,
+    paddingV: 0,
+    paddingH: 0,
+    marginV: 0,
+    marginH: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    hoverEffect: "none",
+    hoverTransition: 300,
+    animDuration: 600,
+    distortionType: "lens",
+    distortionShape: "circle",
+    distortionInvert: false,
+    distortionChromatic: false,
+    distortionOverlay: true,
+    overlayColor: "#a78bfa",
+    overlayOpacity: 20,
+    imageFilter: "none",
+  },
+  render: function (p) {
+    var id = p._blockId || "distort";
+    var bgType = p.bgType || "solid";
+    var bgStyle = "";
+    if (bgType === "gradient") {
+      bgStyle =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        ");";
+    } else if (bgType === "image" && p.bgImageUrl) {
+      bgStyle =
+        "background:url('" +
+        p.bgImageUrl +
+        "') center/" +
+        (p.bgImageSize || "cover") +
+        " no-repeat;background-color:" +
+        (p.bg || "#0d0d1a") +
+        ";";
+    } else {
+      bgStyle = "background:" + (p.bg || "#0d0d1a") + ";";
+    }
+    var containerBorder = "";
+    if (p.borderWidth && p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px solid " +
+        (p.borderColor || "#ffffff") +
+        ";";
+    }
+    var containerShadow = "";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      containerShadow =
+        "box-shadow:" +
+        (p.shadowOffsetX || 0) +
+        "px " +
+        (p.shadowOffsetY || 4) +
+        "px " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowColor || "#000000") +
+        ";";
+    }
+    var hoverClass = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+    }
+    var animClass = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+    }
+    var padStyle =
+      "padding:" + (p.paddingV || 0) + "px " + (p.paddingH || 0) + "px;";
+    var margStyle =
+      "margin:" + (p.marginV || 0) + "px " + (p.marginH || 0) + "px;";
+    var opStyle =
+      p.opacity && p.opacity < 100 ? "opacity:" + p.opacity / 100 + ";" : "";
+    var imgFilter =
+      p.imageFilter && p.imageFilter !== "none"
+        ? "filter:" + p.imageFilter + ";"
+        : "";
+    return (
+      '<div class="veltro-distort-wrap' +
+      animClass +
+      hoverClass +
+      '" id="distort-' +
+      id +
+      '" data-distortion-radius="' +
+      (p.distortionRadius || 100) +
+      '" data-distortion-strength="' +
+      (p.distortionStrength || 0.3) +
+      '" data-distortion-type="' +
+      (p.distortionType || "lens") +
+      '" data-distortion-shape="' +
+      (p.distortionShape || "circle") +
+      '" data-distortion-invert="' +
+      (p.distortionInvert ? "true" : "false") +
+      '" data-distortion-chromatic="' +
+      (p.distortionChromatic ? "true" : "false") +
+      '" data-distortion-overlay="' +
+      (p.distortionOverlay !== false ? "true" : "false") +
+      '" style="height:' +
+      p.height +
+      "px;" +
+      bgStyle +
+      "position:relative;overflow:hidden;border-radius:" +
+      (p.borderRadius || 4) +
+      "px;cursor:none;" +
+      containerBorder +
+      containerShadow +
+      padStyle +
+      margStyle +
+      opStyle +
+      '"><img src="' +
+      (p.imageUrl || "https://picsum.photos/800/400?random=50") +
+      '" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;' +
+      imgFilter +
+      '" alt="" /><canvas class="veltro-distort-canvas" style="position:absolute;inset:0;width:100%;height:100%" data-distort-init="1"></canvas></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    var html = "";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Core Settings</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Height (px)</label><input type="number" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+      (p.imageUrl || "https://picsum.photos/800/400?random=50") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','imageUrl',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Distortion Radius</label><input type="number" value="' +
+      (p.distortionRadius || 100) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','distortionRadius',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Distortion Strength</label><input type="number" step="0.05" min="0" max="1" value="' +
+      (p.distortionStrength || 0.3) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','distortionStrength',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Background & Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      ((p.bgType || "solid") === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      ((p.bgType || "solid") === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      ((p.bgType || "solid") === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if ((p.bgType || "solid") === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Color</label><input type="color" value="' +
+        (p.bg || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bg',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        ((p.bgGradientDir || "135deg") === "135deg" ? " selected" : "") +
+        '>135°</option><option value="to right"' +
+        ((p.bgGradientDir || "135deg") === "to right" ? " selected" : "") +
+        '>Left→Right</option><option value="to bottom"' +
+        ((p.bgGradientDir || "135deg") === "to bottom" ? " selected" : "") +
+        '>Top→Bottom</option><option value="circle"' +
+        ((p.bgGradientDir || "135deg") === "circle" ? " selected" : "") +
+        ">Radial</option></select></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImageUrl || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageUrl',this.value)\" placeholder=\"https://...\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Opacity (%)</label><input type="number" min="0" max="100" value="' +
+        (p.bgImageOpacity || 30) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageOpacity',+this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Size</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageSize',this.value)\"><option value=\"cover\"" +
+        ((p.bgImageSize || "cover") === "cover" ? " selected" : "") +
+        '>Cover</option><option value="contain"' +
+        ((p.bgImageSize || "cover") === "contain" ? " selected" : "") +
+        '>Contain</option><option value="100% 100%"' +
+        ((p.bgImageSize || "cover") === "100% 100%" ? " selected" : "") +
+        ">Stretch</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius (px)</label><input type="number" value="' +
+      (p.borderRadius || 4) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width (px)</label><input type="number" value="' +
+      (p.borderWidth || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Color</label><input type="color" value="' +
+      (p.borderColor || "#ffffff") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderColor',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Box Shadow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','boxShadow',this.value)\"><option value=\"none\"" +
+      ((p.boxShadow || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="soft"' +
+      ((p.boxShadow || "none") === "soft" ? " selected" : "") +
+      '>Soft</option><option value="hard"' +
+      ((p.boxShadow || "none") === "hard" ? " selected" : "") +
+      '>Hard</option><option value="glow"' +
+      ((p.boxShadow || "none") === "glow" ? " selected" : "") +
+      ">Glow</option></select></div>";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      html +=
+        '<div class="rp-row"><label>Shadow Color</label><input type="color" value="' +
+        (p.shadowColor || "#000000") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Shadow Blur</label><input type="number" value="' +
+        (p.shadowBlur || 10) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value)\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Spacing & Display</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Padding V (px)</label><input type="number" value="' +
+      (p.paddingV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H (px)</label><input type="number" value="' +
+      (p.paddingH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin V (px)</label><input type="number" value="' +
+      (p.marginV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin H (px)</label><input type="number" value="' +
+      (p.marginH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity (%)</label><input type="number" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animations & Effects</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      ((p.entranceAnim || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="fade-in"' +
+      ((p.entranceAnim || "none") === "fade-in" ? " selected" : "") +
+      '>Fade In</option><option value="slide-up"' +
+      ((p.entranceAnim || "none") === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="slide-left"' +
+      ((p.entranceAnim || "none") === "slide-left" ? " selected" : "") +
+      '>Slide Left</option><option value="zoom-in"' +
+      ((p.entranceAnim || "none") === "zoom-in" ? " selected" : "") +
+      '>Zoom In</option><option value="flip-in"' +
+      ((p.entranceAnim || "none") === "flip-in" ? " selected" : "") +
+      ">Flip In</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Animation Duration (ms)</label><input type="number" value="' +
+      (p.animDuration || 600) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','animDuration',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      ((p.hoverEffect || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="lift"' +
+      ((p.hoverEffect || "none") === "lift" ? " selected" : "") +
+      '>Lift</option><option value="glow"' +
+      ((p.hoverEffect || "none") === "glow" ? " selected" : "") +
+      '>Glow</option><option value="scale"' +
+      ((p.hoverEffect || "none") === "scale" ? " selected" : "") +
+      '>Scale</option><option value="tilt"' +
+      ((p.hoverEffect || "none") === "tilt" ? " selected" : "") +
+      ">Tilt</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Transition (ms)</label><input type="number" value="' +
+      (p.hoverTransition || 300) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverTransition',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Advanced Distortion Options</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Distortion Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','distortionType',this.value)\"><option value=\"lens\"" +
+      ((p.distortionType || "lens") === "lens" ? " selected" : "") +
+      '>Lens</option><option value="wave"' +
+      ((p.distortionType || "lens") === "wave" ? " selected" : "") +
+      '>Wave</option><option value="swirl"' +
+      ((p.distortionType || "lens") === "swirl" ? " selected" : "") +
+      '>Swirl</option><option value="pixelate"' +
+      ((p.distortionType || "lens") === "pixelate" ? " selected" : "") +
+      ">Pixelate</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Distortion Shape</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','distortionShape',this.value)\"><option value=\"circle\"" +
+      ((p.distortionShape || "circle") === "circle" ? " selected" : "") +
+      '>Circle</option><option value="square"' +
+      ((p.distortionShape || "circle") === "square" ? " selected" : "") +
+      '>Square</option><option value="diamond"' +
+      ((p.distortionShape || "circle") === "diamond" ? " selected" : "") +
+      ">Diamond</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Invert Distortion</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','distortionInvert',this.value)\"><option value=\"false\"" +
+      (!p.distortionInvert ? " selected" : "") +
+      '>Normal</option><option value="true"' +
+      (p.distortionInvert ? " selected" : "") +
+      ">Inverted</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Chromatic Aberration</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','distortionChromatic',this.value)\"><option value=\"false\"" +
+      (!p.distortionChromatic ? " selected" : "") +
+      '>Off</option><option value="true"' +
+      (p.distortionChromatic ? " selected" : "") +
+      ">On</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Distortion Overlay</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','distortionOverlay',this.value)\"><option value=\"true\"" +
+      (p.distortionOverlay !== false ? " selected" : "") +
+      '>Enabled</option><option value="false"' +
+      (p.distortionOverlay === false ? " selected" : "") +
+      ">Disabled</option></select></div>";
+    if (p.distortionOverlay !== false) {
+      html +=
+        '<div class="rp-row"><label>Overlay Color</label><input type="color" value="' +
+        (p.overlayColor || "#a78bfa") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','overlayColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Overlay Opacity (%)</label><input type="number" min="0" max="100" value="' +
+        (p.overlayOpacity || 20) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','overlayOpacity',+this.value)\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Image Filter</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','imageFilter',this.value)\"><option value=\"none\"" +
+      ((p.imageFilter || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="grayscale(100%)"' +
+      ((p.imageFilter || "none") === "grayscale(100%)" ? " selected" : "") +
+      '>Grayscale</option><option value="sepia(100%)"' +
+      ((p.imageFilter || "none") === "sepia(100%)" ? " selected" : "") +
+      '>Sepia</option><option value="blur(2px)"' +
+      ((p.imageFilter || "none") === "blur(2px)" ? " selected" : "") +
+      '>Blur</option><option value="contrast(150%)"' +
+      ((p.imageFilter || "none") === "contrast(150%)" ? " selected" : "") +
+      '>High Contrast</option><option value="brightness(120%)"' +
+      ((p.imageFilter || "none") === "brightness(120%)" ? " selected" : "") +
+      ">Bright</option></select></div>";
+    html += "</div></div>";
+    return html;
+  },
+});
+
+// 5. Color Sampler Cursor
+FB.widgets.register("colorSampler", {
+  label: "Color Sampler",
+  sublabel: "Sample colors on hover",
+  icon: "🎨",
+  iconBg: "#1a1a0d",
+  iconColor: "#f472b6",
+  category: "veltro",
+  subCategory: "cursor",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    sampleSize: 10,
+    paletteSize: 5,
+    showGrid: true,
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a1a3e",
+    bgImageUrl: "",
+    bgImageOpacity: 30,
+    bgImageSize: "cover",
+    borderRadius: 4,
+    borderWidth: 0,
+    borderColor: "#ffffff",
+    boxShadow: "none",
+    shadowColor: "#000000",
+    shadowBlur: 10,
+    shadowOffsetX: 0,
+    shadowOffsetY: 4,
+    paddingV: 0,
+    paddingH: 0,
+    marginV: 0,
+    marginH: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    hoverEffect: "none",
+    hoverTransition: 300,
+    animDuration: 600,
+    gridCols: 4,
+    gridRows: 3,
+    swatchBorderRadius: 8,
+    swatchGap: 4,
+    palettePosition: "bottom",
+    paletteBgOpacity: 80,
+    samplerMode: "hover",
+    copyOnHover: false,
+    colorFormat: "hex",
+    swatchAnimation: "pop",
+  },
+  render: function (p) {
+    var id = p._blockId || "colorSamp";
+    var paletteHtml = "";
+    for (var i = 0; i < (p.paletteSize || 5); i++) {
+      paletteHtml +=
+        '<div class="veltro-color-swatch" style="width:30px;height:30px;border-radius:4px;background:#333;border:1px solid #555"></div>';
+    }
+    var bgType = p.bgType || "solid";
+    var bgStyle = "";
+    if (bgType === "gradient") {
+      bgStyle =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        ");";
+    } else if (bgType === "image" && p.bgImageUrl) {
+      bgStyle =
+        "background:url('" +
+        p.bgImageUrl +
+        "') center/" +
+        (p.bgImageSize || "cover") +
+        " no-repeat;background-color:" +
+        (p.bg || "#0d0d1a") +
+        ";";
+    } else {
+      bgStyle = "background:" + (p.bg || "#0d0d1a") + ";";
+    }
+    var containerBorder = "";
+    if (p.borderWidth && p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px solid " +
+        (p.borderColor || "#ffffff") +
+        ";";
+    }
+    var containerShadow = "";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      containerShadow =
+        "box-shadow:" +
+        (p.shadowOffsetX || 0) +
+        "px " +
+        (p.shadowOffsetY || 4) +
+        "px " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowColor || "#000000") +
+        ";";
+    }
+    var hoverClass = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+    }
+    var animClass = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+    }
+    var padStyle =
+      "padding:" + (p.paddingV || 0) + "px " + (p.paddingH || 0) + "px;";
+    var margStyle =
+      "margin:" + (p.marginV || 0) + "px " + (p.marginH || 0) + "px;";
+    var opStyle =
+      p.opacity && p.opacity < 100 ? "opacity:" + p.opacity / 100 + ";" : "";
+    var palettePos = p.palettePosition || "bottom";
+    var paletteStyle =
+      palettePos === "bottom"
+        ? "bottom:10px;"
+        : palettePos === "top"
+          ? "top:10px;"
+          : palettePos === "left"
+            ? "left:10px;top:50%;transform:translateY(-50%);"
+            : "right:10px;top:50%;transform:translateY(-50%);";
+    return (
+      '<div class="veltro-colorsampler-wrap' +
+      animClass +
+      hoverClass +
+      '" id="colorsampler-' +
+      id +
+      '" data-sample-size="' +
+      (p.sampleSize || 10) +
+      '" data-palette-size="' +
+      (p.paletteSize || 5) +
+      '" data-sampler-mode="' +
+      (p.samplerMode || "hover") +
+      '" data-copy-on-hover="' +
+      (p.copyOnHover ? "true" : "false") +
+      '" data-color-format="' +
+      (p.colorFormat || "hex") +
+      '" data-swatch-animation="' +
+      (p.swatchAnimation || "pop") +
+      '" style="height:' +
+      p.height +
+      "px;" +
+      bgStyle +
+      "position:relative;overflow:hidden;border-radius:" +
+      (p.borderRadius || 4) +
+      "px;cursor:crosshair;" +
+      containerBorder +
+      containerShadow +
+      padStyle +
+      margStyle +
+      opStyle +
+      '"><div style="position:absolute;inset:0;display:grid;grid-template-columns:repeat(' +
+      (p.gridCols || 4) +
+      ",1fr);grid-template-rows:repeat(" +
+      (p.gridRows || 3) +
+      ",1fr);gap:" +
+      (p.swatchGap || 4) +
+      'px;padding:20px"><div style="background:#ff6b35;border-radius:' +
+      (p.swatchBorderRadius || 8) +
+      'px"></div><div style="background:#cdfe00;border-radius:' +
+      (p.swatchBorderRadius || 8) +
+      'px"></div><div style="background:#3b82f6;border-radius:' +
+      (p.swatchBorderRadius || 8) +
+      'px"></div><div style="background:#ec4899;border-radius:' +
+      (p.swatchBorderRadius || 8) +
+      'px"></div><div style="background:#f59e0b;border-radius:' +
+      (p.swatchBorderRadius || 8) +
+      'px"></div><div style="background:#10b981;border-radius:' +
+      (p.swatchBorderRadius || 8) +
+      'px"></div><div style="background:#8b5cf6;border-radius:' +
+      (p.swatchBorderRadius || 8) +
+      'px"></div><div style="background:#ef4444;border-radius:' +
+      (p.swatchBorderRadius || 8) +
+      'px"></div><div style="background:#06b6d4;border-radius:' +
+      (p.swatchBorderRadius || 8) +
+      'px"></div><div style="background:#f97316;border-radius:' +
+      (p.swatchBorderRadius || 8) +
+      'px"></div><div style="background:#84cc16;border-radius:' +
+      (p.swatchBorderRadius || 8) +
+      'px"></div><div style="background:#6366f1;border-radius:' +
+      (p.swatchBorderRadius || 8) +
+      'px"></div></div><div class="veltro-color-palette" style="position:absolute;' +
+      paletteStyle +
+      "left:" +
+      (palettePos === "left" || palettePos === "right" ? "auto" : "50%") +
+      ";right:" +
+      (palettePos === "right" ? "10px" : "auto") +
+      ";transform:" +
+      (palettePos === "bottom" || palettePos === "top"
+        ? "translateX(-50%)"
+        : "translateY(-50%)") +
+      ";display:flex;gap:4px;padding:8px;background:rgba(0,0,0," +
+      (p.paletteBgOpacity || 80) / 100 +
+      ');border-radius:8px;z-index:10" data-colorsampler-init="1">' +
+      paletteHtml +
+      "</div></div>"
+    );
+  },
+  editPanel: function (id, p) {
+    var html = "";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Core Settings</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Height (px)</label><input type="number" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Sample Size</label><input type="number" value="' +
+      (p.sampleSize || 10) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','sampleSize',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Palette Size</label><input type="number" value="' +
+      (p.paletteSize || 5) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paletteSize',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Show Grid</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','showGrid',this.value)\"><option value=\"true\"" +
+      (p.showGrid !== false ? " selected" : "") +
+      '>Enabled</option><option value="false"' +
+      (p.showGrid === false ? " selected" : "") +
+      ">Disabled</option></select></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Background & Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      ((p.bgType || "solid") === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      ((p.bgType || "solid") === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      ((p.bgType || "solid") === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if ((p.bgType || "solid") === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Color</label><input type="color" value="' +
+        (p.bg || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bg',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        ((p.bgGradientDir || "135deg") === "135deg" ? " selected" : "") +
+        '>135°</option><option value="to right"' +
+        ((p.bgGradientDir || "135deg") === "to right" ? " selected" : "") +
+        '>Left→Right</option><option value="to bottom"' +
+        ((p.bgGradientDir || "135deg") === "to bottom" ? " selected" : "") +
+        '>Top→Bottom</option><option value="circle"' +
+        ((p.bgGradientDir || "135deg") === "circle" ? " selected" : "") +
+        ">Radial</option></select></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImageUrl || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageUrl',this.value)\" placeholder=\"https://...\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Opacity (%)</label><input type="number" min="0" max="100" value="' +
+        (p.bgImageOpacity || 30) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageOpacity',+this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Size</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageSize',this.value)\"><option value=\"cover\"" +
+        ((p.bgImageSize || "cover") === "cover" ? " selected" : "") +
+        '>Cover</option><option value="contain"' +
+        ((p.bgImageSize || "cover") === "contain" ? " selected" : "") +
+        '>Contain</option><option value="100% 100%"' +
+        ((p.bgImageSize || "cover") === "100% 100%" ? " selected" : "") +
+        ">Stretch</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius (px)</label><input type="number" value="' +
+      (p.borderRadius || 4) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width (px)</label><input type="number" value="' +
+      (p.borderWidth || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Color</label><input type="color" value="' +
+      (p.borderColor || "#ffffff") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderColor',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Box Shadow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','boxShadow',this.value)\"><option value=\"none\"" +
+      ((p.boxShadow || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="soft"' +
+      ((p.boxShadow || "none") === "soft" ? " selected" : "") +
+      '>Soft</option><option value="hard"' +
+      ((p.boxShadow || "none") === "hard" ? " selected" : "") +
+      '>Hard</option><option value="glow"' +
+      ((p.boxShadow || "none") === "glow" ? " selected" : "") +
+      ">Glow</option></select></div>";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      html +=
+        '<div class="rp-row"><label>Shadow Color</label><input type="color" value="' +
+        (p.shadowColor || "#000000") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Shadow Blur</label><input type="number" value="' +
+        (p.shadowBlur || 10) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value)\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Spacing & Display</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Padding V (px)</label><input type="number" value="' +
+      (p.paddingV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H (px)</label><input type="number" value="' +
+      (p.paddingH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin V (px)</label><input type="number" value="' +
+      (p.marginV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin H (px)</label><input type="number" value="' +
+      (p.marginH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity (%)</label><input type="number" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animations & Effects</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      ((p.entranceAnim || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="fade-in"' +
+      ((p.entranceAnim || "none") === "fade-in" ? " selected" : "") +
+      '>Fade In</option><option value="slide-up"' +
+      ((p.entranceAnim || "none") === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="slide-left"' +
+      ((p.entranceAnim || "none") === "slide-left" ? " selected" : "") +
+      '>Slide Left</option><option value="zoom-in"' +
+      ((p.entranceAnim || "none") === "zoom-in" ? " selected" : "") +
+      '>Zoom In</option><option value="flip-in"' +
+      ((p.entranceAnim || "none") === "flip-in" ? " selected" : "") +
+      ">Flip In</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Animation Duration (ms)</label><input type="number" value="' +
+      (p.animDuration || 600) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','animDuration',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      ((p.hoverEffect || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="lift"' +
+      ((p.hoverEffect || "none") === "lift" ? " selected" : "") +
+      '>Lift</option><option value="glow"' +
+      ((p.hoverEffect || "none") === "glow" ? " selected" : "") +
+      '>Glow</option><option value="scale"' +
+      ((p.hoverEffect || "none") === "scale" ? " selected" : "") +
+      '>Scale</option><option value="tilt"' +
+      ((p.hoverEffect || "none") === "tilt" ? " selected" : "") +
+      ">Tilt</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Transition (ms)</label><input type="number" value="' +
+      (p.hoverTransition || 300) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverTransition',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Advanced Sampler Options</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Grid Columns</label><input type="number" value="' +
+      (p.gridCols || 4) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','gridCols',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Grid Rows</label><input type="number" value="' +
+      (p.gridRows || 3) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','gridRows',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Swatch Border Radius</label><input type="number" value="' +
+      (p.swatchBorderRadius || 8) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','swatchBorderRadius',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Swatch Gap (px)</label><input type="number" value="' +
+      (p.swatchGap || 4) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','swatchGap',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Palette Position</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','palettePosition',this.value)\"><option value=\"bottom\"" +
+      ((p.palettePosition || "bottom") === "bottom" ? " selected" : "") +
+      '>Bottom</option><option value="top"' +
+      ((p.palettePosition || "bottom") === "top" ? " selected" : "") +
+      '>Top</option><option value="left"' +
+      ((p.palettePosition || "bottom") === "left" ? " selected" : "") +
+      '>Left</option><option value="right"' +
+      ((p.palettePosition || "bottom") === "right" ? " selected" : "") +
+      ">Right</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Palette BG Opacity (%)</label><input type="number" min="0" max="100" value="' +
+      (p.paletteBgOpacity || 80) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paletteBgOpacity',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Sampler Mode</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','samplerMode',this.value)\"><option value=\"hover\"" +
+      ((p.samplerMode || "hover") === "hover" ? " selected" : "") +
+      '>Hover</option><option value="click"' +
+      ((p.samplerMode || "hover") === "click" ? " selected" : "") +
+      '>Click</option><option value="drag"' +
+      ((p.samplerMode || "hover") === "drag" ? " selected" : "") +
+      ">Drag</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Copy On Hover</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','copyOnHover',this.value)\"><option value=\"false\"" +
+      (!p.copyOnHover ? " selected" : "") +
+      '>Off</option><option value="true"' +
+      (p.copyOnHover ? " selected" : "") +
+      ">On</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Color Format</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','colorFormat',this.value)\"><option value=\"hex\"" +
+      ((p.colorFormat || "hex") === "hex" ? " selected" : "") +
+      '>HEX</option><option value="rgb"' +
+      ((p.colorFormat || "hex") === "rgb" ? " selected" : "") +
+      '>RGB</option><option value="hsl"' +
+      ((p.colorFormat || "hex") === "hsl" ? " selected" : "") +
+      ">HSL</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Swatch Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','swatchAnimation',this.value)\"><option value=\"pop\"" +
+      ((p.swatchAnimation || "pop") === "pop" ? " selected" : "") +
+      '>Pop</option><option value="fade"' +
+      ((p.swatchAnimation || "pop") === "fade" ? " selected" : "") +
+      '>Fade</option><option value="slide"' +
+      ((p.swatchAnimation || "pop") === "slide" ? " selected" : "") +
+      '>Slide</option><option value="none"' +
+      ((p.swatchAnimation || "pop") === "none" ? " selected" : "") +
+      ">None</option></select></div>";
+    html += "</div></div>";
+    return html;
+  },
+});
+
+// 6. Gravity Cursor
+FB.widgets.register("gravityCursor", {
+  label: "Gravity Cursor",
+  sublabel: "Cursor as gravity well",
+  icon: "◉",
+  iconBg: "#0d1a0d",
+  iconColor: "#34d399",
+  category: "veltro",
+  subCategory: "cursor",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    gravityStrength: 0.5,
+    particleCount: 50,
+    particleSize: 4,
+    particleColor: "#cdfe00",
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a1a3e",
+    bgImageUrl: "",
+    bgImageOpacity: 30,
+    bgImageSize: "cover",
+    borderRadius: 4,
+    borderWidth: 0,
+    borderColor: "#ffffff",
+    boxShadow: "none",
+    shadowColor: "#000000",
+    shadowBlur: 10,
+    shadowOffsetX: 0,
+    shadowOffsetY: 4,
+    paddingV: 0,
+    paddingH: 0,
+    marginV: 0,
+    marginH: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    hoverEffect: "none",
+    hoverTransition: 300,
+    animDuration: 600,
+    particleShape: "circle",
+    particleTrail: true,
+    particleFriction: 0.98,
+    particleBounce: false,
+    gravityMode: "attract",
+    particleSpread: 1,
+    particleRandomColor: false,
+    particleGlow: false,
+  },
+  render: function (p) {
+    var id = p._blockId || "gravCursor";
+    var bgType = p.bgType || "solid";
+    var bgStyle = "";
+    if (bgType === "gradient") {
+      bgStyle =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        ");";
+    } else if (bgType === "image" && p.bgImageUrl) {
+      bgStyle =
+        "background:url('" +
+        p.bgImageUrl +
+        "') center/" +
+        (p.bgImageSize || "cover") +
+        " no-repeat;background-color:" +
+        (p.bg || "#0d0d1a") +
+        ";";
+    } else {
+      bgStyle = "background:" + (p.bg || "#0d0d1a") + ";";
+    }
+    var containerBorder = "";
+    if (p.borderWidth && p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px solid " +
+        (p.borderColor || "#ffffff") +
+        ";";
+    }
+    var containerShadow = "";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      containerShadow =
+        "box-shadow:" +
+        (p.shadowOffsetX || 0) +
+        "px " +
+        (p.shadowOffsetY || 4) +
+        "px " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowColor || "#000000") +
+        ";";
+    }
+    var hoverClass = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+    }
+    var animClass = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+    }
+    var padStyle =
+      "padding:" + (p.paddingV || 0) + "px " + (p.paddingH || 0) + "px;";
+    var margStyle =
+      "margin:" + (p.marginV || 0) + "px " + (p.marginH || 0) + "px;";
+    var opStyle =
+      p.opacity && p.opacity < 100 ? "opacity:" + p.opacity / 100 + ";" : "";
+    return (
+      '<div class="veltro-gravity-wrap' +
+      animClass +
+      hoverClass +
+      '" id="gravity-' +
+      id +
+      '" data-gravity-strength="' +
+      (p.gravityStrength || 0.5) +
+      '" data-particle-count="' +
+      (p.particleCount || 50) +
+      '" data-particle-size="' +
+      (p.particleSize || 4) +
+      '" data-particle-color="' +
+      (p.particleColor || "#cdfe00") +
+      '" data-particle-shape="' +
+      (p.particleShape || "circle") +
+      '" data-particle-trail="' +
+      (p.particleTrail !== false ? "true" : "false") +
+      '" data-particle-friction="' +
+      (p.particleFriction || 0.98) +
+      '" data-particle-bounce="' +
+      (p.particleBounce ? "true" : "false") +
+      '" data-gravity-mode="' +
+      (p.gravityMode || "attract") +
+      '" data-particle-spread="' +
+      (p.particleSpread || 1) +
+      '" data-particle-random-color="' +
+      (p.particleRandomColor ? "true" : "false") +
+      '" data-particle-glow="' +
+      (p.particleGlow ? "true" : "false") +
+      '" style="height:' +
+      p.height +
+      "px;" +
+      bgStyle +
+      "position:relative;overflow:hidden;border-radius:" +
+      (p.borderRadius || 4) +
+      "px;cursor:none;" +
+      containerBorder +
+      containerShadow +
+      padStyle +
+      margStyle +
+      opStyle +
+      '"><canvas class="veltro-gravity-canvas" style="position:absolute;inset:0;width:100%;height:100%" data-gravity-init="1"></canvas></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    var html = "";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Core Settings</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Height (px)</label><input type="number" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Gravity Strength</label><input type="number" step="0.1" min="0" max="2" value="' +
+      (p.gravityStrength || 0.5) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','gravityStrength',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Count</label><input type="number" value="' +
+      (p.particleCount || 50) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleCount',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Size</label><input type="number" value="' +
+      (p.particleSize || 4) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleSize',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Color</label><input type="color" value="' +
+      (p.particleColor || "#cdfe00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleColor',this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Background & Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      ((p.bgType || "solid") === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      ((p.bgType || "solid") === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      ((p.bgType || "solid") === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if ((p.bgType || "solid") === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Color</label><input type="color" value="' +
+        (p.bg || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bg',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        ((p.bgGradientDir || "135deg") === "135deg" ? " selected" : "") +
+        '>135°</option><option value="to right"' +
+        ((p.bgGradientDir || "135deg") === "to right" ? " selected" : "") +
+        '>Left→Right</option><option value="to bottom"' +
+        ((p.bgGradientDir || "135deg") === "to bottom" ? " selected" : "") +
+        '>Top→Bottom</option><option value="circle"' +
+        ((p.bgGradientDir || "135deg") === "circle" ? " selected" : "") +
+        ">Radial</option></select></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImageUrl || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageUrl',this.value)\" placeholder=\"https://...\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Opacity (%)</label><input type="number" min="0" max="100" value="' +
+        (p.bgImageOpacity || 30) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageOpacity',+this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Size</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageSize',this.value)\"><option value=\"cover\"" +
+        ((p.bgImageSize || "cover") === "cover" ? " selected" : "") +
+        '>Cover</option><option value="contain"' +
+        ((p.bgImageSize || "cover") === "contain" ? " selected" : "") +
+        '>Contain</option><option value="100% 100%"' +
+        ((p.bgImageSize || "cover") === "100% 100%" ? " selected" : "") +
+        ">Stretch</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius (px)</label><input type="number" value="' +
+      (p.borderRadius || 4) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width (px)</label><input type="number" value="' +
+      (p.borderWidth || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Color</label><input type="color" value="' +
+      (p.borderColor || "#ffffff") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderColor',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Box Shadow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','boxShadow',this.value)\"><option value=\"none\"" +
+      ((p.boxShadow || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="soft"' +
+      ((p.boxShadow || "none") === "soft" ? " selected" : "") +
+      '>Soft</option><option value="hard"' +
+      ((p.boxShadow || "none") === "hard" ? " selected" : "") +
+      '>Hard</option><option value="glow"' +
+      ((p.boxShadow || "none") === "glow" ? " selected" : "") +
+      ">Glow</option></select></div>";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      html +=
+        '<div class="rp-row"><label>Shadow Color</label><input type="color" value="' +
+        (p.shadowColor || "#000000") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Shadow Blur</label><input type="number" value="' +
+        (p.shadowBlur || 10) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value)\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Spacing & Display</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Padding V (px)</label><input type="number" value="' +
+      (p.paddingV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H (px)</label><input type="number" value="' +
+      (p.paddingH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin V (px)</label><input type="number" value="' +
+      (p.marginV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin H (px)</label><input type="number" value="' +
+      (p.marginH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity (%)</label><input type="number" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animations & Effects</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      ((p.entranceAnim || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="fade-in"' +
+      ((p.entranceAnim || "none") === "fade-in" ? " selected" : "") +
+      '>Fade In</option><option value="slide-up"' +
+      ((p.entranceAnim || "none") === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="slide-left"' +
+      ((p.entranceAnim || "none") === "slide-left" ? " selected" : "") +
+      '>Slide Left</option><option value="zoom-in"' +
+      ((p.entranceAnim || "none") === "zoom-in" ? " selected" : "") +
+      '>Zoom In</option><option value="flip-in"' +
+      ((p.entranceAnim || "none") === "flip-in" ? " selected" : "") +
+      ">Flip In</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Animation Duration (ms)</label><input type="number" value="' +
+      (p.animDuration || 600) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','animDuration',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      ((p.hoverEffect || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="lift"' +
+      ((p.hoverEffect || "none") === "lift" ? " selected" : "") +
+      '>Lift</option><option value="glow"' +
+      ((p.hoverEffect || "none") === "glow" ? " selected" : "") +
+      '>Glow</option><option value="scale"' +
+      ((p.hoverEffect || "none") === "scale" ? " selected" : "") +
+      '>Scale</option><option value="tilt"' +
+      ((p.hoverEffect || "none") === "tilt" ? " selected" : "") +
+      ">Tilt</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Transition (ms)</label><input type="number" value="' +
+      (p.hoverTransition || 300) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverTransition',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Advanced Gravity Options</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Particle Shape</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleShape',this.value)\"><option value=\"circle\"" +
+      ((p.particleShape || "circle") === "circle" ? " selected" : "") +
+      '>Circle</option><option value="square"' +
+      ((p.particleShape || "circle") === "square" ? " selected" : "") +
+      '>Square</option><option value="triangle"' +
+      ((p.particleShape || "circle") === "triangle" ? " selected" : "") +
+      '>Triangle</option><option value="star"' +
+      ((p.particleShape || "circle") === "star" ? " selected" : "") +
+      ">Star</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Trail</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleTrail',this.value)\"><option value=\"true\"" +
+      (p.particleTrail !== false ? " selected" : "") +
+      '>Enabled</option><option value="false"' +
+      (p.particleTrail === false ? " selected" : "") +
+      ">Disabled</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Friction</label><input type="number" step="0.01" min="0.9" max="1" value="' +
+      (p.particleFriction || 0.98) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleFriction',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Bounce</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleBounce',this.value)\"><option value=\"false\"" +
+      (!p.particleBounce ? " selected" : "") +
+      '>Off</option><option value="true"' +
+      (p.particleBounce ? " selected" : "") +
+      ">On</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Gravity Mode</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','gravityMode',this.value)\"><option value=\"attract\"" +
+      ((p.gravityMode || "attract") === "attract" ? " selected" : "") +
+      '>Attract</option><option value="repel"' +
+      ((p.gravityMode || "attract") === "repel" ? " selected" : "") +
+      '>Repel</option><option value="orbit"' +
+      ((p.gravityMode || "attract") === "orbit" ? " selected" : "") +
+      ">Orbit</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Spread</label><input type="number" step="0.1" min="0.1" max="3" value="' +
+      (p.particleSpread || 1) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleSpread',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Random Particle Colors</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleRandomColor',this.value)\"><option value=\"false\"" +
+      (!p.particleRandomColor ? " selected" : "") +
+      '>Single</option><option value="true"' +
+      (p.particleRandomColor ? " selected" : "") +
+      ">Random</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Glow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleGlow',this.value)\"><option value=\"false\"" +
+      (!p.particleGlow ? " selected" : "") +
+      '>Off</option><option value="true"' +
+      (p.particleGlow ? " selected" : "") +
+      ">On</option></select></div>";
+    html += "</div></div>";
+    return html;
+  },
+});
+
+// 6. Gravity Cursor
+FB.widgets.register("gravityCursor", {
+  label: "Gravity Cursor",
+  sublabel: "Cursor as gravity well",
+  icon: "◉",
+  iconBg: "#0d1a0d",
+  iconColor: "#34d399",
+  category: "veltro",
+  subCategory: "cursor",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    gravityStrength: 0.5,
+    particleCount: 50,
+    particleSize: 4,
+    particleColor: "#cdfe00",
+  },
+  render: function (p) {
+    var id = p._blockId || "gravCursor";
+    return (
+      '<div class="veltro-gravity-wrap" id="gravity-' +
+      id +
+      '" data-gravity-strength="' +
+      p.gravityStrength +
+      '" data-particle-count="' +
+      p.particleCount +
+      '" data-particle-size="' +
+      p.particleSize +
+      '" data-particle-color="' +
+      p.particleColor +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px;cursor:none"><canvas class="veltro-gravity-canvas" style="position:absolute;inset:0;width:100%;height:100%" data-gravity-init="1"></canvas></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// ── VELTRO ENGINE BATCH 2: TYPOGRAPHY (4 NEW WIDGETS) ──
+// 1. Wave Text
+FB.widgets.register("waveText", {
+  label: "Wave Text",
+  sublabel: "Sine wave animation",
+  icon: "~",
+  iconBg: "#0d1a2e",
+  iconColor: "#60a5fa",
+  category: "veltro",
+  subCategory: "typography",
+  defaultProps: {
+    height: 300,
+    bg: "#0d0d1a",
+    text: "WAVE",
+    fontSize: 80,
+    fontWeight: 800,
+    textColor: "#cdfe00",
+    amplitude: 20,
+    frequency: 0.1,
+    speed: 0.05,
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a0d2e",
+    bgImage: "",
+    borderRadius: 8,
+    borderWidth: 0,
+    borderColor: "#60a5fa",
+    borderStyle: "solid",
+    paddingV: 24,
+    paddingH: 24,
+    marginV: 0,
+    marginH: 0,
+    boxShadow: false,
+    shadowColor: "rgba(0,0,0,0.3)",
+    shadowBlur: 10,
+    shadowSpread: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    animDuration: 600,
+    animDelay: 0,
+    hoverEffect: "none",
+    hoverScale: 1.02,
+    hoverTransition: 300,
+    waveDirection: "up",
+    phaseOffset: 0,
+    dualColour: false,
+    dualColour2: "#3b82f6",
+    fontFamily: "Lexend",
+    letterSpacing: 0,
+    textTransform: "none",
+    glowEffect: false,
+    glowColor: "#cdfe00",
+    glowSize: 15,
+    textShadow: false,
+    textShadowColor: "rgba(0,0,0,0.5)",
+    textShadowBlur: 4,
+    textAlign: "center",
+  },
+  render: function (p) {
+    var id = p._blockId || "wave";
+    var chars = (p.text || "WAVE").split("");
+    var charHtml = chars
+      .map(function (c, i) {
+        var col = "";
+        if (p.dualColour) {
+          var colors = [p.textColor || "#cdfe00", p.dualColour2 || "#3b82f6"];
+          col = "color:" + colors[i % 2] + ";";
+        }
+        return (
+          '<span class="veltro-wave-char" data-index="' +
+          i +
+          '" style="display:inline-block;transition:none;' +
+          col +
+          '">' +
+          c +
+          "</span>"
+        );
+      })
+      .join("");
+    var containerBg = "";
+    if (p.bgType === "gradient") {
+      containerBg =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a0d2e") +
+        ");";
+    } else if (p.bgType === "image" && p.bgImage) {
+      containerBg = "background:url(" + p.bgImage + ") center/cover;";
+    } else {
+      containerBg = "background:" + (p.bg || "#0d0d1a") + ";";
+    }
+    var containerBorder = "";
+    if (p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px " +
+        (p.borderStyle || "solid") +
+        " " +
+        (p.borderColor || "#60a5fa") +
+        ";";
+    }
+    var containerShadow = "";
+    if (p.boxShadow) {
+      containerShadow =
+        "box-shadow:0 " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowBlur || 10) * 2 +
+        "px " +
+        (p.shadowSpread || 0) +
+        "px " +
+        (p.shadowColor || "rgba(0,0,0,0.3)") +
+        ";";
+    }
+    var hoverClass = "";
+    var hoverStyle = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+      hoverStyle = "transition:all " + (p.hoverTransition || 300) + "ms ease;";
+    }
+    var animClass = "";
+    var animStyle = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+      animStyle =
+        "animation-duration:" +
+        (p.animDuration || 600) +
+        "ms;animation-delay:" +
+        (p.animDelay || 0) +
+        "ms;animation-fill-mode:both;";
+    }
+    var glowStyle = "";
+    if (p.glowEffect) {
+      glowStyle =
+        "filter:drop-shadow(0 0 " +
+        (p.glowSize || 15) +
+        "px " +
+        (p.glowColor || "#cdfe00") +
+        ");";
+    }
+    var textShadowStyle = "";
+    if (p.textShadow) {
+      textShadowStyle =
+        "text-shadow:" +
+        (p.textShadowBlur || 4) +
+        "px " +
+        (p.textShadowBlur || 4) +
+        "px " +
+        (p.textShadowBlur || 4) * 2 +
+        "px " +
+        (p.textShadowColor || "rgba(0,0,0,0.5)") +
+        ";";
+    }
+    var textTransformStyle = "";
+    if (p.textTransform && p.textTransform !== "none") {
+      textTransformStyle = "text-transform:" + p.textTransform + ";";
+    }
+    return (
+      '<div class="veltro-wave-wrap' +
+      animClass +
+      hoverClass +
+      '" id="wave-' +
+      id +
+      '" data-amplitude="' +
+      (p.amplitude || 20) +
+      '" data-frequency="' +
+      (p.frequency || 0.1) +
+      '" data-speed="' +
+      (p.speed || 0.05) +
+      '" data-wave-direction="' +
+      (p.waveDirection || "up") +
+      '" data-phase-offset="' +
+      (p.phaseOffset || 0) +
+      '" data-dual-colour="' +
+      (p.dualColour ? "1" : "0") +
+      '" style="height:' +
+      (p.height || 300) +
+      "px;" +
+      containerBg +
+      containerBorder +
+      containerShadow +
+      hoverStyle +
+      animStyle +
+      "border-radius:" +
+      (p.borderRadius || 8) +
+      "px;" +
+      "padding:" +
+      (p.paddingV || 24) +
+      "px " +
+      (p.paddingH || 24) +
+      "px;" +
+      "margin:" +
+      (p.marginV || 0) +
+      "px " +
+      (p.marginH || 0) +
+      "px;" +
+      "opacity:" +
+      (p.opacity || 100) / 100 +
+      ";" +
+      'display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;"><div class="veltro-wave-content" style="font-size:' +
+      (p.fontSize || 80) +
+      "px;font-weight:" +
+      (p.fontWeight || 800) +
+      ";color:" +
+      (p.textColor || "#cdfe00") +
+      ";font-family:'" +
+      (p.fontFamily || "Lexend") +
+      "',sans-serif;user-select:none;letter-spacing:" +
+      (p.letterSpacing || 0) +
+      "px;text-align:" +
+      (p.textAlign || "center") +
+      ";" +
+      glowStyle +
+      textShadowStyle +
+      textTransformStyle +
+      '" data-wave-init="1">' +
+      charHtml +
+      "</div></div>"
+    );
+  },
+  editPanel: function (id, p) {
+    var html = "";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Text & Wave</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Text</label><input type="text" value="' +
+      (p.text || "WAVE") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','text',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Height: ' +
+      (p.height || 300) +
+      'px</label><input type="range" min="100" max="600" value="' +
+      (p.height || 300) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value);this.previousElementSibling.textContent='Height: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Size: ' +
+      (p.fontSize || 80) +
+      'px</label><input type="range" min="24" max="150" value="' +
+      (p.fontSize || 80) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontSize',+this.value);this.previousElementSibling.textContent='Font Size: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Weight: ' +
+      (p.fontWeight || 800) +
+      '</label><input type="range" min="100" max="900" step="100" value="' +
+      (p.fontWeight || 800) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontWeight',+this.value);this.previousElementSibling.textContent='Font Weight: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Family</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontFamily',this.value)\"><option value=\"Lexend\"" +
+      (p.fontFamily === "Lexend" ? " selected" : "") +
+      '>Lexend</option><option value="Inter"' +
+      (p.fontFamily === "Inter" ? " selected" : "") +
+      ">Inter</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Letter Spacing: ' +
+      (p.letterSpacing || 0) +
+      'px</label><input type="range" min="-5" max="20" value="' +
+      (p.letterSpacing || 0) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','letterSpacing',+this.value);this.previousElementSibling.textContent='Letter Spacing: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Text Align</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','textAlign',this.value)\"><option value=\"left\"" +
+      (p.textAlign === "left" ? " selected" : "") +
+      '>Left</option><option value="center"' +
+      (p.textAlign === "center" ? " selected" : "") +
+      '>Center</option><option value="right"' +
+      (p.textAlign === "right" ? " selected" : "") +
+      ">Right</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Text Transform</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','textTransform',this.value)\"><option value=\"none\"" +
+      (p.textTransform === "none" ? " selected" : "") +
+      '>None</option><option value="uppercase"' +
+      (p.textTransform === "uppercase" ? " selected" : "") +
+      ">UPPERCASE</option></select></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Wave Settings</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Amplitude: ' +
+      (p.amplitude || 20) +
+      '</label><input type="range" min="0" max="50" value="' +
+      (p.amplitude || 20) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','amplitude',+this.value);this.previousElementSibling.textContent='Amplitude: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Frequency: ' +
+      (p.frequency || 0.1) +
+      '</label><input type="range" min="0.01" max="0.5" step="0.01" value="' +
+      (p.frequency || 0.1) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','frequency',+this.value);this.previousElementSibling.textContent='Frequency: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Speed: ' +
+      (p.speed || 0.05) +
+      '</label><input type="range" min="0.01" max="0.2" step="0.01" value="' +
+      (p.speed || 0.05) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','speed',+this.value);this.previousElementSibling.textContent='Speed: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Wave Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','waveDirection',this.value)\"><option value=\"up\"" +
+      (p.waveDirection === "up" ? " selected" : "") +
+      '>Up</option><option value="down"' +
+      (p.waveDirection === "down" ? " selected" : "") +
+      '>Down</option><option value="left"' +
+      (p.waveDirection === "left" ? " selected" : "") +
+      '>Left</option><option value="right"' +
+      (p.waveDirection === "right" ? " selected" : "") +
+      ">Right</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Phase Offset: ' +
+      (p.phaseOffset || 0) +
+      '</label><input type="range" min="0" max="6.28" step="0.1" value="' +
+      (p.phaseOffset || 0) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','phaseOffset',+this.value);this.previousElementSibling.textContent='Phase Offset: '+this.value'\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Colour & Effects</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Text Colour</label><div class="rp-colour-row"><input type="color" value="' +
+      (p.textColor || "#cdfe00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      '\',\'textColor\',this.value)"><input type="text" value="' +
+      (p.textColor || "#cdfe00") +
+      '" style="flex:1" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','textColor',this.value)\"></div></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.dualColour ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','dualColour',this.checked)\"> Dual Colour</label></div>";
+    if (p.dualColour) {
+      html +=
+        '<div class="rp-row"><label>Colour 2</label><input type="color" value="' +
+        (p.dualColour2 || "#3b82f6") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','dualColour2',this.value)\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.glowEffect ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','glowEffect',this.checked)\"> Glow Effect</label></div>";
+    if (p.glowEffect) {
+      html +=
+        '<div class="rp-row"><label>Glow Colour</label><input type="color" value="' +
+        (p.glowColor || "#cdfe00") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','glowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Glow Size: ' +
+        (p.glowSize || 15) +
+        'px</label><input type="range" min="5" max="50" value="' +
+        (p.glowSize || 15) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','glowSize',+this.value);this.previousElementSibling.textContent='Glow Size: '+this.value+'px'\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.textShadow ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','textShadow',this.checked)\"> Text Shadow</label></div>";
+    if (p.textShadow) {
+      html +=
+        '<div class="rp-row"><label>Shadow Colour</label><input type="color" value="' +
+        (p.textShadowColor || "#000000") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','textShadowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Shadow Blur: ' +
+        (p.textShadowBlur || 4) +
+        '</label><input type="range" min="0" max="20" value="' +
+        (p.textShadowBlur || 4) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','textShadowBlur',+this.value);this.previousElementSibling.textContent='Shadow Blur: '+this.value'\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      (p.bgType === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      (p.bgType === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      (p.bgType === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if (p.bgType === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Colour</label><div class="rp-colour-row"><input type="color" value="' +
+        (p.bg || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        '\',\'bg\',this.value)"><input type="text" value="' +
+        (p.bg || "#0d0d1a") +
+        '" style="flex:1" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bg',this.value)\"></div></div>";
+    } else if (p.bgType === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Colour 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Colour 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a0d2e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        (p.bgGradientDir === "135deg" ? " selected" : "") +
+        '>135°</option><option value="90deg"' +
+        (p.bgGradientDir === "90deg" ? " selected" : "") +
+        ">90°</option></select></div>";
+    } else if (p.bgType === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImage || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImage',this.value)\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius: ' +
+      (p.borderRadius || 8) +
+      'px</label><input type="range" min="0" max="50" value="' +
+      (p.borderRadius || 8) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value);this.previousElementSibling.textContent='Border Radius: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width: ' +
+      (p.borderWidth || 0) +
+      'px</label><input type="range" min="0" max="8" value="' +
+      (p.borderWidth || 0) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value);this.previousElementSibling.textContent='Border Width: '+this.value+'px'\"></div>";
+    if (p.borderWidth > 0) {
+      html +=
+        '<div class="rp-row"><label>Border Colour</label><input type="color" value="' +
+        (p.borderColor || "#60a5fa") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','borderColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Border Style</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','borderStyle',this.value)\"><option value=\"solid\"" +
+        (p.borderStyle === "solid" ? " selected" : "") +
+        '>Solid</option><option value="dashed"' +
+        (p.borderStyle === "dashed" ? " selected" : "") +
+        ">Dashed</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Padding V: ' +
+      (p.paddingV || 24) +
+      'px</label><input type="range" min="0" max="80" value="' +
+      (p.paddingV || 24) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value);this.previousElementSibling.textContent='Padding V: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H: ' +
+      (p.paddingH || 24) +
+      'px</label><input type="range" min="0" max="80" value="' +
+      (p.paddingH || 24) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value);this.previousElementSibling.textContent='Padding H: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity: ' +
+      (p.opacity || 100) +
+      '%</label><input type="range" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value);this.previousElementSibling.textContent='Opacity: '+this.value+'%'\"></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.boxShadow ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','boxShadow',this.checked)\"> Box Shadow</label></div>";
+    if (p.boxShadow) {
+      html +=
+        '<div class="rp-row"><label>Shadow Blur: ' +
+        (p.shadowBlur || 10) +
+        '</label><input type="range" min="0" max="40" value="' +
+        (p.shadowBlur || 10) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value);this.previousElementSibling.textContent='Shadow Blur: '+this.value'\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animation</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      (p.entranceAnim === "none" ? " selected" : "") +
+      '>None</option><option value="fade"' +
+      (p.entranceAnim === "fade" ? " selected" : "") +
+      '>Fade</option><option value="slide-up"' +
+      (p.entranceAnim === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="zoom"' +
+      (p.entranceAnim === "zoom" ? " selected" : "") +
+      ">Zoom</option></select></div>";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      html +=
+        '<div class="rp-row"><label>Duration: ' +
+        (p.animDuration || 600) +
+        'ms</label><input type="range" min="200" max="2000" step="100" value="' +
+        (p.animDuration || 600) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','animDuration',+this.value);this.previousElementSibling.textContent='Duration: '+this.value+'ms'\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      (p.hoverEffect === "none" ? " selected" : "") +
+      '>None</option><option value="scale"' +
+      (p.hoverEffect === "scale" ? " selected" : "") +
+      '>Scale</option><option value="lift"' +
+      (p.hoverEffect === "lift" ? " selected" : "") +
+      ">Lift</option></select></div>";
+    html += "</div></div>";
+    return html;
+  },
+});
+
+// 2. 3D Rotating Text
+FB.widgets.register("rotatingText3d", {
+  label: "3D Rotating Text",
+  sublabel: "Perspective rotation",
+  icon: "◈",
+  iconBg: "#1a0d2e",
+  iconColor: "#a78bfa",
+  category: "veltro",
+  subCategory: "typography",
+  defaultProps: {
+    height: 300,
+    bg: "#0d0d1a",
+    text: "ROTATE",
+    fontSize: 72,
+    fontWeight: 800,
+    textColor: "#cdfe00",
+    rotationSpeed: 0.02,
+    perspective: 800,
+    rotateX: true,
+    rotateY: true,
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a0d2e",
+    bgImage: "",
+    borderRadius: 8,
+    borderWidth: 0,
+    borderColor: "#a78bfa",
+    borderStyle: "solid",
+    paddingV: 24,
+    paddingH: 24,
+    marginV: 0,
+    marginH: 0,
+    boxShadow: false,
+    shadowColor: "rgba(0,0,0,0.3)",
+    shadowBlur: 10,
+    shadowSpread: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    animDuration: 600,
+    animDelay: 0,
+    hoverEffect: "none",
+    hoverScale: 1.02,
+    hoverTransition: 300,
+    autoRotate: true,
+    mouseDriven: false,
+    depth: 200,
+    fontFamily: "Lexend",
+    letterSpacing: 0,
+    textTransform: "none",
+    glowEffect: false,
+    glowColor: "#a78bfa",
+    glowSize: 15,
+    textShadow: false,
+    textShadowColor: "rgba(0,0,0,0.5)",
+    textShadowBlur: 4,
+    textAlign: "center",
+    dualColour: false,
+    dualColour2: "#3b82f6",
+  },
+  render: function (p) {
+    var id = p._blockId || "rot3d";
+    var containerBg = "";
+    if (p.bgType === "gradient") {
+      containerBg =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a0d2e") +
+        ");";
+    } else if (p.bgType === "image" && p.bgImage) {
+      containerBg = "background:url(" + p.bgImage + ") center/cover;";
+    } else {
+      containerBg = "background:" + (p.bg || "#0d0d1a") + ";";
+    }
+    var containerBorder = "";
+    if (p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px " +
+        (p.borderStyle || "solid") +
+        " " +
+        (p.borderColor || "#a78bfa") +
+        ";";
+    }
+    var containerShadow = "";
+    if (p.boxShadow) {
+      containerShadow =
+        "box-shadow:0 " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowBlur || 10) * 2 +
+        "px " +
+        (p.shadowSpread || 0) +
+        "px " +
+        (p.shadowColor || "rgba(0,0,0,0.3)") +
+        ";";
+    }
+    var hoverClass = "";
+    var hoverStyle = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+      hoverStyle = "transition:all " + (p.hoverTransition || 300) + "ms ease;";
+    }
+    var animClass = "";
+    var animStyle = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+      animStyle =
+        "animation-duration:" +
+        (p.animDuration || 600) +
+        "ms;animation-delay:" +
+        (p.animDelay || 0) +
+        "ms;animation-fill-mode:both;";
+    }
+    var glowStyle = "";
+    if (p.glowEffect) {
+      glowStyle =
+        "filter:drop-shadow(0 0 " +
+        (p.glowSize || 15) +
+        "px " +
+        (p.glowColor || "#a78bfa") +
+        ");";
+    }
+    var textShadowStyle = "";
+    if (p.textShadow) {
+      textShadowStyle =
+        "text-shadow:" +
+        (p.textShadowBlur || 4) +
+        "px " +
+        (p.textShadowBlur || 4) +
+        "px " +
+        (p.textShadowBlur || 4) * 2 +
+        "px " +
+        (p.textShadowColor || "rgba(0,0,0,0.5)") +
+        ";";
+    }
+    var textTransformStyle = "";
+    if (p.textTransform && p.textTransform !== "none") {
+      textTransformStyle = "text-transform:" + p.textTransform + ";";
+    }
+    var rotX = p.rotateX ? "1" : "0";
+    var rotY = p.rotateY ? "1" : "0";
+    var autoRot = p.autoRotate ? "1" : "0";
+    var mouseDrv = p.mouseDriven ? "1" : "0";
+    var dualCol = p.dualColour ? "1" : "0";
+    return (
+      '<div class="veltro-rot3d-wrap' +
+      animClass +
+      hoverClass +
+      '" id="rot3d-' +
+      id +
+      '" data-rotation-speed="' +
+      (p.rotationSpeed || 0.02) +
+      '" data-perspective="' +
+      (p.perspective || 800) +
+      '" data-rotate-x="' +
+      rotX +
+      '" data-rotate-y="' +
+      rotY +
+      '" data-auto-rotate="' +
+      autoRot +
+      '" data-mouse-driven="' +
+      mouseDrv +
+      '" data-depth="' +
+      (p.depth || 200) +
+      '" data-dual-colour="' +
+      dualCol +
+      '" style="height:' +
+      (p.height || 300) +
+      "px;" +
+      containerBg +
+      containerBorder +
+      containerShadow +
+      hoverStyle +
+      animStyle +
+      "border-radius:" +
+      (p.borderRadius || 8) +
+      "px;" +
+      "padding:" +
+      (p.paddingV || 24) +
+      "px " +
+      (p.paddingH || 24) +
+      "px;" +
+      "margin:" +
+      (p.marginV || 0) +
+      "px " +
+      (p.marginH || 0) +
+      "px;" +
+      "opacity:" +
+      (p.opacity || 100) / 100 +
+      ";" +
+      "display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;perspective:" +
+      (p.perspective || 800) +
+      'px;"><div class="veltro-rot3d-text" style="font-size:' +
+      (p.fontSize || 72) +
+      "px;font-weight:" +
+      (p.fontWeight || 800) +
+      ";color:" +
+      (p.textColor || "#cdfe00") +
+      ";font-family:'" +
+      (p.fontFamily || "Lexend") +
+      "',sans-serif;transform-style:preserve-3d;user-select:none;letter-spacing:" +
+      (p.letterSpacing || 0) +
+      "px;text-align:" +
+      (p.textAlign || "center") +
+      ";" +
+      glowStyle +
+      textShadowStyle +
+      textTransformStyle +
+      '" data-rot3d-init="1">' +
+      (p.text || "ROTATE") +
+      "</div></div>"
+    );
+  },
+  editPanel: function (id, p) {
+    var html = "";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Text & 3D</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Text</label><input type="text" value="' +
+      (p.text || "ROTATE") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','text',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Height: ' +
+      (p.height || 300) +
+      'px</label><input type="range" min="100" max="600" value="' +
+      (p.height || 300) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value);this.previousElementSibling.textContent='Height: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Size: ' +
+      (p.fontSize || 72) +
+      'px</label><input type="range" min="24" max="150" value="' +
+      (p.fontSize || 72) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontSize',+this.value);this.previousElementSibling.textContent='Font Size: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Weight: ' +
+      (p.fontWeight || 800) +
+      '</label><input type="range" min="100" max="900" step="100" value="' +
+      (p.fontWeight || 800) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontWeight',+this.value);this.previousElementSibling.textContent='Font Weight: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Family</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontFamily',this.value)\"><option value=\"Lexend\"" +
+      (p.fontFamily === "Lexend" ? " selected" : "") +
+      '>Lexend</option><option value="Inter"' +
+      (p.fontFamily === "Inter" ? " selected" : "") +
+      ">Inter</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Letter Spacing: ' +
+      (p.letterSpacing || 0) +
+      'px</label><input type="range" min="-5" max="20" value="' +
+      (p.letterSpacing || 0) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','letterSpacing',+this.value);this.previousElementSibling.textContent='Letter Spacing: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Text Transform</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','textTransform',this.value)\"><option value=\"none\"" +
+      (p.textTransform === "none" ? " selected" : "") +
+      '>None</option><option value="uppercase"' +
+      (p.textTransform === "uppercase" ? " selected" : "") +
+      ">UPPERCASE</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Text Align</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','textAlign',this.value)\"><option value=\"left\"" +
+      (p.textAlign === "left" ? " selected" : "") +
+      '>Left</option><option value="center"' +
+      (p.textAlign === "center" ? " selected" : "") +
+      '>Center</option><option value="right"' +
+      (p.textAlign === "right" ? " selected" : "") +
+      ">Right</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Perspective: ' +
+      (p.perspective || 800) +
+      '</label><input type="range" min="200" max="2000" step="50" value="' +
+      (p.perspective || 800) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','perspective',+this.value);this.previousElementSibling.textContent='Perspective: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Depth (Z-axis): ' +
+      (p.depth || 200) +
+      '</label><input type="range" min="50" max="500" value="' +
+      (p.depth || 200) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','depth',+this.value);this.previousElementSibling.textContent='Depth: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Rotation Speed: ' +
+      (p.rotationSpeed || 0.02) +
+      '</label><input type="range" min="0" max="0.1" step="0.005" value="' +
+      (p.rotationSpeed || 0.02) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','rotationSpeed',+this.value);this.previousElementSibling.textContent='Rotation Speed: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.rotateX ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','rotateX',this.checked)\"> Rotate X</label></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.rotateY ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','rotateY',this.checked)\"> Rotate Y</label></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.autoRotate ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','autoRotate',this.checked)\"> Auto Rotate</label></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.mouseDriven ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','mouseDriven',this.checked)\"> Mouse-Driven</label></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Colour & Effects</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Text Colour</label><div class="rp-colour-row"><input type="color" value="' +
+      (p.textColor || "#cdfe00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      '\',\'textColor\',this.value)"><input type="text" value="' +
+      (p.textColor || "#cdfe00") +
+      '" style="flex:1" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','textColor',this.value)\"></div></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.dualColour ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','dualColour',this.checked)\"> Dual Colour</label></div>";
+    if (p.dualColour) {
+      html +=
+        '<div class="rp-row"><label>Colour 2</label><input type="color" value="' +
+        (p.dualColour2 || "#3b82f6") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','dualColour2',this.value)\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.glowEffect ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','glowEffect',this.checked)\"> Glow Effect</label></div>";
+    if (p.glowEffect) {
+      html +=
+        '<div class="rp-row"><label>Glow Colour</label><input type="color" value="' +
+        (p.glowColor || "#a78bfa") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','glowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Glow Size: ' +
+        (p.glowSize || 15) +
+        'px</label><input type="range" min="5" max="50" value="' +
+        (p.glowSize || 15) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','glowSize',+this.value);this.previousElementSibling.textContent='Glow Size: '+this.value+'px'\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.textShadow ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','textShadow',this.checked)\"> Text Shadow</label></div>";
+    if (p.textShadow) {
+      html +=
+        '<div class="rp-row"><label>Shadow Colour</label><input type="color" value="' +
+        (p.textShadowColor || "#000000") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','textShadowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Shadow Blur: ' +
+        (p.textShadowBlur || 4) +
+        '</label><input type="range" min="0" max="20" value="' +
+        (p.textShadowBlur || 4) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','textShadowBlur',+this.value);this.previousElementSibling.textContent='Shadow Blur: '+this.value'\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      (p.bgType === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      (p.bgType === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      (p.bgType === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if (p.bgType === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Colour</label><div class="rp-colour-row"><input type="color" value="' +
+        (p.bg || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        '\',\'bg\',this.value)"><input type="text" value="' +
+        (p.bg || "#0d0d1a") +
+        '" style="flex:1" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bg',this.value)\"></div></div>";
+    } else if (p.bgType === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Colour 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Colour 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a0d2e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        (p.bgGradientDir === "135deg" ? " selected" : "") +
+        '>135°</option><option value="90deg"' +
+        (p.bgGradientDir === "90deg" ? " selected" : "") +
+        ">90°</option></select></div>";
+    } else if (p.bgType === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImage || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImage',this.value)\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius: ' +
+      (p.borderRadius || 8) +
+      'px</label><input type="range" min="0" max="50" value="' +
+      (p.borderRadius || 8) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value);this.previousElementSibling.textContent='Border Radius: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width: ' +
+      (p.borderWidth || 0) +
+      'px</label><input type="range" min="0" max="8" value="' +
+      (p.borderWidth || 0) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value);this.previousElementSibling.textContent='Border Width: '+this.value+'px'\"></div>";
+    if (p.borderWidth > 0) {
+      html +=
+        '<div class="rp-row"><label>Border Colour</label><input type="color" value="' +
+        (p.borderColor || "#a78bfa") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','borderColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Border Style</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','borderStyle',this.value)\"><option value=\"solid\"" +
+        (p.borderStyle === "solid" ? " selected" : "") +
+        '>Solid</option><option value="dashed"' +
+        (p.borderStyle === "dashed" ? " selected" : "") +
+        ">Dashed</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Padding V: ' +
+      (p.paddingV || 24) +
+      'px</label><input type="range" min="0" max="80" value="' +
+      (p.paddingV || 24) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value);this.previousElementSibling.textContent='Padding V: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H: ' +
+      (p.paddingH || 24) +
+      'px</label><input type="range" min="0" max="80" value="' +
+      (p.paddingH || 24) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value);this.previousElementSibling.textContent='Padding H: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity: ' +
+      (p.opacity || 100) +
+      '%</label><input type="range" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value);this.previousElementSibling.textContent='Opacity: '+this.value+'%'\"></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.boxShadow ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','boxShadow',this.checked)\"> Box Shadow</label></div>";
+    if (p.boxShadow) {
+      html +=
+        '<div class="rp-row"><label>Shadow Blur: ' +
+        (p.shadowBlur || 10) +
+        '</label><input type="range" min="0" max="40" value="' +
+        (p.shadowBlur || 10) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value);this.previousElementSibling.textContent='Shadow Blur: '+this.value'\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animation</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      (p.entranceAnim === "none" ? " selected" : "") +
+      '>None</option><option value="fade"' +
+      (p.entranceAnim === "fade" ? " selected" : "") +
+      '>Fade</option><option value="slide-up"' +
+      (p.entranceAnim === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="zoom"' +
+      (p.entranceAnim === "zoom" ? " selected" : "") +
+      ">Zoom</option></select></div>";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      html +=
+        '<div class="rp-row"><label>Duration: ' +
+        (p.animDuration || 600) +
+        'ms</label><input type="range" min="200" max="2000" step="100" value="' +
+        (p.animDuration || 600) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','animDuration',+this.value);this.previousElementSibling.textContent='Duration: '+this.value+'ms'\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      (p.hoverEffect === "none" ? " selected" : "") +
+      '>None</option><option value="scale"' +
+      (p.hoverEffect === "scale" ? " selected" : "") +
+      '>Scale</option><option value="lift"' +
+      (p.hoverEffect === "lift" ? " selected" : "") +
+      ">Lift</option></select></div>";
+    html += "</div></div>";
+    return html;
+  },
+});
+
+// 3. Morphing Text
+FB.widgets.register("morphingText", {
+  label: "Morphing Text",
+  sublabel: "Shape-shifting words",
+  icon: "⟳",
+  iconBg: "#0d1a1a",
+  iconColor: "#34d399",
+  category: "veltro",
+  subCategory: "typography",
+  defaultProps: {
+    height: 300,
+    bg: "#0d0d1a",
+    words: "Create,Design,Build,Launch",
+    fontSize: 72,
+    fontWeight: 800,
+    textColor: "#cdfe00",
+    morphSpeed: 2000,
+    fadeSpeed: 500,
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a0d2e",
+    bgImage: "",
+    borderRadius: 8,
+    borderWidth: 0,
+    borderColor: "#34d399",
+    borderStyle: "solid",
+    paddingV: 24,
+    paddingH: 24,
+    marginV: 0,
+    marginH: 0,
+    boxShadow: false,
+    shadowColor: "rgba(0,0,0,0.3)",
+    shadowBlur: 10,
+    shadowSpread: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    animDuration: 600,
+    animDelay: 0,
+    hoverEffect: "none",
+    hoverScale: 1.02,
+    hoverTransition: 300,
+    morphDirection: "forward",
+    highlightCurrent: true,
+    highlightColor: "#cdfe00",
+    fontFamily: "Lexend",
+    letterSpacing: 0,
+    textTransform: "none",
+    glowEffect: false,
+    glowColor: "#34d399",
+    glowSize: 15,
+    textShadow: false,
+    textShadowColor: "rgba(0,0,0,0.5)",
+    textShadowBlur: 4,
+    dualColour: false,
+    dualColour2: "#3b82f6",
+  },
+  render: function (p) {
+    var id = p._blockId || "morph";
+    var words = (p.words || "Create,Design,Build,Launch").split(",");
+    var wordsHtml = words
+      .map(function (w, i) {
+        return (
+          '<span class="veltro-morph-word" data-index="' +
+          i +
+          '" style="position:absolute;opacity:0;transition:opacity ' +
+          (p.fadeSpeed || 500) +
+          'ms ease-in-out">' +
+          w.trim() +
+          "</span>"
+        );
+      })
+      .join("");
+    var containerBg = "";
+    if (p.bgType === "gradient") {
+      containerBg =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a0d2e") +
+        ");";
+    } else if (p.bgType === "image" && p.bgImage) {
+      containerBg = "background:url(" + p.bgImage + ") center/cover;";
+    } else {
+      containerBg = "background:" + (p.bg || "#0d0d1a") + ";";
+    }
+    var containerBorder = "";
+    if (p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px " +
+        (p.borderStyle || "solid") +
+        " " +
+        (p.borderColor || "#34d399") +
+        ";";
+    }
+    var containerShadow = "";
+    if (p.boxShadow) {
+      containerShadow =
+        "box-shadow:0 " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowBlur || 10) * 2 +
+        "px " +
+        (p.shadowSpread || 0) +
+        "px " +
+        (p.shadowColor || "rgba(0,0,0,0.3)") +
+        ";";
+    }
+    var hoverClass = "";
+    var hoverStyle = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+      hoverStyle = "transition:all " + (p.hoverTransition || 300) + "ms ease;";
+    }
+    var animClass = "";
+    var animStyle = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+      animStyle =
+        "animation-duration:" +
+        (p.animDuration || 600) +
+        "ms;animation-delay:" +
+        (p.animDelay || 0) +
+        "ms;animation-fill-mode:both;";
+    }
+    var glowStyle = "";
+    if (p.glowEffect) {
+      glowStyle =
+        "filter:drop-shadow(0 0 " +
+        (p.glowSize || 15) +
+        "px " +
+        (p.glowColor || "#34d399") +
+        ");";
+    }
+    var textShadowStyle = "";
+    if (p.textShadow) {
+      textShadowStyle =
+        "text-shadow:" +
+        (p.textShadowBlur || 4) +
+        "px " +
+        (p.textShadowBlur || 4) +
+        "px " +
+        (p.textShadowBlur || 4) * 2 +
+        "px " +
+        (p.textShadowColor || "rgba(0,0,0,0.5)") +
+        ";";
+    }
+    var textTransformStyle = "";
+    if (p.textTransform && p.textTransform !== "none") {
+      textTransformStyle = "text-transform:" + p.textTransform + ";";
+    }
+    return (
+      '<div class="veltro-morph-wrap' +
+      animClass +
+      hoverClass +
+      '" id="morph-' +
+      id +
+      '" data-morph-speed="' +
+      (p.morphSpeed || 2000) +
+      '" data-fade-speed="' +
+      (p.fadeSpeed || 500) +
+      '" data-words="' +
+      (p.words || "Create,Design,Build,Launch") +
+      '" data-morph-direction="' +
+      (p.morphDirection || "forward") +
+      '" data-highlight="' +
+      (p.highlightCurrent ? "1" : "0") +
+      '" data-highlight-color="' +
+      (p.highlightColor || "#cdfe00") +
+      '" data-dual-colour="' +
+      (p.dualColour ? "1" : "0") +
+      '" style="height:' +
+      (p.height || 300) +
+      "px;" +
+      containerBg +
+      containerBorder +
+      containerShadow +
+      hoverStyle +
+      animStyle +
+      "border-radius:" +
+      (p.borderRadius || 8) +
+      "px;" +
+      "padding:" +
+      (p.paddingV || 24) +
+      "px " +
+      (p.paddingH || 24) +
+      "px;" +
+      "margin:" +
+      (p.marginV || 0) +
+      "px " +
+      (p.marginH || 0) +
+      "px;" +
+      "opacity:" +
+      (p.opacity || 100) / 100 +
+      ";" +
+      'display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;"><div class="veltro-morph-content" style="font-size:' +
+      (p.fontSize || 72) +
+      "px;font-weight:" +
+      (p.fontWeight || 800) +
+      ";color:" +
+      (p.textColor || "#cdfe00") +
+      ";font-family:'" +
+      (p.fontFamily || "Lexend") +
+      "',sans-serif;position:relative;width:100%;text-align:center;letter-spacing:" +
+      (p.letterSpacing || 0) +
+      "px;" +
+      glowStyle +
+      textShadowStyle +
+      textTransformStyle +
+      '" data-morph-init="1">' +
+      wordsHtml +
+      "</div></div>"
+    );
+  },
+  editPanel: function (id, p) {
+    var html = "";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Text & Morph</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Words (comma-separated)</label><textarea rows="2" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','words',this.value)\">" +
+      (p.words || "Create,Design,Build,Launch") +
+      "</textarea></div>";
+    html +=
+      '<div class="rp-row"><label>Height: ' +
+      (p.height || 300) +
+      'px</label><input type="range" min="100" max="600" value="' +
+      (p.height || 300) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value);this.previousElementSibling.textContent='Height: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Size: ' +
+      (p.fontSize || 72) +
+      'px</label><input type="range" min="24" max="150" value="' +
+      (p.fontSize || 72) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontSize',+this.value);this.previousElementSibling.textContent='Font Size: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Weight: ' +
+      (p.fontWeight || 800) +
+      '</label><input type="range" min="100" max="900" step="100" value="' +
+      (p.fontWeight || 800) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontWeight',+this.value);this.previousElementSibling.textContent='Font Weight: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Family</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontFamily',this.value)\"><option value=\"Lexend\"" +
+      (p.fontFamily === "Lexend" ? " selected" : "") +
+      '>Lexend</option><option value="Inter"' +
+      (p.fontFamily === "Inter" ? " selected" : "") +
+      ">Inter</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Letter Spacing: ' +
+      (p.letterSpacing || 0) +
+      'px</label><input type="range" min="-5" max="20" value="' +
+      (p.letterSpacing || 0) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','letterSpacing',+this.value);this.previousElementSibling.textContent='Letter Spacing: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Text Transform</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','textTransform',this.value)\"><option value=\"none\"" +
+      (p.textTransform === "none" ? " selected" : "") +
+      '>None</option><option value="uppercase"' +
+      (p.textTransform === "uppercase" ? " selected" : "") +
+      ">UPPERCASE</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Morph Speed: ' +
+      (p.morphSpeed || 2000) +
+      'ms</label><input type="range" min="500" max="5000" step="100" value="' +
+      (p.morphSpeed || 2000) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','morphSpeed',+this.value);this.previousElementSibling.textContent='Morph Speed: '+this.value+'ms'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Fade Speed: ' +
+      (p.fadeSpeed || 500) +
+      'ms</label><input type="range" min="100" max="2000" step="50" value="' +
+      (p.fadeSpeed || 500) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fadeSpeed',+this.value);this.previousElementSibling.textContent='Fade Speed: '+this.value+'ms'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Morph Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','morphDirection',this.value)\"><option value=\"forward\"" +
+      (p.morphDirection === "forward" ? " selected" : "") +
+      '>Forward</option><option value="reverse"' +
+      (p.morphDirection === "reverse" ? " selected" : "") +
+      '>Reverse</option><option value="random"' +
+      (p.morphDirection === "random" ? " selected" : "") +
+      ">Random</option></select></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.highlightCurrent ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','highlightCurrent',this.checked)\"> Highlight Current Word</label></div>";
+    if (p.highlightCurrent) {
+      html +=
+        '<div class="rp-row"><label>Highlight Colour</label><input type="color" value="' +
+        (p.highlightColor || "#cdfe00") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','highlightColor',this.value)\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Colour & Effects</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Text Colour</label><div class="rp-colour-row"><input type="color" value="' +
+      (p.textColor || "#cdfe00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      '\',\'textColor\',this.value)"><input type="text" value="' +
+      (p.textColor || "#cdfe00") +
+      '" style="flex:1" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','textColor',this.value)\"></div></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.dualColour ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','dualColour',this.checked)\"> Dual Colour</label></div>";
+    if (p.dualColour) {
+      html +=
+        '<div class="rp-row"><label>Colour 2</label><input type="color" value="' +
+        (p.dualColour2 || "#3b82f6") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','dualColour2',this.value)\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.glowEffect ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','glowEffect',this.checked)\"> Glow Effect</label></div>";
+    if (p.glowEffect) {
+      html +=
+        '<div class="rp-row"><label>Glow Colour</label><input type="color" value="' +
+        (p.glowColor || "#34d399") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','glowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Glow Size: ' +
+        (p.glowSize || 15) +
+        'px</label><input type="range" min="5" max="50" value="' +
+        (p.glowSize || 15) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','glowSize',+this.value);this.previousElementSibling.textContent='Glow Size: '+this.value+'px'\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.textShadow ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','textShadow',this.checked)\"> Text Shadow</label></div>";
+    if (p.textShadow) {
+      html +=
+        '<div class="rp-row"><label>Shadow Colour</label><input type="color" value="' +
+        (p.textShadowColor || "#000000") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','textShadowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Shadow Blur: ' +
+        (p.textShadowBlur || 4) +
+        '</label><input type="range" min="0" max="20" value="' +
+        (p.textShadowBlur || 4) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','textShadowBlur',+this.value);this.previousElementSibling.textContent='Shadow Blur: '+this.value'\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      (p.bgType === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      (p.bgType === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      (p.bgType === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if (p.bgType === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Colour</label><div class="rp-colour-row"><input type="color" value="' +
+        (p.bg || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        '\',\'bg\',this.value)"><input type="text" value="' +
+        (p.bg || "#0d0d1a") +
+        '" style="flex:1" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bg',this.value)\"></div></div>";
+    } else if (p.bgType === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Colour 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Colour 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a0d2e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        (p.bgGradientDir === "135deg" ? " selected" : "") +
+        '>135°</option><option value="90deg"' +
+        (p.bgGradientDir === "90deg" ? " selected" : "") +
+        ">90°</option></select></div>";
+    } else if (p.bgType === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImage || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImage',this.value)\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius: ' +
+      (p.borderRadius || 8) +
+      'px</label><input type="range" min="0" max="50" value="' +
+      (p.borderRadius || 8) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value);this.previousElementSibling.textContent='Border Radius: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width: ' +
+      (p.borderWidth || 0) +
+      'px</label><input type="range" min="0" max="8" value="' +
+      (p.borderWidth || 0) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value);this.previousElementSibling.textContent='Border Width: '+this.value+'px'\"></div>";
+    if (p.borderWidth > 0) {
+      html +=
+        '<div class="rp-row"><label>Border Colour</label><input type="color" value="' +
+        (p.borderColor || "#34d399") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','borderColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Border Style</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','borderStyle',this.value)\"><option value=\"solid\"" +
+        (p.borderStyle === "solid" ? " selected" : "") +
+        '>Solid</option><option value="dashed"' +
+        (p.borderStyle === "dashed" ? " selected" : "") +
+        ">Dashed</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Padding V: ' +
+      (p.paddingV || 24) +
+      'px</label><input type="range" min="0" max="80" value="' +
+      (p.paddingV || 24) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value);this.previousElementSibling.textContent='Padding V: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H: ' +
+      (p.paddingH || 24) +
+      'px</label><input type="range" min="0" max="80" value="' +
+      (p.paddingH || 24) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value);this.previousElementSibling.textContent='Padding H: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity: ' +
+      (p.opacity || 100) +
+      '%</label><input type="range" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value);this.previousElementSibling.textContent='Opacity: '+this.value+'%'\"></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.boxShadow ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','boxShadow',this.checked)\"> Box Shadow</label></div>";
+    if (p.boxShadow) {
+      html +=
+        '<div class="rp-row"><label>Shadow Blur: ' +
+        (p.shadowBlur || 10) +
+        '</label><input type="range" min="0" max="40" value="' +
+        (p.shadowBlur || 10) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value);this.previousElementSibling.textContent='Shadow Blur: '+this.value'\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animation</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      (p.entranceAnim === "none" ? " selected" : "") +
+      '>None</option><option value="fade"' +
+      (p.entranceAnim === "fade" ? " selected" : "") +
+      '>Fade</option><option value="slide-up"' +
+      (p.entranceAnim === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="zoom"' +
+      (p.entranceAnim === "zoom" ? " selected" : "") +
+      ">Zoom</option></select></div>";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      html +=
+        '<div class="rp-row"><label>Duration: ' +
+        (p.animDuration || 600) +
+        'ms</label><input type="range" min="200" max="2000" step="100" value="' +
+        (p.animDuration || 600) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','animDuration',+this.value);this.previousElementSibling.textContent='Duration: '+this.value+'ms'\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      (p.hoverEffect === "none" ? " selected" : "") +
+      '>None</option><option value="scale"' +
+      (p.hoverEffect === "scale" ? " selected" : "") +
+      '>Scale</option><option value="lift"' +
+      (p.hoverEffect === "lift" ? " selected" : "") +
+      ">Lift</option></select></div>";
+    html += "</div></div>";
+    return html;
+  },
+});
+
+// 4. Kinetic Scramble
+FB.widgets.register("kineticScramble", {
+  label: "Kinetic Scramble",
+  sublabel: "Digital cipher effect",
+  icon: "⌘",
+  iconBg: "#1a0d1a",
+  iconColor: "#f472b6",
+  category: "veltro",
+  subCategory: "typography",
+  defaultProps: {
+    height: 300,
+    bg: "#0d0d1a",
+    text: "SCRAMBLE",
+    fontSize: 72,
+    fontWeight: 800,
+    textColor: "#cdfe00",
+    scrambleSpeed: 100,
+    revealSpeed: 2000,
+    charset: "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%",
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a0d2e",
+    bgImage: "",
+    borderRadius: 8,
+    borderWidth: 0,
+    borderColor: "#f472b6",
+    borderStyle: "solid",
+    paddingV: 24,
+    paddingH: 24,
+    marginV: 0,
+    marginH: 0,
+    boxShadow: false,
+    shadowColor: "rgba(0,0,0,0.3)",
+    shadowBlur: 10,
+    shadowSpread: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    animDuration: 600,
+    animDelay: 0,
+    hoverEffect: "none",
+    hoverScale: 1.02,
+    hoverTransition: 300,
+    autoScramble: false,
+    autoScrambleInterval: 3000,
+    revealTrigger: "hover",
+    fontFamily: "monospace",
+    letterSpacing: 4,
+    textTransform: "none",
+    glowEffect: false,
+    glowColor: "#f472b6",
+    glowSize: 15,
+    textShadow: false,
+    textShadowColor: "rgba(0,0,0,0.5)",
+    textShadowBlur: 4,
+    textAlign: "center",
+    cipherStyle: "random",
+  },
+  render: function (p) {
+    var id = p._blockId || "scramble";
+    var containerBg = "";
+    if (p.bgType === "gradient") {
+      containerBg =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a0d2e") +
+        ");";
+    } else if (p.bgType === "image" && p.bgImage) {
+      containerBg = "background:url(" + p.bgImage + ") center/cover;";
+    } else {
+      containerBg = "background:" + (p.bg || "#0d0d1a") + ";";
+    }
+    var containerBorder = "";
+    if (p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px " +
+        (p.borderStyle || "solid") +
+        " " +
+        (p.borderColor || "#f472b6") +
+        ";";
+    }
+    var containerShadow = "";
+    if (p.boxShadow) {
+      containerShadow =
+        "box-shadow:0 " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowBlur || 10) * 2 +
+        "px " +
+        (p.shadowSpread || 0) +
+        "px " +
+        (p.shadowColor || "rgba(0,0,0,0.3)") +
+        ";";
+    }
+    var hoverClass = "";
+    var hoverStyle = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+      hoverStyle = "transition:all " + (p.hoverTransition || 300) + "ms ease;";
+    }
+    var animClass = "";
+    var animStyle = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+      animStyle =
+        "animation-duration:" +
+        (p.animDuration || 600) +
+        "ms;animation-delay:" +
+        (p.animDelay || 0) +
+        "ms;animation-fill-mode:both;";
+    }
+    var glowStyle = "";
+    if (p.glowEffect) {
+      glowStyle =
+        "filter:drop-shadow(0 0 " +
+        (p.glowSize || 15) +
+        "px " +
+        (p.glowColor || "#f472b6") +
+        ");";
+    }
+    var textShadowStyle = "";
+    if (p.textShadow) {
+      textShadowStyle =
+        "text-shadow:" +
+        (p.textShadowBlur || 4) +
+        "px " +
+        (p.textShadowBlur || 4) +
+        "px " +
+        (p.textShadowBlur || 4) * 2 +
+        "px " +
+        (p.textShadowColor || "rgba(0,0,0,0.5)") +
+        ";";
+    }
+    var textTransformStyle = "";
+    if (p.textTransform && p.textTransform !== "none") {
+      textTransformStyle = "text-transform:" + p.textTransform + ";";
+    }
+    return (
+      '<div class="veltro-scramble-wrap' +
+      animClass +
+      hoverClass +
+      '" id="scramble-' +
+      id +
+      '" data-scramble-speed="' +
+      (p.scrambleSpeed || 100) +
+      '" data-reveal-speed="' +
+      (p.revealSpeed || 2000) +
+      '" data-charset="' +
+      (p.charset || "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%") +
+      '" data-text="' +
+      (p.text || "SCRAMBLE") +
+      '" data-auto-scramble="' +
+      (p.autoScramble ? "1" : "0") +
+      '" data-auto-interval="' +
+      (p.autoScrambleInterval || 3000) +
+      '" data-reveal-trigger="' +
+      (p.revealTrigger || "hover") +
+      '" data-cipher-style="' +
+      (p.cipherStyle || "random") +
+      '" style="height:' +
+      (p.height || 300) +
+      "px;" +
+      containerBg +
+      containerBorder +
+      containerShadow +
+      hoverStyle +
+      animStyle +
+      "border-radius:" +
+      (p.borderRadius || 8) +
+      "px;" +
+      "padding:" +
+      (p.paddingV || 24) +
+      "px " +
+      (p.paddingH || 24) +
+      "px;" +
+      "margin:" +
+      (p.marginV || 0) +
+      "px " +
+      (p.marginH || 0) +
+      "px;" +
+      "opacity:" +
+      (p.opacity || 100) / 100 +
+      ";" +
+      'display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;"><div class="veltro-scramble-text" style="font-size:' +
+      (p.fontSize || 72) +
+      "px;font-weight:" +
+      (p.fontWeight || 800) +
+      ";color:" +
+      (p.textColor || "#cdfe00") +
+      ";font-family:'" +
+      (p.fontFamily || "monospace") +
+      "',sans-serif;user-select:none;letter-spacing:" +
+      (p.letterSpacing || 4) +
+      "px;text-align:" +
+      (p.textAlign || "center") +
+      ";" +
+      glowStyle +
+      textShadowStyle +
+      textTransformStyle +
+      '" data-scramble-init="1">' +
+      (p.text || "SCRAMBLE") +
+      "</div></div>"
+    );
+  },
+  editPanel: function (id, p) {
+    var html = "";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Text & Scramble</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Text</label><input type="text" value="' +
+      (p.text || "SCRAMBLE") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','text',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Height: ' +
+      (p.height || 300) +
+      'px</label><input type="range" min="100" max="600" value="' +
+      (p.height || 300) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value);this.previousElementSibling.textContent='Height: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Size: ' +
+      (p.fontSize || 72) +
+      'px</label><input type="range" min="24" max="150" value="' +
+      (p.fontSize || 72) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontSize',+this.value);this.previousElementSibling.textContent='Font Size: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Weight: ' +
+      (p.fontWeight || 800) +
+      '</label><input type="range" min="100" max="900" step="100" value="' +
+      (p.fontWeight || 800) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontWeight',+this.value);this.previousElementSibling.textContent='Font Weight: '+this.value'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Font Family</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontFamily',this.value)\"><option value=\"monospace\"" +
+      (p.fontFamily === "monospace" ? " selected" : "") +
+      '>Monospace</option><option value="Inter"' +
+      (p.fontFamily === "Inter" ? " selected" : "") +
+      ">Inter</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Letter Spacing: ' +
+      (p.letterSpacing || 4) +
+      'px</label><input type="range" min="-5" max="20" value="' +
+      (p.letterSpacing || 4) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','letterSpacing',+this.value);this.previousElementSibling.textContent='Letter Spacing: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Text Align</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','textAlign',this.value)\"><option value=\"left\"" +
+      (p.textAlign === "left" ? " selected" : "") +
+      '>Left</option><option value="center"' +
+      (p.textAlign === "center" ? " selected" : "") +
+      '>Center</option><option value="right"' +
+      (p.textAlign === "right" ? " selected" : "") +
+      ">Right</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Text Transform</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','textTransform',this.value)\"><option value=\"none\"" +
+      (p.textTransform === "none" ? " selected" : "") +
+      '>None</option><option value="uppercase"' +
+      (p.textTransform === "uppercase" ? " selected" : "") +
+      ">UPPERCASE</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Scramble Speed: ' +
+      (p.scrambleSpeed || 100) +
+      'ms</label><input type="range" min="20" max="300" value="' +
+      (p.scrambleSpeed || 100) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','scrambleSpeed',+this.value);this.previousElementSibling.textContent='Scramble Speed: '+this.value+'ms'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Reveal Speed: ' +
+      (p.revealSpeed || 2000) +
+      'ms</label><input type="range" min="500" max="5000" step="100" value="' +
+      (p.revealSpeed || 2000) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','revealSpeed',+this.value);this.previousElementSibling.textContent='Reveal Speed: '+this.value+'ms'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Reveal Trigger</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','revealTrigger',this.value)\"><option value=\"hover\"" +
+      (p.revealTrigger === "hover" ? " selected" : "") +
+      '>Hover</option><option value="click"' +
+      (p.revealTrigger === "click" ? " selected" : "") +
+      '>Click</option><option value="scroll"' +
+      (p.revealTrigger === "scroll" ? " selected" : "") +
+      ">Scroll</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Cipher Style</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','cipherStyle',this.value)\"><option value=\"random\"" +
+      (p.cipherStyle === "random" ? " selected" : "") +
+      '>Random</option><option value="matrix"' +
+      (p.cipherStyle === "matrix" ? " selected" : "") +
+      '>Matrix</option><option value="binary"' +
+      (p.cipherStyle === "binary" ? " selected" : "") +
+      ">Binary</option></select></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.autoScramble ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','autoScramble',this.checked)\"> Auto Re-scramble</label></div>";
+    if (p.autoScramble) {
+      html +=
+        '<div class="rp-row"><label>Re-scramble Interval: ' +
+        (p.autoScrambleInterval || 3000) +
+        'ms</label><input type="range" min="1000" max="10000" step="500" value="' +
+        (p.autoScrambleInterval || 3000) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','autoScrambleInterval',+this.value);this.previousElementSibling.textContent='Re-scramble Interval: '+this.value+'ms'\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Charset</label><input type="text" value="' +
+      (p.charset || "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','charset',this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Colour & Effects</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Text Colour</label><div class="rp-colour-row"><input type="color" value="' +
+      (p.textColor || "#cdfe00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      '\',\'textColor\',this.value)"><input type="text" value="' +
+      (p.textColor || "#cdfe00") +
+      '" style="flex:1" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','textColor',this.value)\"></div></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.glowEffect ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','glowEffect',this.checked)\"> Glow Effect</label></div>";
+    if (p.glowEffect) {
+      html +=
+        '<div class="rp-row"><label>Glow Colour</label><input type="color" value="' +
+        (p.glowColor || "#f472b6") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','glowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Glow Size: ' +
+        (p.glowSize || 15) +
+        'px</label><input type="range" min="5" max="50" value="' +
+        (p.glowSize || 15) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','glowSize',+this.value);this.previousElementSibling.textContent='Glow Size: '+this.value+'px'\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.textShadow ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','textShadow',this.checked)\"> Text Shadow</label></div>";
+    if (p.textShadow) {
+      html +=
+        '<div class="rp-row"><label>Shadow Colour</label><input type="color" value="' +
+        (p.textShadowColor || "#000000") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','textShadowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Shadow Blur: ' +
+        (p.textShadowBlur || 4) +
+        '</label><input type="range" min="0" max="20" value="' +
+        (p.textShadowBlur || 4) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','textShadowBlur',+this.value);this.previousElementSibling.textContent='Shadow Blur: '+this.value'\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      (p.bgType === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      (p.bgType === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      (p.bgType === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if (p.bgType === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Colour</label><div class="rp-colour-row"><input type="color" value="' +
+        (p.bg || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        '\',\'bg\',this.value)"><input type="text" value="' +
+        (p.bg || "#0d0d1a") +
+        '" style="flex:1" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bg',this.value)\"></div></div>";
+    } else if (p.bgType === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Colour 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Colour 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a0d2e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        (p.bgGradientDir === "135deg" ? " selected" : "") +
+        '>135°</option><option value="90deg"' +
+        (p.bgGradientDir === "90deg" ? " selected" : "") +
+        ">90°</option></select></div>";
+    } else if (p.bgType === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImage || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImage',this.value)\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius: ' +
+      (p.borderRadius || 8) +
+      'px</label><input type="range" min="0" max="50" value="' +
+      (p.borderRadius || 8) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value);this.previousElementSibling.textContent='Border Radius: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width: ' +
+      (p.borderWidth || 0) +
+      'px</label><input type="range" min="0" max="8" value="' +
+      (p.borderWidth || 0) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value);this.previousElementSibling.textContent='Border Width: '+this.value+'px'\"></div>";
+    if (p.borderWidth > 0) {
+      html +=
+        '<div class="rp-row"><label>Border Colour</label><input type="color" value="' +
+        (p.borderColor || "#f472b6") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','borderColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Border Style</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','borderStyle',this.value)\"><option value=\"solid\"" +
+        (p.borderStyle === "solid" ? " selected" : "") +
+        '>Solid</option><option value="dashed"' +
+        (p.borderStyle === "dashed" ? " selected" : "") +
+        ">Dashed</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Padding V: ' +
+      (p.paddingV || 24) +
+      'px</label><input type="range" min="0" max="80" value="' +
+      (p.paddingV || 24) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value);this.previousElementSibling.textContent='Padding V: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H: ' +
+      (p.paddingH || 24) +
+      'px</label><input type="range" min="0" max="80" value="' +
+      (p.paddingH || 24) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value);this.previousElementSibling.textContent='Padding H: '+this.value+'px'\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity: ' +
+      (p.opacity || 100) +
+      '%</label><input type="range" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value);this.previousElementSibling.textContent='Opacity: '+this.value+'%'\"></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.boxShadow ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','boxShadow',this.checked)\"> Box Shadow</label></div>";
+    if (p.boxShadow) {
+      html +=
+        '<div class="rp-row"><label>Shadow Blur: ' +
+        (p.shadowBlur || 10) +
+        '</label><input type="range" min="0" max="40" value="' +
+        (p.shadowBlur || 10) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value);this.previousElementSibling.textContent='Shadow Blur: '+this.value'\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animation</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      (p.entranceAnim === "none" ? " selected" : "") +
+      '>None</option><option value="fade"' +
+      (p.entranceAnim === "fade" ? " selected" : "") +
+      '>Fade</option><option value="slide-up"' +
+      (p.entranceAnim === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="zoom"' +
+      (p.entranceAnim === "zoom" ? " selected" : "") +
+      ">Zoom</option></select></div>";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      html +=
+        '<div class="rp-row"><label>Duration: ' +
+        (p.animDuration || 600) +
+        'ms</label><input type="range" min="200" max="2000" step="100" value="' +
+        (p.animDuration || 600) +
+        '" oninput="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','animDuration',+this.value);this.previousElementSibling.textContent='Duration: '+this.value+'ms'\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      (p.hoverEffect === "none" ? " selected" : "") +
+      '>None</option><option value="scale"' +
+      (p.hoverEffect === "scale" ? " selected" : "") +
+      '>Scale</option><option value="lift"' +
+      (p.hoverEffect === "lift" ? " selected" : "") +
+      ">Lift</option></select></div>";
+    html += "</div></div>";
+    return html;
+  },
+});
+
+// ── VELTRO ENGINE BATCH 3: PHYSICS (7 NEW WIDGETS) ──
+// 1. Gravity Wells
+FB.widgets.register("gravityWells", {
+  label: "Gravity Wells",
+  sublabel: "Interactive gravity points",
+  icon: "◉",
+  iconBg: "#0d1a0d",
+  iconColor: "#34d399",
+  category: "veltro",
+  subCategory: "physics",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    particleCount: 100,
+    wellStrength: 0.5,
+    particleColor: "#cdfe00",
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a1a3e",
+    bgImageUrl: "",
+    bgImageOpacity: 30,
+    bgImageSize: "cover",
+    borderRadius: 4,
+    borderWidth: 0,
+    borderColor: "#ffffff",
+    boxShadow: "none",
+    shadowColor: "#000000",
+    shadowBlur: 10,
+    shadowOffsetX: 0,
+    shadowOffsetY: 4,
+    paddingV: 0,
+    paddingH: 0,
+    marginV: 0,
+    marginH: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    hoverEffect: "none",
+    hoverTransition: 300,
+    animDuration: 600,
+    wellCount: 3,
+    wellRadius: 20,
+    particleSize: 2,
+    particleTrail: true,
+    wellMode: "attract",
+    particleRandomColor: false,
+    wellGlow: true,
+    glowColor: "#34d399",
+  },
+  render: function (p) {
+    var id = p._blockId || "gravWell";
+    var bgType = p.bgType || "solid";
+    var bgStyle = "";
+    if (bgType === "gradient") {
+      bgStyle =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        ");";
+    } else if (bgType === "image" && p.bgImageUrl) {
+      bgStyle =
+        "background:url('" +
+        p.bgImageUrl +
+        "') center/" +
+        (p.bgImageSize || "cover") +
+        " no-repeat;background-color:" +
+        (p.bg || "#0d0d1a") +
+        ";";
+    } else {
+      bgStyle = "background:" + (p.bg || "#0d0d1a") + ";";
+    }
+    var containerBorder = "";
+    if (p.borderWidth && p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px solid " +
+        (p.borderColor || "#ffffff") +
+        ";";
+    }
+    var containerShadow = "";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      containerShadow =
+        "box-shadow:" +
+        (p.shadowOffsetX || 0) +
+        "px " +
+        (p.shadowOffsetY || 4) +
+        "px " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowColor || "#000000") +
+        ";";
+    }
+    var hoverClass = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+    }
+    var animClass = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+    }
+    var padStyle =
+      "padding:" + (p.paddingV || 0) + "px " + (p.paddingH || 0) + "px;";
+    var margStyle =
+      "margin:" + (p.marginV || 0) + "px " + (p.marginH || 0) + "px;";
+    var opStyle =
+      p.opacity && p.opacity < 100 ? "opacity:" + p.opacity / 100 + ";" : "";
+    return (
+      '<div class="veltro-gravwell-wrap' +
+      animClass +
+      hoverClass +
+      '" id="gravwell-' +
+      id +
+      '" data-particle-count="' +
+      (p.particleCount || 100) +
+      '" data-well-strength="' +
+      (p.wellStrength || 0.5) +
+      '" data-particle-color="' +
+      (p.particleColor || "#cdfe00") +
+      '" data-well-count="' +
+      (p.wellCount || 3) +
+      '" data-well-radius="' +
+      (p.wellRadius || 20) +
+      '" data-particle-size="' +
+      (p.particleSize || 2) +
+      '" data-particle-trail="' +
+      (p.particleTrail !== false ? "true" : "false") +
+      '" data-well-mode="' +
+      (p.wellMode || "attract") +
+      '" data-particle-random-color="' +
+      (p.particleRandomColor ? "true" : "false") +
+      '" data-well-glow="' +
+      (p.wellGlow !== false ? "true" : "false") +
+      '" data-glow-color="' +
+      (p.glowColor || "#34d399") +
+      '" style="height:' +
+      p.height +
+      "px;" +
+      bgStyle +
+      "position:relative;overflow:hidden;border-radius:" +
+      (p.borderRadius || 4) +
+      "px;cursor:crosshair;" +
+      containerBorder +
+      containerShadow +
+      padStyle +
+      margStyle +
+      opStyle +
+      '"><canvas class="veltro-gravwell-canvas" style="position:absolute;inset:0;width:100%;height:100%" data-gravwell-init="1"></canvas></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    var html = "";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Core Settings</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Height (px)</label><input type="number" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Count</label><input type="number" value="' +
+      (p.particleCount || 100) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleCount',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Well Strength</label><input type="number" step="0.1" value="' +
+      (p.wellStrength || 0.5) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','wellStrength',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Color</label><input type="color" value="' +
+      (p.particleColor || "#cdfe00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleColor',this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Background & Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      ((p.bgType || "solid") === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      ((p.bgType || "solid") === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      ((p.bgType || "solid") === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if ((p.bgType || "solid") === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Color</label><input type="color" value="' +
+        (p.bg || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bg',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        ((p.bgGradientDir || "135deg") === "135deg" ? " selected" : "") +
+        '>135°</option><option value="to right"' +
+        ((p.bgGradientDir || "135deg") === "to right" ? " selected" : "") +
+        '>Left→Right</option><option value="to bottom"' +
+        ((p.bgGradientDir || "135deg") === "to bottom" ? " selected" : "") +
+        '>Top→Bottom</option><option value="circle"' +
+        ((p.bgGradientDir || "135deg") === "circle" ? " selected" : "") +
+        ">Radial</option></select></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImageUrl || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageUrl',this.value)\" placeholder=\"https://...\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Opacity (%)</label><input type="number" min="0" max="100" value="' +
+        (p.bgImageOpacity || 30) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageOpacity',+this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Size</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageSize',this.value)\"><option value=\"cover\"" +
+        ((p.bgImageSize || "cover") === "cover" ? " selected" : "") +
+        '>Cover</option><option value="contain"' +
+        ((p.bgImageSize || "cover") === "contain" ? " selected" : "") +
+        '>Contain</option><option value="100% 100%"' +
+        ((p.bgImageSize || "cover") === "100% 100%" ? " selected" : "") +
+        ">Stretch</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius (px)</label><input type="number" value="' +
+      (p.borderRadius || 4) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width (px)</label><input type="number" value="' +
+      (p.borderWidth || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Color</label><input type="color" value="' +
+      (p.borderColor || "#ffffff") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderColor',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Box Shadow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','boxShadow',this.value)\"><option value=\"none\"" +
+      ((p.boxShadow || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="soft"' +
+      ((p.boxShadow || "none") === "soft" ? " selected" : "") +
+      '>Soft</option><option value="hard"' +
+      ((p.boxShadow || "none") === "hard" ? " selected" : "") +
+      '>Hard</option><option value="glow"' +
+      ((p.boxShadow || "none") === "glow" ? " selected" : "") +
+      ">Glow</option></select></div>";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      html +=
+        '<div class="rp-row"><label>Shadow Color</label><input type="color" value="' +
+        (p.shadowColor || "#000000") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Shadow Blur</label><input type="number" value="' +
+        (p.shadowBlur || 10) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value)\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Spacing & Display</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Padding V (px)</label><input type="number" value="' +
+      (p.paddingV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H (px)</label><input type="number" value="' +
+      (p.paddingH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin V (px)</label><input type="number" value="' +
+      (p.marginV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin H (px)</label><input type="number" value="' +
+      (p.marginH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity (%)</label><input type="number" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animations & Effects</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      ((p.entranceAnim || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="fade-in"' +
+      ((p.entranceAnim || "none") === "fade-in" ? " selected" : "") +
+      '>Fade In</option><option value="slide-up"' +
+      ((p.entranceAnim || "none") === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="slide-left"' +
+      ((p.entranceAnim || "none") === "slide-left" ? " selected" : "") +
+      '>Slide Left</option><option value="zoom-in"' +
+      ((p.entranceAnim || "none") === "zoom-in" ? " selected" : "") +
+      '>Zoom In</option><option value="flip-in"' +
+      ((p.entranceAnim || "none") === "flip-in" ? " selected" : "") +
+      ">Flip In</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Animation Duration (ms)</label><input type="number" value="' +
+      (p.animDuration || 600) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','animDuration',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      ((p.hoverEffect || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="lift"' +
+      ((p.hoverEffect || "none") === "lift" ? " selected" : "") +
+      '>Lift</option><option value="glow"' +
+      ((p.hoverEffect || "none") === "glow" ? " selected" : "") +
+      '>Glow</option><option value="scale"' +
+      ((p.hoverEffect || "none") === "scale" ? " selected" : "") +
+      '>Scale</option><option value="tilt"' +
+      ((p.hoverEffect || "none") === "tilt" ? " selected" : "") +
+      ">Tilt</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Transition (ms)</label><input type="number" value="' +
+      (p.hoverTransition || 300) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverTransition',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Advanced Well Options</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Well Count</label><input type="number" min="1" max="10" value="' +
+      (p.wellCount || 3) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','wellCount',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Well Radius</label><input type="number" value="' +
+      (p.wellRadius || 20) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','wellRadius',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Size</label><input type="number" value="' +
+      (p.particleSize || 2) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleSize',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Trail</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleTrail',this.value)\"><option value=\"true\"" +
+      (p.particleTrail !== false ? " selected" : "") +
+      '>Enabled</option><option value="false"' +
+      (p.particleTrail === false ? " selected" : "") +
+      ">Disabled</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Well Mode</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','wellMode',this.value)\"><option value=\"attract\"" +
+      ((p.wellMode || "attract") === "attract" ? " selected" : "") +
+      '>Attract</option><option value="repel"' +
+      ((p.wellMode || "attract") === "repel" ? " selected" : "") +
+      '>Repel</option><option value="orbit"' +
+      ((p.wellMode || "attract") === "orbit" ? " selected" : "") +
+      ">Orbit</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Random Particle Colors</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleRandomColor',this.value)\"><option value=\"false\"" +
+      (!p.particleRandomColor ? " selected" : "") +
+      '>Single</option><option value="true"' +
+      (p.particleRandomColor ? " selected" : "") +
+      ">Random</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Well Glow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','wellGlow',this.value)\"><option value=\"true\"" +
+      (p.wellGlow !== false ? " selected" : "") +
+      '>On</option><option value="false"' +
+      (p.wellGlow === false ? " selected" : "") +
+      ">Off</option></select></div>";
+    if (p.wellGlow !== false) {
+      html +=
+        '<div class="rp-row"><label>Glow Color</label><input type="color" value="' +
+        (p.glowColor || "#34d399") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','glowColor',this.value)\"></div>";
+    }
+    html += "</div></div>";
+    return html;
+  },
+});
+
+// 2. Fluid Simulation
+FB.widgets.register("fluidSimulation", {
+  label: "Fluid Simulation",
+  sublabel: "Real-time fluid dynamics",
+  icon: "≋",
+  iconBg: "#0d1a2e",
+  iconColor: "#60a5fa",
+  category: "veltro",
+  subCategory: "physics",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    particleCount: 200,
+    viscosity: 0.5,
+    color1: "#3b82f6",
+    color2: "#ec4899",
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a1a3e",
+    bgImageUrl: "",
+    bgImageOpacity: 30,
+    bgImageSize: "cover",
+    borderRadius: 4,
+    borderWidth: 0,
+    borderColor: "#ffffff",
+    boxShadow: "none",
+    shadowColor: "#000000",
+    shadowBlur: 10,
+    shadowOffsetX: 0,
+    shadowOffsetY: 4,
+    paddingV: 0,
+    paddingH: 0,
+    marginV: 0,
+    marginH: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    hoverEffect: "none",
+    hoverTransition: 300,
+    animDuration: 600,
+    fluidMode: "flow",
+    fluidDensity: 1,
+    fluidPressure: 0.5,
+    fluidTurbulence: 0.3,
+    colorBlend: "gradient",
+    fluidOpacity: 80,
+    fluidGlow: true,
+    mouseForce: 5,
+  },
+  render: function (p) {
+    var id = p._blockId || "fluid";
+    var bgType = p.bgType || "solid";
+    var bgStyle = "";
+    if (bgType === "gradient") {
+      bgStyle =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        ");";
+    } else if (bgType === "image" && p.bgImageUrl) {
+      bgStyle =
+        "background:url('" +
+        p.bgImageUrl +
+        "') center/" +
+        (p.bgImageSize || "cover") +
+        " no-repeat;background-color:" +
+        (p.bg || "#0d0d1a") +
+        ";";
+    } else {
+      bgStyle = "background:" + (p.bg || "#0d0d1a") + ";";
+    }
+    var containerBorder = "";
+    if (p.borderWidth && p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px solid " +
+        (p.borderColor || "#ffffff") +
+        ";";
+    }
+    var containerShadow = "";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      containerShadow =
+        "box-shadow:" +
+        (p.shadowOffsetX || 0) +
+        "px " +
+        (p.shadowOffsetY || 4) +
+        "px " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowColor || "#000000") +
+        ";";
+    }
+    var hoverClass = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+    }
+    var animClass = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+    }
+    var padStyle =
+      "padding:" + (p.paddingV || 0) + "px " + (p.paddingH || 0) + "px;";
+    var margStyle =
+      "margin:" + (p.marginV || 0) + "px " + (p.marginH || 0) + "px;";
+    var opStyle =
+      p.opacity && p.opacity < 100 ? "opacity:" + p.opacity / 100 + ";" : "";
+    return (
+      '<div class="veltro-fluid-wrap' +
+      animClass +
+      hoverClass +
+      '" id="fluid-' +
+      id +
+      '" data-particle-count="' +
+      (p.particleCount || 200) +
+      '" data-viscosity="' +
+      (p.viscosity || 0.5) +
+      '" data-color1="' +
+      (p.color1 || "#3b82f6") +
+      '" data-color2="' +
+      (p.color2 || "#ec4899") +
+      '" data-fluid-mode="' +
+      (p.fluidMode || "flow") +
+      '" data-fluid-density="' +
+      (p.fluidDensity || 1) +
+      '" data-fluid-pressure="' +
+      (p.fluidPressure || 0.5) +
+      '" data-fluid-turbulence="' +
+      (p.fluidTurbulence || 0.3) +
+      '" data-color-blend="' +
+      (p.colorBlend || "gradient") +
+      '" data-fluid-opacity="' +
+      (p.fluidOpacity || 80) +
+      '" data-fluid-glow="' +
+      (p.fluidGlow !== false ? "true" : "false") +
+      '" data-mouse-force="' +
+      (p.mouseForce || 5) +
+      '" style="height:' +
+      p.height +
+      "px;" +
+      bgStyle +
+      "position:relative;overflow:hidden;border-radius:" +
+      (p.borderRadius || 4) +
+      "px;" +
+      containerBorder +
+      containerShadow +
+      padStyle +
+      margStyle +
+      opStyle +
+      '"><canvas class="veltro-fluid-canvas" style="position:absolute;inset:0;width:100%;height:100%" data-fluid-init="1"></canvas></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    var html = "";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Core Settings</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Height (px)</label><input type="number" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Count</label><input type="number" value="' +
+      (p.particleCount || 200) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleCount',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Viscosity</label><input type="number" step="0.05" min="0" max="1" value="' +
+      (p.viscosity || 0.5) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','viscosity',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Color 1</label><input type="color" value="' +
+      (p.color1 || "#3b82f6") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','color1',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Color 2</label><input type="color" value="' +
+      (p.color2 || "#ec4899") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','color2',this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Background & Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      ((p.bgType || "solid") === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      ((p.bgType || "solid") === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      ((p.bgType || "solid") === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if ((p.bgType || "solid") === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Color</label><input type="color" value="' +
+        (p.bg || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bg',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        ((p.bgGradientDir || "135deg") === "135deg" ? " selected" : "") +
+        '>135°</option><option value="to right"' +
+        ((p.bgGradientDir || "135deg") === "to right" ? " selected" : "") +
+        '>Left→Right</option><option value="to bottom"' +
+        ((p.bgGradientDir || "135deg") === "to bottom" ? " selected" : "") +
+        '>Top→Bottom</option><option value="circle"' +
+        ((p.bgGradientDir || "135deg") === "circle" ? " selected" : "") +
+        ">Radial</option></select></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImageUrl || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageUrl',this.value)\" placeholder=\"https://...\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Opacity (%)</label><input type="number" min="0" max="100" value="' +
+        (p.bgImageOpacity || 30) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageOpacity',+this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Size</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageSize',this.value)\"><option value=\"cover\"" +
+        ((p.bgImageSize || "cover") === "cover" ? " selected" : "") +
+        '>Cover</option><option value="contain"' +
+        ((p.bgImageSize || "cover") === "contain" ? " selected" : "") +
+        '>Contain</option><option value="100% 100%"' +
+        ((p.bgImageSize || "cover") === "100% 100%" ? " selected" : "") +
+        ">Stretch</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius (px)</label><input type="number" value="' +
+      (p.borderRadius || 4) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width (px)</label><input type="number" value="' +
+      (p.borderWidth || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Color</label><input type="color" value="' +
+      (p.borderColor || "#ffffff") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderColor',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Box Shadow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','boxShadow',this.value)\"><option value=\"none\"" +
+      ((p.boxShadow || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="soft"' +
+      ((p.boxShadow || "none") === "soft" ? " selected" : "") +
+      '>Soft</option><option value="hard"' +
+      ((p.boxShadow || "none") === "hard" ? " selected" : "") +
+      '>Hard</option><option value="glow"' +
+      ((p.boxShadow || "none") === "glow" ? " selected" : "") +
+      ">Glow</option></select></div>";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      html +=
+        '<div class="rp-row"><label>Shadow Color</label><input type="color" value="' +
+        (p.shadowColor || "#000000") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Shadow Blur</label><input type="number" value="' +
+        (p.shadowBlur || 10) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value)\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Spacing & Display</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Padding V (px)</label><input type="number" value="' +
+      (p.paddingV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H (px)</label><input type="number" value="' +
+      (p.paddingH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin V (px)</label><input type="number" value="' +
+      (p.marginV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin H (px)</label><input type="number" value="' +
+      (p.marginH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity (%)</label><input type="number" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animations & Effects</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      ((p.entranceAnim || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="fade-in"' +
+      ((p.entranceAnim || "none") === "fade-in" ? " selected" : "") +
+      '>Fade In</option><option value="slide-up"' +
+      ((p.entranceAnim || "none") === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="slide-left"' +
+      ((p.entranceAnim || "none") === "slide-left" ? " selected" : "") +
+      '>Slide Left</option><option value="zoom-in"' +
+      ((p.entranceAnim || "none") === "zoom-in" ? " selected" : "") +
+      '>Zoom In</option><option value="flip-in"' +
+      ((p.entranceAnim || "none") === "flip-in" ? " selected" : "") +
+      ">Flip In</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Animation Duration (ms)</label><input type="number" value="' +
+      (p.animDuration || 600) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','animDuration',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      ((p.hoverEffect || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="lift"' +
+      ((p.hoverEffect || "none") === "lift" ? " selected" : "") +
+      '>Lift</option><option value="glow"' +
+      ((p.hoverEffect || "none") === "glow" ? " selected" : "") +
+      '>Glow</option><option value="scale"' +
+      ((p.hoverEffect || "none") === "scale" ? " selected" : "") +
+      '>Scale</option><option value="tilt"' +
+      ((p.hoverEffect || "none") === "tilt" ? " selected" : "") +
+      ">Tilt</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Transition (ms)</label><input type="number" value="' +
+      (p.hoverTransition || 300) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverTransition',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Advanced Fluid Options</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Fluid Mode</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fluidMode',this.value)\"><option value=\"flow\"" +
+      ((p.fluidMode || "flow") === "flow" ? " selected" : "") +
+      '>Flow</option><option value="wave"' +
+      ((p.fluidMode || "flow") === "wave" ? " selected" : "") +
+      '>Wave</option><option value="vortex"' +
+      ((p.fluidMode || "flow") === "vortex" ? " selected" : "") +
+      '>Vortex</option><option value="fountain"' +
+      ((p.fluidMode || "flow") === "fountain" ? " selected" : "") +
+      ">Fountain</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Fluid Density</label><input type="number" step="0.1" min="0.1" max="3" value="' +
+      (p.fluidDensity || 1) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fluidDensity',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Fluid Pressure</label><input type="number" step="0.05" min="0" max="1" value="' +
+      (p.fluidPressure || 0.5) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fluidPressure',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Fluid Turbulence</label><input type="number" step="0.05" min="0" max="1" value="' +
+      (p.fluidTurbulence || 0.3) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fluidTurbulence',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Color Blend</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','colorBlend',this.value)\"><option value=\"gradient\"" +
+      ((p.colorBlend || "gradient") === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="solid"' +
+      ((p.colorBlend || "gradient") === "solid" ? " selected" : "") +
+      '>Solid</option><option value="random"' +
+      ((p.colorBlend || "gradient") === "random" ? " selected" : "") +
+      '>Random</option><option value="alternating"' +
+      ((p.colorBlend || "gradient") === "alternating" ? " selected" : "") +
+      ">Alternating</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Fluid Opacity (%)</label><input type="number" min="0" max="100" value="' +
+      (p.fluidOpacity || 80) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fluidOpacity',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Fluid Glow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fluidGlow',this.value)\"><option value=\"true\"" +
+      (p.fluidGlow !== false ? " selected" : "") +
+      '>On</option><option value="false"' +
+      (p.fluidGlow === false ? " selected" : "") +
+      ">Off</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Mouse Force</label><input type="number" value="' +
+      (p.mouseForce || 5) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','mouseForce',+this.value)\"></div>";
+    html += "</div></div>";
+    return html;
+  },
+});
+
+// 3. Cloth Simulation
+FB.widgets.register("clothSimulation", {
+  label: "Cloth Simulation",
+  sublabel: "Fabric physics",
+  icon: "▣",
+  iconBg: "#1a0d1a",
+  iconColor: "#f472b6",
+  category: "veltro",
+  subCategory: "physics",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    cols: 20,
+    rows: 15,
+    stiffness: 0.9,
+    damping: 0.9,
+    color: "#cdfe00",
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a1a3e",
+    bgImageUrl: "",
+    bgImageOpacity: 30,
+    bgImageSize: "cover",
+    borderRadius: 4,
+    borderWidth: 0,
+    borderColor: "#ffffff",
+    boxShadow: "none",
+    shadowColor: "#000000",
+    shadowBlur: 10,
+    shadowOffsetX: 0,
+    shadowOffsetY: 4,
+    paddingV: 0,
+    paddingH: 0,
+    marginV: 0,
+    marginH: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    hoverEffect: "none",
+    hoverTransition: 300,
+    animDuration: 600,
+    clothGravity: 0.5,
+    clothWind: false,
+    windStrength: 0.2,
+    lineWidth: 1,
+    lineOpacity: 80,
+    pinEdges: "top",
+    mouseTear: false,
+    tearForce: 10,
+    color2: "#3b82f6",
+    useGradient: false,
+  },
+  render: function (p) {
+    var id = p._blockId || "cloth";
+    var bgType = p.bgType || "solid";
+    var bgStyle = "";
+    if (bgType === "gradient") {
+      bgStyle =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        ");";
+    } else if (bgType === "image" && p.bgImageUrl) {
+      bgStyle =
+        "background:url('" +
+        p.bgImageUrl +
+        "') center/" +
+        (p.bgImageSize || "cover") +
+        " no-repeat;background-color:" +
+        (p.bg || "#0d0d1a") +
+        ";";
+    } else {
+      bgStyle = "background:" + (p.bg || "#0d0d1a") + ";";
+    }
+    var containerBorder = "";
+    if (p.borderWidth && p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px solid " +
+        (p.borderColor || "#ffffff") +
+        ";";
+    }
+    var containerShadow = "";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      containerShadow =
+        "box-shadow:" +
+        (p.shadowOffsetX || 0) +
+        "px " +
+        (p.shadowOffsetY || 4) +
+        "px " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowColor || "#000000") +
+        ";";
+    }
+    var hoverClass = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+    }
+    var animClass = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+    }
+    var padStyle =
+      "padding:" + (p.paddingV || 0) + "px " + (p.paddingH || 0) + "px;";
+    var margStyle =
+      "margin:" + (p.marginV || 0) + "px " + (p.marginH || 0) + "px;";
+    var opStyle =
+      p.opacity && p.opacity < 100 ? "opacity:" + p.opacity / 100 + ";" : "";
+    return (
+      '<div class="veltro-cloth-wrap' +
+      animClass +
+      hoverClass +
+      '" id="cloth-' +
+      id +
+      '" data-cols="' +
+      (p.cols || 20) +
+      '" data-rows="' +
+      (p.rows || 15) +
+      '" data-stiffness="' +
+      (p.stiffness || 0.9) +
+      '" data-damping="' +
+      (p.damping || 0.9) +
+      '" data-color="' +
+      (p.color || "#cdfe00") +
+      '" data-cloth-gravity="' +
+      (p.clothGravity || 0.5) +
+      '" data-cloth-wind="' +
+      (p.clothWind ? "true" : "false") +
+      '" data-wind-strength="' +
+      (p.windStrength || 0.2) +
+      '" data-line-width="' +
+      (p.lineWidth || 1) +
+      '" data-line-opacity="' +
+      (p.lineOpacity || 80) +
+      '" data-pin-edges="' +
+      (p.pinEdges || "top") +
+      '" data-mouse-tear="' +
+      (p.mouseTear ? "true" : "false") +
+      '" data-tear-force="' +
+      (p.tearForce || 10) +
+      '" data-use-gradient="' +
+      (p.useGradient ? "true" : "false") +
+      '" style="height:' +
+      p.height +
+      "px;" +
+      bgStyle +
+      "position:relative;overflow:hidden;border-radius:" +
+      (p.borderRadius || 4) +
+      "px;" +
+      containerBorder +
+      containerShadow +
+      padStyle +
+      margStyle +
+      opStyle +
+      '"><canvas class="veltro-cloth-canvas" style="position:absolute;inset:0;width:100%;height:100%" data-cloth-init="1"></canvas></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    var html = "";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Core Settings</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Height (px)</label><input type="number" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Columns</label><input type="number" value="' +
+      (p.cols || 20) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','cols',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Rows</label><input type="number" value="' +
+      (p.rows || 15) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','rows',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Stiffness</label><input type="number" step="0.05" min="0" max="1" value="' +
+      (p.stiffness || 0.9) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','stiffness',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Damping</label><input type="number" step="0.05" min="0" max="1" value="' +
+      (p.damping || 0.9) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','damping',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Color</label><input type="color" value="' +
+      (p.color || "#cdfe00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','color',this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Background & Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      ((p.bgType || "solid") === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      ((p.bgType || "solid") === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      ((p.bgType || "solid") === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if ((p.bgType || "solid") === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Color</label><input type="color" value="' +
+        (p.bg || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bg',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        ((p.bgGradientDir || "135deg") === "135deg" ? " selected" : "") +
+        '>135°</option><option value="to right"' +
+        ((p.bgGradientDir || "135deg") === "to right" ? " selected" : "") +
+        '>Left→Right</option><option value="to bottom"' +
+        ((p.bgGradientDir || "135deg") === "to bottom" ? " selected" : "") +
+        '>Top→Bottom</option><option value="circle"' +
+        ((p.bgGradientDir || "135deg") === "circle" ? " selected" : "") +
+        ">Radial</option></select></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImageUrl || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageUrl',this.value)\" placeholder=\"https://...\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Opacity (%)</label><input type="number" min="0" max="100" value="' +
+        (p.bgImageOpacity || 30) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageOpacity',+this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Size</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageSize',this.value)\"><option value=\"cover\"" +
+        ((p.bgImageSize || "cover") === "cover" ? " selected" : "") +
+        '>Cover</option><option value="contain"' +
+        ((p.bgImageSize || "cover") === "contain" ? " selected" : "") +
+        '>Contain</option><option value="100% 100%"' +
+        ((p.bgImageSize || "cover") === "100% 100%" ? " selected" : "") +
+        ">Stretch</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius (px)</label><input type="number" value="' +
+      (p.borderRadius || 4) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width (px)</label><input type="number" value="' +
+      (p.borderWidth || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Color</label><input type="color" value="' +
+      (p.borderColor || "#ffffff") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderColor',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Box Shadow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','boxShadow',this.value)\"><option value=\"none\"" +
+      ((p.boxShadow || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="soft"' +
+      ((p.boxShadow || "none") === "soft" ? " selected" : "") +
+      '>Soft</option><option value="hard"' +
+      ((p.boxShadow || "none") === "hard" ? " selected" : "") +
+      '>Hard</option><option value="glow"' +
+      ((p.boxShadow || "none") === "glow" ? " selected" : "") +
+      ">Glow</option></select></div>";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      html +=
+        '<div class="rp-row"><label>Shadow Color</label><input type="color" value="' +
+        (p.shadowColor || "#000000") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Shadow Blur</label><input type="number" value="' +
+        (p.shadowBlur || 10) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value)\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Spacing & Display</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Padding V (px)</label><input type="number" value="' +
+      (p.paddingV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H (px)</label><input type="number" value="' +
+      (p.paddingH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin V (px)</label><input type="number" value="' +
+      (p.marginV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin H (px)</label><input type="number" value="' +
+      (p.marginH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity (%)</label><input type="number" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animations & Effects</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      ((p.entranceAnim || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="fade-in"' +
+      ((p.entranceAnim || "none") === "fade-in" ? " selected" : "") +
+      '>Fade In</option><option value="slide-up"' +
+      ((p.entranceAnim || "none") === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="slide-left"' +
+      ((p.entranceAnim || "none") === "slide-left" ? " selected" : "") +
+      '>Slide Left</option><option value="zoom-in"' +
+      ((p.entranceAnim || "none") === "zoom-in" ? " selected" : "") +
+      '>Zoom In</option><option value="flip-in"' +
+      ((p.entranceAnim || "none") === "flip-in" ? " selected" : "") +
+      ">Flip In</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Animation Duration (ms)</label><input type="number" value="' +
+      (p.animDuration || 600) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','animDuration',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      ((p.hoverEffect || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="lift"' +
+      ((p.hoverEffect || "none") === "lift" ? " selected" : "") +
+      '>Lift</option><option value="glow"' +
+      ((p.hoverEffect || "none") === "glow" ? " selected" : "") +
+      '>Glow</option><option value="scale"' +
+      ((p.hoverEffect || "none") === "scale" ? " selected" : "") +
+      '>Scale</option><option value="tilt"' +
+      ((p.hoverEffect || "none") === "tilt" ? " selected" : "") +
+      ">Tilt</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Transition (ms)</label><input type="number" value="' +
+      (p.hoverTransition || 300) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverTransition',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Advanced Cloth Options</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Cloth Gravity</label><input type="number" step="0.1" min="0" max="2" value="' +
+      (p.clothGravity || 0.5) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','clothGravity',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Wind Enabled</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','clothWind',this.value)\"><option value=\"false\"" +
+      (!p.clothWind ? " selected" : "") +
+      '>Off</option><option value="true"' +
+      (p.clothWind ? " selected" : "") +
+      ">On</option></select></div>";
+    if (p.clothWind) {
+      html +=
+        '<div class="rp-row"><label>Wind Strength</label><input type="number" step="0.05" value="' +
+        (p.windStrength || 0.2) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','windStrength',+this.value)\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Line Width</label><input type="number" step="0.5" value="' +
+      (p.lineWidth || 1) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','lineWidth',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Line Opacity (%)</label><input type="number" min="0" max="100" value="' +
+      (p.lineOpacity || 80) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','lineOpacity',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Pin Edges</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','pinEdges',this.value)\"><option value=\"top\"" +
+      ((p.pinEdges || "top") === "top" ? " selected" : "") +
+      '>Top</option><option value="left"' +
+      ((p.pinEdges || "top") === "left" ? " selected" : "") +
+      '>Left</option><option value="right"' +
+      ((p.pinEdges || "top") === "right" ? " selected" : "") +
+      '>Right</option><option value="all"' +
+      ((p.pinEdges || "top") === "all" ? " selected" : "") +
+      '>All Sides</option><option value="none"' +
+      ((p.pinEdges || "top") === "none" ? " selected" : "") +
+      ">None</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Mouse Tear</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','mouseTear',this.value)\"><option value=\"false\"" +
+      (!p.mouseTear ? " selected" : "") +
+      '>Off</option><option value="true"' +
+      (p.mouseTear ? " selected" : "") +
+      ">On</option></select></div>";
+    if (p.mouseTear) {
+      html +=
+        '<div class="rp-row"><label>Tear Force</label><input type="number" value="' +
+        (p.tearForce || 10) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','tearForce',+this.value)\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Use Gradient</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','useGradient',this.value)\"><option value=\"false\"" +
+      (!p.useGradient ? " selected" : "") +
+      '>Single Color</option><option value="true"' +
+      (p.useGradient ? " selected" : "") +
+      ">Gradient</option></select></div>";
+    if (p.useGradient) {
+      html +=
+        '<div class="rp-row"><label>Color 2</label><input type="color" value="' +
+        (p.color2 || "#3b82f6") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','color2',this.value)\"></div>";
+    }
+    html += "</div></div>";
+    return html;
+  },
+});
+
+// 4. Magnetic Fields
+FB.widgets.register("magneticFields", {
+  label: "Magnetic Fields",
+  sublabel: "Objects with magnetic polarity",
+  icon: "⊕",
+  iconBg: "#0d1a1a",
+  iconColor: "#34d399",
+  category: "veltro",
+  subCategory: "physics",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    particleCount: 80,
+    fieldStrength: 0.5,
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a1a3e",
+    bgImageUrl: "",
+    bgImageOpacity: 30,
+    bgImageSize: "cover",
+    borderRadius: 4,
+    borderWidth: 0,
+    borderColor: "#ffffff",
+    boxShadow: "none",
+    shadowColor: "#000000",
+    shadowBlur: 10,
+    shadowOffsetX: 0,
+    shadowOffsetY: 4,
+    paddingV: 0,
+    paddingH: 0,
+    marginV: 0,
+    marginH: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    hoverEffect: "none",
+    hoverTransition: 300,
+    animDuration: 600,
+    particleColor: "#34d399",
+    particleSize: 2,
+    fieldLines: true,
+    fieldLineOpacity: 30,
+    particleTrail: true,
+    fieldMode: "dipole",
+    particleGlow: false,
+    glowColor: "#34d399",
+  },
+  render: function (p) {
+    var id = p._blockId || "magField";
+    var bgType = p.bgType || "solid";
+    var bgStyle = "";
+    if (bgType === "gradient") {
+      bgStyle =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        ");";
+    } else if (bgType === "image" && p.bgImageUrl) {
+      bgStyle =
+        "background:url('" +
+        p.bgImageUrl +
+        "') center/" +
+        (p.bgImageSize || "cover") +
+        " no-repeat;background-color:" +
+        (p.bg || "#0d0d1a") +
+        ";";
+    } else {
+      bgStyle = "background:" + (p.bg || "#0d0d1a") + ";";
+    }
+    var containerBorder = "";
+    if (p.borderWidth && p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px solid " +
+        (p.borderColor || "#ffffff") +
+        ";";
+    }
+    var containerShadow = "";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      containerShadow =
+        "box-shadow:" +
+        (p.shadowOffsetX || 0) +
+        "px " +
+        (p.shadowOffsetY || 4) +
+        "px " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowColor || "#000000") +
+        ";";
+    }
+    var hoverClass = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+    }
+    var animClass = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+    }
+    var padStyle =
+      "padding:" + (p.paddingV || 0) + "px " + (p.paddingH || 0) + "px;";
+    var margStyle =
+      "margin:" + (p.marginV || 0) + "px " + (p.marginH || 0) + "px;";
+    var opStyle =
+      p.opacity && p.opacity < 100 ? "opacity:" + p.opacity / 100 + ";" : "";
+    return (
+      '<div class="veltro-magfield-wrap' +
+      animClass +
+      hoverClass +
+      '" id="magfield-' +
+      id +
+      '" data-particle-count="' +
+      (p.particleCount || 80) +
+      '" data-field-strength="' +
+      (p.fieldStrength || 0.5) +
+      '" data-particle-color="' +
+      (p.particleColor || "#34d399") +
+      '" data-particle-size="' +
+      (p.particleSize || 2) +
+      '" data-field-lines="' +
+      (p.fieldLines !== false ? "true" : "false") +
+      '" data-field-line-opacity="' +
+      (p.fieldLineOpacity || 30) +
+      '" data-particle-trail="' +
+      (p.particleTrail !== false ? "true" : "false") +
+      '" data-field-mode="' +
+      (p.fieldMode || "dipole") +
+      '" data-particle-glow="' +
+      (p.particleGlow ? "true" : "false") +
+      '" data-glow-color="' +
+      (p.glowColor || "#34d399") +
+      '" style="height:' +
+      p.height +
+      "px;" +
+      bgStyle +
+      "position:relative;overflow:hidden;border-radius:" +
+      (p.borderRadius || 4) +
+      "px;" +
+      containerBorder +
+      containerShadow +
+      padStyle +
+      margStyle +
+      opStyle +
+      '"><canvas class="veltro-magfield-canvas" style="position:absolute;inset:0;width:100%;height:100%" data-magfield-init="1"></canvas></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    var html = "";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Core Settings</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Height (px)</label><input type="number" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Count</label><input type="number" value="' +
+      (p.particleCount || 80) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleCount',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Field Strength</label><input type="number" step="0.05" min="0" max="2" value="' +
+      (p.fieldStrength || 0.5) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fieldStrength',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Background & Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      ((p.bgType || "solid") === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      ((p.bgType || "solid") === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      ((p.bgType || "solid") === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if ((p.bgType || "solid") === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Color</label><input type="color" value="' +
+        (p.bg || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bg',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        ((p.bgGradientDir || "135deg") === "135deg" ? " selected" : "") +
+        '>135°</option><option value="to right"' +
+        ((p.bgGradientDir || "135deg") === "to right" ? " selected" : "") +
+        '>Left→Right</option><option value="to bottom"' +
+        ((p.bgGradientDir || "135deg") === "to bottom" ? " selected" : "") +
+        '>Top→Bottom</option><option value="circle"' +
+        ((p.bgGradientDir || "135deg") === "circle" ? " selected" : "") +
+        ">Radial</option></select></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImageUrl || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageUrl',this.value)\" placeholder=\"https://...\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Opacity (%)</label><input type="number" min="0" max="100" value="' +
+        (p.bgImageOpacity || 30) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageOpacity',+this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Size</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageSize',this.value)\"><option value=\"cover\"" +
+        ((p.bgImageSize || "cover") === "cover" ? " selected" : "") +
+        '>Cover</option><option value="contain"' +
+        ((p.bgImageSize || "cover") === "contain" ? " selected" : "") +
+        '>Contain</option><option value="100% 100%"' +
+        ((p.bgImageSize || "cover") === "100% 100%" ? " selected" : "") +
+        ">Stretch</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius (px)</label><input type="number" value="' +
+      (p.borderRadius || 4) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width (px)</label><input type="number" value="' +
+      (p.borderWidth || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Color</label><input type="color" value="' +
+      (p.borderColor || "#ffffff") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderColor',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Box Shadow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','boxShadow',this.value)\"><option value=\"none\"" +
+      ((p.boxShadow || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="soft"' +
+      ((p.boxShadow || "none") === "soft" ? " selected" : "") +
+      '>Soft</option><option value="hard"' +
+      ((p.boxShadow || "none") === "hard" ? " selected" : "") +
+      '>Hard</option><option value="glow"' +
+      ((p.boxShadow || "none") === "glow" ? " selected" : "") +
+      ">Glow</option></select></div>";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      html +=
+        '<div class="rp-row"><label>Shadow Color</label><input type="color" value="' +
+        (p.shadowColor || "#000000") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Shadow Blur</label><input type="number" value="' +
+        (p.shadowBlur || 10) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value)\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Spacing & Display</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Padding V (px)</label><input type="number" value="' +
+      (p.paddingV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H (px)</label><input type="number" value="' +
+      (p.paddingH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin V (px)</label><input type="number" value="' +
+      (p.marginV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin H (px)</label><input type="number" value="' +
+      (p.marginH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity (%)</label><input type="number" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animations & Effects</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      ((p.entranceAnim || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="fade-in"' +
+      ((p.entranceAnim || "none") === "fade-in" ? " selected" : "") +
+      '>Fade In</option><option value="slide-up"' +
+      ((p.entranceAnim || "none") === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="slide-left"' +
+      ((p.entranceAnim || "none") === "slide-left" ? " selected" : "") +
+      '>Slide Left</option><option value="zoom-in"' +
+      ((p.entranceAnim || "none") === "zoom-in" ? " selected" : "") +
+      '>Zoom In</option><option value="flip-in"' +
+      ((p.entranceAnim || "none") === "flip-in" ? " selected" : "") +
+      ">Flip In</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Animation Duration (ms)</label><input type="number" value="' +
+      (p.animDuration || 600) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','animDuration',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      ((p.hoverEffect || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="lift"' +
+      ((p.hoverEffect || "none") === "lift" ? " selected" : "") +
+      '>Lift</option><option value="glow"' +
+      ((p.hoverEffect || "none") === "glow" ? " selected" : "") +
+      '>Glow</option><option value="scale"' +
+      ((p.hoverEffect || "none") === "scale" ? " selected" : "") +
+      '>Scale</option><option value="tilt"' +
+      ((p.hoverEffect || "none") === "tilt" ? " selected" : "") +
+      ">Tilt</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Transition (ms)</label><input type="number" value="' +
+      (p.hoverTransition || 300) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverTransition',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Advanced Field Options</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Particle Color</label><input type="color" value="' +
+      (p.particleColor || "#34d399") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleColor',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Size</label><input type="number" value="' +
+      (p.particleSize || 2) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleSize',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Field Lines</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fieldLines',this.value)\"><option value=\"true\"" +
+      (p.fieldLines !== false ? " selected" : "") +
+      '>Enabled</option><option value="false"' +
+      (p.fieldLines === false ? " selected" : "") +
+      ">Disabled</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Field Line Opacity</label><input type="number" min="0" max="100" value="' +
+      (p.fieldLineOpacity || 30) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fieldLineOpacity',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Trail</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleTrail',this.value)\"><option value=\"true\"" +
+      (p.particleTrail !== false ? " selected" : "") +
+      '>Enabled</option><option value="false"' +
+      (p.particleTrail === false ? " selected" : "") +
+      ">Disabled</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Field Mode</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fieldMode',this.value)\"><option value=\"dipole\"" +
+      ((p.fieldMode || "dipole") === "dipole" ? " selected" : "") +
+      '>Dipole</option><option value="monopole"' +
+      ((p.fieldMode || "dipole") === "monopole" ? " selected" : "") +
+      '>Monopole</option><option value="quadrupole"' +
+      ((p.fieldMode || "dipole") === "quadrupole" ? " selected" : "") +
+      ">Quadrupole</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Glow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleGlow',this.value)\"><option value=\"false\"" +
+      (!p.particleGlow ? " selected" : "") +
+      '>Off</option><option value="true"' +
+      (p.particleGlow ? " selected" : "") +
+      ">On</option></select></div>";
+    if (p.particleGlow) {
+      html +=
+        '<div class="rp-row"><label>Glow Color</label><input type="color" value="' +
+        (p.glowColor || "#34d399") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','glowColor',this.value)\"></div>";
+    }
+    html += "</div></div>";
+    return html;
+  },
+});
+
+// 5. Pendulum Wave
+FB.widgets.register("pendulumWave", {
+  label: "Pendulum Wave",
+  sublabel: "Synchronized pendulums",
+  icon: "◔",
+  iconBg: "#1a0d2e",
+  iconColor: "#a78bfa",
+  category: "veltro",
+  subCategory: "physics",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    count: 15,
+    amplitude: 80,
+    speed: 1,
+    color: "#cdfe00",
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a1a3e",
+    bgImageUrl: "",
+    bgImageOpacity: 30,
+    bgImageSize: "cover",
+    borderRadius: 4,
+    borderWidth: 0,
+    borderColor: "#ffffff",
+    boxShadow: "none",
+    shadowColor: "#000000",
+    shadowBlur: 10,
+    shadowOffsetX: 0,
+    shadowOffsetY: 4,
+    paddingV: 0,
+    paddingH: 0,
+    marginV: 0,
+    marginH: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    hoverEffect: "none",
+    hoverTransition: 300,
+    animDuration: 600,
+    pendulumLength: 100,
+    bobSize: 6,
+    lineWidth: 1,
+    lineColor: "#555555",
+    colorMode: "single",
+    color2: "#3b82f6",
+    showTrail: false,
+    trailLength: 20,
+    gravity: 1,
+  },
+  render: function (p) {
+    var id = p._blockId || "pendulum";
+    var bgType = p.bgType || "solid";
+    var bgStyle = "";
+    if (bgType === "gradient") {
+      bgStyle =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        ");";
+    } else if (bgType === "image" && p.bgImageUrl) {
+      bgStyle =
+        "background:url('" +
+        p.bgImageUrl +
+        "') center/" +
+        (p.bgImageSize || "cover") +
+        " no-repeat;background-color:" +
+        (p.bg || "#0d0d1a") +
+        ";";
+    } else {
+      bgStyle = "background:" + (p.bg || "#0d0d1a") + ";";
+    }
+    var containerBorder = "";
+    if (p.borderWidth && p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px solid " +
+        (p.borderColor || "#ffffff") +
+        ";";
+    }
+    var containerShadow = "";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      containerShadow =
+        "box-shadow:" +
+        (p.shadowOffsetX || 0) +
+        "px " +
+        (p.shadowOffsetY || 4) +
+        "px " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowColor || "#000000") +
+        ";";
+    }
+    var hoverClass = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+    }
+    var animClass = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+    }
+    var padStyle =
+      "padding:" + (p.paddingV || 0) + "px " + (p.paddingH || 0) + "px;";
+    var margStyle =
+      "margin:" + (p.marginV || 0) + "px " + (p.marginH || 0) + "px;";
+    var opStyle =
+      p.opacity && p.opacity < 100 ? "opacity:" + p.opacity / 100 + ";" : "";
+    return (
+      '<div class="veltro-pendulum-wrap' +
+      animClass +
+      hoverClass +
+      '" id="pendulum-' +
+      id +
+      '" data-count="' +
+      (p.count || 15) +
+      '" data-amplitude="' +
+      (p.amplitude || 80) +
+      '" data-speed="' +
+      (p.speed || 1) +
+      '" data-color="' +
+      (p.color || "#cdfe00") +
+      '" data-pendulum-length="' +
+      (p.pendulumLength || 100) +
+      '" data-bob-size="' +
+      (p.bobSize || 6) +
+      '" data-line-width="' +
+      (p.lineWidth || 1) +
+      '" data-line-color="' +
+      (p.lineColor || "#555555") +
+      '" data-color-mode="' +
+      (p.colorMode || "single") +
+      '" data-show-trail="' +
+      (p.showTrail ? "true" : "false") +
+      '" data-trail-length="' +
+      (p.trailLength || 20) +
+      '" data-gravity="' +
+      (p.gravity || 1) +
+      '" style="height:' +
+      p.height +
+      "px;" +
+      bgStyle +
+      "position:relative;overflow:hidden;border-radius:" +
+      (p.borderRadius || 4) +
+      "px;" +
+      containerBorder +
+      containerShadow +
+      padStyle +
+      margStyle +
+      opStyle +
+      '"><canvas class="veltro-pendulum-canvas" style="position:absolute;inset:0;width:100%;height:100%" data-pendulum-init="1"></canvas></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    var html = "";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Core Settings</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Height (px)</label><input type="number" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Count</label><input type="number" value="' +
+      (p.count || 15) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','count',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Amplitude</label><input type="number" value="' +
+      (p.amplitude || 80) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','amplitude',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Speed</label><input type="number" step="0.1" value="' +
+      (p.speed || 1) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','speed',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Color</label><input type="color" value="' +
+      (p.color || "#cdfe00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','color',this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Background & Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      ((p.bgType || "solid") === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      ((p.bgType || "solid") === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      ((p.bgType || "solid") === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if ((p.bgType || "solid") === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Color</label><input type="color" value="' +
+        (p.bg || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bg',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        ((p.bgGradientDir || "135deg") === "135deg" ? " selected" : "") +
+        '>135°</option><option value="to right"' +
+        ((p.bgGradientDir || "135deg") === "to right" ? " selected" : "") +
+        '>Left→Right</option><option value="to bottom"' +
+        ((p.bgGradientDir || "135deg") === "to bottom" ? " selected" : "") +
+        '>Top→Bottom</option><option value="circle"' +
+        ((p.bgGradientDir || "135deg") === "circle" ? " selected" : "") +
+        ">Radial</option></select></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImageUrl || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageUrl',this.value)\" placeholder=\"https://...\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Opacity (%)</label><input type="number" min="0" max="100" value="' +
+        (p.bgImageOpacity || 30) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageOpacity',+this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Size</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageSize',this.value)\"><option value=\"cover\"" +
+        ((p.bgImageSize || "cover") === "cover" ? " selected" : "") +
+        '>Cover</option><option value="contain"' +
+        ((p.bgImageSize || "cover") === "contain" ? " selected" : "") +
+        '>Contain</option><option value="100% 100%"' +
+        ((p.bgImageSize || "cover") === "100% 100%" ? " selected" : "") +
+        ">Stretch</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius (px)</label><input type="number" value="' +
+      (p.borderRadius || 4) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width (px)</label><input type="number" value="' +
+      (p.borderWidth || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Color</label><input type="color" value="' +
+      (p.borderColor || "#ffffff") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderColor',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Box Shadow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','boxShadow',this.value)\"><option value=\"none\"" +
+      ((p.boxShadow || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="soft"' +
+      ((p.boxShadow || "none") === "soft" ? " selected" : "") +
+      '>Soft</option><option value="hard"' +
+      ((p.boxShadow || "none") === "hard" ? " selected" : "") +
+      '>Hard</option><option value="glow"' +
+      ((p.boxShadow || "none") === "glow" ? " selected" : "") +
+      ">Glow</option></select></div>";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      html +=
+        '<div class="rp-row"><label>Shadow Color</label><input type="color" value="' +
+        (p.shadowColor || "#000000") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Shadow Blur</label><input type="number" value="' +
+        (p.shadowBlur || 10) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value)\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Spacing & Display</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Padding V (px)</label><input type="number" value="' +
+      (p.paddingV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H (px)</label><input type="number" value="' +
+      (p.paddingH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin V (px)</label><input type="number" value="' +
+      (p.marginV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin H (px)</label><input type="number" value="' +
+      (p.marginH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity (%)</label><input type="number" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animations & Effects</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      ((p.entranceAnim || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="fade-in"' +
+      ((p.entranceAnim || "none") === "fade-in" ? " selected" : "") +
+      '>Fade In</option><option value="slide-up"' +
+      ((p.entranceAnim || "none") === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="slide-left"' +
+      ((p.entranceAnim || "none") === "slide-left" ? " selected" : "") +
+      '>Slide Left</option><option value="zoom-in"' +
+      ((p.entranceAnim || "none") === "zoom-in" ? " selected" : "") +
+      '>Zoom In</option><option value="flip-in"' +
+      ((p.entranceAnim || "none") === "flip-in" ? " selected" : "") +
+      ">Flip In</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Animation Duration (ms)</label><input type="number" value="' +
+      (p.animDuration || 600) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','animDuration',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      ((p.hoverEffect || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="lift"' +
+      ((p.hoverEffect || "none") === "lift" ? " selected" : "") +
+      '>Lift</option><option value="glow"' +
+      ((p.hoverEffect || "none") === "glow" ? " selected" : "") +
+      '>Glow</option><option value="scale"' +
+      ((p.hoverEffect || "none") === "scale" ? " selected" : "") +
+      '>Scale</option><option value="tilt"' +
+      ((p.hoverEffect || "none") === "tilt" ? " selected" : "") +
+      ">Tilt</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Transition (ms)</label><input type="number" value="' +
+      (p.hoverTransition || 300) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverTransition',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Advanced Pendulum Options</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Pendulum Length</label><input type="number" value="' +
+      (p.pendulumLength || 100) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','pendulumLength',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Bob Size</label><input type="number" value="' +
+      (p.bobSize || 6) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bobSize',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Line Width</label><input type="number" step="0.5" value="' +
+      (p.lineWidth || 1) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','lineWidth',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Line Color</label><input type="color" value="' +
+      (p.lineColor || "#555555") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','lineColor',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Color Mode</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','colorMode',this.value)\"><option value=\"single\"" +
+      ((p.colorMode || "single") === "single" ? " selected" : "") +
+      '>Single</option><option value="gradient"' +
+      ((p.colorMode || "single") === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="rainbow"' +
+      ((p.colorMode || "single") === "rainbow" ? " selected" : "") +
+      ">Rainbow</option></select></div>";
+    if (p.colorMode === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Color 2</label><input type="color" value="' +
+        (p.color2 || "#3b82f6") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','color2',this.value)\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Show Trail</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','showTrail',this.value)\"><option value=\"false\"" +
+      (!p.showTrail ? " selected" : "") +
+      '>Off</option><option value="true"' +
+      (p.showTrail ? " selected" : "") +
+      ">On</option></select></div>";
+    if (p.showTrail) {
+      html +=
+        '<div class="rp-row"><label>Trail Length</label><input type="number" value="' +
+        (p.trailLength || 20) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','trailLength',+this.value)\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Gravity</label><input type="number" step="0.1" value="' +
+      (p.gravity || 1) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','gravity',+this.value)\"></div>";
+    html += "</div></div>";
+    return html;
+  },
+});
+
+// 6. Collision Chaos
+FB.widgets.register("collisionChaos", {
+  label: "Collision Chaos",
+  sublabel: "Physics sandbox",
+  icon: "✦",
+  iconBg: "#1a1a0d",
+  iconColor: "#fbbf24",
+  category: "veltro",
+  subCategory: "physics",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    spawnRate: 1,
+    gravity: 1,
+    restitution: 0.7,
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a1a3e",
+    bgImageUrl: "",
+    bgImageOpacity: 30,
+    bgImageSize: "cover",
+    borderRadius: 4,
+    borderWidth: 0,
+    borderColor: "#ffffff",
+    boxShadow: "none",
+    shadowColor: "#000000",
+    shadowBlur: 10,
+    shadowOffsetX: 0,
+    shadowOffsetY: 4,
+    paddingV: 0,
+    paddingH: 0,
+    marginV: 0,
+    marginH: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    hoverEffect: "none",
+    hoverTransition: 300,
+    animDuration: 600,
+    ballShape: "circle",
+    ballColors: "#ff6b35,#cdfe00,#3b82f6,#ec4899,#f59e0b",
+    ballMinSize: 10,
+    ballMaxSize: 30,
+    maxBalls: 50,
+    ballGlow: false,
+    glowColor: "#fbbf24",
+    friction: 0.99,
+  },
+  render: function (p) {
+    var id = p._blockId || "chaos";
+    var bgType = p.bgType || "solid";
+    var bgStyle = "";
+    if (bgType === "gradient") {
+      bgStyle =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        ");";
+    } else if (bgType === "image" && p.bgImageUrl) {
+      bgStyle =
+        "background:url('" +
+        p.bgImageUrl +
+        "') center/" +
+        (p.bgImageSize || "cover") +
+        " no-repeat;background-color:" +
+        (p.bg || "#0d0d1a") +
+        ";";
+    } else {
+      bgStyle = "background:" + (p.bg || "#0d0d1a") + ";";
+    }
+    var containerBorder = "";
+    if (p.borderWidth && p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px solid " +
+        (p.borderColor || "#ffffff") +
+        ";";
+    }
+    var containerShadow = "";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      containerShadow =
+        "box-shadow:" +
+        (p.shadowOffsetX || 0) +
+        "px " +
+        (p.shadowOffsetY || 4) +
+        "px " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowColor || "#000000") +
+        ";";
+    }
+    var hoverClass = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+    }
+    var animClass = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+    }
+    var padStyle =
+      "padding:" + (p.paddingV || 0) + "px " + (p.paddingH || 0) + "px;";
+    var margStyle =
+      "margin:" + (p.marginV || 0) + "px " + (p.marginH || 0) + "px;";
+    var opStyle =
+      p.opacity && p.opacity < 100 ? "opacity:" + p.opacity / 100 + ";" : "";
+    return (
+      '<div class="veltro-chaos-wrap' +
+      animClass +
+      hoverClass +
+      '" id="chaos-' +
+      id +
+      '" data-spawn-rate="' +
+      (p.spawnRate || 1) +
+      '" data-gravity="' +
+      (p.gravity || 1) +
+      '" data-restitution="' +
+      (p.restitution || 0.7) +
+      '" data-ball-shape="' +
+      (p.ballShape || "circle") +
+      '" data-ball-colors="' +
+      (p.ballColors || "#ff6b35,#cdfe00,#3b82f6,#ec4899,#f59e0b") +
+      '" data-ball-min-size="' +
+      (p.ballMinSize || 10) +
+      '" data-ball-max-size="' +
+      (p.ballMaxSize || 30) +
+      '" data-max-balls="' +
+      (p.maxBalls || 50) +
+      '" data-ball-glow="' +
+      (p.ballGlow ? "true" : "false") +
+      '" data-glow-color="' +
+      (p.glowColor || "#fbbf24") +
+      '" data-friction="' +
+      (p.friction || 0.99) +
+      '" style="height:' +
+      p.height +
+      "px;" +
+      bgStyle +
+      "position:relative;overflow:hidden;border-radius:" +
+      (p.borderRadius || 4) +
+      "px;cursor:pointer;" +
+      containerBorder +
+      containerShadow +
+      padStyle +
+      margStyle +
+      opStyle +
+      '"><canvas class="veltro-chaos-canvas" style="position:absolute;inset:0;width:100%;height:100%" data-chaos-init="1"></canvas></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    var html = "";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Core Settings</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Height (px)</label><input type="number" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Spawn Rate</label><input type="number" step="0.1" value="' +
+      (p.spawnRate || 1) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','spawnRate',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Gravity</label><input type="number" step="0.1" value="' +
+      (p.gravity || 1) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','gravity',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Restitution</label><input type="number" step="0.05" min="0" max="1" value="' +
+      (p.restitution || 0.7) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','restitution',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Background & Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      ((p.bgType || "solid") === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      ((p.bgType || "solid") === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      ((p.bgType || "solid") === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if ((p.bgType || "solid") === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Color</label><input type="color" value="' +
+        (p.bg || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bg',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        ((p.bgGradientDir || "135deg") === "135deg" ? " selected" : "") +
+        '>135°</option><option value="to right"' +
+        ((p.bgGradientDir || "135deg") === "to right" ? " selected" : "") +
+        '>Left→Right</option><option value="to bottom"' +
+        ((p.bgGradientDir || "135deg") === "to bottom" ? " selected" : "") +
+        '>Top→Bottom</option><option value="circle"' +
+        ((p.bgGradientDir || "135deg") === "circle" ? " selected" : "") +
+        ">Radial</option></select></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImageUrl || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageUrl',this.value)\" placeholder=\"https://...\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Opacity (%)</label><input type="number" min="0" max="100" value="' +
+        (p.bgImageOpacity || 30) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageOpacity',+this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Size</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageSize',this.value)\"><option value=\"cover\"" +
+        ((p.bgImageSize || "cover") === "cover" ? " selected" : "") +
+        '>Cover</option><option value="contain"' +
+        ((p.bgImageSize || "cover") === "contain" ? " selected" : "") +
+        '>Contain</option><option value="100% 100%"' +
+        ((p.bgImageSize || "cover") === "100% 100%" ? " selected" : "") +
+        ">Stretch</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius (px)</label><input type="number" value="' +
+      (p.borderRadius || 4) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width (px)</label><input type="number" value="' +
+      (p.borderWidth || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Color</label><input type="color" value="' +
+      (p.borderColor || "#ffffff") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderColor',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Box Shadow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','boxShadow',this.value)\"><option value=\"none\"" +
+      ((p.boxShadow || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="soft"' +
+      ((p.boxShadow || "none") === "soft" ? " selected" : "") +
+      '>Soft</option><option value="hard"' +
+      ((p.boxShadow || "none") === "hard" ? " selected" : "") +
+      '>Hard</option><option value="glow"' +
+      ((p.boxShadow || "none") === "glow" ? " selected" : "") +
+      ">Glow</option></select></div>";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      html +=
+        '<div class="rp-row"><label>Shadow Color</label><input type="color" value="' +
+        (p.shadowColor || "#000000") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Shadow Blur</label><input type="number" value="' +
+        (p.shadowBlur || 10) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value)\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Spacing & Display</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Padding V (px)</label><input type="number" value="' +
+      (p.paddingV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H (px)</label><input type="number" value="' +
+      (p.paddingH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin V (px)</label><input type="number" value="' +
+      (p.marginV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin H (px)</label><input type="number" value="' +
+      (p.marginH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity (%)</label><input type="number" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animations & Effects</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      ((p.entranceAnim || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="fade-in"' +
+      ((p.entranceAnim || "none") === "fade-in" ? " selected" : "") +
+      '>Fade In</option><option value="slide-up"' +
+      ((p.entranceAnim || "none") === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="slide-left"' +
+      ((p.entranceAnim || "none") === "slide-left" ? " selected" : "") +
+      '>Slide Left</option><option value="zoom-in"' +
+      ((p.entranceAnim || "none") === "zoom-in" ? " selected" : "") +
+      '>Zoom In</option><option value="flip-in"' +
+      ((p.entranceAnim || "none") === "flip-in" ? " selected" : "") +
+      ">Flip In</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Animation Duration (ms)</label><input type="number" value="' +
+      (p.animDuration || 600) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','animDuration',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      ((p.hoverEffect || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="lift"' +
+      ((p.hoverEffect || "none") === "lift" ? " selected" : "") +
+      '>Lift</option><option value="glow"' +
+      ((p.hoverEffect || "none") === "glow" ? " selected" : "") +
+      '>Glow</option><option value="scale"' +
+      ((p.hoverEffect || "none") === "scale" ? " selected" : "") +
+      '>Scale</option><option value="tilt"' +
+      ((p.hoverEffect || "none") === "tilt" ? " selected" : "") +
+      ">Tilt</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Transition (ms)</label><input type="number" value="' +
+      (p.hoverTransition || 300) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverTransition',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Advanced Chaos Options</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Ball Shape</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','ballShape',this.value)\"><option value=\"circle\"" +
+      ((p.ballShape || "circle") === "circle" ? " selected" : "") +
+      '>Circle</option><option value="square"' +
+      ((p.ballShape || "circle") === "square" ? " selected" : "") +
+      '>Square</option><option value="triangle"' +
+      ((p.ballShape || "circle") === "triangle" ? " selected" : "") +
+      '>Triangle</option><option value="mixed"' +
+      ((p.ballShape || "circle") === "mixed" ? " selected" : "") +
+      ">Mixed</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Ball Colors (comma-sep)</label><input type="text" value="' +
+      (p.ballColors || "#ff6b35,#cdfe00,#3b82f6,#ec4899,#f59e0b") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','ballColors',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Ball Min Size</label><input type="number" value="' +
+      (p.ballMinSize || 10) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','ballMinSize',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Ball Max Size</label><input type="number" value="' +
+      (p.ballMaxSize || 30) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','ballMaxSize',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Max Balls</label><input type="number" value="' +
+      (p.maxBalls || 50) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','maxBalls',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Ball Glow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','ballGlow',this.value)\"><option value=\"false\"" +
+      (!p.ballGlow ? " selected" : "") +
+      '>Off</option><option value="true"' +
+      (p.ballGlow ? " selected" : "") +
+      ">On</option></select></div>";
+    if (p.ballGlow) {
+      html +=
+        '<div class="rp-row"><label>Glow Color</label><input type="color" value="' +
+        (p.glowColor || "#fbbf24") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','glowColor',this.value)\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Friction</label><input type="number" step="0.005" min="0.9" max="1" value="' +
+      (p.friction || 0.99) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','friction',+this.value)\"></div>";
+    html += "</div></div>";
+    return html;
+  },
+});
+
+// 7. Black Hole
+FB.widgets.register("blackHole", {
+  label: "Black Hole",
+  sublabel: "Gravitational singularity",
+  icon: "◉",
+  iconBg: "#050510",
+  iconColor: "#7c3aed",
+  category: "veltro",
+  subCategory: "physics",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    particleCount: 150,
+    pullStrength: 0.5,
+    accretionColor: "#ff6b35",
+    bgType: "solid",
+    bgGradientDir: "135deg",
+    bgGradientColor1: "#0d0d1a",
+    bgGradientColor2: "#1a1a3e",
+    bgImageUrl: "",
+    bgImageOpacity: 30,
+    bgImageSize: "cover",
+    borderRadius: 4,
+    borderWidth: 0,
+    borderColor: "#ffffff",
+    boxShadow: "none",
+    shadowColor: "#000000",
+    shadowBlur: 10,
+    shadowOffsetX: 0,
+    shadowOffsetY: 4,
+    paddingV: 0,
+    paddingH: 0,
+    marginV: 0,
+    marginH: 0,
+    opacity: 100,
+    entranceAnim: "none",
+    hoverEffect: "none",
+    hoverTransition: 300,
+    animDuration: 600,
+    blackHoleSize: 30,
+    eventHorizon: 50,
+    particleSize: 2,
+    particleTrail: true,
+    accretionDisk: true,
+    diskOpacity: 60,
+    particleGlow: true,
+    glowColor: "#ff6b35",
+    jetEnabled: false,
+    jetColor: "#7c3aed",
+  },
+  render: function (p) {
+    var id = p._blockId || "bh";
+    var bgType = p.bgType || "solid";
+    var bgStyle = "";
+    if (bgType === "gradient") {
+      bgStyle =
+        "background:linear-gradient(" +
+        (p.bgGradientDir || "135deg") +
+        "," +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        "," +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        ");";
+    } else if (bgType === "image" && p.bgImageUrl) {
+      bgStyle =
+        "background:url('" +
+        p.bgImageUrl +
+        "') center/" +
+        (p.bgImageSize || "cover") +
+        " no-repeat;background-color:" +
+        (p.bg || "#0d0d1a") +
+        ";";
+    } else {
+      bgStyle = "background:" + (p.bg || "#0d0d1a") + ";";
+    }
+    var containerBorder = "";
+    if (p.borderWidth && p.borderWidth > 0) {
+      containerBorder =
+        "border:" +
+        p.borderWidth +
+        "px solid " +
+        (p.borderColor || "#ffffff") +
+        ";";
+    }
+    var containerShadow = "";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      containerShadow =
+        "box-shadow:" +
+        (p.shadowOffsetX || 0) +
+        "px " +
+        (p.shadowOffsetY || 4) +
+        "px " +
+        (p.shadowBlur || 10) +
+        "px " +
+        (p.shadowColor || "#000000") +
+        ";";
+    }
+    var hoverClass = "";
+    if (p.hoverEffect && p.hoverEffect !== "none") {
+      hoverClass = " veltro-hover-" + p.hoverEffect;
+    }
+    var animClass = "";
+    if (p.entranceAnim && p.entranceAnim !== "none") {
+      animClass = " veltro-anim-" + p.entranceAnim;
+    }
+    var padStyle =
+      "padding:" + (p.paddingV || 0) + "px " + (p.paddingH || 0) + "px;";
+    var margStyle =
+      "margin:" + (p.marginV || 0) + "px " + (p.marginH || 0) + "px;";
+    var opStyle =
+      p.opacity && p.opacity < 100 ? "opacity:" + p.opacity / 100 + ";" : "";
+    return (
+      '<div class="veltro-blackhole-wrap' +
+      animClass +
+      hoverClass +
+      '" id="blackhole-' +
+      id +
+      '" data-particle-count="' +
+      (p.particleCount || 150) +
+      '" data-pull-strength="' +
+      (p.pullStrength || 0.5) +
+      '" data-accretion-color="' +
+      (p.accretionColor || "#ff6b35") +
+      '" data-black-hole-size="' +
+      (p.blackHoleSize || 30) +
+      '" data-event-horizon="' +
+      (p.eventHorizon || 50) +
+      '" data-particle-size="' +
+      (p.particleSize || 2) +
+      '" data-particle-trail="' +
+      (p.particleTrail !== false ? "true" : "false") +
+      '" data-accretion-disk="' +
+      (p.accretionDisk !== false ? "true" : "false") +
+      '" data-disk-opacity="' +
+      (p.diskOpacity || 60) +
+      '" data-particle-glow="' +
+      (p.particleGlow !== false ? "true" : "false") +
+      '" data-glow-color="' +
+      (p.glowColor || "#ff6b35") +
+      '" data-jet-enabled="' +
+      (p.jetEnabled ? "true" : "false") +
+      '" data-jet-color="' +
+      (p.jetColor || "#7c3aed") +
+      '" style="height:' +
+      p.height +
+      "px;" +
+      bgStyle +
+      "position:relative;overflow:hidden;border-radius:" +
+      (p.borderRadius || 4) +
+      "px;" +
+      containerBorder +
+      containerShadow +
+      padStyle +
+      margStyle +
+      opStyle +
+      '"><canvas class="veltro-blackhole-canvas" style="position:absolute;inset:0;width:100%;height:100%" data-blackhole-init="1"></canvas></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    var html = "";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Core Settings</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Height (px)</label><input type="number" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Count</label><input type="number" value="' +
+      (p.particleCount || 150) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleCount',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Pull Strength</label><input type="number" step="0.05" min="0" max="2" value="' +
+      (p.pullStrength || 0.5) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','pullStrength',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Accretion Color</label><input type="color" value="' +
+      (p.accretionColor || "#ff6b35") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','accretionColor',this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Background & Container</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Background Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bgType',this.value)\"><option value=\"solid\"" +
+      ((p.bgType || "solid") === "solid" ? " selected" : "") +
+      '>Solid</option><option value="gradient"' +
+      ((p.bgType || "solid") === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="image"' +
+      ((p.bgType || "solid") === "image" ? " selected" : "") +
+      ">Image</option></select></div>";
+    if ((p.bgType || "solid") === "solid") {
+      html +=
+        '<div class="rp-row"><label>Background Color</label><input type="color" value="' +
+        (p.bg || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bg',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "gradient") {
+      html +=
+        '<div class="rp-row"><label>Gradient Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientDir',this.value)\"><option value=\"135deg\"" +
+        ((p.bgGradientDir || "135deg") === "135deg" ? " selected" : "") +
+        '>135°</option><option value="to right"' +
+        ((p.bgGradientDir || "135deg") === "to right" ? " selected" : "") +
+        '>Left→Right</option><option value="to bottom"' +
+        ((p.bgGradientDir || "135deg") === "to bottom" ? " selected" : "") +
+        '>Top→Bottom</option><option value="circle"' +
+        ((p.bgGradientDir || "135deg") === "circle" ? " selected" : "") +
+        ">Radial</option></select></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 1</label><input type="color" value="' +
+        (p.bgGradientColor1 || "#0d0d1a") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor1',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Gradient Color 2</label><input type="color" value="' +
+        (p.bgGradientColor2 || "#1a1a3e") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgGradientColor2',this.value)\"></div>";
+    }
+    if ((p.bgType || "solid") === "image") {
+      html +=
+        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+        (p.bgImageUrl || "") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageUrl',this.value)\" placeholder=\"https://...\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Opacity (%)</label><input type="number" min="0" max="100" value="' +
+        (p.bgImageOpacity || 30) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageOpacity',+this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Image Size</label><select onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','bgImageSize',this.value)\"><option value=\"cover\"" +
+        ((p.bgImageSize || "cover") === "cover" ? " selected" : "") +
+        '>Cover</option><option value="contain"' +
+        ((p.bgImageSize || "cover") === "contain" ? " selected" : "") +
+        '>Contain</option><option value="100% 100%"' +
+        ((p.bgImageSize || "cover") === "100% 100%" ? " selected" : "") +
+        ">Stretch</option></select></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Border Radius (px)</label><input type="number" value="' +
+      (p.borderRadius || 4) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderRadius',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Width (px)</label><input type="number" value="' +
+      (p.borderWidth || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderWidth',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Border Color</label><input type="color" value="' +
+      (p.borderColor || "#ffffff") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','borderColor',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Box Shadow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','boxShadow',this.value)\"><option value=\"none\"" +
+      ((p.boxShadow || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="soft"' +
+      ((p.boxShadow || "none") === "soft" ? " selected" : "") +
+      '>Soft</option><option value="hard"' +
+      ((p.boxShadow || "none") === "hard" ? " selected" : "") +
+      '>Hard</option><option value="glow"' +
+      ((p.boxShadow || "none") === "glow" ? " selected" : "") +
+      ">Glow</option></select></div>";
+    if (p.boxShadow && p.boxShadow !== "none") {
+      html +=
+        '<div class="rp-row"><label>Shadow Color</label><input type="color" value="' +
+        (p.shadowColor || "#000000") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowColor',this.value)\"></div>";
+      html +=
+        '<div class="rp-row"><label>Shadow Blur</label><input type="number" value="' +
+        (p.shadowBlur || 10) +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','shadowBlur',+this.value)\"></div>";
+    }
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Spacing & Display</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Padding V (px)</label><input type="number" value="' +
+      (p.paddingV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Padding H (px)</label><input type="number" value="' +
+      (p.paddingH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','paddingH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin V (px)</label><input type="number" value="' +
+      (p.marginV || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginV',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Margin H (px)</label><input type="number" value="' +
+      (p.marginH || 0) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','marginH',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Opacity (%)</label><input type="number" min="0" max="100" value="' +
+      (p.opacity || 100) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Animations & Effects</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Entrance Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','entranceAnim',this.value)\"><option value=\"none\"" +
+      ((p.entranceAnim || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="fade-in"' +
+      ((p.entranceAnim || "none") === "fade-in" ? " selected" : "") +
+      '>Fade In</option><option value="slide-up"' +
+      ((p.entranceAnim || "none") === "slide-up" ? " selected" : "") +
+      '>Slide Up</option><option value="slide-left"' +
+      ((p.entranceAnim || "none") === "slide-left" ? " selected" : "") +
+      '>Slide Left</option><option value="zoom-in"' +
+      ((p.entranceAnim || "none") === "zoom-in" ? " selected" : "") +
+      '>Zoom In</option><option value="flip-in"' +
+      ((p.entranceAnim || "none") === "flip-in" ? " selected" : "") +
+      ">Flip In</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Animation Duration (ms)</label><input type="number" value="' +
+      (p.animDuration || 600) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','animDuration',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Effect</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverEffect',this.value)\"><option value=\"none\"" +
+      ((p.hoverEffect || "none") === "none" ? " selected" : "") +
+      '>None</option><option value="lift"' +
+      ((p.hoverEffect || "none") === "lift" ? " selected" : "") +
+      '>Lift</option><option value="glow"' +
+      ((p.hoverEffect || "none") === "glow" ? " selected" : "") +
+      '>Glow</option><option value="scale"' +
+      ((p.hoverEffect || "none") === "scale" ? " selected" : "") +
+      '>Scale</option><option value="tilt"' +
+      ((p.hoverEffect || "none") === "tilt" ? " selected" : "") +
+      ">Tilt</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Hover Transition (ms)</label><input type="number" value="' +
+      (p.hoverTransition || 300) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','hoverTransition',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Advanced Black Hole Options</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Black Hole Size</label><input type="number" value="' +
+      (p.blackHoleSize || 30) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','blackHoleSize',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Event Horizon</label><input type="number" value="' +
+      (p.eventHorizon || 50) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','eventHorizon',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Size</label><input type="number" value="' +
+      (p.particleSize || 2) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleSize',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Trail</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleTrail',this.value)\"><option value=\"true\"" +
+      (p.particleTrail !== false ? " selected" : "") +
+      '>Enabled</option><option value="false"' +
+      (p.particleTrail === false ? " selected" : "") +
+      ">Disabled</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Accretion Disk</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','accretionDisk',this.value)\"><option value=\"true\"" +
+      (p.accretionDisk !== false ? " selected" : "") +
+      '>Enabled</option><option value="false"' +
+      (p.accretionDisk === false ? " selected" : "") +
+      ">Disabled</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Disk Opacity (%)</label><input type="number" min="0" max="100" value="' +
+      (p.diskOpacity || 60) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','diskOpacity',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Glow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleGlow',this.value)\"><option value=\"true\"" +
+      (p.particleGlow !== false ? " selected" : "") +
+      '>On</option><option value="false"' +
+      (p.particleGlow === false ? " selected" : "") +
+      ">Off</option></select></div>";
+    if (p.particleGlow !== false) {
+      html +=
+        '<div class="rp-row"><label>Glow Color</label><input type="color" value="' +
+        (p.glowColor || "#ff6b35") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','glowColor',this.value)\"></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Jet Enabled</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','jetEnabled',this.value)\"><option value=\"false\"" +
+      (!p.jetEnabled ? " selected" : "") +
+      '>Off</option><option value="true"' +
+      (p.jetEnabled ? " selected" : "") +
+      ">On</option></select></div>";
+    if (p.jetEnabled) {
+      html +=
+        '<div class="rp-row"><label>Jet Color</label><input type="color" value="' +
+        (p.jetColor || "#7c3aed") +
+        '" onchange="FB.panels.updateWidgetProp(\'' +
+        id +
+        "','jetColor',this.value)\"></div>";
+    }
+    html += "</div></div>";
+    return html;
+  },
+});
+
+// ── VELTRO ENGINE BATCH 4: SCROLL & MOTION (4 NEW WIDGETS) ──
+// 1. Parallax Depth
+FB.widgets.register("parallaxDepth", {
+  label: "Parallax Depth",
+  sublabel: "Multi-layer parallax",
+  icon: "▣",
+  iconBg: "#0d1a2e",
+  iconColor: "#60a5fa",
+  category: "veltro",
+  subCategory: "scroll",
+  defaultProps: { height: 500, bg: "#0d0d1a", layerCount: 5, speed: 0.5 },
+  render: function (p) {
+    var id = p._blockId || "parDepth";
+    var layersHtml = "";
+    for (var i = 0; i < (p.layerCount || 5); i++) {
+      var depth = (i + 1) / (p.layerCount || 5);
+      layersHtml +=
+        '<div class="veltro-parallax-layer" data-depth="' +
+        depth +
+        '" style="position:absolute;inset:0;opacity:' +
+        (0.1 + depth * 0.4) +
+        ";background:radial-gradient(circle at " +
+        (20 + i * 15) +
+        "% " +
+        (30 + i * 10) +
+        "%,rgba(205,254,0," +
+        (0.05 + depth * 0.15) +
+        ') 0%,transparent 60%)\"></div>';
+    }
+    return (
+      '<div class="veltro-parallax-depth-wrap" id="pardepth-' +
+      id +
+      '" data-speed="' +
+      p.speed +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px">' +
+      layersHtml +
+      '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:10"><h2 style="color:#fff;font-size:3rem;font-weight:800;margin:0">DEPTH</h2></div></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// 2. Scroll-Triggered Reveals
+FB.widgets.register("scrollTriggered", {
+  label: "Scroll-Triggered Reveals",
+  sublabel: "Elements animate on scroll",
+  icon: "✦",
+  iconBg: "#1a0d1a",
+  iconColor: "#f472b6",
+  category: "veltro",
+  subCategory: "scroll",
+  defaultProps: {
+    height: 500,
+    bg: "#0d0d1a",
+    animationType: "fadeUp",
+    stagger: 100,
+    duration: 800,
+  },
+  render: function (p) {
+    var id = p._blockId || "scrollTrig";
+    var items = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5"];
+    var itemsHtml = items
+      .map(function (item, i) {
+        return (
+          '<div class="veltro-scroll-reveal-item" data-index="' +
+          i +
+          '" style="padding:20px;margin:10px;background:rgba(255,255,255,0.05);border-radius:8px;opacity:0;transform:translateY(30px);transition:opacity ' +
+          p.duration +
+          "ms ease,transform " +
+          p.duration +
+          'ms ease">' +
+          item +
+          "</div>"
+        );
+      })
+      .join("");
+    return (
+      '<div class="veltro-scroll-reveal-wrap" id="scrolltrig-' +
+      id +
+      '" data-animation-type="' +
+      p.animationType +
+      '" data-stagger="' +
+      p.stagger +
+      '" data-duration="' +
+      p.duration +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px;overflow-y:auto;padding:20px">' +
+      itemsHtml +
+      "</div>"
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// 3. Horizontal Scroll Gallery
+FB.widgets.register("horizontalScrollGallery", {
+  label: "Horizontal Scroll Gallery",
+  sublabel: "Smooth horizontal scrolling",
+  icon: "▶",
+  iconBg: "#0d1a0d",
+  iconColor: "#34d399",
+  category: "veltro",
+  subCategory: "scroll",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    itemCount: 6,
+    snap: true,
+    momentum: true,
+  },
+  render: function (p) {
+    var id = p._blockId || "hScroll";
+    var itemsHtml = "";
+    for (var i = 0; i < (p.itemCount || 6); i++) {
+      itemsHtml +=
+        '<div class="veltro-hscroll-item" style="flex:0 0 300px;height:300px;background:linear-gradient(135deg,rgba(205,254,0,0.1) 0%,rgba(60,165,250,0.1) 100%);border-radius:16px;margin-right:20px;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:800;color:#fff">' +
+        (i + 1) +
+        "</div>";
+    }
+    return (
+      '<div class="veltro-hscroll-wrap" id="hscroll-' +
+      id +
+      '" data-snap="' +
+      (p.snap !== false ? "1" : "0") +
+      '" data-momentum="' +
+      (p.momentum !== false ? "1" : "0") +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px"><div class="veltro-hscroll-container" style="display:flex;height:100%;align-items:center;padding:0 40px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none">' +
+      itemsHtml +
+      "</div></div>"
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// 4. Velocity-Based Skew
+FB.widgets.register("velocitySkew", {
+  label: "Velocity-Based Skew",
+  sublabel: "Rubber-band skew effect",
+  icon: "⟋",
+  iconBg: "#1a1a0d",
+  iconColor: "#fbbf24",
+  category: "veltro",
+  subCategory: "scroll",
+  defaultProps: { height: 400, bg: "#0d0d1a", maxSkew: 15, elasticity: 0.8 },
+  render: function (p) {
+    var id = p._blockId || "velSkew";
+    return (
+      '<div class="veltro-velskew-wrap" id="velskew-' +
+      id +
+      '" data-max-skew="' +
+      p.maxSkew +
+      '" data-elasticity="' +
+      p.elasticity +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px;overflow-y:auto"><div class="veltro-velskew-content" style="padding:40px" data-velskew-init="1"><div style="height:800px;display:flex;flex-direction:column;gap:20px"><div style="padding:30px;background:rgba(205,254,0,0.1);border-radius:12px"><h3 style="color:#cdfe00;margin:0">Scroll to see skew effect</h3></div><div style="padding:30px;background:rgba(60,165,250,0.1);border-radius:12px"><h3 style="color:#60a5fa;margin:0">Velocity affects skew</h3></div><div style="padding:30px;background:rgba(236,72,153,0.1);border-radius:12px"><h3 style="color:#ec4899;margin:0">Rubber band physics</h3></div><div style="padding:30px;background:rgba(251,191,36,0.1);border-radius:12px"><h3 style="color:#fbbf24;margin:0">Fast scroll = more skew</h3></div></div></div></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// ── VELTRO ENGINE BATCH 5: BACKGROUNDS & TEXTURES (4 NEW WIDGETS) ──
+// 1. Aurora Borealis
+FB.widgets.register("auroraBorealis", {
+  label: "Aurora Borealis",
+  sublabel: "Northern lights effect",
+  icon: "~",
+  iconBg: "#0d1a1a",
+  iconColor: "#34d399",
+  category: "veltro",
+  subCategory: "backgrounds",
+  defaultProps: {
+    height: 500,
+    bg: "#0d0d1a",
+    colors: "#00ff88,#8b5cf6,#3b82f6",
+    speed: 0.5,
+    intensity: 0.7,
+  },
+  render: function (p) {
+    var id = p._blockId || "aurora";
+    return (
+      '<div class="veltro-aurora-wrap" id="aurora-' +
+      id +
+      '" data-colors="' +
+      p.colors +
+      '" data-speed="' +
+      p.speed +
+      '" data-intensity="' +
+      p.intensity +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px"><canvas class="veltro-aurora-canvas" style="position:absolute;inset:0;width:100%;height:100%" data-aurora-init="1"></canvas></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// 2. Particle Nebula
+FB.widgets.register("particleNebula", {
+  label: "Particle Nebula",
+  sublabel: "Space-themed particles",
+  icon: "✦",
+  iconBg: "#0d0d2e",
+  iconColor: "#60a5fa",
+  category: "veltro",
+  subCategory: "backgrounds",
+  defaultProps: {
+    height: 500,
+    bg: "#050510",
+    starCount: 200,
+    nebulaColors: "#7c3aed,#3b82f6,#ec4899",
+    speed: 0.3,
+  },
+  render: function (p) {
+    var id = p._blockId || "nebula";
+    return (
+      '<div class="veltro-nebula-wrap" id="nebula-' +
+      id +
+      '" data-star-count="' +
+      p.starCount +
+      '" data-nebula-colors="' +
+      p.nebulaColors +
+      '" data-speed="' +
+      p.speed +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px"><canvas class="veltro-nebula-canvas" style="position:absolute;inset:0;width:100%;height:100%" data-nebula-init="1"></canvas></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// 3. Geometric Patterns
+FB.widgets.register("geometricPatterns", {
+  label: "Geometric Patterns",
+  sublabel: "Animated tessellations",
+  icon: "▣",
+  iconBg: "#1a0d2e",
+  iconColor: "#a78bfa",
+  category: "veltro",
+  subCategory: "backgrounds",
+  defaultProps: {
+    height: 500,
+    bg: "#0d0d1a",
+    patternType: "hexagons",
+    colors: "#cdfe00,#3b82f6,#ec4899",
+    speed: 0.5,
+  },
+  render: function (p) {
+    var id = p._blockId || "geo";
+    return (
+      '<div class="veltro-geo-wrap" id="geo-' +
+      id +
+      '" data-pattern-type="' +
+      p.patternType +
+      '" data-colors="' +
+      p.colors +
+      '" data-speed="' +
+      p.speed +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px"><canvas class="veltro-geo-canvas" style="position:absolute;inset:0;width:100%;height:100%" data-geo-init="1"></canvas></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// 4. Liquid Gradient
+FB.widgets.register("liquidGradient", {
+  label: "Liquid Gradient",
+  sublabel: "Flowing organic gradients",
+  icon: "≋",
+  iconBg: "#0d1a1a",
+  iconColor: "#34d399",
+  category: "veltro",
+  subCategory: "backgrounds",
+  defaultProps: {
+    height: 500,
+    bg: "#0d0d1a",
+    colors: "#ff6b35,#cdfe00,#3b82f6,#ec4899",
+    flowSpeed: 0.5,
+    turbulence: 0.5,
+  },
+  render: function (p) {
+    var id = p._blockId || "liqGrad";
+    return (
+      '<div class="veltro-liqgrad-wrap" id="liqgrad-' +
+      id +
+      '" data-colors="' +
+      p.colors +
+      '" data-flow-speed="' +
+      p.flowSpeed +
+      '" data-turbulence="' +
+      p.turbulence +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px"><canvas class="veltro-liqgrad-canvas" style="position:absolute;inset:0;width:100%;height:100%" data-liqgrad-init="1"></canvas></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// ── VELTRO ENGINE BATCH 6: EFFECTS & VISUAL (2 NEW WIDGETS) ──
+// 1. Holographic Overlay
+FB.widgets.register("holographicOverlay", {
+  label: "Holographic Overlay",
+  sublabel: "Rainbow sheen effect",
+  icon: "✦",
+  iconBg: "#1a1a0d",
+  iconColor: "#fbbf24",
+  category: "veltro",
+  subCategory: "effects",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    overlayColor: "#ffffff",
+    intensity: 0.5,
+    angle: 45,
+  },
+  render: function (p) {
+    var id = p._blockId || "holo";
+    return (
+      '<div class="veltro-holo-wrap" id="holo-' +
+      id +
+      '" data-overlay-color="' +
+      p.overlayColor +
+      '" data-intensity="' +
+      p.intensity +
+      '" data-angle="' +
+      p.angle +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px;display:flex;align-items:center;justify-content:center"><div class="veltro-holo-card" style="width:200px;height:280px;background:linear-gradient(' +
+      p.angle +
+      'deg,rgba(255,255,255,0.1) 0%,rgba(255,255,255,0) 50%,rgba(255,255,255,0.1) 100%);border-radius:16px;border:1px solid rgba(255,255,255,0.1);position:relative;overflow:hidden"><div class="veltro-holo-shine" style="position:absolute;inset:0;background:conic-gradient(from ' +
+      p.angle +
+      "deg at 50% 50%,#ff6b35,#cdfe00,#3b82f6,#ec4899,#f59e0b,#ff6b35);opacity:" +
+      p.intensity +
+      ';mix-blend-mode:overlay;animation:vtspin 4s linear infinite\"></div><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><span style="font-size:3rem">✦</span></div></div></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// 2. Light Leaks
+FB.widgets.register("lightLeaks", {
+  label: "Light Leaks",
+  sublabel: "Cinematic light leak effects",
+  icon: "◉",
+  iconBg: "#1a0d1a",
+  iconColor: "#f472b6",
+  category: "veltro",
+  subCategory: "effects",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    leakColor: "#ff6b35",
+    intensity: 0.3,
+    direction: "top-left",
+  },
+  render: function (p) {
+    var id = p._blockId || "leak";
+    var gradients = {
+      "top-left": "linear-gradient(135deg,",
+      "top-right": "linear-gradient(225deg,",
+      "bottom-left": "linear-gradient(45deg,",
+      "bottom-right": "linear-gradient(315deg,",
+    };
+    var grad =
+      (gradients[p.direction] || gradients["top-left"]) +
+      p.leakColor +
+      " 0%,transparent 50%)";
+    return (
+      '<div class="veltro-leak-wrap" id="leak-' +
+      id +
+      '" data-leak-color="' +
+      p.leakColor +
+      '" data-intensity="' +
+      p.intensity +
+      '" data-direction="' +
+      p.direction +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px;display:flex;align-items:center;justify-content:center"><div class="veltro-leak-overlay" style="position:absolute;inset:0;background:' +
+      grad +
+      ";opacity:" +
+      p.intensity +
+      ';pointer-events:none;animation:vtpulse 4s ease-in-out infinite\"></div><h2 style="color:#fff;font-size:3rem;font-weight:800;margin:0;position:relative;z-index:1">CINEMATIC</h2></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// ── VELTRO ENGINE BATCH 7: SPATIAL & LAYOUT (8 NEW WIDGETS) ──
+// 1. 3D Carousel
+FB.widgets.register("carousel3d", {
+  label: "3D Carousel",
+  sublabel: "Rotating 3D card carousel",
+  icon: "◈",
+  iconBg: "#0d1a2e",
+  iconColor: "#60a5fa",
+  category: "veltro",
+  subCategory: "spatial",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    cardCount: 6,
+    rotationSpeed: 0.5,
+  },
+  render: function (p) {
+    var id = p._blockId || "carousel";
+    var cardsHtml = "";
+    for (var i = 0; i < (p.cardCount || 6); i++) {
+      var angle = (i * 360) / (p.cardCount || 6);
+      cardsHtml +=
+        '<div class="veltro-carousel-card" style="position:absolute;width:120px;height:160px;background:linear-gradient(135deg,rgba(205,254,0,0.2) 0%,rgba(60,165,250,0.2) 100%);border-radius:12px;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:800;color:#fff;transform:rotateY(' +
+        angle +
+        'deg) translateZ(200px);backface-visibility:hidden">' +
+        (i + 1) +
+        "</div>";
+    }
+    return (
+      '<div class="veltro-carousel-wrap" id="carousel-' +
+      id +
+      '" data-rotation-speed="' +
+      p.rotationSpeed +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px;display:flex;align-items:center;justify-content:center;perspective:1000px"><div class="veltro-carousel-stage" style="position:relative;width:120px;height:160px;transform-style:preserve-3d" data-carousel-init="1">' +
+      cardsHtml +
+      "</div></div>"
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// 2. Isometric Grid
+FB.widgets.register("isometricGrid", {
+  label: "Isometric Grid",
+  sublabel: "Isometric layout",
+  icon: "▣",
+  iconBg: "#1a0d2e",
+  iconColor: "#a78bfa",
+  category: "veltro",
+  subCategory: "spatial",
+  defaultProps: { height: 500, bg: "#0d0d1a", cols: 4, rows: 3, spacing: 20 },
+  render: function (p) {
+    var id = p._blockId || "iso";
+    var itemsHtml = "";
+    for (var r = 0; r < (p.rows || 3); r++) {
+      for (var c = 0; c < (p.cols || 4); c++) {
+        itemsHtml +=
+          '<div class="veltro-iso-cell" style="width:80px;height:80px;background:linear-gradient(135deg,rgba(205,254,0,0.15) 0%,rgba(60,165,250,0.15) 100%);border-radius:8px;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;color:#cdfe00;transform:rotateX(60deg) rotateZ(-45deg);margin:' +
+          (p.spacing || 20) +
+          'px">' +
+          (r * (p.cols || 4) + c + 1) +
+          "</div>";
+      }
+    }
+    return (
+      '<div class="veltro-iso-wrap" id="iso-' +
+      id +
+      '" data-cols="' +
+      p.cols +
+      '" data-rows="' +
+      p.rows +
+      '" data-spacing="' +
+      p.spacing +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px;display:flex;align-items:center;justify-content:center"><div class="veltro-iso-grid" style="display:grid;grid-template-columns:repeat(' +
+      p.cols +
+      ",1fr);gap:" +
+      p.spacing +
+      'px;transform:rotateX(60deg) rotateZ(-45deg);perspective:1000px">' +
+      itemsHtml +
+      "</div></div>"
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// 3. Perspective Rooms
+FB.widgets.register("perspectiveRooms", {
+  label: "Perspective Rooms",
+  sublabel: "3D room layout",
+  icon: "◉",
+  iconBg: "#0d1a1a",
+  iconColor: "#34d399",
+  category: "veltro",
+  subCategory: "spatial",
+  defaultProps: {
+    height: 500,
+    bg: "#0d0d1a",
+    roomCount: 3,
+    perspective: 800,
+    colors: "#cdfe00,#3b82f6,#ec4899",
+  },
+  render: function (p) {
+    var id = p._blockId || "rooms";
+    var colors = (p.colors || "#cdfe00,#3b82f6,#ec4899").split(",");
+    var roomsHtml = "";
+    for (var i = 0; i < (p.roomCount || 3); i++) {
+      roomsHtml +=
+        '<div class="veltro-room" style="position:absolute;inset:0;background:' +
+        (colors[i % colors.length] || "#cdfe00") +
+        ";opacity:0.1;transform:translateZ(" +
+        i * -200 +
+        'px);border:2px solid rgba(255,255,255,0.1);border-radius:16px;display:flex;align-items:center;justify-content:center"><span style="font-size:2rem;font-weight:800;color:#fff;opacity:0.5">Room ' +
+        (i + 1) +
+        "</span></div>";
+    }
+    return (
+      '<div class="veltro-rooms-wrap" id="rooms-' +
+      id +
+      '" data-room-count="' +
+      p.roomCount +
+      '" data-perspective="' +
+      p.perspective +
+      '" data-colors="' +
+      p.colors +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ";position:relative;overflow:hidden;border-radius:4px;display:flex;align-items:center;justify-center;perspective:" +
+      p.perspective +
+      'px"><div class="veltro-rooms-stage" style="position:relative;width:300px;height:300px;transform-style:preserve-3d">' +
+      roomsHtml +
+      "</div></div>"
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// 4. Floating Islands
+FB.widgets.register("floatingIslands", {
+  label: "Floating Islands",
+  sublabel: "Floating content blocks",
+  icon: "◈",
+  iconBg: "#1a1a0d",
+  iconColor: "#fbbf24",
+  category: "veltro",
+  subCategory: "spatial",
+  defaultProps: {
+    height: 500,
+    bg: "#0d0d1a",
+    islandCount: 5,
+    floatRange: 20,
+    speed: 1,
+  },
+  render: function (p) {
+    var id = p._blockId || "islands";
+    var itemsHtml = "";
+    for (var i = 0; i < (p.islandCount || 5); i++) {
+      var size = 80 + Math.random() * 60;
+      itemsHtml +=
+        '<div class="veltro-island" style="position:absolute;width:' +
+        size +
+        "px;height:" +
+        size +
+        "px;background:linear-gradient(135deg,rgba(205,254,0,0.2) 0%,rgba(60,165,250,0.2) 100%);border-radius:" +
+        size / 4 +
+        "px;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;color:#fff;left:" +
+        (10 + Math.random() * 70) +
+        "%;top:" +
+        (10 + Math.random() * 70) +
+        "%;animation:vtfloat " +
+        (3 + Math.random() * 2) +
+        "s ease-in-out infinite;animation-delay:" +
+        Math.random() * 2 +
+        's">' +
+        (i + 1) +
+        "</div>";
+    }
+    return (
+      '<div class="veltro-islands-wrap" id="islands-' +
+      id +
+      '" data-island-count="' +
+      p.islandCount +
+      '" data-float-range="' +
+      p.floatRange +
+      '" data-speed="' +
+      p.speed +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px">' +
+      itemsHtml +
+      "</div>"
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// 5. Layered Parallax
+FB.widgets.register("layeredParallax", {
+  label: "Layered Parallax",
+  sublabel: "Multi-depth layers",
+  icon: "▣",
+  iconBg: "#0d1a2e",
+  iconColor: "#60a5fa",
+  category: "veltro",
+  subCategory: "spatial",
+  defaultProps: {
+    height: 500,
+    bg: "#0d0d1a",
+    layerCount: 5,
+    depthIntensity: 0.5,
+  },
+  render: function (p) {
+    var id = p._blockId || "layerPar";
+    var layersHtml = "";
+    for (var i = 0; i < (p.layerCount || 5); i++) {
+      var depth = (i + 1) / (p.layerCount || 5);
+      layersHtml +=
+        '<div class="veltro-layer" data-depth="' +
+        depth +
+        '" style="position:absolute;inset:0;background:radial-gradient(circle at ' +
+        (30 + i * 10) +
+        "% " +
+        (40 + i * 8) +
+        "%,rgba(205,254,0," +
+        (0.03 + depth * 0.08) +
+        ') 0%,transparent 50%);transform:translateZ(0)\"></div>';
+    }
+    return (
+      '<div class="veltro-layerpar-wrap" id="layerpar-' +
+      id +
+      '" data-layer-count="' +
+      p.layerCount +
+      '" data-depth-intensity="' +
+      p.depthIntensity +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px;display:flex;align-items:center;justify-content:center">' +
+      layersHtml +
+      '<div style="position:relative;z-index:10"><h2 style="color:#fff;font-size:3rem;font-weight:800;margin:0;text-shadow:0 4px 20px rgba(0,0,0,0.5)">DEPTH</h2></div></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// 6. Kinetic Layout
+FB.widgets.register("kineticLayout", {
+  label: "Kinetic Layout",
+  sublabel: "Layout responds to cursor",
+  icon: "◉",
+  iconBg: "#1a0d1a",
+  iconColor: "#f472b6",
+  category: "veltro",
+  subCategory: "spatial",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    elementCount: 9,
+    responseRadius: 200,
+  },
+  render: function (p) {
+    var id = p._blockId || "kinetic";
+    var itemsHtml = "";
+    for (var i = 0; i < (p.elementCount || 9); i++) {
+      itemsHtml +=
+        '<div class="veltro-kinetic-item" style="width:80px;height:80px;background:linear-gradient(135deg,rgba(205,254,0,0.15) 0%,rgba(60,165,250,0.15) 100%);border-radius:12px;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;color:#cdfe00;transition:transform 0.3s ease">' +
+        (i + 1) +
+        "</div>";
+    }
+    return (
+      '<div class="veltro-kinetic-wrap" id="kinetic-' +
+      id +
+      '" data-response-radius="' +
+      p.responseRadius +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:20px;padding:20px">' +
+      itemsHtml +
+      "</div>"
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// 7. Morphing Grid
+FB.widgets.register("morphingGrid", {
+  label: "Morphing Grid",
+  sublabel: "Grid transforms between layouts",
+  icon: "⊞",
+  iconBg: "#0d1a2e",
+  iconColor: "#60a5fa",
+  category: "veltro",
+  subCategory: "spatial",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    layoutType: "grid",
+    animationSpeed: 1,
+  },
+  render: function (p) {
+    var id = p._blockId || "morphGrid";
+    var itemsHtml = "";
+    for (var i = 0; i < 9; i++) {
+      itemsHtml +=
+        '<div class="veltro-morphgrid-item" style="background:linear-gradient(135deg,rgba(205,254,0,0.15) 0%,rgba(60,165,250,0.15) 100%);border-radius:8px;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;color:#cdfe00">' +
+        (i + 1) +
+        "</div>";
+    }
+    var gridStyle =
+      p.layoutType === "grid"
+        ? "grid-template-columns:repeat(3,1fr)"
+        : p.layoutType === "list"
+          ? "grid-template-columns:1fr"
+          : "grid-template-columns:repeat(3,1fr)";
+    return (
+      '<div class="veltro-morphgrid-wrap" id="morphgrid-' +
+      id +
+      '" data-layout-type="' +
+      p.layoutType +
+      '" data-animation-speed="' +
+      p.animationSpeed +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px;padding:20px"><div class="veltro-morphgrid-container" style="display:grid;' +
+      gridStyle +
+      ";gap:10px;height:100%;transition:all " +
+      1 / p.animationSpeed +
+      's ease">' +
+      itemsHtml +
+      "</div></div>"
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// 8. Spatial Navigation
+FB.widgets.register("spatialNavigation", {
+  label: "Spatial Navigation",
+  sublabel: "3D navigation system",
+  icon: "◈",
+  iconBg: "#1a0d2e",
+  iconColor: "#a78bfa",
+  category: "veltro",
+  subCategory: "spatial",
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    navItems: "Home,About,Work,Contact",
+    perspective: 800,
+    spacing: 100,
+  },
+  render: function (p) {
+    var id = p._blockId || "spatialNav";
+    var items = (p.navItems || "Home,About,Work,Contact").split(",");
+    var itemsHtml = items
+      .map(function (item, i) {
+        return (
+          '<div class="veltro-spatial-item" style="padding:20px 40px;background:linear-gradient(135deg,rgba(205,254,0,0.15) 0%,rgba(60,165,250,0.15) 100%);border-radius:12px;border:1px solid rgba(255,255,255,0.1);font-size:1.5rem;font-weight:700;color:#fff;transform:translateZ(' +
+          i * 50 +
+          'px)">' +
+          item.trim() +
+          "</div>"
+        );
+      })
+      .join("");
+    return (
+      '<div class="veltro-spatial-wrap" id="spatial-' +
+      id +
+      '" data-nav-items="' +
+      p.navItems +
+      '" data-perspective="' +
+      p.perspective +
+      '" data-spacing="' +
+      p.spacing +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ";position:relative;overflow:hidden;border-radius:4px;display:flex;align-items:center;justify-content:center;perspective:" +
+      p.perspective +
+      'px"><div class="veltro-spatial-nav" style="display:flex;flex-direction:column;gap:' +
+      p.spacing +
+      'px;transform-style:preserve-3d">' +
+      itemsHtml +
+      "</div></div>"
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// ── Missing Original Widgets ──
+
+// cursorLens
+FB.widgets.register("cursorLens", {
+  label: "Cursor Lens",
+  sublabel: "Magnify on hover",
+  icon: "🔍",
+  iconBg: "#f97316",
+  iconColor: "#fff",
+  category: "veltro",
+  subCategory: "cursor",
+  defaultProps: {
+    height: 300,
+    bg: "#0d0d1a",
+    image: "https://picsum.photos/800/400?random=1",
+    lensSize: 120,
+    magnification: 2,
+  },
+  render: function (id, p) {
+    return (
+      '<div class="veltro-lens-wrap fw-widget-cursorLens" id="lens-' +
+      id +
+      '" data-lens-size="' +
+      (p.lensSize || 120) +
+      '" data-magnification="' +
+      (p.magnification || 2) +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px;cursor:none"><img class="veltro-lens-bg" src="' +
+      (p.image || "https://picsum.photos/800/400?random=1") +
+      '" style="width:100%;height:100%;object-fit:cover"><div class="veltro-lens-mask" style="position:absolute;width:' +
+      (p.lensSize || 120) +
+      "px;height:" +
+      (p.lensSize || 120) +
+      'px;border-radius:50%;border:2px solid rgba(255,255,255,0.5);overflow:hidden;pointer-events:none;transform:translate(-50%,-50%);left:var(--lx,50%);top:var(--ly,50%)"><img src="' +
+      (p.image || "https://picsum.photos/800/400?random=1") +
+      '" style="position:absolute;width:' +
+      (p.magnification || 2) * 100 +
+      "%;height:" +
+      (p.magnification || 2) * 100 +
+      '%;object-fit:cover;left:var(--lx-offset,0);top:var(--ly-offset,0)"></div></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 300}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// shaderBg
+FB.widgets.register("shaderBg", {
+  label: "Shader Background",
+  sublabel: "WebGL effects",
+  icon: "🌊",
+  iconBg: "#3b82f6",
+  iconColor: "#fff",
+  category: "veltro",
+  subCategory: "backgrounds",
+  defaultProps: {
+    height: 400,
+    bg: "#050510",
+    shaderType: "noise",
+    speed: 0.5,
+    intensity: 1,
+  },
+  render: function (id, p) {
+    var shaderType = p.shaderType || "noise";
+    return (
+      '<div class="veltro-shader-wrap fw-widget-shaderBg" id="shader-' +
+      id +
+      '" data-shader-type="' +
+      shaderType +
+      '" data-speed="' +
+      (p.speed || 0.5) +
+      '" data-intensity="' +
+      (p.intensity || 1) +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px"><canvas class="veltro-shader-canvas" style="position:absolute;inset:0;width:100%;height:100%" data-shader-init="1"></canvas></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 400}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+  },
+});
+
+// infiniteCanvas
+FB.widgets.register("infiniteCanvas", {
+  label: "Infinite Canvas",
+  sublabel: "Pan & zoom space",
+  icon: "🗺️",
+  iconBg: "#10b981",
+  iconColor: "#fff",
+  category: "veltro",
+  subCategory: "spatial",
+  defaultProps: {
+    height: 400,
+    bg: "#0a0a1a",
+    gridSize: 40,
+    gridColor: "rgba(255,255,255,0.05)",
+  },
+  render: function (id, p) {
+    return (
+      '<div class="veltro-infinite-wrap fw-widget-infiniteCanvas" id="infinite-' +
+      id +
+      '" data-grid-size="' +
+      (p.gridSize || 40) +
+      '" data-grid-color="' +
+      (p.gridColor || "rgba(255,255,255,0.05)") +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px;cursor:grab"><canvas class="veltro-infinite-canvas" style="position:absolute;inset:0;width:100%;height:100%" data-infinite-init="1"></canvas></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 400}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
   },
 });
 
 // ── Physics Sandbox Initializer ──
-// Called after render — scans for un-initialized physics wraps.
 window._VeltroInitPhysics = function () {
   document
     .querySelectorAll(".veltro-physics-wrap:not([data-physics-init])")
     .forEach(function (wrap) {
       wrap.dataset.physicsInit = "1";
-
       window._VeltroLoadMatter(function (Matter) {
         var W = wrap.offsetWidth;
         var H = wrap.offsetHeight || 400;
@@ -430,7 +16756,6 @@ window._VeltroInitPhysics = function () {
         var friction = +(wrap.dataset.friction || 0.05);
         var items = JSON.parse(wrap.dataset.items || '["Veltro","Physics"]');
         var tc = wrap.dataset.textColor || "#cdfe00";
-
         var engine = Matter.Engine.create({ gravity: { y: gravity } });
         var runner = Matter.Runner.create();
         var opts = {
@@ -438,7 +16763,6 @@ window._VeltroInitPhysics = function () {
           friction: friction,
           chamfer: { radius: 12 },
         };
-
         var bodies = items.map(function (txt, i) {
           return Matter.Bodies.rectangle(
             W / 2 + (Math.random() - 0.5) * W * 0.6,
@@ -448,7 +16772,6 @@ window._VeltroInitPhysics = function () {
             Object.assign({ label: txt }, opts),
           );
         });
-
         var walls = [
           Matter.Bodies.rectangle(W / 2, H + 25, W * 2, 50, {
             isStatic: true,
@@ -458,12 +16781,9 @@ window._VeltroInitPhysics = function () {
           Matter.Bodies.rectangle(W + 25, H / 2, 50, H * 2, { isStatic: true }),
           Matter.Bodies.rectangle(W / 2, -25, W * 2, 50, { isStatic: true }),
         ];
-
         Matter.Composite.add(engine.world, bodies.concat(walls));
         Matter.Runner.run(runner, engine);
-
         var labels = wrap.querySelector(".veltro-physics-labels");
-
         (function loop() {
           if (!wrap.isConnected) {
             Matter.Runner.stop(runner);
@@ -492,7 +16812,6 @@ window._VeltroInitPhysics = function () {
           });
           requestAnimationFrame(loop);
         })();
-
         wrap.addEventListener("click", function (e) {
           var rect = wrap.getBoundingClientRect();
           var mx = e.clientX - rect.left,
@@ -513,494 +16832,11 @@ window._VeltroInitPhysics = function () {
     });
 };
 
-// ── 3. WEBGL FLUID SHADER ──
-FB.widgets.register("shaderBg", {
-  label: "Fluid Shader",
-  sublabel: "WebGL background",
-  icon: "≋",
-  iconBg: "#0a0a1a",
-  iconColor: "#ff6b35",
-  category: "veltro",
-  defaultProps: {
-    height: 500,
-    speed: 0.8,
-    colorA: "#0d0520",
-    colorB: "#d95818",
-    colorC: "#140a38",
-    waveScale: 8,
-    mouseInteraction: true,
-    content: "",
-  },
-  render: function (p) {
-    var cid = "shader-" + (p._blockId || Date.now());
-    return (
-      '<div style="position:relative;height:' +
-      (p.height || 500) +
-      'px;overflow:hidden">' +
-      '<canvas id="' +
-      cid +
-      '"' +
-      ' data-shader-bg="true"' +
-      ' data-ca="' +
-      (p.colorA || "#0d0520") +
-      '"' +
-      ' data-cb="' +
-      (p.colorB || "#d95818") +
-      '"' +
-      ' data-cc="' +
-      (p.colorC || "#140a38") +
-      '"' +
-      ' data-speed="' +
-      (p.speed || 0.8) +
-      '"' +
-      ' data-ws="' +
-      (p.waveScale || 8) +
-      '"' +
-      ' data-mouse="' +
-      (p.mouseInteraction !== false ? "1" : "0") +
-      '"' +
-      ' style="position:absolute;inset:0;width:100%;height:100%"></canvas>' +
-      (p.content
-        ? '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:2">' +
-          p.content +
-          "</div>"
-        : "") +
-      "</div>"
-    );
-  },
-  editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Height: <span>' +
-      (p.height || 500) +
-      "px</span></label>" +
-      '<input type="range" min="100" max="900" step="20" value="' +
-      (p.height || 500) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','height',+this.value);this.previousElementSibling.querySelector('span').textContent=this.value+'px'\"></div>" +
-      '<div class="rp-row"><label>Speed: <span>' +
-      (p.speed || 0.8) +
-      "</span></label>" +
-      '<input type="range" min="0.1" max="3" step="0.1" value="' +
-      (p.speed || 0.8) +
-      '" oninput="FB.panels.updateShaderProp(\'' +
-      id +
-      "','speed',+this.value);this.previousElementSibling.querySelector('span').textContent=this.value\"></div>" +
-      '<div class="rp-row"><label>Wave Scale: <span>' +
-      (p.waveScale || 8) +
-      "</span></label>" +
-      '<input type="range" min="2" max="30" step="1" value="' +
-      (p.waveScale || 8) +
-      '" oninput="FB.panels.updateShaderProp(\'' +
-      id +
-      "','waveScale',+this.value);this.previousElementSibling.querySelector('span').textContent=this.value\"></div>" +
-      '<div class="rp-row"><label>Colour A (base)</label>' +
-      '<input type="color" value="' +
-      (p.colorA || "#0d0520") +
-      '" onchange="FB.panels.updateShaderProp(\'' +
-      id +
-      "','colorA',this.value)\"></div>" +
-      '<div class="rp-row"><label>Colour B (mouse aura)</label>' +
-      '<input type="color" value="' +
-      (p.colorB || "#d95818") +
-      '" onchange="FB.panels.updateShaderProp(\'' +
-      id +
-      "','colorB',this.value)\"></div>" +
-      '<div class="rp-row"><label>Colour C (wave tint)</label>' +
-      '<input type="color" value="' +
-      (p.colorC || "#140a38") +
-      '" onchange="FB.panels.updateShaderProp(\'' +
-      id +
-      "','colorC',this.value)\"></div>" +
-      '<div class="rp-row"><label><input type="checkbox"' +
-      (p.mouseInteraction !== false ? " checked" : "") +
-      " onchange=\"FB.panels.updateShaderProp('" +
-      id +
-      "','mouseInteraction',this.checked)\"> Mouse interaction</label></div>"
-    );
-  },
-});
-
-// ── 4. CURSOR AURA LENS ──
-FB.widgets.register("cursorLens", {
-  label: "Cursor Lens",
-  sublabel: "Reveal effect",
-  icon: "◎",
-  iconBg: "#1a0a0a",
-  iconColor: "#ff6b35",
-  category: "veltro",
-  defaultProps: {
-    height: 400,
-    radius: 140,
-    bgFront: "#f5f5f5",
-    bgBack: "#0d0d1a",
-    frontContent:
-      "<h2 style='color:#111;font-size:3rem;font-weight:800;margin:0'>REVEAL</h2>",
-    backContent:
-      "<h2 style='color:#cdfe00;font-size:3rem;font-weight:800;margin:0'>HIDDEN</h2>",
-    blendMode: "normal",
-    cursor: "none",
-  },
-  render: function (p) {
-    var r = p.radius || 140;
-    return (
-      '<div class="veltro-lens-wrap" style="position:relative;height:' +
-      (p.height || 400) +
-      "px;overflow:hidden;cursor:" +
-      (p.cursor || "none") +
-      ';border-radius:4px;">' +
-      // Back layer
-      '<div class="veltro-lens-back" style="position:absolute;inset:0;background:' +
-      (p.bgBack || "#0d0d1a") +
-      ';display:flex;align-items:center;justify-content:center">' +
-      (p.backContent || "") +
-      "</div>" +
-      // Front layer with mask
-      '<div class="veltro-lens-front" style="position:absolute;inset:0;background:' +
-      (p.bgFront || "#f5f5f5") +
-      ';display:flex;align-items:center;justify-content:center">' +
-      (p.frontContent || "") +
-      "</div>" +
-      '<div class="veltro-lens-mask" style="' +
-      "--lx:50%;--ly:50%;" +
-      "position:absolute;inset:0;pointer-events:none;" +
-      "background:" +
-      (p.bgFront || "#f5f5f5") +
-      ";" +
-      "display:flex;align-items:center;justify-content:center;" +
-      "mask-image:radial-gradient(circle " +
-      r +
-      "px at var(--lx) var(--ly),transparent 100%,black 100%);" +
-      "-webkit-mask-image:radial-gradient(circle " +
-      r +
-      "px at var(--lx) var(--ly),transparent 100%,black 100%);" +
-      "mix-blend-mode:" +
-      (p.blendMode || "normal") +
-      '">' +
-      (p.frontContent || "") +
-      "</div>" +
-      "</div>"
-    );
-  },
-  editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Height: ' +
-      (p.height || 400) +
-      "px</label>" +
-      '<input type="range" min="150" max="800" step="20" value="' +
-      (p.height || 400) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','height',+this.value);this.previousElementSibling.textContent='Height: '+this.value+'px'\"></div>" +
-      '<div class="rp-row"><label>Lens Radius: ' +
-      (p.radius || 140) +
-      "px</label>" +
-      '<input type="range" min="40" max="400" step="10" value="' +
-      (p.radius || 140) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','radius',+this.value);this.previousElementSibling.textContent='Lens Radius: '+this.value+'px'\"></div>" +
-      '<div class="rp-row"><label>Front Background</label>' +
-      '<input type="color" value="' +
-      (p.bgFront || "#f5f5f5") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','bgFront',this.value)\"></div>" +
-      '<div class="rp-row"><label>Back Background</label>' +
-      '<input type="color" value="' +
-      (p.bgBack || "#0d0d1a") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','bgBack',this.value)\"></div>" +
-      '<div class="rp-row"><label>Front Content (HTML)</label>' +
-      '<textarea rows="3" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','frontContent',this.value)\">" +
-      (p.frontContent || "") +
-      "</textarea></div>" +
-      '<div class="rp-row"><label>Back Content (HTML)</label>' +
-      '<textarea rows="3" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','backContent',this.value)\">" +
-      (p.backContent || "") +
-      "</textarea></div>" +
-      '<div class="rp-row"><label>Blend Mode</label>' +
-      "<select onchange=\"FB.panels.updateWidgetProp('" +
-      id +
-      "','blendMode',this.value)\">" +
-      ["normal", "difference", "exclusion", "screen", "multiply"]
-        .map(function (m) {
-          return (
-            '<option value="' +
-            m +
-            '"' +
-            ((p.blendMode || "normal") === m ? " selected" : "") +
-            ">" +
-            m +
-            "</option>"
-          );
-        })
-        .join("") +
-      "</select></div>"
-    );
-  },
-});
-
-// ── 5. INFINITE CANVAS ──
-FB.widgets.register("infiniteCanvas", {
-  label: "Infinite Canvas",
-  sublabel: "Pan · Zoom · Depth",
-  icon: "∞",
-  iconBg: "#050510",
-  iconColor: "#7c3aed",
-  category: "veltro",
-  defaultProps: {
-    height: 600,
-    bgColor: "#0d0d0d",
-    showGrid: true,
-    gridColor: "#ffffff",
-    gridOpacity: 0.07,
-    gridSize: 40,
-    showCoords: true,
-    minZoom: 0.15,
-    maxZoom: 3.0,
-    items: [
-      {
-        x: -500,
-        y: -200,
-        depthFactor: 0.25,
-        content:
-          '<div style="width:1800px;height:1200px;border:1px solid rgba(255,255,255,0.05);border-radius:24px"></div>',
-      },
-      {
-        x: 60,
-        y: 60,
-        depthFactor: 1.0,
-        content:
-          '<h2 style="color:#fff;font-size:76px;font-weight:900;margin:0;white-space:nowrap;letter-spacing:-0.04em;line-height:1.05">EXPLORE<br>THE SPACE</h2>',
-      },
-      {
-        x: 560,
-        y: 280,
-        depthFactor: 1.35,
-        content:
-          '<div style="padding:28px 32px;background:#fff;color:#000;border-radius:16px;max-width:260px;box-shadow:0 20px 60px rgba(0,0,0,0.5)"><p style="margin:0;font-size:14px;line-height:1.6;color:#444">Drag to pan. Pinch or Ctrl+scroll to zoom. Items have depth — they move at different speeds.</p></div>',
-      },
-      {
-        x: -180,
-        y: 460,
-        depthFactor: 0.65,
-        content:
-          '<div style="color:rgba(255,255,255,0.1);font-size:88px;font-weight:900;white-space:nowrap;letter-spacing:-0.03em">DEPTH LAYER</div>',
-      },
-      {
-        x: 820,
-        y: 80,
-        depthFactor: 1.55,
-        content:
-          '<div style="width:100px;height:100px;background:#cdfe00;border-radius:50%;box-shadow:0 0 60px rgba(205,254,0,0.4)"></div>',
-      },
-    ],
-  },
-  render: function (p) {
-    var vid = "ic-" + (p._blockId || Date.now());
-    var items = p.items || [];
-    var gs = p.gridSize || 40;
-    var gc = p.gridColor || "#ffffff";
-    var go = p.gridOpacity !== undefined ? p.gridOpacity : 0.07;
-
-    var gridDiv =
-      p.showGrid !== false
-        ? '<div style="position:absolute;left:-5000px;top:-5000px;width:12000px;height:12000px;' +
-          "background-image:radial-gradient(" +
-          gc +
-          " 1px,transparent 1px);" +
-          "background-size:" +
-          gs +
-          "px " +
-          gs +
-          "px;opacity:" +
-          go +
-          ';pointer-events:none"></div>'
-        : "";
-
-    var nodesHtml = items
-      .map(function (item) {
-        return (
-          '<div class="veltro-ic-node" data-depth-factor="' +
-          (item.depthFactor !== undefined ? item.depthFactor : 1) +
-          '" style="position:absolute;left:' +
-          (item.x || 0) +
-          "px;top:" +
-          (item.y || 0) +
-          'px;will-change:transform">' +
-          (item.content || "") +
-          "</div>"
-        );
-      })
-      .join("");
-
-    return (
-      '<div id="' +
-      vid +
-      '" data-infinite-canvas="true"' +
-      ' data-min-zoom="' +
-      (p.minZoom || 0.15) +
-      '" data-max-zoom="' +
-      (p.maxZoom || 3.0) +
-      '" style="position:relative;height:' +
-      (p.height || 600) +
-      "px;overflow:hidden;background:" +
-      (p.bgColor || "#0d0d0d") +
-      ';border-radius:4px;user-select:none">' +
-      '<div class="veltro-ic-world" style="position:absolute;top:0;left:0;width:0;height:0;transform-origin:0 0;will-change:transform">' +
-      gridDiv +
-      nodesHtml +
-      "</div>" +
-      (p.showCoords !== false
-        ? '<div class="veltro-ic-coords" style="position:absolute;bottom:14px;left:16px;' +
-          "font-family:monospace;font-size:11px;color:rgba(255,255,255,0.3);" +
-          'pointer-events:none;letter-spacing:1px;z-index:10">X: 0  Y: 0  100%</div>'
-        : "") +
-      '<div style="position:absolute;bottom:14px;right:14px;font-size:10px;' +
-      "color:rgba(255,255,255,0.18);pointer-events:none;letter-spacing:1px;" +
-      'font-family:monospace">DRAG · PINCH · SCROLL</div>' +
-      "</div>"
-    );
-  },
-  editPanel: function (id, p) {
-    var items = p.items || [];
-    var itemsHtml = items
-      .map(function (item, i) {
-        return (
-          '<div style="margin-bottom:8px;padding:10px;background:var(--surface-3);border-radius:6px;border:1px solid var(--border)">' +
-          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">' +
-          '<span style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--accent)">Node ' +
-          (i + 1) +
-          "</span>" +
-          '<button class="rp-btn" style="font-size:10px;padding:2px 6px;color:#e88;border-color:#955"' +
-          " onclick=\"FB.panels.removeInfiniteCanvasItem('" +
-          id +
-          "'," +
-          i +
-          ')">✕</button>' +
-          "</div>" +
-          '<div class="rp-row" style="padding:0 0 4px"><label>X</label>' +
-          '<input type="number" value="' +
-          (item.x || 0) +
-          '" step="20" onchange="FB.panels.updateInfiniteCanvasItem(\'' +
-          id +
-          "'," +
-          i +
-          ",'x',+this.value)\"></div>" +
-          '<div class="rp-row" style="padding:0 0 4px"><label>Y</label>' +
-          '<input type="number" value="' +
-          (item.y || 0) +
-          '" step="20" onchange="FB.panels.updateInfiniteCanvasItem(\'' +
-          id +
-          "'," +
-          i +
-          ",'y',+this.value)\"></div>" +
-          '<div class="rp-row" style="padding:0 0 4px"><label>Depth: <span>' +
-          (item.depthFactor !== undefined ? item.depthFactor : 1.0) +
-          "</span></label>" +
-          '<input type="range" min="0.1" max="2.0" step="0.05" value="' +
-          (item.depthFactor !== undefined ? item.depthFactor : 1.0) +
-          '" oninput="FB.panels.updateInfiniteCanvasItem(\'' +
-          id +
-          "'," +
-          i +
-          ",'depthFactor',+this.value);this.previousElementSibling.querySelector('span').textContent=(+this.value).toFixed(2)\"></div>" +
-          '<div class="rp-row" style="padding:0"><label>Content (HTML)</label>' +
-          '<textarea rows="3" onchange="FB.panels.updateInfiniteCanvasItem(\'' +
-          id +
-          "'," +
-          i +
-          ",'content',this.value)\">" +
-          (item.content || "").replace(/</g, "&lt;").replace(/>/g, "&gt;") +
-          "</textarea></div>" +
-          "</div>"
-        );
-      })
-      .join("");
-
-    return (
-      '<div class="rp-row"><label>Height: <span>' +
-      (p.height || 600) +
-      "px</span></label>" +
-      '<input type="range" min="200" max="900" step="20" value="' +
-      (p.height || 600) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','height',+this.value);this.previousElementSibling.querySelector('span').textContent=this.value+'px'\"></div>" +
-      '<div class="rp-row"><label>Background</label>' +
-      '<input type="color" value="' +
-      (p.bgColor || "#0d0d0d") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','bgColor',this.value)\"></div>" +
-      '<div class="rp-row"><label><input type="checkbox"' +
-      (p.showGrid !== false ? " checked" : "") +
-      " onchange=\"FB.panels.updateWidgetProp('" +
-      id +
-      "','showGrid',this.checked)\"> Show dot grid</label></div>" +
-      (p.showGrid !== false
-        ? '<div class="rp-row"><label>Grid Colour</label>' +
-          '<input type="color" value="' +
-          (p.gridColor || "#ffffff") +
-          '" onchange="FB.panels.updateWidgetProp(\'' +
-          id +
-          "','gridColor',this.value)\"></div>" +
-          '<div class="rp-row"><label>Grid Opacity: <span>' +
-          (p.gridOpacity !== undefined ? p.gridOpacity : 0.07) +
-          "</span></label>" +
-          '<input type="range" min="0.01" max="0.5" step="0.01" value="' +
-          (p.gridOpacity !== undefined ? p.gridOpacity : 0.07) +
-          '" oninput="FB.panels.updateWidgetProp(\'' +
-          id +
-          "','gridOpacity',+this.value);this.previousElementSibling.querySelector('span').textContent=this.value\"></div>"
-        : "") +
-      '<div class="rp-row"><label>Min Zoom: <span>' +
-      (p.minZoom || 0.15) +
-      "</span></label>" +
-      '<input type="range" min="0.05" max="0.5" step="0.05" value="' +
-      (p.minZoom || 0.15) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','minZoom',+this.value);this.previousElementSibling.querySelector('span').textContent=this.value\"></div>" +
-      '<div class="rp-row"><label>Max Zoom: <span>' +
-      (p.maxZoom || 3.0) +
-      "</span></label>" +
-      '<input type="range" min="1" max="6" step="0.5" value="' +
-      (p.maxZoom || 3.0) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','maxZoom',+this.value);this.previousElementSibling.querySelector('span').textContent=this.value\"></div>" +
-      '<div class="rp-row"><label><input type="checkbox"' +
-      (p.showCoords !== false ? " checked" : "") +
-      " onchange=\"FB.panels.updateWidgetProp('" +
-      id +
-      "','showCoords',this.checked)\"> Show coordinate HUD</label></div>" +
-      '<div style="padding:8px 14px 4px;border-top:1px solid var(--border);margin-top:6px">' +
-      '<div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px">Spatial Nodes</div>' +
-      itemsHtml +
-      '<button class="rp-btn" style="width:calc(100% - 28px);margin:4px 14px 0"' +
-      " onclick=\"FB.panels.addInfiniteCanvasItem('" +
-      id +
-      "')\">" +
-      "+ Add Node</button>" +
-      "</div>"
-    );
-  },
-});
-
 // ── Scroll-velocity kinetic text driver ──
-// Tracks scroll velocity of the canvas container, not window.scrollY
 (function () {
   var lastY = 0;
   var lastT = Date.now();
   var container = document.getElementById("canvas");
-
   function updateKineticScroll() {
     var y = container ? container.scrollTop : window.scrollY;
     var t = Date.now();
@@ -1016,7 +16852,6 @@ FB.widgets.register("infiniteCanvas", {
       el.style.fontWeight = w;
     });
   }
-
   if (container) {
     container.addEventListener("scroll", updateKineticScroll, {
       passive: true,
@@ -1026,7 +16861,6 @@ FB.widgets.register("infiniteCanvas", {
 })();
 
 // ── WebGL Shader Initializer ──
-// Called after any canvas render/refresh — scans for un-initialized shader canvases.
 window._VeltroInitShaders = function () {
   var FS =
     "precision mediump float;" +
@@ -1043,7 +16877,6 @@ window._VeltroInitShaders = function () {
     "vec3 col=mix(u_cA,u_cB,smoothstep(0.5,0.0,d));" +
     "col=mix(col,u_cC,w3*0.5+0.5);" +
     "gl_FragColor=vec4(col,1.0);}";
-
   function hex3(h) {
     h = h.replace("#", "");
     return [
@@ -1052,31 +16885,26 @@ window._VeltroInitShaders = function () {
       parseInt(h.substring(4, 6), 16) / 255,
     ];
   }
-
   document
     .querySelectorAll('[data-shader-bg="true"]:not([data-shader-init])')
     .forEach(function (c) {
       c.dataset.shaderInit = "1";
       var gl = c.getContext("webgl") || c.getContext("experimental-webgl");
       if (!gl) return;
-
       var vs = gl.createShader(gl.VERTEX_SHADER);
       gl.shaderSource(
         vs,
         "attribute vec2 a_pos;varying vec2 v_uv;void main(){v_uv=a_pos*0.5+0.5;gl_Position=vec4(a_pos,0,1);}",
       );
       gl.compileShader(vs);
-
       var fs = gl.createShader(gl.FRAGMENT_SHADER);
       gl.shaderSource(fs, FS);
       gl.compileShader(fs);
-
       var prog = gl.createProgram();
       gl.attachShader(prog, vs);
       gl.attachShader(prog, fs);
       gl.linkProgram(prog);
       gl.useProgram(prog);
-
       var buf = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, buf);
       gl.bufferData(
@@ -1087,7 +16915,6 @@ window._VeltroInitShaders = function () {
       var aPos = gl.getAttribLocation(prog, "a_pos");
       gl.enableVertexAttribArray(aPos);
       gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
-
       c._shader = {
         gl: gl,
         uT: gl.getUniformLocation(prog, "u_t"),
@@ -1107,7 +16934,6 @@ window._VeltroInitShaders = function () {
           mouseInteraction: c.dataset.mouse !== "0",
         },
       };
-
       var t = 0;
       (function loop() {
         if (!c.isConnected) return;
@@ -1139,9 +16965,7 @@ window._VeltroInitShaders = function () {
 };
 
 // ── Infinite Canvas Initializer ──
-// Pan state persists across refreshBlock cycles via _VeltroICState.
 window._VeltroICState = window._VeltroICState || {};
-
 window._VeltroInitInfiniteCanvas = function () {
   document
     .querySelectorAll('[data-infinite-canvas="true"]:not([data-ic-init])')
@@ -1150,7 +16974,6 @@ window._VeltroInitInfiniteCanvas = function () {
       var world = viewport.querySelector(".veltro-ic-world");
       var coordsEl = viewport.querySelector(".veltro-ic-coords");
       if (!world) return;
-
       var blockId = viewport.id.replace("ic-", "");
       var saved = window._VeltroICState[blockId] || {};
       var state = {
@@ -1163,9 +16986,7 @@ window._VeltroInitInfiniteCanvas = function () {
         minZoom: +(viewport.dataset.minZoom || 0.15),
         maxZoom: +(viewport.dataset.maxZoom || 3.0),
       };
-
       viewport.style.cursor = "grab";
-
       function handleWheel(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -1178,7 +16999,6 @@ window._VeltroInitInfiniteCanvas = function () {
             state.minZoom,
             Math.min(state.maxZoom, state.zoom * factor),
           );
-          // Zoom toward cursor position
           state.panX = cx - ((cx - state.panX) * newZoom) / state.zoom;
           state.panY = cy - ((cy - state.panY) * newZoom) / state.zoom;
           state.zoom = newZoom;
@@ -1187,7 +17007,6 @@ window._VeltroInitInfiniteCanvas = function () {
           state.panY -= e.deltaY;
         }
       }
-
       function handleMouseDown(e) {
         if (e.button === 0 || e.button === 1) {
           e.preventDefault();
@@ -1197,23 +17016,19 @@ window._VeltroInitInfiniteCanvas = function () {
           viewport.style.cursor = "grabbing";
         }
       }
-
       function handleMouseMove(e) {
         if (!state.isDragging) return;
         state.panX = e.clientX - state.startX;
         state.panY = e.clientY - state.startY;
       }
-
       function handleMouseUp() {
         state.isDragging = false;
         viewport.style.cursor = "grab";
       }
-
       viewport.addEventListener("wheel", handleWheel, { passive: false });
       viewport.addEventListener("mousedown", handleMouseDown);
       window.addEventListener("mousemove", handleMouseMove);
       window.addEventListener("mouseup", handleMouseUp);
-
       var frameCount = 0;
       (function loop() {
         if (!viewport.isConnected) {
@@ -1221,7 +17036,6 @@ window._VeltroInitInfiniteCanvas = function () {
           window.removeEventListener("mouseup", handleMouseUp);
           return;
         }
-
         world.style.transform =
           "translate3d(" +
           state.panX +
@@ -1230,8 +17044,6 @@ window._VeltroInitInfiniteCanvas = function () {
           "px,0) scale(" +
           state.zoom +
           ")";
-
-        // Depth parallax: nodes with depthFactor !== 1 get an extra offset
         world.querySelectorAll(".veltro-ic-node").forEach(function (node) {
           var df = +(node.dataset.depthFactor || 1);
           if (df === 1) return;
@@ -1242,7 +17054,6 @@ window._VeltroInitInfiniteCanvas = function () {
             state.panY * (df - 1) +
             "px,0)";
         });
-
         if (++frameCount % 12 === 0) {
           if (coordsEl) {
             coordsEl.textContent =
@@ -1260,8 +17071,2143 @@ window._VeltroInitInfiniteCanvas = function () {
             zoom: state.zoom,
           };
         }
-
         requestAnimationFrame(loop);
       })();
     });
+};
+
+// ── INITIALIZERS FOR RECONSTRUCTED ORIGINAL WIDGETS ──
+window._VeltroInitTextScramble = function () {
+  document
+    .querySelectorAll(".veltro-scramble-wrap:not([data-init])")
+    .forEach(function (wrap) {
+      wrap.setAttribute("data-init", "1");
+      var text = wrap.querySelector(".veltro-scramble-text");
+      var original = wrap.dataset.text || "DECODE ME";
+      var charset =
+        wrap.dataset.charset || "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      var speed = +(wrap.dataset.speed || 30);
+      var isHovering = false;
+      text.addEventListener("mouseenter", function () {
+        isHovering = true;
+      });
+      text.addEventListener("mouseleave", function () {
+        isHovering = false;
+        text.textContent = original;
+      });
+      var interval = setInterval(function () {
+        if (!wrap.isConnected) {
+          clearInterval(interval);
+          return;
+        }
+        if (!isHovering) return;
+        var result = "";
+        for (var i = 0; i < original.length; i++) {
+          result += charset[Math.floor(Math.random() * charset.length)];
+        }
+        text.textContent = result;
+      }, speed);
+    });
+};
+
+window._VeltroInitTypewriter = function () {
+  document
+    .querySelectorAll(".veltro-typewriter-wrap:not([data-init])")
+    .forEach(function (wrap) {
+      wrap.setAttribute("data-init", "1");
+      var text = wrap.querySelector(".veltro-typewriter-text");
+      var original = wrap.dataset.text || "Hello, World!";
+      var speed = +(wrap.dataset.speed || 80);
+      var loop = wrap.dataset.loop !== "0";
+      var delay = +(wrap.dataset.delay || 2000);
+      var index = 0;
+      function type() {
+        if (!wrap.isConnected) return;
+        if (index < original.length) {
+          text.textContent += original.charAt(index);
+          index++;
+          setTimeout(type, speed);
+        } else if (loop) {
+          setTimeout(function () {
+            text.textContent = "";
+            index = 0;
+            type();
+          }, delay);
+        }
+      }
+      type();
+    });
+};
+
+window._VeltroInitCounter = function () {
+  document
+    .querySelectorAll(".veltro-counter-wrap:not([data-init])")
+    .forEach(function (wrap) {
+      wrap.setAttribute("data-init", "1");
+      var el = wrap.querySelector(".veltro-counter");
+      var target = +(wrap.dataset.value || 1000);
+      var prefix = wrap.dataset.prefix || "";
+      var suffix = wrap.dataset.suffix || "+";
+      var duration = +(wrap.dataset.duration || 2000);
+      var startTime = Date.now();
+      function update() {
+        if (!wrap.isConnected) return;
+        var elapsed = Date.now() - startTime;
+        var progress = Math.min(elapsed / duration, 1);
+        var ease = 1 - Math.pow(1 - progress, 3);
+        var current = Math.round(target * ease);
+        el.textContent = prefix + current + suffix;
+        if (progress < 1) requestAnimationFrame(update);
+      }
+      update();
+    });
+};
+
+window._VeltroInitLiquidText = function () {
+  document
+    .querySelectorAll(".veltro-liquid-wrap:not([data-init])")
+    .forEach(function (wrap) {
+      wrap.setAttribute("data-init", "1");
+      var chars = wrap.querySelectorAll(".veltro-liquid-char");
+      var amplitude = +(wrap.dataset.amplitude || 10);
+      var frequency = +(wrap.dataset.frequency || 0.05);
+      var speed = +(wrap.dataset.speed || 0.02);
+      var time = 0;
+      function animate() {
+        if (!wrap.isConnected) return;
+        time += speed;
+        chars.forEach(function (char, i) {
+          var y = Math.sin(i * frequency + time) * amplitude;
+          char.style.transform = "translateY(" + y + "px)";
+        });
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+};
+
+window._VeltroInitBubblePop = function () {
+  document
+    .querySelectorAll(".veltro-bubble-wrap:not([data-init])")
+    .forEach(function (wrap) {
+      wrap.setAttribute("data-init", "1");
+      var canvas = wrap.querySelector(".veltro-bubble-canvas");
+      var ctx = canvas.getContext("2d");
+      var dpr = window.devicePixelRatio || 1;
+      var W, H;
+      function resize() {
+        var rect = wrap.getBoundingClientRect();
+        W = rect.width;
+        H = rect.height;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        ctx.scale(dpr, dpr);
+      }
+      resize();
+      var bubbleCount = +(wrap.dataset.bubbleCount || 20);
+      var minSize = +(wrap.dataset.minSize || 20);
+      var maxSize = +(wrap.dataset.maxSize || 60);
+      var colors = (
+        wrap.dataset.colors || "#ff6b35,#cdfe00,#3b82f6,#ec4899,#f59e0b"
+      ).split(",");
+      var bubbles = [];
+      for (var i = 0; i < bubbleCount; i++) {
+        bubbles.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          r: minSize + Math.random() * (maxSize - minSize),
+          vx: (Math.random() - 0.5) * 2,
+          vy: (Math.random() - 0.5) * 2,
+          color: colors[i % colors.length],
+        });
+      }
+      function animate() {
+        if (!wrap.isConnected) return;
+        ctx.clearRect(0, 0, W, H);
+        bubbles.forEach(function (b) {
+          b.x += b.vx;
+          b.y += b.vy;
+          if (b.x < 0 || b.x > W) b.vx *= -1;
+          if (b.y < 0 || b.y > H) b.vy *= -1;
+          ctx.beginPath();
+          ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+          ctx.fillStyle = b.color;
+          ctx.globalAlpha = 0.6;
+          ctx.fill();
+        });
+        ctx.globalAlpha = 1;
+        requestAnimationFrame(animate);
+      }
+      animate();
+      wrap.addEventListener("click", function (e) {
+        var rect = wrap.getBoundingClientRect();
+        var mx = e.clientX - rect.left,
+          my = e.clientY - rect.top;
+        bubbles.forEach(function (b) {
+          var dist = Math.hypot(b.x - mx, b.y - my);
+          if (dist < b.r + 50) {
+            b.vx = (b.x - mx) * 0.1;
+            b.vy = (b.y - my) * 0.1;
+          }
+        });
+      });
+    });
+};
+
+window._VeltroInitTiltCards = function () {
+  document
+    .querySelectorAll(".veltro-tilt-wrap:not([data-init])")
+    .forEach(function (wrap) {
+      wrap.setAttribute("data-init", "1");
+      var card = wrap.querySelector(".veltro-tilt-card");
+      var maxTilt = +(wrap.dataset.maxTilt || 15);
+      wrap.style.perspective = (wrap.dataset.perspective || 1000) + "px";
+      wrap.addEventListener("mousemove", function (e) {
+        var rect = wrap.getBoundingClientRect();
+        var x = (e.clientX - rect.left) / rect.width - 0.5;
+        var y = (e.clientY - rect.top) / rect.height - 0.5;
+        card.style.transform =
+          "rotateY(" + x * maxTilt + "deg) rotateX(" + -y * maxTilt + "deg)";
+      });
+      wrap.addEventListener("mouseleave", function () {
+        card.style.transform = "rotateY(0) rotateX(0)";
+      });
+    });
+};
+
+window._VeltroInitAudioVisualizer = function () {
+  document
+    .querySelectorAll(".veltro-audio-wrap:not([data-init])")
+    .forEach(function (wrap) {
+      wrap.setAttribute("data-init", "1");
+      var bars = wrap.querySelectorAll(".veltro-audio-bar");
+      function animate() {
+        if (!wrap.isConnected) return;
+        bars.forEach(function (bar) {
+          var h = 20 + Math.random() * 80;
+          bar.style.height = h + "%";
+        });
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+};
+
+window._VeltroInitConstellation = function () {
+  document
+    .querySelectorAll(".veltro-const-wrap:not([data-init])")
+    .forEach(function (wrap) {
+      wrap.setAttribute("data-init", "1");
+      var canvas = wrap.querySelector(".veltro-const-canvas");
+      var ctx = canvas.getContext("2d");
+      var dpr = window.devicePixelRatio || 1;
+      var W, H;
+      function resize() {
+        var rect = wrap.getBoundingClientRect();
+        W = rect.width;
+        H = rect.height;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        ctx.scale(dpr, dpr);
+      }
+      resize();
+      var starCount = +(wrap.dataset.starCount || 80);
+      var connDist = +(wrap.dataset.connectionDistance || 100);
+      var starColor = wrap.dataset.starColor || "#cdfe00";
+      var lineColor = wrap.dataset.lineColor || "rgba(205,254,0,0.2)";
+      var stars = [];
+      for (var i = 0; i < starCount; i++) {
+        stars.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.5,
+          vy: (Math.random() - 0.5) * 0.5,
+          r: Math.random() * 2 + 1,
+        });
+      }
+      function animate() {
+        if (!wrap.isConnected) return;
+        ctx.clearRect(0, 0, W, H);
+        stars.forEach(function (s) {
+          s.x += s.vx;
+          s.y += s.vy;
+          if (s.x < 0 || s.x > W) s.vx *= -1;
+          if (s.y < 0 || s.y > H) s.vy *= -1;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          ctx.fillStyle = starColor;
+          ctx.fill();
+        });
+        for (var i = 0; i < stars.length; i++) {
+          for (var j = i + 1; j < stars.length; j++) {
+            var dist = Math.hypot(
+              stars[i].x - stars[j].x,
+              stars[i].y - stars[j].y,
+            );
+            if (dist < connDist) {
+              ctx.beginPath();
+              ctx.moveTo(stars[i].x, stars[i].y);
+              ctx.lineTo(stars[j].x, stars[j].y);
+              ctx.strokeStyle = lineColor;
+              ctx.lineWidth = 1 - dist / connDist;
+              ctx.stroke();
+            }
+          }
+        }
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+};
+
+window._VeltroInitGeometryDraw = function () {
+  document
+    .querySelectorAll(".veltro-geo-wrap:not([data-init])")
+    .forEach(function (wrap) {
+      wrap.setAttribute("data-init", "1");
+      var canvas = wrap.querySelector(".veltro-geo-canvas");
+      var ctx = canvas.getContext("2d");
+      var dpr = window.devicePixelRatio || 1;
+      var W, H;
+      function resize() {
+        var rect = wrap.getBoundingClientRect();
+        W = rect.width;
+        H = rect.height;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        ctx.scale(dpr, dpr);
+      }
+      resize();
+      var color = wrap.dataset.color || "#cdfe00";
+      var lineWidth = +(wrap.dataset.lineWidth || 3);
+      var isDrawing = false;
+      var lastX, lastY;
+      canvas.addEventListener("mousedown", function (e) {
+        isDrawing = true;
+        var rect = canvas.getBoundingClientRect();
+        lastX = e.clientX - rect.left;
+        lastY = e.clientY - rect.top;
+      });
+      canvas.addEventListener("mousemove", function (e) {
+        if (!isDrawing) return;
+        var rect = canvas.getBoundingClientRect();
+        var x = e.clientX - rect.left;
+        var y = e.clientY - rect.top;
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(x, y);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = lineWidth;
+        ctx.lineCap = "round";
+        ctx.stroke();
+        lastX = x;
+        lastY = y;
+      });
+      canvas.addEventListener("mouseup", function () {
+        isDrawing = false;
+      });
+      canvas.addEventListener("mouseleave", function () {
+        isDrawing = false;
+      });
+    });
+};
+
+// ── INITIALIZERS FOR BATCH 1: CURSOR ──
+window._VeltroInitMultiShapeTrail = function () {
+  document
+    .querySelectorAll(".veltro-multishape-canvas:not([data-init])")
+    .forEach(function (canvas) {
+      canvas.setAttribute("data-init", "1");
+      var wrap = canvas.closest(".veltro-multishape-wrap");
+      if (!wrap) return;
+      var ctx = canvas.getContext("2d");
+      var dpr = window.devicePixelRatio || 1;
+      var rect = wrap.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+      var W = rect.width,
+        H = rect.height;
+      var trailLength = +wrap.dataset.trailLength || 30;
+      var particleSize = +wrap.dataset.particleSize || 8;
+      var shapes = (wrap.dataset.shapes || "circle,square,triangle,star").split(
+        ",",
+      );
+      var colors = (wrap.dataset.colors || "#ff6b35,#cdfe00,#3b82f6").split(
+        ",",
+      );
+      var speed = +wrap.dataset.speed || 1;
+      var trail = [];
+      var mouseX = W / 2,
+        mouseY = H / 2;
+      wrap.addEventListener("mousemove", function (e) {
+        var r = wrap.getBoundingClientRect();
+        mouseX = e.clientX - r.left;
+        mouseY = e.clientY - r.top;
+      });
+      function drawShape(shape, x, y, size, color) {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        if (shape === "circle") {
+          ctx.arc(x, y, size, 0, Math.PI * 2);
+        } else if (shape === "square") {
+          ctx.rect(x - size, y - size, size * 2, size * 2);
+        } else if (shape === "triangle") {
+          ctx.moveTo(x, y - size);
+          ctx.lineTo(x + size, y + size);
+          ctx.lineTo(x - size, y + size);
+          ctx.closePath();
+        } else if (shape === "star") {
+          for (var i = 0; i < 5; i++) {
+            var angle = (i * 4 * Math.PI) / 5 - Math.PI / 2;
+            var px = x + Math.cos(angle) * size;
+            var py = y + Math.sin(angle) * size;
+            if (i === 0) ctx.moveTo(px, py);
+            else ctx.lineTo(px, py);
+          }
+          ctx.closePath();
+        }
+        ctx.fill();
+      }
+      function animate() {
+        ctx.clearRect(0, 0, W, H);
+        trail.unshift({ x: mouseX, y: mouseY });
+        if (trail.length > trailLength) trail.pop();
+        trail.forEach(function (point, i) {
+          var progress = i / trail.length;
+          var size = particleSize * (1 - progress * 0.5);
+          var color = colors[i % colors.length];
+          var shape = shapes[i % shapes.length];
+          var alpha = 1 - progress;
+          ctx.globalAlpha = alpha;
+          drawShape(shape, point.x, point.y, size, color);
+        });
+        ctx.globalAlpha = 1;
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+};
+
+window._VeltroInitSpotlight = function () {
+  document
+    .querySelectorAll(".veltro-spotlight-mask:not([data-init])")
+    .forEach(function (mask) {
+      mask.setAttribute("data-init", "1");
+      var wrap = mask.closest(".veltro-spotlight-wrap");
+      if (!wrap) return;
+      wrap.addEventListener("mousemove", function (e) {
+        var r = wrap.getBoundingClientRect();
+        var x = e.clientX - r.left;
+        var y = e.clientY - r.top;
+        mask.style.setProperty("--sx", x + "px");
+        mask.style.setProperty("--sy", y + "px");
+      });
+    });
+};
+
+window._VeltroInitMagText = function () {
+  document
+    .querySelectorAll(".veltro-magtext-content:not([data-init])")
+    .forEach(function (content) {
+      content.setAttribute("data-init", "1");
+      var wrap = content.closest(".veltro-magtext-wrap");
+      if (!wrap) return;
+      var chars = content.querySelectorAll(".veltro-mag-char");
+      wrap.addEventListener("mousemove", function (e) {
+        var r = wrap.getBoundingClientRect();
+        var mx = e.clientX - r.left;
+        var my = e.clientY - r.top;
+        chars.forEach(function (char) {
+          var rect = char.getBoundingClientRect();
+          var wr = wrap.getBoundingClientRect();
+          var cx = rect.left - wr.left + rect.width / 2;
+          var cy = rect.top - wr.top + rect.height / 2;
+          var dist = Math.hypot(mx - cx, my - cy);
+          var radius = +char.dataset.magneticRadius || 150;
+          var strength = +char.dataset.magneticStrength || 0.5;
+          if (dist < radius) {
+            var force = (1 - dist / radius) * strength * 30;
+            var angle = Math.atan2(cy - my, cx - mx);
+            var tx = Math.cos(angle) * force;
+            var ty = Math.sin(angle) * force;
+            char.style.transform = "translate(" + tx + "px," + ty + "px)";
+          } else {
+            char.style.transform = "translate(0,0)";
+          }
+        });
+      });
+      wrap.addEventListener("mouseleave", function () {
+        chars.forEach(function (char) {
+          char.style.transform = "translate(0,0)";
+        });
+      });
+    });
+};
+
+window._VeltroInitDistortion = function () {
+  document
+    .querySelectorAll(".veltro-distort-canvas:not([data-init])")
+    .forEach(function (canvas) {
+      canvas.setAttribute("data-init", "1");
+      var wrap = canvas.closest(".veltro-distort-wrap");
+      if (!wrap) return;
+      var ctx = canvas.getContext("2d");
+      var dpr = window.devicePixelRatio || 1;
+      var rect = wrap.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+      var W = rect.width,
+        H = rect.height;
+      var img = wrap.querySelector("img");
+      var radius = +wrap.dataset.distortionRadius || 100;
+      var strength = +wrap.dataset.distortionStrength || 0.3;
+      var mouseX = W / 2,
+        mouseY = H / 2;
+      wrap.addEventListener("mousemove", function (e) {
+        var r = wrap.getBoundingClientRect();
+        mouseX = e.clientX - r.left;
+        mouseY = e.clientY - r.top;
+      });
+      function animate() {
+        ctx.clearRect(0, 0, W, H);
+        ctx.drawImage(img, 0, 0, W, H);
+        var imageData = ctx.getImageData(0, 0, W, H);
+        var data = imageData.data;
+        var copy = new Uint8ClampedArray(data);
+        for (var y = 0; y < H; y++) {
+          for (var x = 0; x < W; x++) {
+            var dx = x - mouseX;
+            var dy = y - mouseY;
+            var dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < radius) {
+              var force = (1 - dist / radius) * strength;
+              var angle = Math.atan2(dy, dx);
+              var sx = x - Math.cos(angle) * force * 20;
+              var sy = y - Math.sin(angle) * force * 20;
+              sx = Math.max(0, Math.min(W - 1, Math.round(sx)));
+              sy = Math.max(0, Math.min(H - 1, Math.round(sy)));
+              var idx = (y * W + x) * 4;
+              var sidx = (sy * W + sx) * 4;
+              data[idx] = copy[sidx];
+              data[idx + 1] = copy[sidx + 1];
+              data[idx + 2] = copy[sidx + 2];
+            }
+          }
+        }
+        ctx.putImageData(imageData, 0, 0);
+        requestAnimationFrame(animate);
+      }
+      if (img.complete) animate();
+      else img.onload = animate;
+    });
+};
+
+window._VeltroInitColorSampler = function () {
+  document
+    .querySelectorAll(".veltro-colorsampler-wrap:not([data-init])")
+    .forEach(function (wrap) {
+      wrap.setAttribute("data-init", "1");
+      var palette = wrap.querySelector(".veltro-color-palette");
+      var swatches = palette.querySelectorAll(".veltro-color-swatch");
+      var sampleSize = +wrap.dataset.sampleSize || 10;
+      var paletteSize = +wrap.dataset.paletteSize || 5;
+      var canvas = document.createElement("canvas");
+      canvas.style.display = "none";
+      wrap.appendChild(canvas);
+      var ctx = canvas.getContext("2d");
+      wrap.addEventListener("mousemove", function (e) {
+        var r = wrap.getBoundingClientRect();
+        var x = e.clientX - r.left;
+        var y = e.clientY - r.top;
+        canvas.width = sampleSize;
+        canvas.height = sampleSize;
+        ctx.drawImage(
+          wrap,
+          x - sampleSize / 2,
+          y - sampleSize / 2,
+          sampleSize,
+          sampleSize,
+          0,
+          0,
+          sampleSize,
+          sampleSize,
+        );
+        var pixel = ctx.getImageData(sampleSize / 2, sampleSize / 2, 1, 1).data;
+        var color = "rgb(" + pixel[0] + "," + pixel[1] + "," + pixel[2] + ")";
+        swatches[0].style.background = color;
+        for (var i = 1; i < paletteSize; i++) {
+          swatches[i].style.background = swatches[i - 1].style.background;
+        }
+      });
+    });
+};
+
+window._VeltroInitGravityCursor = function () {
+  document
+    .querySelectorAll(".veltro-gravity-canvas:not([data-init])")
+    .forEach(function (canvas) {
+      canvas.setAttribute("data-init", "1");
+      var wrap = canvas.closest(".veltro-gravity-wrap");
+      if (!wrap) return;
+      var ctx = canvas.getContext("2d");
+      var dpr = window.devicePixelRatio || 1;
+      var rect = wrap.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+      var W = rect.width,
+        H = rect.height;
+      var gravityStrength = +wrap.dataset.gravityStrength || 0.5;
+      var particleCount = +wrap.dataset.particleCount || 50;
+      var particleSize = +wrap.dataset.particleSize || 4;
+      var particleColor = wrap.dataset.particleColor || "#cdfe00";
+      var mouseX = W / 2,
+        mouseY = H / 2;
+      var particles = [];
+      for (var i = 0; i < particleCount; i++) {
+        particles.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 2,
+          vy: (Math.random() - 0.5) * 2,
+          size: Math.random() * particleSize + 1,
+        });
+      }
+      wrap.addEventListener("mousemove", function (e) {
+        var r = wrap.getBoundingClientRect();
+        mouseX = e.clientX - r.left;
+        mouseY = e.clientY - r.top;
+      });
+      function animate() {
+        ctx.fillStyle = "rgba(13,13,26,0.1)";
+        ctx.fillRect(0, 0, W, H);
+        particles.forEach(function (p) {
+          var dx = mouseX - p.x;
+          var dy = mouseY - p.y;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist > 5) {
+            var force = (gravityStrength * 100) / (dist * dist);
+            p.vx += (dx / dist) * force;
+            p.vy += (dy / dist) * force;
+          }
+          p.vx *= 0.98;
+          p.vy *= 0.98;
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0) p.x = W;
+          if (p.x > W) p.x = 0;
+          if (p.y < 0) p.y = H;
+          if (p.y > H) p.y = 0;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = particleColor;
+          ctx.fill();
+        });
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+};
+
+// ── Additional Widget Initializers ──
+
+window._VeltroInitKineticText = function () {
+  document
+    .querySelectorAll(".fw-widget-kineticText:not([data-kinetic-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-kinetic-init", "1");
+    });
+};
+
+window._VeltroInitTextMask = function () {
+  document
+    .querySelectorAll(".fw-widget-textMask:not([data-mask-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-mask-init", "1");
+    });
+};
+
+window._VeltroInitMagneticCursor = function () {
+  document
+    .querySelectorAll(".fw-widget-magneticCursor:not([data-mag-init])")
+    .forEach(function (wrap) {
+      wrap.setAttribute("data-mag-init", "1");
+      var targets = wrap.querySelectorAll(".veltro-magnetic-target");
+      wrap.addEventListener("mousemove", function (e) {
+        var rect = wrap.getBoundingClientRect();
+        var mx = e.clientX - rect.left,
+          my = e.clientY - rect.top;
+        targets.forEach(function (t) {
+          var tr = t.getBoundingClientRect();
+          var cx = tr.left + tr.width / 2 - rect.left;
+          var cy = tr.top + tr.height / 2 - rect.top;
+          var dx = mx - cx,
+            dy = my - cy;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          var strength = +t.dataset.magneticStrength || 0.3;
+          var maxDist = +t.dataset.magneticRadius || 150;
+          var pull = Math.max(0, 1 - dist / maxDist);
+          t.style.transform =
+            "translate(" +
+            dx * pull * strength +
+            "px," +
+            dy * pull * strength +
+            "px)";
+        });
+      });
+      wrap.addEventListener("mouseleave", function () {
+        targets.forEach(function (t) {
+          t.style.transform = "";
+        });
+      });
+    });
+};
+
+window._VeltroInitParticleTrail = function () {
+  document
+    .querySelectorAll(".fw-widget-particleTrail:not([data-trail-init])")
+    .forEach(function (wrap) {
+      wrap.setAttribute("data-trail-init", "1");
+      var canvas = wrap.querySelector("canvas");
+      if (!canvas) return;
+      var ctx = canvas.getContext("2d");
+      var W = (canvas.width = wrap.offsetWidth);
+      var H = (canvas.height = wrap.offsetHeight);
+      var particles = [];
+      var color = wrap.dataset.trailColor || "#00d4ff";
+      wrap.addEventListener("mousemove", function (e) {
+        var rect = wrap.getBoundingClientRect();
+        for (var i = 0; i < 3; i++) {
+          particles.push({
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top,
+            vx: (Math.random() - 0.5) * 2,
+            vy: (Math.random() - 0.5) * 2,
+            life: 1,
+            size: Math.random() * 3 + 1,
+          });
+        }
+      });
+      function animate() {
+        ctx.clearRect(0, 0, W, H);
+        for (var i = particles.length - 1; i >= 0; i--) {
+          var p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.life -= 0.02;
+          if (p.life <= 0) {
+            particles.splice(i, 1);
+            continue;
+          }
+          ctx.globalAlpha = p.life;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = color;
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+};
+
+window._VeltroInitCursorRipple = function () {
+  document
+    .querySelectorAll(".fw-widget-cursorRipple:not([data-ripple-init])")
+    .forEach(function (wrap) {
+      wrap.setAttribute("data-ripple-init", "1");
+      wrap.addEventListener("click", function (e) {
+        var rect = wrap.getBoundingClientRect();
+        var ripple = document.createElement("div");
+        ripple.style.cssText =
+          "position:absolute;border-radius:50%;background:rgba(255,255,255,0.3);pointer-events:none;transform:translate(-50%,-50%) scale(0);animation:veltroRipple 0.6s ease-out forwards;";
+        ripple.style.left = e.clientX - rect.left + "px";
+        ripple.style.top = e.clientY - rect.top + "px";
+        ripple.style.width = ripple.style.height = "20px";
+        wrap.appendChild(ripple);
+        setTimeout(function () {
+          ripple.remove();
+        }, 600);
+      });
+    });
+};
+
+window._VeltroInitCursorLens = function () {
+  document
+    .querySelectorAll(".fw-widget-cursorLens:not([data-lens-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-lens-init", "1");
+    });
+};
+
+window._VeltroInitStickyScrollStack = function () {
+  document
+    .querySelectorAll(".fw-widget-stickyScrollStack:not([data-sticky-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-sticky-init", "1");
+      var cards = el.querySelectorAll(".veltro-sticky-card");
+      var observer = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.style.opacity = "1";
+              entry.target.style.transform = "translateY(0)";
+            }
+          });
+        },
+        { threshold: 0.2 },
+      );
+      cards.forEach(function (c) {
+        observer.observe(c);
+      });
+    });
+};
+
+window._VeltroInitScrollVelocitySkew = function () {
+  document
+    .querySelectorAll(".fw-widget-scrollVelocitySkew:not([data-skew-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-skew-init", "1");
+      var targets = el.querySelectorAll(".veltro-skew-target");
+      var lastScroll = 0,
+        velocity = 0,
+        rafId;
+      function update() {
+        var current = window.scrollY || window.pageYOffset;
+        velocity = (current - lastScroll) * 0.1;
+        lastScroll = current;
+        velocity *= 0.9;
+        targets.forEach(function (t) {
+          t.style.transform =
+            "skewY(" + Math.max(-5, Math.min(5, velocity)) + "deg)";
+        });
+        rafId = requestAnimationFrame(update);
+      }
+      update();
+      el.addEventListener("remove", function () {
+        cancelAnimationFrame(rafId);
+      });
+    });
+};
+
+window._VeltroInitParallaxImageStack = function () {
+  document
+    .querySelectorAll(".fw-widget-parallaxImageStack:not([data-parallax-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-parallax-init", "1");
+      var layers = el.querySelectorAll(".veltro-parallax-layer");
+      window.addEventListener("scroll", function () {
+        var rect = el.getBoundingClientRect();
+        var progress = -rect.top / (rect.height + window.innerHeight);
+        layers.forEach(function (layer, i) {
+          var speed = +layer.dataset.parallaxSpeed || (i + 1) * 0.1;
+          layer.style.transform =
+            "translateY(" + progress * speed * 200 + "px)";
+        });
+      });
+    });
+};
+
+window._VeltroInitMosaicAssemble = function () {
+  document
+    .querySelectorAll(".fw-widget-mosaicAssemble:not([data-mosaic-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-mosaic-init", "1");
+      var tiles = el.querySelectorAll(".veltro-mosaic-tile");
+      var observer = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry, i) {
+            if (entry.isIntersecting) {
+              setTimeout(function () {
+                entry.target.style.opacity = "1";
+                entry.target.style.transform = "scale(1)";
+              }, i * 50);
+            }
+          });
+        },
+        { threshold: 0.1 },
+      );
+      tiles.forEach(function (t) {
+        observer.observe(t);
+      });
+    });
+};
+
+window._VeltroInitScrollProgressRing = function () {
+  document
+    .querySelectorAll(".fw-widget-scrollProgressRing:not([data-ring-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-ring-init", "1");
+      var circle = el.querySelector("circle");
+      if (!circle) return;
+      var circumference = 2 * Math.PI * (circle.r.baseVal.value || 45);
+      circle.style.strokeDasharray = circumference;
+      circle.style.strokeDashoffset = circumference;
+      window.addEventListener("scroll", function () {
+        var scrollTop = window.scrollY || window.pageYOffset;
+        var docHeight =
+          document.documentElement.scrollHeight - window.innerHeight;
+        var progress = docHeight > 0 ? scrollTop / docHeight : 0;
+        circle.style.strokeDashoffset = circumference * (1 - progress);
+      });
+    });
+};
+
+window._VeltroInitMagneticScroll = function () {
+  document
+    .querySelectorAll(".fw-widget-magneticScroll:not([data-magscroll-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-magscroll-init", "1");
+      var items = el.querySelectorAll(".veltro-magnetic-item");
+      el.addEventListener("mousemove", function (e) {
+        var rect = el.getBoundingClientRect();
+        var mx = e.clientX - rect.left,
+          my = e.clientY - rect.top;
+        items.forEach(function (item) {
+          var ir = item.getBoundingClientRect();
+          var cx = ir.left + ir.width / 2 - rect.left;
+          var cy = ir.top + ir.height / 2 - rect.top;
+          var dx = mx - cx,
+            dy = my - cy;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          var pull = Math.max(0, 1 - dist / 200);
+          item.style.transform =
+            "translate(" + dx * pull * 0.2 + "px," + dy * pull * 0.2 + "px)";
+        });
+      });
+      el.addEventListener("mouseleave", function () {
+        items.forEach(function (item) {
+          item.style.transform = "";
+        });
+      });
+    });
+};
+
+window._VeltroInitMorphBlob = function () {
+  document
+    .querySelectorAll(".fw-widget-morphBlob:not([data-blob-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-blob-init", "1");
+      var blob = el.querySelector(".veltro-morph-blob");
+      if (!blob) return;
+      var t = 0;
+      function animate() {
+        t += 0.01;
+        var r1 = 50 + Math.sin(t) * 10;
+        var r2 = 50 + Math.cos(t * 1.3) * 10;
+        var r3 = 50 + Math.sin(t * 0.7) * 10;
+        var r4 = 50 + Math.cos(t * 1.1) * 10;
+        blob.style.borderRadius =
+          r1 +
+          "% " +
+          r2 +
+          "% " +
+          r3 +
+          "% " +
+          r4 +
+          "% / " +
+          r4 +
+          "% " +
+          r3 +
+          "% " +
+          r2 +
+          "% " +
+          r1 +
+          "%";
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+};
+
+window._VeltroInitNoiseGrain = function () {
+  document
+    .querySelectorAll(".fw-widget-noiseGrain:not([data-noise-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-noise-init", "1");
+      var canvas = el.querySelector("canvas");
+      if (!canvas) return;
+      var ctx = canvas.getContext("2d");
+      var W = (canvas.width = el.offsetWidth);
+      var H = (canvas.height = el.offsetHeight);
+      var imgData = ctx.createImageData(W, H);
+      function animate() {
+        for (var i = 0; i < imgData.data.length; i += 4) {
+          var v = Math.random() * 255;
+          imgData.data[i] = v;
+          imgData.data[i + 1] = v;
+          imgData.data[i + 2] = v;
+          imgData.data[i + 3] = 15;
+        }
+        ctx.putImageData(imgData, 0, 0);
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+};
+
+window._VeltroInitGradientFlow = function () {
+  document
+    .querySelectorAll(".fw-widget-gradientFlow:not([data-flow-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-flow-init", "1");
+      var bg = el.querySelector(".veltro-gradient-bg");
+      if (!bg) return;
+      var hue = 0;
+      function animate() {
+        hue = (hue + 0.2) % 360;
+        bg.style.filter = "hue-rotate(" + hue + "deg)";
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+};
+
+window._VeltroInitSectionBackground = function () {
+  document
+    .querySelectorAll(".fw-widget-sectionBackground:not([data-bg-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-bg-init", "1");
+    });
+};
+
+window._VeltroInitGlassmorphismStack = function () {
+  document
+    .querySelectorAll(".fw-widget-glassmorphismStack:not([data-glass-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-glass-init", "1");
+      var cards = el.querySelectorAll(".veltro-glass-card");
+      cards.forEach(function (card, i) {
+        card.style.transitionDelay = i * 100 + "ms";
+      });
+    });
+};
+
+window._VeltroInitGlitchSection = function () {
+  document
+    .querySelectorAll(".fw-widget-glitchSection:not([data-glitch-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-glitch-init", "1");
+      var text = el.querySelector(".veltro-glitch-text");
+      if (!text) return;
+      var original = text.textContent;
+      var chars =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+      setInterval(function () {
+        if (Math.random() > 0.9) {
+          var glitched = original
+            .split("")
+            .map(function (c) {
+              return Math.random() > 0.8
+                ? chars[Math.floor(Math.random() * chars.length)]
+                : c;
+            })
+            .join("");
+          text.textContent = glitched;
+          setTimeout(function () {
+            text.textContent = original;
+          }, 100);
+        }
+      }, 2000);
+    });
+};
+
+window._VeltroInitDepthOfField = function () {
+  document
+    .querySelectorAll(".fw-widget-depthOfField:not([data-dof-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-dof-init", "1");
+      var layers = el.querySelectorAll(".veltro-dof-layer");
+      el.addEventListener("mousemove", function (e) {
+        var rect = el.getBoundingClientRect();
+        var x = (e.clientX - rect.left) / rect.width;
+        layers.forEach(function (layer, i) {
+          var depth = +layer.dataset.dofDepth || i + 1;
+          var moveX = (x - 0.5) * depth * 20;
+          layer.style.transform = "translateX(" + -moveX + "px)";
+        });
+      });
+    });
+};
+
+window._VeltroInitHolographicCard = function () {
+  document
+    .querySelectorAll(".fw-widget-holographicCard:not([data-holo-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-holo-init", "1");
+      el.addEventListener("mousemove", function (e) {
+        var rect = el.getBoundingClientRect();
+        var x = (e.clientX - rect.left) / rect.width;
+        var y = (e.clientY - rect.top) / rect.height;
+        el.style.setProperty("--holo-x", x);
+        el.style.setProperty("--holo-y", y);
+      });
+    });
+};
+
+window._VeltroInitSoundReactive = function () {
+  document
+    .querySelectorAll(".fw-widget-soundReactive:not([data-sound-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-sound-init", "1");
+      var bars = el.querySelectorAll(".veltro-sound-bar");
+      function animate() {
+        bars.forEach(function (bar) {
+          var h = Math.random() * 80 + 20;
+          bar.style.height = h + "%";
+        });
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+};
+
+window._VeltroInitMirrorReflection = function () {
+  document
+    .querySelectorAll(".fw-widget-mirrorReflection:not([data-mirror-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-mirror-init", "1");
+    });
+};
+
+// ── Batch 2: Typography ──
+
+window._VeltroInitWaveText = function () {
+  document
+    .querySelectorAll(".fw-widget-waveText:not([data-wave-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-wave-init", "1");
+      var chars = el.querySelectorAll(".veltro-wave-char");
+      var t = 0;
+      function animate() {
+        t += 0.05;
+        chars.forEach(function (c, i) {
+          var y = Math.sin(t + i * 0.3) * 10;
+          c.style.transform = "translateY(" + y + "px)";
+        });
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+};
+
+window._VeltroInitRotatingText3d = function () {
+  document
+    .querySelectorAll(".fw-widget-rotatingText3d:not([data-rot3d-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-rot3d-init", "1");
+      var t = 0;
+      function animate() {
+        t += 0.5;
+        el.style.transform = "perspective(500px) rotateY(" + t + "deg)";
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+};
+
+window._VeltroInitMorphingText = function () {
+  document
+    .querySelectorAll(".fw-widget-morphingText:not([data-morph-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-morph-init", "1");
+      var words = JSON.parse(el.dataset.words || '["Hello","World","Veltro"]');
+      var index = 0;
+      var text = el.querySelector(".veltro-morph-text");
+      if (!text) return;
+      setInterval(function () {
+        index = (index + 1) % words.length;
+        text.style.opacity = "0";
+        setTimeout(function () {
+          text.textContent = words[index];
+          text.style.opacity = "1";
+        }, 300);
+      }, 2500);
+    });
+};
+
+window._VeltroInitKineticScramble = function () {
+  document
+    .querySelectorAll(".fw-widget-kineticScramble:not([data-ks-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-ks-init", "1");
+      var text = el.querySelector(".veltro-ks-text");
+      if (!text) return;
+      var original = text.dataset.text || text.textContent;
+      var chars =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      function scramble() {
+        var progress = 0;
+        var interval = setInterval(function () {
+          progress += 0.05;
+          var current = original
+            .split("")
+            .map(function (c, i) {
+              if (i < progress * original.length) return original[i];
+              return chars[Math.floor(Math.random() * chars.length)];
+            })
+            .join("");
+          text.textContent = current;
+          if (progress >= 1) {
+            clearInterval(interval);
+            text.textContent = original;
+          }
+        }, 50);
+      }
+      setTimeout(scramble, 500);
+    });
+};
+
+// ── Batch 3: Physics ──
+
+window._VeltroInitGravityWells = function () {
+  document
+    .querySelectorAll(".fw-widget-gravityWells:not([data-gw-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-gw-init", "1");
+      var canvas = el.querySelector("canvas");
+      if (!canvas) return;
+      var ctx = canvas.getContext("2d");
+      var W = (canvas.width = el.offsetWidth);
+      var H = (canvas.height = el.offsetHeight);
+      var particles = [];
+      var wells = [
+        { x: W * 0.3, y: H * 0.5, strength: 2 },
+        { x: W * 0.7, y: H * 0.5, strength: 2 },
+      ];
+      for (var i = 0; i < 80; i++) {
+        particles.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 2,
+          vy: (Math.random() - 0.5) * 2,
+          size: Math.random() * 2 + 1,
+        });
+      }
+      function animate() {
+        ctx.fillStyle = "rgba(10,10,20,0.2)";
+        ctx.fillRect(0, 0, W, H);
+        particles.forEach(function (p) {
+          wells.forEach(function (w) {
+            var dx = w.x - p.x,
+              dy = w.y - p.y;
+            var dist = Math.sqrt(dx * dx + dy * dy) + 1;
+            var force = (w.strength * 50) / (dist * dist);
+            p.vx += (dx / dist) * force;
+            p.vy += (dy / dist) * force;
+          });
+          p.vx *= 0.98;
+          p.vy *= 0.98;
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0) p.x = W;
+          if (p.x > W) p.x = 0;
+          if (p.y < 0) p.y = H;
+          if (p.y > H) p.y = 0;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = "#00d4ff";
+          ctx.fill();
+        });
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+};
+
+window._VeltroInitFluidSimulation = function () {
+  document
+    .querySelectorAll(".fw-widget-fluidSimulation:not([data-fluid-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-fluid-init", "1");
+      var canvas = el.querySelector("canvas");
+      if (!canvas) return;
+      var ctx = canvas.getContext("2d");
+      var W = (canvas.width = el.offsetWidth);
+      var H = (canvas.height = el.offsetHeight);
+      var mouseX = W / 2,
+        mouseY = H / 2;
+      el.addEventListener("mousemove", function (e) {
+        var rect = el.getBoundingClientRect();
+        mouseX = e.clientX - rect.left;
+        mouseY = e.clientY - rect.top;
+      });
+      var t = 0;
+      function animate() {
+        t += 0.02;
+        ctx.fillStyle = "rgba(5,5,15,0.1)";
+        ctx.fillRect(0, 0, W, H);
+        for (var i = 0; i < 20; i++) {
+          var angle = t + i * 0.5;
+          var r = 50 + Math.sin(t + i) * 30;
+          var x = mouseX + Math.cos(angle) * r;
+          var y = mouseY + Math.sin(angle) * r;
+          ctx.beginPath();
+          ctx.arc(x, y, 3, 0, Math.PI * 2);
+          ctx.fillStyle = "hsla(" + ((t * 50 + i * 20) % 360) + ",70%,60%,0.5)";
+          ctx.fill();
+        }
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+};
+
+window._VeltroInitClothSimulation = function () {
+  document
+    .querySelectorAll(".fw-widget-clothSimulation:not([data-cloth-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-cloth-init", "1");
+      var canvas = el.querySelector("canvas");
+      if (!canvas) return;
+      var ctx = canvas.getContext("2d");
+      var W = (canvas.width = el.offsetWidth);
+      var H = (canvas.height = el.offsetHeight);
+      var cols = 15,
+        rows = 10,
+        spacing = 20;
+      var points = [];
+      for (var y = 0; y < rows; y++) {
+        for (var x = 0; x < cols; x++) {
+          points.push({
+            x: x * spacing + (W - cols * spacing) / 2,
+            y: y * spacing + 50,
+            ox: x * spacing + (W - cols * spacing) / 2,
+            oy: y * spacing + 50,
+            vx: 0,
+            vy: 0,
+            pinned: y === 0,
+          });
+        }
+      }
+      var mouseX = 0,
+        mouseY = 0,
+        mouseDown = false;
+      el.addEventListener("mousemove", function (e) {
+        var rect = el.getBoundingClientRect();
+        mouseX = e.clientX - rect.left;
+        mouseY = e.clientY - rect.top;
+      });
+      el.addEventListener("mousedown", function () {
+        mouseDown = true;
+      });
+      el.addEventListener("mouseup", function () {
+        mouseDown = false;
+      });
+      function animate() {
+        ctx.clearRect(0, 0, W, H);
+        points.forEach(function (p) {
+          if (p.pinned) return;
+          var dx = mouseX - p.x,
+            dy = mouseY - p.y;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          if (mouseDown && dist < 50) {
+            p.vx += dx * 0.01;
+            p.vy += dy * 0.01;
+          }
+          p.vy += 0.2;
+          p.vx += (p.ox - p.x) * 0.01;
+          p.vy += (p.oy - p.y) * 0.01;
+          p.vx *= 0.95;
+          p.vy *= 0.95;
+          p.x += p.vx;
+          p.y += p.vy;
+        });
+        ctx.beginPath();
+        for (var y = 0; y < rows; y++) {
+          for (var x = 0; x < cols - 1; x++) {
+            var p1 = points[y * cols + x],
+              p2 = points[y * cols + x + 1];
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+          }
+        }
+        for (var x = 0; x < cols; x++) {
+          for (var y = 0; y < rows - 1; y++) {
+            var p1 = points[y * cols + x],
+              p2 = points[(y + 1) * cols + x];
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+          }
+        }
+        ctx.strokeStyle = "rgba(0,212,255,0.5)";
+        ctx.stroke();
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+};
+
+window._VeltroInitMagneticFields = function () {
+  document
+    .querySelectorAll(".fw-widget-magneticFields:not([data-mf-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-mf-init", "1");
+      var canvas = el.querySelector("canvas");
+      if (!canvas) return;
+      var ctx = canvas.getContext("2d");
+      var W = (canvas.width = el.offsetWidth);
+      var H = (canvas.height = el.offsetHeight);
+      var particles = [];
+      for (var i = 0; i < 100; i++) {
+        particles.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          angle: Math.random() * Math.PI * 2,
+        });
+      }
+      function animate() {
+        ctx.fillStyle = "rgba(8,8,16,0.1)";
+        ctx.fillRect(0, 0, W, H);
+        particles.forEach(function (p) {
+          var dx = W / 2 - p.x,
+            dy = H / 2 - p.y;
+          var dist = Math.sqrt(dx * dx + dy * dy) + 1;
+          var force = 100 / dist;
+          p.angle += force * 0.05;
+          p.x += Math.cos(p.angle) * 2;
+          p.y += Math.sin(p.angle) * 2;
+          if (p.x < 0 || p.x > W || p.y < 0 || p.y > H) {
+            p.x = Math.random() * W;
+            p.y = Math.random() * H;
+          }
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
+          ctx.fillStyle = "#ff6b6b";
+          ctx.fill();
+        });
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+};
+
+window._VeltroInitPendulumWave = function () {
+  document
+    .querySelectorAll(".fw-widget-pendulumWave:not([data-pw-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-pw-init", "1");
+      var canvas = el.querySelector("canvas");
+      if (!canvas) return;
+      var ctx = canvas.getContext("2d");
+      var W = (canvas.width = el.offsetWidth);
+      var H = (canvas.height = el.offsetHeight);
+      var pendulums = [];
+      for (var i = 0; i < 12; i++) {
+        pendulums.push({
+          length: 100 + i * 15,
+          angle: Math.PI / 4,
+          speed: 0.02 + i * 0.002,
+          phase: i * 0.3,
+        });
+      }
+      var t = 0;
+      function animate() {
+        t += 0.016;
+        ctx.fillStyle = "rgba(5,5,15,0.2)";
+        ctx.fillRect(0, 0, W, H);
+        var originX = W / 2,
+          originY = 50;
+        pendulums.forEach(function (p, i) {
+          var angle = p.angle * Math.cos(t * p.speed * 10 + p.phase);
+          var x = originX + Math.sin(angle) * p.length;
+          var y = originY + Math.cos(angle) * p.length;
+          ctx.beginPath();
+          ctx.moveTo(originX, originY);
+          ctx.lineTo(x, y);
+          ctx.strokeStyle = "hsla(" + i * 30 + ",70%,60%,0.6)";
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(x, y, 6, 0, Math.PI * 2);
+          ctx.fillStyle = "hsla(" + i * 30 + ",70%,60%,0.9)";
+          ctx.fill();
+        });
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+};
+
+window._VeltroInitCollisionChaos = function () {
+  document
+    .querySelectorAll(".fw-widget-collisionChaos:not([data-cc-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-cc-init", "1");
+      var canvas = el.querySelector("canvas");
+      if (!canvas) return;
+      var ctx = canvas.getContext("2d");
+      var W = (canvas.width = el.offsetWidth);
+      var H = (canvas.height = el.offsetHeight);
+      var balls = [];
+      for (var i = 0; i < 15; i++) {
+        balls.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 6,
+          vy: (Math.random() - 0.5) * 6,
+          r: Math.random() * 15 + 10,
+          color: "hsl(" + Math.random() * 360 + ",70%,60%)",
+        });
+      }
+      function animate() {
+        ctx.fillStyle = "rgba(10,10,20,0.25)";
+        ctx.fillRect(0, 0, W, H);
+        balls.forEach(function (b) {
+          b.x += b.vx;
+          b.y += b.vy;
+          if (b.x - b.r < 0 || b.x + b.r > W) b.vx *= -1;
+          if (b.y - b.r < 0 || b.y + b.r > H) b.vy *= -1;
+          ctx.beginPath();
+          ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+          ctx.fillStyle = b.color;
+          ctx.fill();
+        });
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+};
+
+window._VeltroInitBlackHole = function () {
+  document
+    .querySelectorAll(".fw-widget-blackHole:not([data-bh-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-bh-init", "1");
+      var canvas = el.querySelector("canvas");
+      if (!canvas) return;
+      var ctx = canvas.getContext("2d");
+      var W = (canvas.width = el.offsetWidth);
+      var H = (canvas.height = el.offsetHeight);
+      var particles = [];
+      for (var i = 0; i < 200; i++) {
+        var angle = Math.random() * Math.PI * 2;
+        var dist = 50 + Math.random() * 150;
+        particles.push({
+          angle: angle,
+          dist: dist,
+          speed: 0.01 + Math.random() * 0.02,
+          size: Math.random() * 2 + 0.5,
+        });
+      }
+      var t = 0;
+      function animate() {
+        t += 0.016;
+        ctx.fillStyle = "rgba(5,5,15,0.15)";
+        ctx.fillRect(0, 0, W, H);
+        var cx = W / 2,
+          cy = H / 2;
+        particles.forEach(function (p) {
+          p.angle += p.speed;
+          p.dist = Math.max(30, p.dist - 0.2);
+          if (p.dist <= 30) p.dist = 50 + Math.random() * 150;
+          var x = cx + Math.cos(p.angle) * p.dist;
+          var y = cy + Math.sin(p.angle) * p.dist * 0.5;
+          ctx.beginPath();
+          ctx.arc(x, y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle =
+            "hsla(" + ((p.angle * 50 + t * 30) % 360) + ",80%,60%,0.7)";
+          ctx.fill();
+        });
+        ctx.beginPath();
+        ctx.arc(cx, cy, 25, 0, Math.PI * 2);
+        ctx.fillStyle = "#000";
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(cx, cy, 27, 0, Math.PI * 2);
+        ctx.strokeStyle = "#ff6b6b";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+};
+
+// ── Batch 4: Scroll & Motion ──
+
+window._VeltroInitParallaxDepth = function () {
+  document
+    .querySelectorAll(".fw-widget-parallaxDepth:not([data-pd-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-pd-init", "1");
+      var layers = el.querySelectorAll(".veltro-depth-layer");
+      window.addEventListener("scroll", function () {
+        var rect = el.getBoundingClientRect();
+        var progress = Math.max(
+          0,
+          Math.min(1, -rect.top / (rect.height + window.innerHeight) + 0.5),
+        );
+        layers.forEach(function (layer, i) {
+          var depth = +layer.dataset.depth || (i + 1) * 0.2;
+          layer.style.transform =
+            "translateZ(" +
+            progress * depth * 100 +
+            "px) scale(" +
+            (1 + progress * depth * 0.1) +
+            ")";
+        });
+      });
+    });
+};
+
+window._VeltroInitScrollTriggered = function () {
+  document
+    .querySelectorAll(".fw-widget-scrollTriggered:not([data-st-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-st-init", "1");
+      var items = el.querySelectorAll(".veltro-trigger-item");
+      var observer = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("veltro-triggered");
+            }
+          });
+        },
+        { threshold: 0.2 },
+      );
+      items.forEach(function (item) {
+        observer.observe(item);
+      });
+    });
+};
+
+window._VeltroInitHorizontalScrollGallery = function () {
+  document
+    .querySelectorAll(".fw-widget-horizontalScrollGallery:not([data-hsg-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-hsg-init", "1");
+      var track = el.querySelector(".veltro-hsg-track");
+      if (!track) return;
+      el.addEventListener("wheel", function (e) {
+        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+          e.preventDefault();
+          track.scrollLeft += e.deltaY;
+        }
+      });
+    });
+};
+
+window._VeltroInitVelocitySkew = function () {
+  document
+    .querySelectorAll(".fw-widget-velocitySkew:not([data-vs-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-vs-init", "1");
+      var targets = el.querySelectorAll(".veltro-velocity-target");
+      var lastScroll = 0,
+        velocity = 0;
+      function update() {
+        var current = window.scrollY || window.pageYOffset;
+        velocity += (current - lastScroll - velocity) * 0.1;
+        lastScroll = current;
+        targets.forEach(function (t) {
+          t.style.transform =
+            "skewX(" + Math.max(-8, Math.min(8, velocity)) + "deg)";
+        });
+        requestAnimationFrame(update);
+      }
+      update();
+    });
+};
+
+// ── Batch 5: Backgrounds ──
+
+window._VeltroInitAuroraBorealis = function () {
+  document
+    .querySelectorAll(".fw-widget-auroraBorealis:not([data-ab-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-ab-init", "1");
+      var canvas = el.querySelector("canvas");
+      if (!canvas) return;
+      var ctx = canvas.getContext("2d");
+      var W = (canvas.width = el.offsetWidth);
+      var H = (canvas.height = el.offsetHeight);
+      var waves = [];
+      for (var i = 0; i < 5; i++) {
+        waves.push({
+          y: H * 0.3 + i * 30,
+          amplitude: 30 + Math.random() * 20,
+          frequency: 0.01 + Math.random() * 0.01,
+          speed: 0.02 + Math.random() * 0.01,
+          offset: Math.random() * Math.PI * 2,
+          hue: 120 + i * 40,
+        });
+      }
+      var t = 0;
+      function animate() {
+        t += 0.016;
+        ctx.fillStyle = "rgba(5,5,15,0.1)";
+        ctx.fillRect(0, 0, W, H);
+        waves.forEach(function (w) {
+          ctx.beginPath();
+          ctx.moveTo(0, w.y);
+          for (var x = 0; x < W; x += 5) {
+            var y =
+              w.y +
+              Math.sin(x * w.frequency + t * w.speed + w.offset) * w.amplitude;
+            ctx.lineTo(x, y);
+          }
+          ctx.lineTo(W, H);
+          ctx.lineTo(0, H);
+          ctx.closePath();
+          ctx.fillStyle = "hsla(" + w.hue + ",70%,60%,0.15)";
+          ctx.fill();
+        });
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+};
+
+window._VeltroInitParticleNebula = function () {
+  document
+    .querySelectorAll(".fw-widget-particleNebula:not([data-pn-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-pn-init", "1");
+      var canvas = el.querySelector("canvas");
+      if (!canvas) return;
+      var ctx = canvas.getContext("2d");
+      var W = (canvas.width = el.offsetWidth);
+      var H = (canvas.height = el.offsetHeight);
+      var particles = [];
+      for (var i = 0; i < 150; i++) {
+        particles.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.5,
+          vy: (Math.random() - 0.5) * 0.5,
+          size: Math.random() * 2 + 0.5,
+          hue: Math.random() * 60 + 240,
+        });
+      }
+      function animate() {
+        ctx.fillStyle = "rgba(3,3,10,0.2)";
+        ctx.fillRect(0, 0, W, H);
+        particles.forEach(function (p) {
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0) p.x = W;
+          if (p.x > W) p.x = 0;
+          if (p.y < 0) p.y = H;
+          if (p.y > H) p.y = 0;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = "hsla(" + p.hue + ",80%,70%,0.6)";
+          ctx.fill();
+        });
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+};
+
+window._VeltroInitGeometricPatterns = function () {
+  document
+    .querySelectorAll(".fw-widget-geometricPatterns:not([data-gp-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-gp-init", "1");
+      var canvas = el.querySelector("canvas");
+      if (!canvas) return;
+      var ctx = canvas.getContext("2d");
+      var W = (canvas.width = el.offsetWidth);
+      var H = (canvas.height = el.offsetHeight);
+      var t = 0;
+      function animate() {
+        t += 0.01;
+        ctx.clearRect(0, 0, W, H);
+        var size = 40;
+        for (var x = 0; x < W; x += size) {
+          for (var y = 0; y < H; y += size) {
+            var dist = Math.sqrt(
+              (x - W / 2) * (x - W / 2) + (y - H / 2) * (y - H / 2),
+            );
+            var rotation = t + dist * 0.01;
+            ctx.save();
+            ctx.translate(x + size / 2, y + size / 2);
+            ctx.rotate(rotation);
+            ctx.strokeStyle =
+              "hsla(" + ((dist * 0.5 + t * 50) % 360) + ",60%,60%,0.3)";
+            ctx.strokeRect(-size / 3, -size / 3, size / 1.5, size / 1.5);
+            ctx.restore();
+          }
+        }
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+};
+
+window._VeltroInitLiquidGradient = function () {
+  document
+    .querySelectorAll(".fw-widget-liquidGradient:not([data-lg-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-lg-init", "1");
+      var canvas = el.querySelector("canvas");
+      if (!canvas) return;
+      var ctx = canvas.getContext("2d");
+      var W = (canvas.width = el.offsetWidth);
+      var H = (canvas.height = el.offsetHeight);
+      var blobs = [];
+      for (var i = 0; i < 4; i++) {
+        blobs.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 2,
+          vy: (Math.random() - 0.5) * 2,
+          r: 60 + Math.random() * 40,
+          hue: Math.random() * 360,
+        });
+      }
+      function animate() {
+        ctx.fillStyle = "#050510";
+        ctx.fillRect(0, 0, W, H);
+        blobs.forEach(function (b) {
+          b.x += b.vx;
+          b.y += b.vy;
+          if (b.x < -b.r) b.x = W + b.r;
+          if (b.x > W + b.r) b.x = -b.r;
+          if (b.y < -b.r) b.y = H + b.r;
+          if (b.y > H + b.r) b.y = -b.r;
+          var grad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
+          grad.addColorStop(0, "hsla(" + b.hue + ",80%,60%,0.5)");
+          grad.addColorStop(1, "hsla(" + b.hue + ",80%,60%,0)");
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+};
+
+// ── Batch 6: Effects ──
+
+window._VeltroInitHolographicOverlay = function () {
+  document
+    .querySelectorAll(".fw-widget-holographicOverlay:not([data-ho-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-ho-init", "1");
+      var overlay = el.querySelector(".veltro-holo-overlay");
+      if (!overlay) return;
+      var t = 0;
+      function animate() {
+        t += 0.02;
+        overlay.style.background =
+          "linear-gradient(" +
+          t * 30 +
+          "deg, rgba(0,212,255,0.1) 0%, rgba(255,0,128,0.1) 50%, rgba(0,212,255,0.1) 100%)";
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+};
+
+window._VeltroInitLightLeaks = function () {
+  document
+    .querySelectorAll(".fw-widget-lightLeaks:not([data-ll-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-ll-init", "1");
+      var leaks = el.querySelectorAll(".veltro-light-leak");
+      leaks.forEach(function (leak, i) {
+        leak.style.animationDelay = i * 2 + "s";
+      });
+    });
+};
+
+// ── Batch 7: Spatial & Layout ──
+
+window._VeltroInitCarousel3d = function () {
+  document
+    .querySelectorAll(".fw-widget-carousel3d:not([data-c3d-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-c3d-init", "1");
+      var track = el.querySelector(".veltro-carousel-track");
+      var items = el.querySelectorAll(".veltro-carousel-item");
+      if (!track || !items.length) return;
+      var angle = 0;
+      var radius = 200;
+      var isDragging = false,
+        startX = 0,
+        currentAngle = 0;
+      function update() {
+        items.forEach(function (item, i) {
+          var theta = ((angle + i * (360 / items.length)) * Math.PI) / 180;
+          var x = Math.sin(theta) * radius;
+          var z = Math.cos(theta) * radius;
+          item.style.transform =
+            "translateX(" +
+            x +
+            "px) translateZ(" +
+            z +
+            "px) rotateY(" +
+            (-theta * 180) / Math.PI +
+            "deg)";
+          item.style.zIndex = Math.round(z + radius);
+          item.style.opacity = ((z + radius) / (2 * radius)) * 0.8 + 0.2;
+        });
+      }
+      function animate() {
+        if (!isDragging) angle += 0.2;
+        update();
+        requestAnimationFrame(animate);
+      }
+      el.addEventListener("mousedown", function (e) {
+        isDragging = true;
+        startX = e.clientX;
+        currentAngle = angle;
+      });
+      document.addEventListener("mousemove", function (e) {
+        if (!isDragging) return;
+        angle = currentAngle + (e.clientX - startX) * 0.3;
+      });
+      document.addEventListener("mouseup", function () {
+        isDragging = false;
+      });
+      animate();
+    });
+};
+
+window._VeltroInitIsometricGrid = function () {
+  document
+    .querySelectorAll(".fw-widget-isometricGrid:not([data-ig-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-ig-init", "1");
+      var items = el.querySelectorAll(".veltro-iso-item");
+      items.forEach(function (item, i) {
+        item.style.transitionDelay = i * 50 + "ms";
+        setTimeout(
+          function () {
+            item.style.opacity = "1";
+            item.style.transform = "translateY(0)";
+          },
+          100 + i * 50,
+        );
+      });
+    });
+};
+
+window._VeltroInitPerspectiveRooms = function () {
+  document
+    .querySelectorAll(".fw-widget-perspectiveRooms:not([data-pr-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-pr-init", "1");
+      var rooms = el.querySelectorAll(".veltro-room");
+      var activeRoom = 0;
+      function showRoom(index) {
+        rooms.forEach(function (room, i) {
+          room.style.opacity = i === index ? "1" : "0";
+          room.style.transform =
+            i === index ? "rotateY(0deg)" : "rotateY(90deg)";
+        });
+        activeRoom = index;
+      }
+      var nav = el.querySelectorAll(".veltro-room-nav");
+      nav.forEach(function (btn, i) {
+        btn.addEventListener("click", function () {
+          showRoom(i);
+        });
+      });
+      showRoom(0);
+    });
+};
+
+window._VeltroInitFloatingIslands = function () {
+  document
+    .querySelectorAll(".fw-widget-floatingIslands:not([data-fi-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-fi-init", "1");
+      var islands = el.querySelectorAll(".veltro-island");
+      var t = 0;
+      function animate() {
+        t += 0.016;
+        islands.forEach(function (island, i) {
+          var y = Math.sin(t + i * 1.5) * 15;
+          var r = Math.sin(t * 0.5 + i) * 3;
+          island.style.transform =
+            "translateY(" + y + "px) rotate(" + r + "deg)";
+        });
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+};
+
+window._VeltroInitLayeredParallax = function () {
+  document
+    .querySelectorAll(".fw-widget-layeredParallax:not([data-lp-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-lp-init", "1");
+      var layers = el.querySelectorAll(".veltro-lp-layer");
+      el.addEventListener("mousemove", function (e) {
+        var rect = el.getBoundingClientRect();
+        var x = (e.clientX - rect.left) / rect.width - 0.5;
+        var y = (e.clientY - rect.top) / rect.height - 0.5;
+        layers.forEach(function (layer, i) {
+          var depth = +layer.dataset.depth || (i + 1) * 0.1;
+          layer.style.transform =
+            "translate(" + x * depth * 50 + "px," + y * depth * 50 + "px)";
+        });
+      });
+    });
+};
+
+window._VeltroInitKineticLayout = function () {
+  document
+    .querySelectorAll(".fw-widget-kineticLayout:not([data-kl-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-kl-init", "1");
+      var items = el.querySelectorAll(".veltro-kl-item");
+      el.addEventListener("mousemove", function (e) {
+        var rect = el.getBoundingClientRect();
+        var mx = e.clientX - rect.left,
+          my = e.clientY - rect.top;
+        items.forEach(function (item) {
+          var ir = item.getBoundingClientRect();
+          var cx = ir.left + ir.width / 2 - rect.left;
+          var cy = ir.top + ir.height / 2 - rect.top;
+          var dx = mx - cx,
+            dy = my - cy;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          var push = Math.max(0, 1 - dist / 150);
+          item.style.transform =
+            "translate(" +
+            -dx * push * 0.15 +
+            "px," +
+            -dy * push * 0.15 +
+            "px)";
+        });
+      });
+      el.addEventListener("mouseleave", function () {
+        items.forEach(function (item) {
+          item.style.transform = "";
+        });
+      });
+    });
+};
+
+window._VeltroInitMorphingGrid = function () {
+  document
+    .querySelectorAll(".fw-widget-morphingGrid:not([data-mg-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-mg-init", "1");
+      var cells = el.querySelectorAll(".veltro-mg-cell");
+      var t = 0;
+      function animate() {
+        t += 0.02;
+        cells.forEach(function (cell, i) {
+          var scale = 1 + Math.sin(t + i * 0.5) * 0.1;
+          cell.style.transform = "scale(" + scale + ")";
+        });
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+};
+
+window._VeltroInitSpatialNavigation = function () {
+  document
+    .querySelectorAll(".fw-widget-spatialNavigation:not([data-sn-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-sn-init", "1");
+      var nodes = el.querySelectorAll(".veltro-sn-node");
+      var activeNode = 0;
+      function activate(index) {
+        nodes.forEach(function (node, i) {
+          node.classList.toggle("veltro-sn-active", i === index);
+        });
+        activeNode = index;
+      }
+      nodes.forEach(function (node, i) {
+        node.addEventListener("mouseenter", function () {
+          activate(i);
+        });
+        node.addEventListener("click", function () {
+          activate(i);
+        });
+      });
+      activate(0);
+    });
+};
+
+// ── Master Initializer ──
+window._VeltroInitAll = function () {
+  var inits = [
+    "_VeltroInitKineticText",
+    "_VeltroInitTextScramble",
+    "_VeltroInitTypewriter",
+    "_VeltroInitTextMask",
+    "_VeltroInitCounter",
+    "_VeltroInitLiquidText",
+    "_VeltroInitPhysics",
+    "_VeltroInitBubblePop",
+    "_VeltroInitMagneticCursor",
+    "_VeltroInitParticleTrail",
+    "_VeltroInitCursorRipple",
+    "_VeltroInitCursorLens",
+    "_VeltroInitStickyScrollStack",
+    "_VeltroInitScrollVelocitySkew",
+    "_VeltroInitParallaxImageStack",
+    "_VeltroInitMosaicAssemble",
+    "_VeltroInitScrollProgressRing",
+    "_VeltroInitMagneticScroll",
+    "_VeltroInitShaders",
+    "_VeltroInitMorphBlob",
+    "_VeltroInitNoiseGrain",
+    "_VeltroInitGradientFlow",
+    "_VeltroInitSectionBackground",
+    "_VeltroInitGlassmorphismStack",
+    "_VeltroInitTiltCards",
+    "_VeltroInitGlitchSection",
+    "_VeltroInitAudioVisualizer",
+    "_VeltroInitDepthOfField",
+    "_VeltroInitHolographicCard",
+    "_VeltroInitSoundReactive",
+    "_VeltroInitMirrorReflection",
+    "_VeltroInitConstellation",
+    "_VeltroInitInfiniteCanvas",
+    "_VeltroInitGeometryDraw",
+    "_VeltroInitMultiShapeTrail",
+    "_VeltroInitSpotlight",
+    "_VeltroInitMagText",
+    "_VeltroInitDistortion",
+    "_VeltroInitColorSampler",
+    "_VeltroInitGravityCursor",
+    "_VeltroInitWaveText",
+    "_VeltroInitRotatingText3d",
+    "_VeltroInitMorphingText",
+    "_VeltroInitKineticScramble",
+    "_VeltroInitGravityWells",
+    "_VeltroInitFluidSimulation",
+    "_VeltroInitClothSimulation",
+    "_VeltroInitMagneticFields",
+    "_VeltroInitPendulumWave",
+    "_VeltroInitCollisionChaos",
+    "_VeltroInitBlackHole",
+    "_VeltroInitParallaxDepth",
+    "_VeltroInitScrollTriggered",
+    "_VeltroInitHorizontalScrollGallery",
+    "_VeltroInitVelocitySkew",
+    "_VeltroInitAuroraBorealis",
+    "_VeltroInitParticleNebula",
+    "_VeltroInitGeometricPatterns",
+    "_VeltroInitLiquidGradient",
+    "_VeltroInitHolographicOverlay",
+    "_VeltroInitLightLeaks",
+    "_VeltroInitCarousel3d",
+    "_VeltroInitIsometricGrid",
+    "_VeltroInitPerspectiveRooms",
+    "_VeltroInitFloatingIslands",
+    "_VeltroInitLayeredParallax",
+    "_VeltroInitKineticLayout",
+    "_VeltroInitMorphingGrid",
+    "_VeltroInitSpatialNavigation",
+  ];
+  inits.forEach(function (name) {
+    if (typeof window[name] === "function") window[name]();
+  });
 };
