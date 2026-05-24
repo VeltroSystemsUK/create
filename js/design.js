@@ -731,6 +731,7 @@ FB.design.canvas = (function () {
 
     var _panning = false;
     var _spaceDown = false;
+    var _clipboard = null;
     document.addEventListener("keydown", function (e) {
       if (e.code === "Space" && FB.design._mode) _spaceDown = true;
     });
@@ -836,6 +837,84 @@ FB.design.canvas = (function () {
       };
       if (toolKeys[e.key] && !e.ctrlKey && !e.altKey) {
         FB.design.tools.setTool(toolKeys[e.key]);
+      }
+
+      // Arrow nudge — 1px, Shift = 10px
+      if (
+        e.key === "ArrowLeft" ||
+        e.key === "ArrowRight" ||
+        e.key === "ArrowUp" ||
+        e.key === "ArrowDown"
+      ) {
+        var nudgeObj = _fc.getActiveObject();
+        if (nudgeObj) {
+          e.preventDefault();
+          var step = e.shiftKey ? 10 : 1;
+          if (e.key === "ArrowLeft") nudgeObj.set("left", nudgeObj.left - step);
+          if (e.key === "ArrowRight")
+            nudgeObj.set("left", nudgeObj.left + step);
+          if (e.key === "ArrowUp") nudgeObj.set("top", nudgeObj.top - step);
+          if (e.key === "ArrowDown") nudgeObj.set("top", nudgeObj.top + step);
+          nudgeObj.setCoords();
+          _fc.renderAll();
+          FB.design.props.render();
+        }
+      }
+
+      // Copy (Ctrl+C / Cmd+C)
+      if ((e.ctrlKey || e.metaKey) && e.key === "c") {
+        var copyObj = _fc.getActiveObject();
+        if (copyObj) {
+          copyObj.clone(function (cloned) {
+            _clipboard = cloned;
+          });
+        }
+      }
+
+      // Cut (Ctrl+X / Cmd+X)
+      if ((e.ctrlKey || e.metaKey) && e.key === "x") {
+        var cutObj = _fc.getActiveObject();
+        if (cutObj) {
+          cutObj.clone(function (cloned) {
+            _clipboard = cloned;
+          });
+          _fc.getActiveObjects().forEach(function (o) {
+            _fc.remove(o);
+          });
+          _fc.discardActiveObject();
+          _fc.renderAll();
+        }
+      }
+
+      // Paste (Ctrl+V / Cmd+V)
+      if ((e.ctrlKey || e.metaKey) && e.key === "v") {
+        if (_clipboard) {
+          e.preventDefault();
+          _clipboard.clone(function (cloned) {
+            _fc.discardActiveObject();
+            cloned.set({
+              left: cloned.left + 20,
+              top: cloned.top + 20,
+              evented: true,
+            });
+            if (cloned.type === "activeSelection") {
+              cloned.canvas = _fc;
+              cloned.forEachObject(function (obj) {
+                _fc.add(obj);
+              });
+              cloned.setCoords();
+            } else {
+              _fc.add(cloned);
+            }
+            _fc.setActiveObject(cloned);
+            _fc.renderAll();
+            FB.design.history.push();
+            _clipboard.set({
+              left: _clipboard.left + 20,
+              top: _clipboard.top + 20,
+            });
+          });
+        }
       }
     });
   }
