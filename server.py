@@ -528,7 +528,7 @@ SCRAPED CONTENT:
                     content[page_id]['blocks'][block_id] = {}
                 for field, value in block_data.items():
                     content[page_id]['blocks'][block_id][field] = value
-            self._cms_write_json('cms-content.json', content)
+        self._cms_write_json('cms-content.json', content)
         self._json_response({'success': True})
 
     def _handle_cms_media_list(self):
