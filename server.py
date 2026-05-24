@@ -7,6 +7,10 @@ import subprocess
 import urllib.parse
 import urllib.request
 import re
+import hashlib
+import random
+import string
+import uuid
 from http import HTTPStatus
 from html.parser import HTMLParser
 
@@ -31,7 +35,7 @@ class FrameworkHandler(http.server.SimpleHTTPRequestHandler):
     def do_OPTIONS(self):
         self.send_response(HTTPStatus.NO_CONTENT)
         self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.end_headers()
 
@@ -42,6 +46,14 @@ class FrameworkHandler(http.server.SimpleHTTPRequestHandler):
         elif parsed.path.startswith('/api/designs/'):
             slug = parsed.path.split('/api/designs/')[1]
             self._handle_design_get(slug)
+        elif parsed.path == '/api/cms/schema':
+            self._handle_cms_get('schema')
+        elif parsed.path == '/api/cms/content':
+            self._handle_cms_get('content')
+        elif parsed.path == '/api/cms/media':
+            self._handle_cms_media_list()
+        elif parsed.path == '/admin' or parsed.path.startswith('/admin/'):
+            self._handle_admin_serve()
         else:
             super().do_GET()
 
@@ -50,6 +62,19 @@ class FrameworkHandler(http.server.SimpleHTTPRequestHandler):
         if parsed.path.startswith('/api/designs/'):
             slug = parsed.path.split('/api/designs/')[1]
             self._handle_design_delete(slug)
+        elif parsed.path.startswith('/api/cms/media/'):
+            self._handle_cms_media_delete()
+        else:
+            self.send_error(HTTPStatus.NOT_FOUND)
+
+    def do_PUT(self):
+        parsed = urllib.parse.urlparse(self.path)
+        if parsed.path == '/api/cms/content':
+            self._handle_cms_content_save()
+        elif parsed.path == '/api/cms/content/bulk':
+            self._handle_cms_content_bulk_save()
+        elif parsed.path == '/api/cms/auth/login':
+            self._handle_cms_auth_login()
         else:
             self.send_error(HTTPStatus.NOT_FOUND)
 
@@ -65,6 +90,14 @@ class FrameworkHandler(http.server.SimpleHTTPRequestHandler):
             self._handle_design_save()
         elif parsed.path == '/api/ai-image':
             self._handle_ai_image()
+        elif parsed.path == '/api/cms/auth/login':
+            self._handle_cms_auth_login()
+        elif parsed.path == '/api/cms/auth/check':
+            self._handle_cms_auth_check()
+        elif parsed.path == '/api/cms/content':
+            self._handle_cms_content_save()
+        elif parsed.path == '/api/cms/media/upload':
+            self._handle_cms_media_upload()
         else:
             self.send_error(HTTPStatus.NOT_FOUND)
 
@@ -392,6 +425,199 @@ SCRAPED CONTENT:
             self._json_response({'error': 'Gemini error: ' + e.read().decode()[:200]}, 500)
         except Exception as e:
             self._json_response({'error': str(e)[:200]}, 500)
+
+    def _cms_data_path(self, filename):
+        data_dir = os.path.join(STATIC_DIR, '.cms')
+        os.makedirs(data_dir, exist_ok=True)
+        return os.path.join(data_dir, filename)
+
+    def _cms_read_json(self, filename, default=None):
+        path = self._cms_data_path(filename)
+        if os.path.exists(path):
+            with open(path, 'r') as f:
+                return json.load(f)
+        return default if default is not None else {}
+
+    def _cms_write_json(self, filename, data):
+        path = self._cms_data_path(filename)
+        with open(path, 'w') as f:
+            json.dump(data, f, indent=2)
+
+    def _cms_require_auth(self):
+        cookie = self.headers.get('Cookie', '')
+        if 'cms_session=' not in cookie:
+            return False
+        session_id = cookie.split('cms_session=')[1].split(';')[0].strip()
+        config = self._cms_read_json('cms-config.json')
+        sessions = config.get('sessions', {})
+        return session_id in sessions
+
+    def _handle_cms_get(self, resource):
+        if resource == 'schema':
+            data = self._cms_read_json('cms-schema.json', {})
+        elif resource == 'content':
+            data = self._cms_read_json('cms-content.json', {})
+        else:
+            self.send_error(HTTPStatus.NOT_FOUND)
+            return
+        self._json_response(data)
+
+    def _handle_cms_auth_login(self):
+        length = int(self.headers.get("Content-Length", 0))
+        body = json.loads(self.rfile.read(length)) if length else {}
+        password = body.get('password', '')
+        config = self._cms_read_json('cms-config.json', {})
+        if not config.get('password_hash'):
+            config['password_hash'] = hashlib.sha256(password.encode()).hexdigest()
+            config['sessions'] = {}
+            session_id = ''.join(random.choices(string.ascii_letters + string.digits, k=32))
+            config['sessions'][session_id] = True
+            self._cms_write_json('cms-config.json', config)
+            self._json_response({'success': True, 'session': session_id, 'firstTime': True})
+            return
+        if hashlib.sha256(password.encode()).hexdigest() == config.get('password_hash'):
+            session_id = ''.join(random.choices(string.ascii_letters + string.digits, k=32))
+            config['sessions'][session_id] = True
+            self._cms_write_json('cms-config.json', config)
+            self._json_response({'success': True, 'session': session_id})
+        else:
+            self._json_response({'success': False, 'error': 'Invalid password'}, 401)
+
+    def _handle_cms_auth_check(self):
+        is_auth = self._cms_require_auth()
+        self._json_response({'authenticated': is_auth})
+
+    def _handle_cms_content_save(self):
+        if not self._cms_require_auth():
+            self._json_response({'error': 'Unauthorized'}, 401)
+            return
+        length = int(self.headers.get("Content-Length", 0))
+        body = json.loads(self.rfile.read(length)) if length else {}
+        content = self._cms_read_json('cms-content.json', {})
+        if 'pageId' in body and 'blockId' in body and 'field' in body:
+            page_id = body['pageId']
+            block_id = body['blockId']
+            field = body['field']
+            value = body['value']
+            if page_id not in content:
+                content[page_id] = {}
+            if 'blocks' not in content[page_id]:
+                content[page_id]['blocks'] = {}
+            if block_id not in content[page_id]['blocks']:
+                content[page_id]['blocks'][block_id] = {}
+            content[page_id]['blocks'][block_id][field] = value
+            self._cms_write_json('cms-content.json', content)
+            self._json_response({'success': True})
+            return
+        self._json_response({'error': 'Invalid request body'}, 400)
+
+    def _handle_cms_content_bulk_save(self):
+        if not self._cms_require_auth():
+            self._json_response({'error': 'Unauthorized'}, 401)
+            return
+        length = int(self.headers.get("Content-Length", 0))
+        body = json.loads(self.rfile.read(length)) if length else {}
+        content = self._cms_read_json('cms-content.json', {})
+        for page_id, page_data in body.items():
+            if page_id not in content:
+                content[page_id] = {}
+            if 'blocks' not in content[page_id]:
+                content[page_id]['blocks'] = {}
+            for block_id, block_data in page_data.get('blocks', {}).items():
+                if block_id not in content[page_id]['blocks']:
+                    content[page_id]['blocks'][block_id] = {}
+                for field, value in block_data.items():
+                    content[page_id]['blocks'][block_id][field] = value
+            self._cms_write_json('cms-content.json', content)
+        self._json_response({'success': True})
+
+    def _handle_cms_media_list(self):
+        media_dir = os.path.join(STATIC_DIR, 'media')
+        if not os.path.exists(media_dir):
+            self._json_response({'media': []})
+            return
+        files = []
+        for f in os.listdir(media_dir):
+            if f.startswith('.'): continue
+            path = os.path.join(media_dir, f)
+            files.append({
+                'id': f, 'filename': f,
+                'size': os.path.getsize(path),
+                'url': '/media/' + f
+            })
+        self._json_response({'media': files})
+
+    def _handle_cms_media_upload(self):
+        if not self._cms_require_auth():
+            self._json_response({'error': 'Unauthorized'}, 401)
+            return
+        content_type = self.headers.get('Content-Type', '')
+        if 'multipart/form-data' not in content_type:
+            self._json_response({'error': 'Expected multipart form data'}, 400)
+            return
+        length = int(self.headers.get("Content-Length", 0))
+        raw = self.rfile.read(length)
+        boundary = content_type.split('boundary=')[1].split(';')[0].strip()
+        if boundary.startswith('"') and boundary.endswith('"'):
+            boundary = boundary[1:-1]
+        boundary_bytes = ('--' + boundary).encode()
+        parts = raw.split(boundary_bytes)
+        for part in parts:
+            if b'Content-Disposition' not in part: continue
+            if b'filename=' not in part: continue
+            header_end = part.find(b'\r\n\r\n')
+            if header_end == -1: continue
+            headers_str = part[:header_end].decode('utf-8', errors='replace')
+            file_data = part[header_end+4:]
+            if file_data.endswith(b'\r\n'):
+                file_data = file_data[:-2]
+            if file_data.endswith(b'--\r\n'):
+                file_data = file_data[:-4]
+            if file_data.endswith(b'--'):
+                file_data = file_data[:-2]
+            filename_match = re.search(r'filename="([^"]*)"', headers_str)
+            if not filename_match: continue
+            original_filename = filename_match.group(1)
+            if not original_filename: continue
+            ext = os.path.splitext(original_filename)[1]
+            unique_name = str(uuid.uuid4())[:8] + ext
+            media_dir = os.path.join(STATIC_DIR, 'media')
+            os.makedirs(media_dir, exist_ok=True)
+            filepath = os.path.join(media_dir, unique_name)
+            with open(filepath, 'wb') as f:
+                f.write(file_data)
+            self._json_response({
+                'success': True,
+                'media': {'id': unique_name, 'filename': original_filename, 'url': '/media/' + unique_name}
+            })
+            return
+        self._json_response({'error': 'No file found in upload'}, 400)
+
+    def _handle_cms_media_delete(self):
+        if not self._cms_require_auth():
+            self._json_response({'error': 'Unauthorized'}, 401)
+            return
+        media_id = self.path.split('/api/cms/media/')[1]
+        media_path = os.path.join(STATIC_DIR, 'media', media_id)
+        if '..' in media_id or '/' in media_id:
+            self._json_response({'error': 'Invalid media ID'}, 400)
+            return
+        if os.path.exists(media_path):
+            os.remove(media_path)
+            self._json_response({'success': True})
+        else:
+            self._json_response({'error': 'File not found'}, 404)
+
+    def _handle_admin_serve(self):
+        admin_path = os.path.join(STATIC_DIR, 'admin.html')
+        if os.path.exists(admin_path):
+            self.send_response(200)
+            self.send_header('Content-Type', 'text/html')
+            self.end_headers()
+            with open(admin_path, 'rb') as f:
+                self.wfile.write(f.read())
+        else:
+            self.send_error(HTTPStatus.NOT_FOUND, 'Admin dashboard not found. Export with CMS first.')
 
     def _json_response(self, data, status=200):
         self.send_response(status)
