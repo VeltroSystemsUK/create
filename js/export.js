@@ -481,6 +481,8 @@ FB.export.generateHTML = function () {
     "[data-scroll]{opacity:0;transform:translateY(28px);transition:opacity 0.7s ease,transform 0.7s ease}[data-scroll].is-visible{opacity:1;transform:none}\n";
   var scrollAnimJS =
     '<script>(function(){var o=new IntersectionObserver(function(e){e.forEach(function(e){if(e.isIntersecting){e.target.classList.add("is-visible");o.unobserve(e.target)}})},{threshold:0.12});document.querySelectorAll("[data-scroll]").forEach(function(e){o.observe(e)})}())<\/script>\n';
+  var cmsRenderScript = '<script src="js/cms-render.js"><\/script>\n';
+  var cmsInlineScript = '<script src="js/cms-edit.js"><\/script>\n';
   var customCSS = page.customCSS ? page.customCSS + "\n" : "";
 
   return (
@@ -502,6 +504,8 @@ FB.export.generateHTML = function () {
     bodyContent +
     "\n" +
     scrollAnimJS +
+    cmsRenderScript +
+    cmsInlineScript +
     "</body>\n</html>"
   );
 };
@@ -846,4 +850,210 @@ FB.export.downloadCode = function () {
   a.href = URL.createObjectURL(blob);
   a.download = "my-site." + ext;
   a.click();
+};
+
+FB.export.exportWithCMS = function () {
+  FB.panels._save();
+
+  var allPages = FB.state.pages;
+  var originalPageId = FB.state.currentPageId;
+  var originalBlocks = JSON.parse(JSON.stringify(FB.state.blocks));
+
+  var schema = { pages: [] };
+  var contentData = { pages: {} };
+
+  allPages.forEach(function (page) {
+    FB.state.currentPageId = page.id;
+    var blocks = page.blocks || [];
+
+    var pageSchema = {
+      pageId: page.id,
+      name: page.name,
+      slug: page.slug,
+      blocks: [],
+    };
+
+    var pageContent = { blocks: {} };
+
+    blocks.forEach(function (block) {
+      if (!block.props) return;
+
+      var blockSchema = {
+        blockId: block.id,
+        type: block.type,
+        fields: {},
+      };
+
+      var blockContent = {};
+
+      var def =
+        FB.blocks.BLOCK_DEFS[block.type] ||
+        FB.blocks.CUSTOM_BLOCK_DEFS[block.type] ||
+        FB.blocks.ECOMMERCE_DEFS[block.type];
+
+      if (!def) return;
+
+      Object.keys(def.defaultProps).forEach(function (propName) {
+        var isContent = FB.cms.CONTENT_PROPS.has(propName);
+        var isDesign = FB.cms.DESIGN_PROPS.has(propName);
+        var val = block.props[propName];
+
+        var editable = false;
+        var fieldType = "string";
+
+        if (isContent) {
+          editable = true;
+        } else if (
+          !isDesign &&
+          typeof val === "string" &&
+          !val.startsWith("#") &&
+          val.length > 0
+        ) {
+          editable = true;
+          if (
+            /url|src|image|photo|avatar|logo/i.test(propName) &&
+            /\.(jpg|png|gif|webp|svg)/i.test(val)
+          ) {
+            fieldType = "image";
+          }
+        } else if (
+          !isDesign &&
+          Array.isArray(val) &&
+          val.length > 0 &&
+          val.every(function (i) {
+            return typeof i === "string";
+          })
+        ) {
+          editable = true;
+          fieldType = "list";
+        }
+
+        blockSchema.fields[propName] = {
+          editable: editable,
+          type: fieldType,
+          label: propName
+            .replace(/([A-Z])/g, " $1")
+            .replace(/^./, function (s) {
+              return s.toUpperCase();
+            }),
+        };
+
+        if (editable && block.props[propName] !== undefined) {
+          blockContent[propName] = JSON.parse(
+            JSON.stringify(block.props[propName]),
+          );
+        }
+      });
+
+      if (block.type === "team" && block.props.members) {
+        blockSchema.fields["members"] = {
+          editable: true,
+          type: "collection",
+          label: "Team Members",
+          itemFields: {
+            name: { editable: true, type: "string", label: "Name" },
+            role: { editable: true, type: "string", label: "Role" },
+            imageUrl: { editable: true, type: "image", label: "Photo" },
+          },
+        };
+      }
+      if (block.type === "pricing" && block.props.plans) {
+        blockSchema.fields["plans"] = {
+          editable: true,
+          type: "collection",
+          label: "Pricing Plans",
+          itemFields: {
+            name: { editable: true, type: "string", label: "Plan Name" },
+            price: { editable: true, type: "string", label: "Price" },
+            period: { editable: true, type: "string", label: "Period" },
+            features: { editable: true, type: "list", label: "Features" },
+            cta: { editable: true, type: "string", label: "Button Text" },
+          },
+        };
+      }
+      if (block.type === "faq" && block.props.items) {
+        blockSchema.fields["items"] = {
+          editable: true,
+          type: "collection",
+          label: "FAQ Items",
+          itemFields: {
+            q: { editable: true, type: "string", label: "Question" },
+            a: { editable: true, type: "richtext", label: "Answer" },
+          },
+        };
+      }
+      if (
+        (block.type === "nav" ||
+          block.type === "slideNav" ||
+          block.type === "fullscreenMenu") &&
+        block.props.links
+      ) {
+        blockSchema.fields["links"] = {
+          editable: true,
+          type: "list",
+          label: "Navigation Links",
+        };
+      }
+      if (block.type === "footer" && block.props.columns) {
+        blockSchema.fields["columns"] = {
+          editable: true,
+          type: "collection",
+          label: "Footer Columns",
+          itemFields: {
+            heading: {
+              editable: true,
+              type: "string",
+              label: "Column Heading",
+            },
+            links: { editable: true, type: "list", label: "Links" },
+          },
+        };
+      }
+
+      pageSchema.blocks.push(blockSchema);
+      if (Object.keys(blockContent).length > 0) {
+        pageContent.blocks[block.id] = blockContent;
+      }
+    });
+
+    schema.pages.push(pageSchema);
+    if (Object.keys(pageContent.blocks).length > 0) {
+      contentData.pages[page.id] = pageContent;
+    }
+  });
+
+  FB.state.currentPageId = originalPageId;
+  FB.state.blocks = originalBlocks;
+
+  FB.export._downloadCMSExport(schema, contentData);
+  FB.util.showToast("CMS schema and content exported");
+};
+
+FB.export._downloadCMSExport = function (schema, content) {
+  var files = {
+    "cms-schema.json": JSON.stringify(schema, null, 2),
+    "cms-content.json": JSON.stringify(content, null, 2),
+  };
+
+  var keys = Object.keys(files);
+  var idx = 0;
+
+  function next() {
+    if (idx >= keys.length) {
+      FB.util.showToast(
+        "CMS files exported \u2014 place in your site root alongside admin.html, js/cms-edit.js, js/cms-render.js",
+      );
+      return;
+    }
+    var name = keys[idx++];
+    var data = files[name];
+    var blob = new Blob([data], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    a.click();
+    setTimeout(next, 500);
+  }
+
+  next();
 };

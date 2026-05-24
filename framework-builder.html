@@ -428,6 +428,21 @@
             >
               Export TSX
             </button>
+            <button
+              class="export-menu-item"
+              onclick="
+                FB.export.exportWithCMS();
+                FB.panels.toggleExportMenu();
+              "
+            >
+              <span class="emi-icon">📝</span>
+              <div>
+                <div class="emi-label">Export with CMS</div>
+                <div class="emi-sublabel">
+                  Live site with inline editing + admin panel
+                </div>
+              </div>
+            </button>
           </div>
         </div>
       </div>
