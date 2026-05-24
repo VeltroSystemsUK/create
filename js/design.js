@@ -210,6 +210,7 @@ FB.design.elements = (function () {
     { char: "…", name: "ellipsis", tags: ["more", "dots", "continue"] },
     { char: "✦", name: "sparkle", tags: ["ai", "magic", "star", "highlight"] },
     { char: "⊗", name: "cross-circle", tags: ["close", "error", "cancel"] },
+    { char: "⚑", name: "flag", tags: ["mark", "report", "highlight"] },
   ];
 
   var BACKGROUNDS = [
