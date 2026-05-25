@@ -76,6 +76,12 @@ FB.widgets.register("particleNebula", {
   iconColor: "#60a5fa",
   category: "veltro",
   subCategory: "backgrounds",
+  accepts: {
+    intensity: {
+      range: [0, 1],
+      description: "Particle speed multiplier (0=still, 1=full speed)",
+    },
+  },
   defaultProps: {
     height: 500,
     bg: "#050510",
@@ -497,4 +503,3 @@ FB.widgets.register("lightLeaks", {
     return h;
   },
 });
-

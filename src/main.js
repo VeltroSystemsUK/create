@@ -2,6 +2,8 @@
 // Import order matches the original script-tag load order exactly.
 
 import "../js/state.js";
+import "../js/events.js";
+import "../js/bindings.js";
 import "../js/pages.js";
 import "../js/blocks.js";
 import "../js/theme.js";

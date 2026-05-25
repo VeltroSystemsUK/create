@@ -2772,6 +2772,12 @@ FB.widgets.register("scrollProgressRing", {
   iconColor: "#60a5fa",
   category: "veltro",
   subCategory: "scroll",
+  emits: {
+    scrollProgress: {
+      range: [0, 1],
+      description: "Page scroll 0 (top) → 1 (bottom)",
+    },
+  },
   defaultProps: {
     height: 200,
     bg: "#0d0d1a",
@@ -3100,6 +3106,12 @@ FB.widgets.register("gradientFlow", {
   iconColor: "#34d399",
   category: "veltro",
   subCategory: "backgrounds",
+  accepts: {
+    speed: {
+      range: [0, 5],
+      description: "Hue rotation speed deg/frame (0=stopped, 5=fast)",
+    },
+  },
   defaultProps: {
     height: 400,
     bg: "#0d0d1a",
@@ -3440,6 +3452,13 @@ FB.widgets.register("glitchSection", {
   iconColor: "#fbbf24",
   category: "veltro",
   subCategory: "effects",
+  accepts: {
+    glitchRate: {
+      range: [0, 1],
+      description:
+        "Probability of glitch firing per tick (0=never, 1=constant)",
+    },
+  },
   defaultProps: {
     height: 300,
     bg: "#0d0d1a",
@@ -4075,4 +4094,3 @@ FB.widgets.register("geometryDraw", {
     return h;
   },
 });
-

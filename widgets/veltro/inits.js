@@ -1987,13 +1987,24 @@ window._VeltroInitScrollProgressRing = function () {
       var circumference = 2 * Math.PI * (circle.r.baseVal.value || 45);
       circle.style.strokeDasharray = circumference;
       circle.style.strokeDashoffset = circumference;
-      window.addEventListener("scroll", function () {
+      var wrapper = el.closest("[data-id]");
+      var blockId = wrapper ? wrapper.dataset.id : null;
+      // Guard against duplicate listeners when block is refreshed
+      var listenerKey = "_ringScroll_" + blockId;
+      if (blockId && window[listenerKey]) {
+        window.removeEventListener("scroll", window[listenerKey]);
+      }
+      var handler = function () {
         var scrollTop = window.scrollY || window.pageYOffset;
         var docHeight =
           document.documentElement.scrollHeight - window.innerHeight;
         var progress = docHeight > 0 ? scrollTop / docHeight : 0;
         circle.style.strokeDashoffset = circumference * (1 - progress);
-      });
+        if (blockId && FB.events)
+          FB.events.emit(blockId, "scrollProgress", progress);
+      };
+      if (blockId) window[listenerKey] = handler;
+      window.addEventListener("scroll", handler);
     });
 };
 
@@ -2121,10 +2132,11 @@ window._VeltroInitGradientFlow = function () {
       var bg = el.querySelector(".veltro-gradient-bg");
       if (!bg) return;
       var hue = 0;
+      var hueSpeed = 0.2;
       var rafId = 0;
       function animate() {
         if (!el.isConnected) return;
-        hue = (hue + 0.2) % 360;
+        hue = (hue + hueSpeed) % 360;
         bg.style.filter = "hue-rotate(" + hue + "deg)";
         rafId = requestAnimationFrame(animate);
       }
@@ -2139,6 +2151,13 @@ window._VeltroInitGradientFlow = function () {
         },
         { threshold: 0.01 },
       ).observe(el);
+      var wrapper = el.closest("[data-id]");
+      var blockId = wrapper ? wrapper.dataset.id : null;
+      if (blockId && FB.bindings) {
+        FB.bindings.registerSetter(blockId, "speed", function (v) {
+          hueSpeed = v;
+        });
+      }
     });
 };
 
@@ -2172,8 +2191,9 @@ window._VeltroInitGlitchSection = function () {
       var original = text.textContent;
       var chars =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+      var glitchRate = 0.1;
       setInterval(function () {
-        if (Math.random() > 0.9) {
+        if (Math.random() < glitchRate) {
           var glitched = original
             .split("")
             .map(function (c) {
@@ -2187,7 +2207,14 @@ window._VeltroInitGlitchSection = function () {
             text.textContent = original;
           }, 100);
         }
-      }, 2000);
+      }, 200);
+      var wrapper = el.closest("[data-id]");
+      var blockId = wrapper ? wrapper.dataset.id : null;
+      if (blockId && FB.bindings) {
+        FB.bindings.registerSetter(blockId, "glitchRate", function (v) {
+          glitchRate = v;
+        });
+      }
     });
 };
 
@@ -4897,14 +4924,15 @@ window._VeltroInitParticleNebula = function () {
           hue: Math.random() * 60 + 240,
         });
       }
+      var speedMult = 1;
       var rafId = 0;
       function animate() {
         if (!el.isConnected) return;
         ctx.fillStyle = "rgba(3,3,10,0.2)";
         ctx.fillRect(0, 0, W, H);
         particles.forEach(function (p) {
-          p.x += p.vx;
-          p.y += p.vy;
+          p.x += p.vx * speedMult;
+          p.y += p.vy * speedMult;
           if (p.x < 0) p.x = W;
           if (p.x > W) p.x = 0;
           if (p.y < 0) p.y = H;
@@ -4927,6 +4955,13 @@ window._VeltroInitParticleNebula = function () {
         },
         { threshold: 0.01 },
       ).observe(el);
+      var wrapper = el.closest("[data-id]");
+      var blockId = wrapper ? wrapper.dataset.id : null;
+      if (blockId && FB.bindings) {
+        FB.bindings.registerSetter(blockId, "intensity", function (v) {
+          speedMult = 0.05 + v * 3;
+        });
+      }
     });
 };
 
@@ -5813,4 +5848,5 @@ window._VeltroInitAll = function () {
   inits.forEach(function (name) {
     if (typeof window[name] === "function") window[name]();
   });
+  if (typeof FB !== "undefined" && FB.bindings) FB.bindings.wire();
 };
