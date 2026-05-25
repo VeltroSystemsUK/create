@@ -4131,6 +4131,7 @@ FB.widgets.register("imagePhysics", {
     hoverTransition: 300,
     animDuration: 600,
     imageShape: "square",
+    imageSize: 80,
     imageBorderRadius: 8,
     imageBorderWidth: 0,
     imageBorderColor: "#ffffff",
@@ -4218,6 +4219,8 @@ FB.widgets.register("imagePhysics", {
       (p.restitution || 0.5) +
       '" data-image-shape="' +
       (p.imageShape || "square") +
+      '" data-image-size="' +
+      (p.imageSize || 80) +
       '" data-image-border-radius="' +
       (p.imageBorderRadius || 8) +
       '" data-image-border-width="' +
@@ -4488,13 +4491,33 @@ FB.widgets.register("imagePhysics", {
     html +=
       '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Advanced Physics Options</span></div><div class="rp-section-body">';
     html +=
+      '<div class="rp-row"><label>Image Size</label><input type="range" min="30" max="200" value="' +
+      (p.imageSize || 80) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','imageSize',+this.value)\"><span style=\"font-size:10px;min-width:30px;text-align:right\">" +
+      (p.imageSize || 80) +
+      "px</span></div>";
+    html +=
       '<div class="rp-row"><label>Image Shape</label><select onchange="FB.panels.updateWidgetProp(\'' +
       id +
       "','imageShape',this.value)\"><option value=\"square\"" +
       ((p.imageShape || "square") === "square" ? " selected" : "") +
       '>Square</option><option value="circle"' +
       ((p.imageShape || "square") === "circle" ? " selected" : "") +
-      ">Circle</option></select></div>";
+      '>Circle</option><option value="triangle"' +
+      ((p.imageShape || "square") === "triangle" ? " selected" : "") +
+      '>Triangle</option><option value="pentagon"' +
+      ((p.imageShape || "square") === "pentagon" ? " selected" : "") +
+      '>Pentagon</option><option value="hexagon"' +
+      ((p.imageShape || "square") === "hexagon" ? " selected" : "") +
+      '>Hexagon</option><option value="octagon"' +
+      ((p.imageShape || "square") === "octagon" ? " selected" : "") +
+      '>Octagon</option><option value="star"' +
+      ((p.imageShape || "square") === "star" ? " selected" : "") +
+      '>Star</option><option value="heart"' +
+      ((p.imageShape || "square") === "heart" ? " selected" : "") +
+      ">Heart</option></select></div>";
     html +=
       '<div class="rp-row"><label>Image Border Radius</label><input type="number" value="' +
       (p.imageBorderRadius || 8) +
@@ -6502,7 +6525,37 @@ FB.widgets.register("stickyScrollStack", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="200" max="1200" value="' +
+      (p.height || 600) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Card Count</label><input type="number" min="1" max="12" value="' +
+      (p.cardCount || 5) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','cardCount',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Card Height (px)</label><input type="number" min="80" max="400" value="' +
+      (p.cardHeight || 200) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','cardHeight',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Card Colour</label><input type="color" value="' +
+      (p.cardColor || "#1a1a2e") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','cardColor',this.value)\"></div>";
+    return h;
   },
 });
 
@@ -6538,7 +6591,31 @@ FB.widgets.register("scrollVelocitySkew", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Max Skew (°)</label><input type="range" min="0" max="45" step="1" value="' +
+      (p.maxSkew || 15) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','maxSkew',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Elasticity</label><input type="range" min="0" max="1" step="0.05" value="' +
+      (p.elasticity || 0.8) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','elasticity',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -6588,7 +6665,31 @@ FB.widgets.register("parallaxImageStack", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 500) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Layer Count</label><input type="range" min="1" max="10" step="1" value="' +
+      (p.layerCount || 5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','layerCount',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Image URLs (comma-sep)</label><input type="text" value="' +
+      (p.images || "") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','images',this.value)\"></div>";
+    return h;
   },
 });
 
@@ -6662,7 +6763,43 @@ FB.widgets.register("mosaicAssemble", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 500) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Rows</label><input type="range" min="2" max="8" step="1" value="' +
+      (p.rows || 4) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','rows',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Columns</label><input type="range" min="2" max="8" step="1" value="' +
+      (p.cols || 4) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','cols',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Gap (px)</label><input type="range" min="0" max="24" step="1" value="' +
+      (p.gap || 8) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','gap',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+      (p.image || "") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','image',this.value)\"></div>";
+    return h;
   },
 });
 
@@ -6729,7 +6866,37 @@ FB.widgets.register("scrollProgressRing", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="600" value="' +
+      (p.height || 200) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Ring Colour</label><input type="color" value="' +
+      (p.ringColor || "#cdfe00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','ringColor',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Ring Size (px)</label><input type="range" min="20" max="150" step="5" value="' +
+      (p.ringSize || 80) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','ringSize',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Ring Width (px)</label><input type="range" min="2" max="20" step="1" value="' +
+      (p.ringWidth || 8) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','ringWidth',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -6778,7 +6945,37 @@ FB.widgets.register("magneticScroll", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 500) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Section Count</label><input type="range" min="2" max="10" step="1" value="' +
+      (p.sectionCount || 4) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','sectionCount',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Snap Strength</label><input type="range" min="0" max="1" step="0.1" value="' +
+      (p.snapStrength || 0.5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','snapStrength',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Section Colours (CSV)</label><input type="text" value="' +
+      (p.colors || "#1a1a2e,#1a0d1a,#0d1a1a,#0d0d2e") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','colors',this.value)\"></div>";
+    return h;
   },
 });
 
@@ -6821,7 +7018,37 @@ FB.widgets.register("morphBlob", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Blob Colour</label><input type="color" value="' +
+      (p.color || "#cdfe00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','color',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Animation Speed</label><input type="range" min="0.1" max="2" step="0.1" value="' +
+      (p.speed || 0.5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','speed',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Complexity</label><input type="range" min="3" max="12" step="1" value="' +
+      (p.complexity || 5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','complexity',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -6859,7 +7086,31 @@ FB.widgets.register("noiseGrain", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Grain Opacity</label><input type="range" min="0.01" max="0.5" step="0.01" value="' +
+      (p.opacity || 0.1) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','opacity',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Animation Speed</label><input type="range" min="0.1" max="2" step="0.1" value="' +
+      (p.speed || 0.5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','speed',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -6906,7 +7157,37 @@ FB.widgets.register("gradientFlow", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Gradient Colours (CSV)</label><input type="text" value="' +
+      (p.colors || "#ff6b35,#cdfe00,#3b82f6,#ec4899") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','colors',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Animation Speed</label><input type="range" min="0.1" max="2" step="0.1" value="' +
+      (p.speed || 0.5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','speed',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Angle (°)</label><input type="range" min="0" max="360" step="5" value="' +
+      (p.angle || 45) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','angle',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -6980,7 +7261,41 @@ FB.widgets.register("sectionBackground", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Pattern</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','pattern',this.value)\"><option value=\"dots\"" +
+      (p.pattern === "dots" ? " selected" : "") +
+      '>Dots</option><option value="grid"' +
+      (p.pattern === "grid" ? " selected" : "") +
+      '>Grid</option><option value="lines"' +
+      (p.pattern === "lines" ? " selected" : "") +
+      "></option></select></div>";
+    h +=
+      '<div class="rp-row"><label>Pattern Colour</label><input type="color" value="' +
+      (p.patternColor || "#1a1a2e") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','patternColor',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Pattern Size (px)</label><input type="range" min="4" max="80" step="2" value="' +
+      (p.patternSize || 20) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','patternSize',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -7030,7 +7345,37 @@ FB.widgets.register("glassmorphismStack", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="text" value="' +
+      (p.bg || "linear-gradient(135deg,#667eea 0%,#764ba2 100%)") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Card Count</label><input type="range" min="1" max="6" step="1" value="' +
+      (p.cardCount || 3) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','cardCount',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Card Colour (rgba)</label><input type="text" value="' +
+      (p.cardColor || "rgba(255,255,255,0.1)") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','cardColor',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Blur (px)</label><input type="range" min="0" max="40" step="1" value="' +
+      (p.blur || 10) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','blur',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -7075,7 +7420,37 @@ FB.widgets.register("tiltCard3d", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="800" value="' +
+      (p.height || 300) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Card Background</label><input type="text" value="' +
+      (p.cardBg || "linear-gradient(135deg,#667eea 0%,#764ba2 100%)") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','cardBg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Max Tilt (°)</label><input type="range" min="0" max="45" step="1" value="' +
+      (p.maxTilt || 15) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','maxTilt',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Perspective (px)</label><input type="range" min="200" max="2000" step="50" value="' +
+      (p.perspective || 1000) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','perspective',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -7130,7 +7505,43 @@ FB.widgets.register("glitchSection", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="800" value="' +
+      (p.height || 300) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Text</label><input type="text" value="' +
+      (p.text || "GLITCH") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','text',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Font Size (px)</label><input type="range" min="20" max="200" step="4" value="' +
+      (p.fontSize || 80) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','fontSize',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Text Colour</label><input type="color" value="' +
+      (p.color || "#cdfe00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','color',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Glitch Intensity</label><input type="range" min="0.1" max="2" step="0.1" value="' +
+      (p.intensity || 0.5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','intensity',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -7185,7 +7596,43 @@ FB.widgets.register("audioVisualizer", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="800" value="' +
+      (p.height || 300) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Bar Count</label><input type="range" min="8" max="64" step="4" value="' +
+      (p.barCount || 32) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','barCount',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Bar Colour</label><input type="color" value="' +
+      (p.barColor || "#cdfe00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','barColor',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Bar Width (px)</label><input type="range" min="2" max="24" step="1" value="' +
+      (p.barWidth || 8) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','barWidth',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Bar Gap (px)</label><input type="range" min="1" max="16" step="1" value="' +
+      (p.barGap || 4) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','barGap',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -7240,7 +7687,37 @@ FB.widgets.register("depthOfField", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Depth Layers</label><input type="range" min="2" max="10" step="1" value="' +
+      (p.layers || 5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','layers',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Max Blur (px)</label><input type="range" min="0" max="30" step="1" value="' +
+      (p.blurAmount || 10) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','blurAmount',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+      (p.image || "") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','image',this.value)\"></div>";
+    return h;
   },
 });
 
@@ -7286,7 +7763,43 @@ FB.widgets.register("holographicCard", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="800" value="' +
+      (p.height || 300) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Card Width (px)</label><input type="range" min="100" max="400" step="10" value="' +
+      (p.cardWidth || 200) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','cardWidth',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Card Height (px)</label><input type="range" min="100" max="600" step="10" value="' +
+      (p.cardHeight || 280) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','cardHeight',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Shimmer Colour</label><input type="color" value="' +
+      (p.shimmerColor || "#cdfe00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','shimmerColor',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Shimmer Intensity</label><input type="range" min="0.1" max="1" step="0.05" value="' +
+      (p.intensity || 0.5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','intensity',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -7343,7 +7856,37 @@ FB.widgets.register("soundReactive", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="800" value="' +
+      (p.height || 300) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Ring Count</label><input type="range" min="1" max="10" step="1" value="' +
+      (p.ringCount || 5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','ringCount',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Ring Colour</label><input type="color" value="' +
+      (p.ringColor || "#cdfe00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','ringColor',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Sensitivity</label><input type="range" min="0.1" max="1" step="0.05" value="' +
+      (p.sensitivity || 0.5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','sensitivity',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -7383,7 +7926,31 @@ FB.widgets.register("mirrorReflection", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+      (p.image || "") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','image',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Reflection Opacity</label><input type="range" min="0" max="1" step="0.05" value="' +
+      (p.reflectionOpacity || 0.3) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','reflectionOpacity',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -7425,7 +7992,37 @@ FB.widgets.register("constellationLines", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Star Count</label><input type="range" min="20" max="200" step="10" value="' +
+      (p.starCount || 80) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','starCount',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Connection Distance (px)</label><input type="range" min="30" max="250" step="10" value="' +
+      (p.connectionDistance || 100) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','connectionDistance',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Star Colour</label><input type="color" value="' +
+      (p.starColor || "#cdfe00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','starColor',this.value)\"></div>";
+    return h;
   },
 });
 
@@ -7464,7 +8061,41 @@ FB.widgets.register("geometryDraw", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Tool</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','tool',this.value)\"><option value=\"line\"" +
+      (p.tool === "line" ? " selected" : "") +
+      '>Line</option><option value="circle"' +
+      (p.tool === "circle" ? " selected" : "") +
+      '>Circle</option><option value="rect"' +
+      (p.tool === "rect" ? " selected" : "") +
+      ">Rectangle</option></select></div>";
+    h +=
+      '<div class="rp-row"><label>Draw Colour</label><input type="color" value="' +
+      (p.color || "#cdfe00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','color',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Line Width (px)</label><input type="range" min="1" max="20" step="1" value="' +
+      (p.lineWidth || 3) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','lineWidth',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -7517,7 +8148,14 @@ FB.widgets.register("multiShapeTrail", {
     shapeRotation: 0,
     shapeEasing: "ease-out",
     trailFade: true,
-    trailGlow: false,
+    trailGlow: true,
+    glowSize: 18,
+    autonomousMode: true,
+    rotationSpeed: 2,
+    particleSpacing: 6,
+    colorMode: "palette",
+    velocityStretch: false,
+    trailBlur: false,
   },
   render: function (p) {
     var id = p._blockId || "multiTrail";
@@ -7612,6 +8250,20 @@ FB.widgets.register("multiShapeTrail", {
       (p.trailFade !== false ? "true" : "false") +
       '" data-trail-glow="' +
       (p.trailGlow ? "true" : "false") +
+      '" data-glow-size="' +
+      (p.glowSize || 18) +
+      '" data-autonomous-mode="' +
+      (p.autonomousMode !== false ? "true" : "false") +
+      '" data-rotation-speed="' +
+      (p.rotationSpeed !== undefined ? p.rotationSpeed : 2) +
+      '" data-particle-spacing="' +
+      (p.particleSpacing || 6) +
+      '" data-color-mode="' +
+      (p.colorMode || "palette") +
+      '" data-velocity-stretch="' +
+      (p.velocityStretch ? "true" : "false") +
+      '" data-trail-blur="' +
+      (p.trailBlur ? "true" : "false") +
       '" style="height:' +
       p.height +
       "px;" +
@@ -7862,13 +8514,59 @@ FB.widgets.register("multiShapeTrail", {
       "','hoverTransition',+this.value)\"></div>";
     html += "</div></div>";
     html +=
-      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Advanced Shape Options</span></div><div class="rp-section-body">';
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Trail Behaviour</span></div><div class="rp-section-body">';
     html +=
-      '<div class="rp-row"><label>Morph Speed (ms)</label><input type="number" value="' +
-      (p.morphSpeed || 500) +
+      '<div class="rp-row"><label>Shapes (comma-sep)</label><input type="text" value="' +
+      (p.shapes || "circle,square,triangle,star") +
+      '" placeholder="circle,square,triangle,star,diamond,hexagon,ring,cross" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','shapes',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Colors (comma-sep)</label><input type="text" value="' +
+      (p.colors || "#ff6b35,#cdfe00,#3b82f6,#ec4899,#f59e0b") +
       '" onchange="FB.panels.updateWidgetProp(\'' +
       id +
-      "','morphSpeed',+this.value)\"></div>";
+      "','colors',this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Color Mode</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','colorMode',this.value)\"><option value=\"palette\"" +
+      ((p.colorMode || "palette") === "palette" ? " selected" : "") +
+      '>Palette</option><option value="gradient"' +
+      ((p.colorMode || "palette") === "gradient" ? " selected" : "") +
+      ">Gradient</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Size</label><div style="display:flex;align-items:center;gap:6px"><input type="range" min="2" max="40" step="1" value="' +
+      (p.particleSize || 8) +
+      '" style="flex:1" oninput="this.nextElementSibling.textContent=this.value;FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleSize',+this.value)\"><span style=\"width:24px;font-size:11px;color:rgba(255,255,255,0.5)\">" +
+      (p.particleSize || 8) +
+      "</span></div></div>";
+    html +=
+      '<div class="rp-row"><label>Trail Length</label><div style="display:flex;align-items:center;gap:6px"><input type="range" min="5" max="80" step="1" value="' +
+      (p.trailLength || 30) +
+      '" style="flex:1" oninput="this.nextElementSibling.textContent=this.value;FB.panels.updateWidgetProp(\'' +
+      id +
+      "','trailLength',+this.value)\"><span style=\"width:24px;font-size:11px;color:rgba(255,255,255,0.5)\">" +
+      (p.trailLength || 30) +
+      "</span></div></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Spacing</label><div style="display:flex;align-items:center;gap:6px"><input type="range" min="1" max="30" step="1" value="' +
+      (p.particleSpacing || 6) +
+      '" style="flex:1" oninput="this.nextElementSibling.textContent=this.value;FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleSpacing',+this.value)\"><span style=\"width:24px;font-size:11px;color:rgba(255,255,255,0.5)\">" +
+      (p.particleSpacing || 6) +
+      "</span></div></div>";
+    html +=
+      '<div class="rp-row"><label>Speed</label><div style="display:flex;align-items:center;gap:6px"><input type="range" min="0.2" max="4" step="0.1" value="' +
+      (p.speed || 1) +
+      '" style="flex:1" oninput="this.nextElementSibling.textContent=this.value;FB.panels.updateWidgetProp(\'' +
+      id +
+      "','speed',+this.value)\"><span style=\"width:24px;font-size:11px;color:rgba(255,255,255,0.5)\">" +
+      (p.speed || 1) +
+      "</span></div></div>";
     html +=
       '<div class="rp-row"><label>Shape Order</label><select onchange="FB.panels.updateWidgetProp(\'' +
       id +
@@ -7880,51 +8578,83 @@ FB.widgets.register("multiShapeTrail", {
       ((p.shapeOrder || "sequential") === "reverse" ? " selected" : "") +
       ">Reverse</option></select></div>";
     html +=
-      '<div class="rp-row"><label>Shape Scale</label><input type="number" step="0.1" min="0.1" max="3" value="' +
+      '<div class="rp-row"><label>Shape Scale</label><div style="display:flex;align-items:center;gap:6px"><input type="range" min="0.2" max="3" step="0.1" value="' +
       (p.shapeScale || 1) +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
+      '" style="flex:1" oninput="this.nextElementSibling.textContent=this.value;FB.panels.updateWidgetProp(\'' +
       id +
-      "','shapeScale',+this.value)\"></div>";
+      "','shapeScale',+this.value)\"><span style=\"width:24px;font-size:11px;color:rgba(255,255,255,0.5)\">" +
+      (p.shapeScale || 1) +
+      "</span></div></div>";
+    html += "</div></div>";
     html +=
-      '<div class="rp-row"><label>Shape Opacity (%)</label><input type="number" min="0" max="100" value="' +
-      (p.shapeOpacity || 100) +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Motion & Rotation</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Autonomous Mode</label><input type="checkbox"' +
+      (p.autonomousMode !== false ? " checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
       id +
-      "','shapeOpacity',+this.value)\"></div>";
+      "','autonomousMode',this.checked)\"><span style=\"font-size:11px;color:rgba(255,255,255,0.4);margin-left:6px\">Animate when mouse is outside</span></div>";
     html +=
-      '<div class="rp-row"><label>Shape Rotation (deg)</label><input type="number" value="' +
+      '<div class="rp-row"><label>Rotation Speed</label><div style="display:flex;align-items:center;gap:6px"><input type="range" min="0" max="12" step="0.5" value="' +
+      (p.rotationSpeed !== undefined ? p.rotationSpeed : 2) +
+      '" style="flex:1" oninput="this.nextElementSibling.textContent=this.value;FB.panels.updateWidgetProp(\'' +
+      id +
+      "','rotationSpeed',+this.value)\"><span style=\"width:24px;font-size:11px;color:rgba(255,255,255,0.5)\">" +
+      (p.rotationSpeed !== undefined ? p.rotationSpeed : 2) +
+      "</span></div></div>";
+    html +=
+      '<div class="rp-row"><label>Base Rotation (deg)</label><div style="display:flex;align-items:center;gap:6px"><input type="range" min="0" max="360" step="5" value="' +
       (p.shapeRotation || 0) +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
+      '" style="flex:1" oninput="this.nextElementSibling.textContent=this.value;FB.panels.updateWidgetProp(\'' +
       id +
-      "','shapeRotation',+this.value)\"></div>";
+      "','shapeRotation',+this.value)\"><span style=\"width:28px;font-size:11px;color:rgba(255,255,255,0.5)\">" +
+      (p.shapeRotation || 0) +
+      "</span></div></div>";
     html +=
-      '<div class="rp-row"><label>Shape Easing</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      '<div class="rp-row"><label>Velocity Stretch</label><input type="checkbox"' +
+      (p.velocityStretch ? " checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
       id +
-      "','shapeEasing',this.value)\"><option value=\"ease-out\"" +
-      ((p.shapeEasing || "ease-out") === "ease-out" ? " selected" : "") +
-      '>Ease Out</option><option value="ease-in"' +
-      ((p.shapeEasing || "ease-out") === "ease-in" ? " selected" : "") +
-      '>Ease In</option><option value="linear"' +
-      ((p.shapeEasing || "ease-out") === "linear" ? " selected" : "") +
-      '>Linear</option><option value="bounce"' +
-      ((p.shapeEasing || "ease-out") === "bounce" ? " selected" : "") +
-      ">Bounce</option></select></div>";
+      "','velocityStretch',this.checked)\"><span style=\"font-size:11px;color:rgba(255,255,255,0.4);margin-left:6px\">Squash &amp; stretch with speed</span></div>";
+    html += "</div></div>";
     html +=
-      '<div class="rp-row"><label>Trail Fade</label><select onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','trailFade',this.value)\"><option value=\"true\"" +
-      (p.trailFade !== false ? " selected" : "") +
-      '>Enabled</option><option value="false"' +
-      (p.trailFade === false ? " selected" : "") +
-      ">Disabled</option></select></div>";
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Glow & Fade</span></div><div class="rp-section-body">';
     html +=
-      '<div class="rp-row"><label>Trail Glow</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      '<div class="rp-row"><label>Trail Fade</label><input type="checkbox"' +
+      (p.trailFade !== false ? " checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
       id +
-      "','trailGlow',this.value)\"><option value=\"false\"" +
-      (!p.trailGlow ? " selected" : "") +
-      '>Off</option><option value="true"' +
-      (p.trailGlow ? " selected" : "") +
-      ">On</option></select></div>";
+      "','trailFade',this.checked)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Trail Blur</label><input type="checkbox"' +
+      (p.trailBlur ? " checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','trailBlur',this.checked)\"><span style=\"font-size:11px;color:rgba(255,255,255,0.4);margin-left:6px\">Motion-blur smear effect</span></div>";
+    html +=
+      '<div class="rp-row"><label>Glow</label><input type="checkbox"' +
+      (p.trailGlow ? " checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','trailGlow',this.checked)\"></div>";
+    if (p.trailGlow) {
+      html +=
+        '<div class="rp-row"><label>Glow Size</label><div style="display:flex;align-items:center;gap:6px"><input type="range" min="4" max="60" step="2" value="' +
+        (p.glowSize || 18) +
+        '" style="flex:1" oninput="this.nextElementSibling.textContent=this.value;FB.panels.updateWidgetProp(\'' +
+        id +
+        "','glowSize',+this.value)\"><span style=\"width:24px;font-size:11px;color:rgba(255,255,255,0.5)\">" +
+        (p.glowSize || 18) +
+        "</span></div></div>";
+    }
+    html +=
+      '<div class="rp-row"><label>Shape Opacity (%)</label><div style="display:flex;align-items:center;gap:6px"><input type="range" min="10" max="100" step="5" value="' +
+      (p.shapeOpacity || 100) +
+      '" style="flex:1" oninput="this.nextElementSibling.textContent=this.value;FB.panels.updateWidgetProp(\'' +
+      id +
+      "','shapeOpacity',+this.value)\"><span style=\"width:28px;font-size:11px;color:rgba(255,255,255,0.5)\">" +
+      (p.shapeOpacity || 100) +
+      "</span></div></div>";
     html += "</div></div>";
     return html;
   },
@@ -10357,7 +11087,37 @@ FB.widgets.register("gravityCursor", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Gravity Strength</label><input type="range" min="0.1" max="2" step="0.1" value="' +
+      (p.gravityStrength || 0.5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','gravityStrength',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Particle Count</label><input type="range" min="10" max="200" step="10" value="' +
+      (p.particleCount || 50) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleCount',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Particle Colour</label><input type="color" value="' +
+      (p.particleColor || "#cdfe00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleColor',this.value)\"></div>";
+    return h;
   },
 });
 
@@ -11682,6 +12442,8 @@ FB.widgets.register("morphingText", {
       (p.highlightColor || "#cdfe00") +
       '" data-dual-colour="' +
       (p.dualColour ? "1" : "0") +
+      '" data-dual-colour2="' +
+      (p.dualColour2 || "#3b82f6") +
       '" style="height:' +
       (p.height || 300) +
       "px;" +
@@ -13106,6 +13868,10 @@ FB.widgets.register("fluidSimulation", {
     fluidOpacity: 80,
     fluidGlow: true,
     mouseForce: 5,
+    particleStyle: "soft",
+    flowField: true,
+    connectionLines: false,
+    glowSize: 12,
   },
   render: function (p) {
     var id = p._blockId || "fluid";
@@ -13198,6 +13964,14 @@ FB.widgets.register("fluidSimulation", {
       (p.fluidGlow !== false ? "true" : "false") +
       '" data-mouse-force="' +
       (p.mouseForce || 5) +
+      '" data-particle-style="' +
+      (p.particleStyle || "soft") +
+      '" data-flow-field="' +
+      (p.flowField !== false ? "true" : "false") +
+      '" data-connection-lines="' +
+      (p.connectionLines ? "true" : "false") +
+      '" data-glow-size="' +
+      (p.glowSize || 12) +
       '" style="height:' +
       p.height +
       "px;" +
@@ -13484,7 +14258,11 @@ FB.widgets.register("fluidSimulation", {
       ((p.colorBlend || "gradient") === "random" ? " selected" : "") +
       '>Random</option><option value="alternating"' +
       ((p.colorBlend || "gradient") === "alternating" ? " selected" : "") +
-      ">Alternating</option></select></div>";
+      '>Alternating</option><option value="velocity"' +
+      ((p.colorBlend || "gradient") === "velocity" ? " selected" : "") +
+      '>Velocity</option><option value="position"' +
+      ((p.colorBlend || "gradient") === "position" ? " selected" : "") +
+      ">Position</option></select></div>";
     html +=
       '<div class="rp-row"><label>Fluid Opacity (%)</label><input type="number" min="0" max="100" value="' +
       (p.fluidOpacity || 80) +
@@ -13505,6 +14283,38 @@ FB.widgets.register("fluidSimulation", {
       '" onchange="FB.panels.updateWidgetProp(\'' +
       id +
       "','mouseForce',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Glow Size (px)</label><input type="number" min="0" max="60" value="' +
+      (p.glowSize || 12) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','glowSize',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Particle Style</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','particleStyle',this.value)\"><option value=\"soft\"" +
+      ((p.particleStyle || "soft") === "soft" ? " selected" : "") +
+      '>Soft</option><option value="hard"' +
+      ((p.particleStyle || "soft") === "hard" ? " selected" : "") +
+      '>Hard</option><option value="ring"' +
+      ((p.particleStyle || "soft") === "ring" ? " selected" : "") +
+      ">Ring</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Flow Field</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','flowField',this.value==='true')\"><option value=\"true\"" +
+      (p.flowField !== false ? " selected" : "") +
+      '>On</option><option value="false"' +
+      (p.flowField === false ? " selected" : "") +
+      ">Off</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Connection Lines</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','connectionLines',this.value==='true')\"><option value=\"false\"" +
+      (!p.connectionLines ? " selected" : "") +
+      '>Off</option><option value="true"' +
+      (p.connectionLines ? " selected" : "") +
+      ">On</option></select></div>";
     html += "</div></div>";
     return html;
   },
@@ -14981,9 +15791,12 @@ FB.widgets.register("collisionChaos", {
     ballMinSize: 10,
     ballMaxSize: 30,
     maxBalls: 50,
-    ballGlow: false,
+    ballGlow: true,
     glowColor: "#fbbf24",
     friction: 0.99,
+    ballStyle: "glass",
+    trailLength: 40,
+    spawnOnClick: true,
   },
   render: function (p) {
     var id = p._blockId || "chaos";
@@ -15074,6 +15887,12 @@ FB.widgets.register("collisionChaos", {
       (p.glowColor || "#fbbf24") +
       '" data-friction="' +
       (p.friction || 0.99) +
+      '" data-ball-style="' +
+      (p.ballStyle || "glass") +
+      '" data-trail-length="' +
+      (p.trailLength !== undefined ? p.trailLength : 40) +
+      '" data-spawn-on-click="' +
+      (p.spawnOnClick !== false ? "true" : "false") +
       '" style="height:' +
       p.height +
       "px;" +
@@ -15371,6 +16190,30 @@ FB.widgets.register("collisionChaos", {
       '" onchange="FB.panels.updateWidgetProp(\'' +
       id +
       "','friction',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Ball Style</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','ballStyle',this.value)\"><option value=\"glass\"" +
+      ((p.ballStyle || "glass") === "glass" ? " selected" : "") +
+      '>Glass</option><option value="solid"' +
+      ((p.ballStyle || "glass") === "solid" ? " selected" : "") +
+      '>Solid</option><option value="neon"' +
+      ((p.ballStyle || "glass") === "neon" ? " selected" : "") +
+      ">Neon</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Trail Length</label><input type="number" min="0" max="100" value="' +
+      (p.trailLength !== undefined ? p.trailLength : 40) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','trailLength',+this.value)\"></div>";
+    html +=
+      '<div class="rp-row"><label>Spawn on Click</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','spawnOnClick',this.value==='true')\"><option value=\"true\"" +
+      (p.spawnOnClick !== false ? " selected" : "") +
+      '>On</option><option value="false"' +
+      (p.spawnOnClick === false ? " selected" : "") +
+      ">Off</option></select></div>";
     html += "</div></div>";
     return html;
   },
@@ -15879,7 +16722,31 @@ FB.widgets.register("parallaxDepth", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 500) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Layer Count</label><input type="range" min="2" max="10" step="1" value="' +
+      (p.layerCount || 5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','layerCount',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Parallax Speed</label><input type="range" min="0.1" max="2" step="0.1" value="' +
+      (p.speed || 0.5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','speed',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -15936,7 +16803,43 @@ FB.widgets.register("scrollTriggered", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 500) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Animation</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','animationType',this.value)\"><option value=\"fadeUp\"" +
+      ((p.animationType || "fadeUp") === "fadeUp" ? " selected" : "") +
+      '>Fade Up</option><option value="fadeIn"' +
+      (p.animationType === "fadeIn" ? " selected" : "") +
+      '>Fade In</option><option value="slideLeft"' +
+      (p.animationType === "slideLeft" ? " selected" : "") +
+      '>Slide Left</option><option value="scaleUp"' +
+      (p.animationType === "scaleUp" ? " selected" : "") +
+      ">Scale Up</option></select></div>";
+    h +=
+      '<div class="rp-row"><label>Stagger (ms)</label><input type="range" min="0" max="400" step="20" value="' +
+      (p.stagger || 100) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','stagger',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Duration (ms)</label><input type="range" min="200" max="2000" step="100" value="' +
+      (p.duration || 800) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','duration',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -15982,7 +16885,41 @@ FB.widgets.register("horizontalScrollGallery", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Item Count</label><input type="range" min="2" max="12" step="1" value="' +
+      (p.itemCount || 6) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','itemCount',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Snap to Items</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','snap',this.value==='true')\"><option value=\"true\"" +
+      (p.snap !== false ? " selected" : "") +
+      '>On</option><option value="false"' +
+      (p.snap === false ? " selected" : "") +
+      ">Off</option></select></div>";
+    h +=
+      '<div class="rp-row"><label>Momentum Scroll</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','momentum',this.value==='true')\"><option value=\"true\"" +
+      (p.momentum !== false ? " selected" : "") +
+      '>On</option><option value="false"' +
+      (p.momentum === false ? " selected" : "") +
+      ">Off</option></select></div>";
+    return h;
   },
 });
 
@@ -16013,7 +16950,31 @@ FB.widgets.register("velocitySkew", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Max Skew (°)</label><input type="range" min="0" max="45" step="1" value="' +
+      (p.maxSkew || 15) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','maxSkew',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Elasticity</label><input type="range" min="0" max="1" step="0.05" value="' +
+      (p.elasticity || 0.8) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','elasticity',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -16037,7 +16998,8 @@ FB.widgets.register("scrollFluid", {
     intensity: 1,
     resolution: 256,
   },
-  render: function (id, p) {
+  render: function (p) {
+    var id = p._blockId || "sf0";
     return (
       '<div class="veltro-fluid-wrap" id="sf-' +
       id +
@@ -16056,10 +17018,10 @@ FB.widgets.register("scrollFluid", {
       '" data-resolution="' +
       (p.resolution || 256) +
       '" style="height:' +
-      p.height +
+      (p.height || 400) +
       "px;background:" +
-      p.bg +
-      ';position:relative;overflow:hidden;border-radius:4px"><canvas class="veltro-fluid-canvas" style="position:absolute;inset:0;width:100%;height:100%" data-fluid-scroll-init="1"></canvas></div>'
+      (p.bg || "#050510") +
+      ';position:relative;overflow:hidden;border-radius:4px"><canvas class="veltro-fluid-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas></div>'
     );
   },
   editPanel: function (id, p) {
@@ -16165,7 +17127,8 @@ FB.widgets.register("velocityFluidBg", {
     chaosFrequency: 2.0,
     resolution: 256,
   },
-  render: function (id, p) {
+  render: function (p) {
+    var id = p._blockId || "vfbg";
     var angle = p.flowAngle !== undefined ? p.flowAngle : 90;
     return (
       '<div class="vfbg-wrap" id="vfbg-' +
@@ -16399,7 +17362,37 @@ FB.widgets.register("auroraBorealis", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 500) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Aurora Colours (CSV)</label><input type="text" value="' +
+      (p.colors || "#00ff88,#8b5cf6,#3b82f6") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','colors',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Animation Speed</label><input type="range" min="0.1" max="2" step="0.1" value="' +
+      (p.speed || 0.5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','speed',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Intensity</label><input type="range" min="0.1" max="1" step="0.05" value="' +
+      (p.intensity || 0.7) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','intensity',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -16438,7 +17431,37 @@ FB.widgets.register("particleNebula", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 500) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#050510") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Star Count</label><input type="range" min="50" max="400" step="10" value="' +
+      (p.starCount || 200) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','starCount',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Nebula Colours (CSV)</label><input type="text" value="' +
+      (p.nebulaColors || "#7c3aed,#3b82f6,#ec4899") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','nebulaColors',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Speed</label><input type="range" min="0.1" max="1" step="0.05" value="' +
+      (p.speed || 0.3) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','speed',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -16457,27 +17480,116 @@ FB.widgets.register("geometricPatterns", {
     patternType: "hexagons",
     colors: "#cdfe00,#3b82f6,#ec4899",
     speed: 0.5,
+    cellSize: 40,
+    strokeWidth: 1.5,
+    lineOpacity: 0.4,
+    filled: false,
+    colorMode: "cycle",
   },
   render: function (p) {
     var id = p._blockId || "geo";
     return (
-      '<div class="veltro-geo-wrap" id="geo-' +
+      '<div class="veltro-geopat-wrap" id="geopat-' +
       id +
       '" data-pattern-type="' +
-      p.patternType +
+      (p.patternType || "hexagons") +
       '" data-colors="' +
-      p.colors +
+      (p.colors || "#cdfe00,#3b82f6,#ec4899") +
       '" data-speed="' +
-      p.speed +
+      (p.speed || 0.5) +
+      '" data-cell-size="' +
+      (p.cellSize || 40) +
+      '" data-stroke-width="' +
+      (p.strokeWidth || 1.5) +
+      '" data-line-opacity="' +
+      (p.lineOpacity || 0.4) +
+      '" data-filled="' +
+      (p.filled ? "true" : "false") +
+      '" data-color-mode="' +
+      (p.colorMode || "cycle") +
       '" style="height:' +
-      p.height +
+      (p.height || 500) +
       "px;background:" +
-      p.bg +
-      ';position:relative;overflow:hidden;border-radius:4px"><canvas class="veltro-geo-canvas" style="position:absolute;inset:0;width:100%;height:100%" data-geo-init="1"></canvas></div>'
+      (p.bg || "#0d0d1a") +
+      ';position:relative;overflow:hidden;border-radius:4px"><canvas style="position:absolute;inset:0;width:100%;height:100%"></canvas></div>'
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 500) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Pattern Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','patternType',this.value)\"><option value=\"hexagons\"" +
+      ((p.patternType || "hexagons") === "hexagons" ? " selected" : "") +
+      '>Hexagons</option><option value="triangles"' +
+      (p.patternType === "triangles" ? " selected" : "") +
+      '>Triangles</option><option value="circles"' +
+      (p.patternType === "circles" ? " selected" : "") +
+      '>Circles</option><option value="squares"' +
+      (p.patternType === "squares" ? " selected" : "") +
+      '>Squares</option><option value="stars"' +
+      (p.patternType === "stars" ? " selected" : "") +
+      ">Stars</option></select></div>";
+    h +=
+      '<div class="rp-row"><label>Colour Mode</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','colorMode',this.value)\"><option value=\"cycle\"" +
+      ((p.colorMode || "cycle") === "cycle" ? " selected" : "") +
+      '>Cycle</option><option value="gradient"' +
+      (p.colorMode === "gradient" ? " selected" : "") +
+      '>Gradient</option><option value="solid"' +
+      (p.colorMode === "solid" ? " selected" : "") +
+      ">Solid</option></select></div>";
+    h +=
+      '<div class="rp-row"><label>Colours (CSV hex)</label><input type="text" value="' +
+      (p.colors || "#cdfe00,#3b82f6,#ec4899") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','colors',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Cell Size (px)</label><input type="range" min="12" max="120" step="4" value="' +
+      (p.cellSize || 40) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','cellSize',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Animation Speed</label><input type="range" min="0" max="3" step="0.1" value="' +
+      (p.speed || 0.5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','speed',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Stroke Width</label><input type="range" min="0.5" max="6" step="0.5" value="' +
+      (p.strokeWidth || 1.5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','strokeWidth',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Opacity</label><input type="range" min="0.05" max="1" step="0.05" value="' +
+      (p.lineOpacity || 0.4) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','lineOpacity',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Filled</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','filled',this.value==='true')\"><option value=\"false\"" +
+      (!p.filled ? " selected" : "") +
+      '>Stroke only</option><option value="true"' +
+      (p.filled ? " selected" : "") +
+      ">Filled</option></select></div>";
+    return h;
   },
 });
 
@@ -16516,7 +17628,37 @@ FB.widgets.register("liquidGradient", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 500) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Colours (CSV)</label><input type="text" value="' +
+      (p.colors || "#ff6b35,#cdfe00,#3b82f6,#ec4899") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','colors',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Flow Speed</label><input type="range" min="0.1" max="2" step="0.1" value="' +
+      (p.flowSpeed || 0.5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','flowSpeed',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Turbulence</label><input type="range" min="0" max="1" step="0.05" value="' +
+      (p.turbulence || 0.5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','turbulence',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -16562,7 +17704,37 @@ FB.widgets.register("holographicOverlay", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Overlay Colour</label><input type="color" value="' +
+      (p.overlayColor || "#ffffff") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','overlayColor',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Intensity</label><input type="range" min="0.1" max="1" step="0.05" value="' +
+      (p.intensity || 0.5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','intensity',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Angle (°)</label><input type="range" min="0" max="360" step="5" value="' +
+      (p.angle || 45) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','angle',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -16615,7 +17787,43 @@ FB.widgets.register("lightLeaks", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Leak Colour</label><input type="color" value="' +
+      (p.leakColor || "#ff6b35") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','leakColor',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Intensity</label><input type="range" min="0.05" max="1" step="0.05" value="' +
+      (p.intensity || 0.3) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','intensity',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Direction</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','direction',this.value)\"><option value=\"top-left\"" +
+      ((p.direction || "top-left") === "top-left" ? " selected" : "") +
+      '>Top Left</option><option value="top-right"' +
+      (p.direction === "top-right" ? " selected" : "") +
+      '>Top Right</option><option value="bottom-left"' +
+      (p.direction === "bottom-left" ? " selected" : "") +
+      '>Bottom Left</option><option value="bottom-right"' +
+      (p.direction === "bottom-right" ? " selected" : "") +
+      ">Bottom Right</option></select></div>";
+    return h;
   },
 });
 
@@ -16662,7 +17870,31 @@ FB.widgets.register("carousel3d", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Card Count</label><input type="range" min="3" max="12" step="1" value="' +
+      (p.cardCount || 6) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','cardCount',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Rotation Speed</label><input type="range" min="0.1" max="3" step="0.1" value="' +
+      (p.rotationSpeed || 0.5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','rotationSpeed',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -16712,7 +17944,37 @@ FB.widgets.register("isometricGrid", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 500) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Columns</label><input type="range" min="2" max="8" step="1" value="' +
+      (p.cols || 4) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','cols',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Rows</label><input type="range" min="2" max="6" step="1" value="' +
+      (p.rows || 3) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','rows',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Spacing (px)</label><input type="range" min="4" max="60" step="4" value="' +
+      (p.spacing || 20) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','spacing',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -16767,7 +18029,37 @@ FB.widgets.register("perspectiveRooms", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 500) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Room Count</label><input type="range" min="1" max="8" step="1" value="' +
+      (p.roomCount || 3) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','roomCount',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Perspective (px)</label><input type="range" min="200" max="2000" step="100" value="' +
+      (p.perspective || 800) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','perspective',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Colours (CSV)</label><input type="text" value="' +
+      (p.colors || "#cdfe00,#3b82f6,#ec4899") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','colors',this.value)\"></div>";
+    return h;
   },
 });
 
@@ -16830,7 +18122,37 @@ FB.widgets.register("floatingIslands", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 500) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Island Count</label><input type="range" min="2" max="12" step="1" value="' +
+      (p.islandCount || 5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','islandCount',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Float Range (px)</label><input type="range" min="5" max="60" step="5" value="' +
+      (p.floatRange || 20) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','floatRange',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Speed</label><input type="range" min="0.2" max="3" step="0.2" value="' +
+      (p.speed || 1) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','speed',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -16882,7 +18204,31 @@ FB.widgets.register("layeredParallax", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 500) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Layer Count</label><input type="range" min="2" max="10" step="1" value="' +
+      (p.layerCount || 5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','layerCount',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Depth Intensity</label><input type="range" min="0.1" max="1" step="0.05" value="' +
+      (p.depthIntensity || 0.5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','depthIntensity',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -16925,7 +18271,31 @@ FB.widgets.register("kineticLayout", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Element Count</label><input type="range" min="4" max="20" step="1" value="' +
+      (p.elementCount || 9) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','elementCount',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Response Radius (px)</label><input type="range" min="50" max="500" step="10" value="' +
+      (p.responseRadius || 200) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','responseRadius',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -16980,7 +18350,33 @@ FB.widgets.register("morphingGrid", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Layout</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','layoutType',this.value)\"><option value=\"grid\"" +
+      ((p.layoutType || "grid") === "grid" ? " selected" : "") +
+      '>Grid</option><option value="list"' +
+      (p.layoutType === "list" ? " selected" : "") +
+      ">List</option></select></div>";
+    h +=
+      '<div class="rp-row"><label>Transition Speed</label><input type="range" min="0.2" max="3" step="0.2" value="' +
+      (p.animationSpeed || 1) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','animationSpeed',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -17037,7 +18433,37 @@ FB.widgets.register("spatialNavigation", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 200}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Nav Items (CSV)</label><input type="text" value="' +
+      (p.navItems || "Home,About,Work,Contact") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','navItems',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Perspective (px)</label><input type="range" min="200" max="2000" step="100" value="' +
+      (p.perspective || 800) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','perspective',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Spacing (px)</label><input type="range" min="20" max="300" step="10" value="' +
+      (p.spacing || 100) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','spacing',+this.value)\"></div>";
+    return h;
   },
 });
 
@@ -17059,7 +18485,8 @@ FB.widgets.register("cursorLens", {
     lensSize: 120,
     magnification: 2,
   },
-  render: function (id, p) {
+  render: function (p) {
+    var id = p._blockId || "lens0";
     return (
       '<div class="veltro-lens-wrap fw-widget-cursorLens" id="lens-' +
       id +
@@ -17068,9 +18495,9 @@ FB.widgets.register("cursorLens", {
       '" data-magnification="' +
       (p.magnification || 2) +
       '" style="height:' +
-      p.height +
+      (p.height || 300) +
       "px;background:" +
-      p.bg +
+      (p.bg || "#0d0d1a") +
       ';position:relative;overflow:hidden;border-radius:4px;cursor:none"><img class="veltro-lens-bg" src="' +
       (p.image || "https://picsum.photos/800/400?random=1") +
       '" style="width:100%;height:100%;object-fit:cover"><div class="veltro-lens-mask" style="position:absolute;width:' +
@@ -17087,14 +18514,44 @@ FB.widgets.register("cursorLens", {
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 300}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" value="' +
+      (p.height || 300) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
+      (p.image || "") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','image',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Lens Size (px)</label><input type="number" min="60" max="300" value="' +
+      (p.lensSize || 120) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','lensSize',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Magnification</label><input type="range" min="1.2" max="5" step="0.1" value="' +
+      (p.magnification || 2) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','magnification',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    return h;
   },
 });
 
 // shaderBg
 FB.widgets.register("shaderBg", {
   label: "Shader Background",
-  sublabel: "WebGL effects",
+  sublabel: "WebGL GLSL backgrounds",
   icon: "🌊",
   iconBg: "#3b82f6",
   iconColor: "#fff",
@@ -17106,27 +18563,88 @@ FB.widgets.register("shaderBg", {
     shaderType: "noise",
     speed: 0.5,
     intensity: 1,
+    color1: "#3b82f6",
+    color2: "#8b5cf6",
   },
-  render: function (id, p) {
-    var shaderType = p.shaderType || "noise";
+  render: function (p) {
+    var id = p._blockId || "shader0";
     return (
-      '<div class="veltro-shader-wrap fw-widget-shaderBg" id="shader-' +
+      '<div class="veltro-shader-wrap" id="shader-' +
       id +
       '" data-shader-type="' +
-      shaderType +
+      (p.shaderType || "noise") +
       '" data-speed="' +
       (p.speed || 0.5) +
       '" data-intensity="' +
       (p.intensity || 1) +
+      '" data-color1="' +
+      (p.color1 || "#3b82f6") +
+      '" data-color2="' +
+      (p.color2 || "#8b5cf6") +
       '" style="height:' +
-      p.height +
+      (p.height || 400) +
       "px;background:" +
-      p.bg +
-      ';position:relative;overflow:hidden;border-radius:4px"><canvas class="veltro-shader-canvas" style="position:absolute;inset:0;width:100%;height:100%" data-shader-init="1"></canvas></div>'
+      (p.bg || "#050510") +
+      ';position:relative;overflow:hidden;border-radius:4px"><canvas class="veltro-shader-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas></div>'
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 400}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Shader Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','shaderType',this.value)\">" +
+      ["noise", "plasma", "grid", "ripple", "tunnel"]
+        .map(function (v) {
+          return (
+            '<option value="' +
+            v +
+            '"' +
+            ((p.shaderType || "noise") === v ? " selected" : "") +
+            ">" +
+            v.charAt(0).toUpperCase() +
+            v.slice(1) +
+            "</option>"
+          );
+        })
+        .join("") +
+      "</select></div>";
+    h +=
+      '<div class="rp-row"><label>Height (px)</label><input type="number" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Speed</label><input type="range" min="0" max="2" step="0.05" value="' +
+      (p.speed || 0.5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','speed',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Intensity</label><input type="range" min="0.1" max="3" step="0.1" value="' +
+      (p.intensity || 1) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','intensity',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Colour 1</label><input type="color" value="' +
+      (p.color1 || "#3b82f6") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','color1',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Colour 2</label><input type="color" value="' +
+      (p.color2 || "#8b5cf6") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','color2',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#050510") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    return h;
   },
 });
 
@@ -17145,23 +18663,48 @@ FB.widgets.register("infiniteCanvas", {
     gridSize: 40,
     gridColor: "rgba(255,255,255,0.05)",
   },
-  render: function (id, p) {
+  render: function (p) {
+    var id = p._blockId || "infinite0";
     return (
-      '<div class="veltro-infinite-wrap fw-widget-infiniteCanvas" id="infinite-' +
+      '<div class="veltro-infinite-wrap" id="infinite-' +
       id +
       '" data-grid-size="' +
       (p.gridSize || 40) +
       '" data-grid-color="' +
       (p.gridColor || "rgba(255,255,255,0.05)") +
       '" style="height:' +
-      p.height +
+      (p.height || 400) +
       "px;background:" +
-      p.bg +
-      ';position:relative;overflow:hidden;border-radius:4px;cursor:grab"><canvas class="veltro-infinite-canvas" style="position:absolute;inset:0;width:100%;height:100%" data-infinite-init="1"></canvas></div>'
+      (p.bg || "#0a0a1a") +
+      ';position:relative;overflow:hidden;border-radius:4px;cursor:grab"><canvas class="veltro-infinite-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas></div>'
     );
   },
   editPanel: function (id, p) {
-    return `<div class="rp-row"><label>Height (px)</label><input type="number" value="${p.height || 400}" onchange="FB.panels.updateWidgetProp('${id}','height',+this.value)"></div>`;
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0a0a1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Grid Size (px)</label><input type="range" min="10" max="100" step="5" value="' +
+      (p.gridSize || 40) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','gridSize',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Grid Colour (rgba)</label><input type="text" value="' +
+      (p.gridColor || "rgba(255,255,255,0.05)") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','gridColor',this.value)\"></div>";
+    return h;
   },
 });
 
@@ -17282,6 +18825,10 @@ window._VeltroInitImagePhysics = function () {
       var gravity = +(wrap.dataset.gravity || 1);
       var restitution = +(wrap.dataset.restitution || 0.5);
       var imageShape = wrap.dataset.imageShape || "square";
+      var imageSize = Math.max(
+        30,
+        Math.min(200, +(wrap.dataset.imageSize || 80)),
+      );
       var borderRadius = +(wrap.dataset.imageBorderRadius || 8);
       var borderWidth = +(wrap.dataset.imageBorderWidth || 0);
       var borderColor = wrap.dataset.imageBorderColor || "#ffffff";
@@ -17290,7 +18837,7 @@ window._VeltroInitImagePhysics = function () {
       var windEnabled = wrap.dataset.windEnabled === "true";
       var windStrength = +(wrap.dataset.windStrength || 0);
       var images = JSON.parse(wrap.dataset.images || "[]");
-      var SIZE = Math.max(50, Math.min(Math.min(W, H) * 0.18, 120));
+      var SIZE = imageSize;
 
       var imgObjs = images.map(function (src) {
         var img = new Image();
@@ -17313,16 +18860,15 @@ window._VeltroInitImagePhysics = function () {
           if (imageShape === "circle") {
             return Matter.Bodies.circle(x, y, SIZE / 2, opts);
           }
-          var cr = Math.min(borderRadius, SIZE / 4);
-          return Matter.Bodies.rectangle(
-            x,
-            y,
-            SIZE,
-            SIZE,
-            cr > 0
-              ? Object.assign({}, opts, { chamfer: { radius: cr } })
-              : opts,
-          );
+          var polySides = 0;
+          if (imageShape === "triangle") polySides = 3;
+          else if (imageShape === "pentagon") polySides = 5;
+          else if (imageShape === "hexagon") polySides = 6;
+          else if (imageShape === "octagon") polySides = 8;
+          if (polySides > 0) {
+            return Matter.Bodies.polygon(x, y, polySides, SIZE / 2, opts);
+          }
+          return Matter.Bodies.rectangle(x, y, SIZE, SIZE, opts);
         });
         var walls = [
           Matter.Bodies.rectangle(W / 2, H + 25, W * 2, 50, { isStatic: true }),
@@ -17409,21 +18955,74 @@ window._VeltroInitImagePhysics = function () {
             var img = imgObjs[i];
             if (!img) return;
             var hs = SIZE / 2;
-            var r = Math.min(borderRadius, hs / 2);
             function drawShape() {
               ctx.beginPath();
               if (imageShape === "circle") {
                 ctx.arc(0, 0, hs, 0, Math.PI * 2);
               } else {
-                ctx.moveTo(-hs + r, -hs);
-                ctx.lineTo(hs - r, -hs);
-                ctx.arcTo(hs, -hs, hs, -hs + r, r);
-                ctx.lineTo(hs, hs - r);
-                ctx.arcTo(hs, hs, hs - r, hs, r);
-                ctx.lineTo(-hs + r, hs);
-                ctx.arcTo(-hs, hs, -hs, hs - r, r);
-                ctx.lineTo(-hs, -hs + r);
-                ctx.arcTo(-hs, -hs, -hs + r, -hs, r);
+                var sides = 4;
+                if (imageShape === "triangle") sides = 3;
+                else if (imageShape === "pentagon") sides = 5;
+                else if (imageShape === "hexagon") sides = 6;
+                else if (imageShape === "octagon") sides = 8;
+                else if (imageShape === "star") {
+                  var outer = hs,
+                    inner = hs * 0.4,
+                    pts = 5;
+                  for (var si = 0; si < pts * 2; si++) {
+                    var rad = si % 2 === 0 ? outer : inner;
+                    var a = (si * Math.PI) / pts - Math.PI / 2;
+                    var px = Math.cos(a) * rad,
+                      py = Math.sin(a) * rad;
+                    if (si === 0) ctx.moveTo(px, py);
+                    else ctx.lineTo(px, py);
+                  }
+                  ctx.closePath();
+                  return;
+                } else if (imageShape === "heart") {
+                  ctx.moveTo(0, hs * 0.7);
+                  ctx.bezierCurveTo(
+                    -hs * 0.6,
+                    hs * 0.3,
+                    -hs,
+                    -hs * 0.1,
+                    -hs * 0.4,
+                    -hs * 0.5,
+                  );
+                  ctx.bezierCurveTo(
+                    -hs * 0.1,
+                    -hs * 0.8,
+                    0,
+                    -hs * 0.4,
+                    0,
+                    -hs * 0.2,
+                  );
+                  ctx.bezierCurveTo(
+                    0,
+                    -hs * 0.4,
+                    hs * 0.1,
+                    -hs * 0.8,
+                    hs * 0.4,
+                    -hs * 0.5,
+                  );
+                  ctx.bezierCurveTo(
+                    hs,
+                    -hs * 0.1,
+                    hs * 0.6,
+                    hs * 0.3,
+                    0,
+                    hs * 0.7,
+                  );
+                  ctx.closePath();
+                  return;
+                }
+                for (var si = 0; si < sides; si++) {
+                  var a = (si * 2 * Math.PI) / sides - Math.PI / 2;
+                  var px = Math.cos(a) * hs * 0.9,
+                    py = Math.sin(a) * hs * 0.9;
+                  if (si === 0) ctx.moveTo(px, py);
+                  else ctx.lineTo(px, py);
+                }
                 ctx.closePath();
               }
             }
@@ -18124,71 +19723,299 @@ window._VeltroInitMultiShapeTrail = function () {
       if (!wrap) return;
       var ctx = canvas.getContext("2d");
       var dpr = window.devicePixelRatio || 1;
-      var rect = wrap.getBoundingClientRect();
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      ctx.scale(dpr, dpr);
-      var W = rect.width,
-        H = rect.height;
-      var trailLength = +wrap.dataset.trailLength || 30;
-      var particleSize = +wrap.dataset.particleSize || 8;
-      var shapes = (wrap.dataset.shapes || "circle,square,triangle,star").split(
-        ",",
-      );
-      var colors = (wrap.dataset.colors || "#ff6b35,#cdfe00,#3b82f6").split(
-        ",",
-      );
-      var speed = +wrap.dataset.speed || 1;
-      var trail = [];
-      var mouseX = W / 2,
-        mouseY = H / 2;
-      wrap.addEventListener("mousemove", function (e) {
-        var r = wrap.getBoundingClientRect();
-        mouseX = e.clientX - r.left;
-        mouseY = e.clientY - r.top;
-      });
-      function drawShape(shape, x, y, size, color) {
+      var W = 0,
+        H = 0;
+
+      function resize() {
+        W = wrap.offsetWidth || 400;
+        H = wrap.offsetHeight || 400;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      resize();
+
+      var ds = wrap.dataset;
+      var trailLength = +(ds.trailLength || 30);
+      var particleSize = +(ds.particleSize || 8);
+      var shapes = (ds.shapes || "circle,square,triangle,star")
+        .split(",")
+        .map(function (s) {
+          return s.trim();
+        });
+      var colors = (ds.colors || "#ff6b35,#cdfe00,#3b82f6,#ec4899,#f59e0b")
+        .split(",")
+        .map(function (c) {
+          return c.trim();
+        });
+      var speed = +(ds.speed || 1);
+      var trailFade = ds.trailFade !== "false";
+      var trailGlow = ds.trailGlow === "true";
+      var trailBlur = ds.trailBlur === "true";
+      var glowSize = +(ds.glowSize || 18);
+      var shapeScale = +(ds.shapeScale || 1);
+      var shapeOpacity = +(ds.shapeOpacity || 100) / 100;
+      var shapeRotation = +(ds.shapeRotation || 0);
+      var rotationSpeed = +(ds.rotationSpeed !== undefined
+        ? ds.rotationSpeed
+        : 2);
+      var autonomousMode = ds.autonomousMode !== "false";
+      var particleSpacing = +(ds.particleSpacing || 6);
+      var colorMode = ds.colorMode || "palette";
+      var velocityStretch = ds.velocityStretch === "true";
+      var shapeOrder = ds.shapeOrder || "sequential";
+
+      function hex2rgb(hex) {
+        var h = hex.replace("#", "");
+        if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+        return [
+          parseInt(h.slice(0, 2), 16),
+          parseInt(h.slice(2, 4), 16),
+          parseInt(h.slice(4, 6), 16),
+        ];
+      }
+      function lerpColor(a, b, t) {
+        try {
+          var ra = hex2rgb(a),
+            rb = hex2rgb(b);
+          return (
+            "rgb(" +
+            Math.round(ra[0] + (rb[0] - ra[0]) * t) +
+            "," +
+            Math.round(ra[1] + (rb[1] - ra[1]) * t) +
+            "," +
+            Math.round(ra[2] + (rb[2] - ra[2]) * t) +
+            ")"
+          );
+        } catch (e) {
+          return a;
+        }
+      }
+
+      function drawShape(
+        type,
+        x,
+        y,
+        size,
+        color,
+        alpha,
+        rot,
+        scaleX,
+        scaleY,
+        isLead,
+      ) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, Math.min(1, alpha * shapeOpacity));
+        ctx.translate(x, y);
+        ctx.rotate((rot * Math.PI) / 180);
+        if (scaleX !== 1 || scaleY !== 1) ctx.scale(scaleX, scaleY);
+        if (trailGlow && isLead) {
+          ctx.shadowBlur = glowSize;
+          ctx.shadowColor = color;
+        } else if (trailGlow) {
+          ctx.shadowBlur = glowSize * alpha * 0.5;
+          ctx.shadowColor = color;
+        }
         ctx.fillStyle = color;
+        ctx.strokeStyle = color;
         ctx.beginPath();
-        if (shape === "circle") {
-          ctx.arc(x, y, size, 0, Math.PI * 2);
-        } else if (shape === "square") {
-          ctx.rect(x - size, y - size, size * 2, size * 2);
-        } else if (shape === "triangle") {
-          ctx.moveTo(x, y - size);
-          ctx.lineTo(x + size, y + size);
-          ctx.lineTo(x - size, y + size);
+        var s = size;
+        if (type === "circle") {
+          ctx.arc(0, 0, s, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (type === "ring") {
+          ctx.arc(0, 0, s, 0, Math.PI * 2);
+          ctx.lineWidth = Math.max(1.5, s * 0.28);
+          ctx.stroke();
+        } else if (type === "square") {
+          ctx.rect(-s * 0.88, -s * 0.88, s * 1.76, s * 1.76);
+          ctx.fill();
+        } else if (type === "diamond") {
+          ctx.moveTo(0, -s);
+          ctx.lineTo(s * 0.65, 0);
+          ctx.lineTo(0, s);
+          ctx.lineTo(-s * 0.65, 0);
           ctx.closePath();
-        } else if (shape === "star") {
-          for (var i = 0; i < 5; i++) {
-            var angle = (i * 4 * Math.PI) / 5 - Math.PI / 2;
-            var px = x + Math.cos(angle) * size;
-            var py = y + Math.sin(angle) * size;
-            if (i === 0) ctx.moveTo(px, py);
-            else ctx.lineTo(px, py);
+          ctx.fill();
+        } else if (type === "triangle") {
+          ctx.moveTo(0, -s);
+          ctx.lineTo(s * 0.866, s * 0.5);
+          ctx.lineTo(-s * 0.866, s * 0.5);
+          ctx.closePath();
+          ctx.fill();
+        } else if (type === "star") {
+          for (var i = 0; i < 10; i++) {
+            var a = (i * Math.PI) / 5 - Math.PI / 2;
+            var r = i % 2 === 0 ? s : s * 0.42;
+            if (i === 0) ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r);
+            else ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
           }
           ctx.closePath();
+          ctx.fill();
+        } else if (type === "hexagon") {
+          for (var j = 0; j < 6; j++) {
+            var ha = (j * Math.PI) / 3 - Math.PI / 6;
+            if (j === 0) ctx.moveTo(Math.cos(ha) * s, Math.sin(ha) * s);
+            else ctx.lineTo(Math.cos(ha) * s, Math.sin(ha) * s);
+          }
+          ctx.closePath();
+          ctx.fill();
+        } else if (type === "cross") {
+          var arm = s * 0.3;
+          ctx.rect(-arm, -s, arm * 2, s * 2);
+          ctx.rect(-s, -arm, s * 2, arm * 2);
+          ctx.fill();
+        } else if (type === "dot") {
+          ctx.arc(0, 0, s * 0.38, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.arc(0, 0, s, 0, Math.PI * 2);
+          ctx.fill();
         }
-        ctx.fill();
+        ctx.restore();
       }
+
+      var trail = [];
+      var cursorX = W / 2,
+        cursorY = H / 2;
+      var targetX = W / 2,
+        targetY = H / 2;
+      var lastAddedX = -9999,
+        lastAddedY = -9999;
+      var prevCX = W / 2,
+        prevCY = H / 2;
+      var mouseInside = false;
+      var totalRot = 0;
+      var shapeIdx = 0;
+      var autoT = Math.random() * Math.PI * 2;
+
+      wrap.addEventListener("mouseenter", function () {
+        mouseInside = true;
+      });
+      wrap.addEventListener("mouseleave", function () {
+        mouseInside = false;
+      });
+      wrap.addEventListener("mousemove", function (e) {
+        var r = wrap.getBoundingClientRect();
+        targetX = e.clientX - r.left;
+        targetY = e.clientY - r.top;
+      });
+
+      function getAutoTarget() {
+        var cx = W * 0.5,
+          cy = H * 0.5;
+        return {
+          x: cx + W * 0.36 * Math.sin(autoT * 1.27),
+          y: cy + H * 0.28 * Math.sin(autoT * 0.73 + 1.1),
+        };
+      }
+
       var rafId = 0;
       function animate() {
         if (!wrap.isConnected) return;
-        ctx.clearRect(0, 0, W, H);
-        trail.unshift({ x: mouseX, y: mouseY });
-        if (trail.length > trailLength) trail.pop();
-        trail.forEach(function (point, i) {
-          var progress = i / trail.length;
-          var size = particleSize * (1 - progress * 0.5);
-          var color = colors[i % colors.length];
-          var shape = shapes[i % shapes.length];
-          var alpha = 1 - progress;
-          ctx.globalAlpha = alpha;
-          drawShape(shape, point.x, point.y, size, color);
-        });
-        ctx.globalAlpha = 1;
+
+        totalRot += rotationSpeed;
+        autoT += 0.007 * speed;
+
+        if (!mouseInside && autonomousMode) {
+          var at = getAutoTarget();
+          targetX = at.x;
+          targetY = at.y;
+          cursorX += (targetX - cursorX) * 0.035 * speed;
+          cursorY += (targetY - cursorY) * 0.035 * speed;
+        } else {
+          cursorX += (targetX - cursorX) * 0.18;
+          cursorY += (targetY - cursorY) * 0.18;
+        }
+
+        var velX = cursorX - prevCX;
+        var velY = cursorY - prevCY;
+        var vel = Math.hypot(velX, velY);
+        prevCX = cursorX;
+        prevCY = cursorY;
+
+        var moved = Math.hypot(cursorX - lastAddedX, cursorY - lastAddedY);
+        if (moved >= particleSpacing) {
+          var shape, color;
+          if (shapeOrder === "random") {
+            shape = shapes[Math.floor(Math.random() * shapes.length)];
+            color = colors[Math.floor(Math.random() * colors.length)];
+          } else if (shapeOrder === "reverse") {
+            var si = shapes.length - 1 - (shapeIdx % shapes.length);
+            shape = shapes[si];
+            color = colors[colors.length - 1 - (shapeIdx % colors.length)];
+          } else {
+            shape = shapes[shapeIdx % shapes.length];
+            color = colors[shapeIdx % colors.length];
+          }
+          trail.unshift({
+            x: cursorX,
+            y: cursorY,
+            shape: shape,
+            color: color,
+            rot: totalRot + shapeRotation,
+            vx: velX,
+            vy: velY,
+            vel: vel,
+          });
+          shapeIdx++;
+          lastAddedX = cursorX;
+          lastAddedY = cursorY;
+          if (trail.length > trailLength) trail.length = trailLength;
+        }
+
+        if (trailBlur) {
+          ctx.fillStyle = "rgba(0,0,0,0.25)";
+          ctx.fillRect(0, 0, W, H);
+        } else {
+          ctx.clearRect(0, 0, W, H);
+        }
+
+        var n = trail.length;
+        for (var i = n - 1; i >= 0; i--) {
+          var pt = trail[i];
+          var progress = n > 1 ? i / (n - 1) : 0;
+          var sz = particleSize * shapeScale * (1 - progress * 0.62);
+          if (sz < 0.5) continue;
+
+          var alpha = trailFade ? Math.pow(1 - progress, 1.15) : 0.9;
+          var color;
+          if (colorMode === "gradient" && colors.length > 1) {
+            var ci = progress * (colors.length - 1);
+            var lo = Math.floor(ci);
+            var hi = Math.min(lo + 1, colors.length - 1);
+            color = lerpColor(colors[lo], colors[hi], ci - lo);
+          } else {
+            color = pt.color;
+          }
+
+          var rot = pt.rot + i * 8;
+          var sx = 1,
+            sy = 1;
+          if (velocityStretch && pt.vel > 1) {
+            var stretch = Math.min(1 + pt.vel * 0.06, 2.2);
+            var angle = Math.atan2(pt.vy, pt.vx);
+            rot = (angle * 180) / Math.PI;
+            sx = stretch;
+            sy = 1 / Math.sqrt(stretch);
+          }
+          drawShape(
+            pt.shape,
+            pt.x,
+            pt.y,
+            sz,
+            color,
+            alpha,
+            rot,
+            sx,
+            sy,
+            i === 0,
+          );
+        }
+
         rafId = requestAnimationFrame(animate);
       }
+
       new IntersectionObserver(
         function (e) {
           if (e[0].isIntersecting) {
@@ -18266,63 +20093,191 @@ window._VeltroInitDistortion = function () {
       canvas.setAttribute("data-init", "1");
       var wrap = canvas.closest(".veltro-distort-wrap");
       if (!wrap) return;
+
+      var ds = wrap.dataset;
+      var lensR = +(ds.distortionRadius || 100);
+      var strength = +(ds.distortionStrength || 0.3);
+      var distType = ds.distortionType || "lens";
+      var chromatic = ds.distortionChromatic === "true";
+      var invert = ds.distortionInvert === "true";
+      var overlayOn = ds.distortionOverlay !== "false";
+
+      var bgImg = wrap.querySelector("img");
+      if (!bgImg) return;
+
+      var W = wrap.offsetWidth;
+      var H = wrap.offsetHeight;
+
+      // Zoom factor per type
+      var zoom;
+      if (distType === "pinch" || invert) {
+        zoom = 1 / (1 + strength * 1.3);
+      } else if (distType === "ripple") {
+        zoom = 1;
+      } else {
+        zoom = 1 + strength * 1.5; // lens / swirl
+      }
+
+      // Lens element — uses CSS background to avoid CORS pixel access
+      var lens = document.createElement("div");
+      var lensD = lensR * 2;
+      var swirlFilter =
+        distType === "swirl"
+          ? "hue-rotate(22deg) contrast(1.12) saturate(1.25)"
+          : "";
+      lens.style.cssText =
+        "position:absolute;width:" +
+        lensD +
+        "px;height:" +
+        lensD +
+        "px;border-radius:50%;" +
+        "background-image:url('" +
+        bgImg.src +
+        "');background-repeat:no-repeat;" +
+        "pointer-events:none;display:none;transform:translate(-50%,-50%);" +
+        "box-shadow:inset 0 0 0 1px rgba(255,255,255,0.18),0 8px 32px rgba(0,0,0,0.4);" +
+        "will-change:left,top,background-position,background-size;" +
+        "filter:" +
+        swirlFilter;
+      wrap.appendChild(lens);
+
+      // Canvas for decorative overlay only
       var ctx = canvas.getContext("2d");
       var dpr = window.devicePixelRatio || 1;
-      var rect = wrap.getBoundingClientRect();
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      ctx.scale(dpr, dpr);
-      var W = rect.width,
-        H = rect.height;
-      var img = wrap.querySelector("img");
-      var radius = +wrap.dataset.distortionRadius || 100;
-      var strength = +wrap.dataset.distortionStrength || 0.3;
-      var mouseX = W / 2,
-        mouseY = H / 2;
+      canvas.width = W * dpr;
+      canvas.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      canvas.style.pointerEvents = "none";
+
+      var mx = -9999,
+        my = -9999,
+        tmx = W / 2,
+        tmy = H / 2;
+      var active = false;
+      var tick = 0;
+
       wrap.addEventListener("mousemove", function (e) {
         var r = wrap.getBoundingClientRect();
-        mouseX = e.clientX - r.left;
-        mouseY = e.clientY - r.top;
-      });
-      var rafId = 0;
-      var imgReady = img.complete;
-      function animate() {
-        if (!wrap.isConnected) return;
-        ctx.clearRect(0, 0, W, H);
-        ctx.drawImage(img, 0, 0, W, H);
-        var imageData = ctx.getImageData(0, 0, W, H);
-        var data = imageData.data;
-        var copy = new Uint8ClampedArray(data);
-        for (var y = 0; y < H; y++) {
-          for (var x = 0; x < W; x++) {
-            var dx = x - mouseX;
-            var dy = y - mouseY;
-            var dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < radius) {
-              var force = (1 - dist / radius) * strength;
-              var angle = Math.atan2(dy, dx);
-              var sx = x - Math.cos(angle) * force * 20;
-              var sy = y - Math.sin(angle) * force * 20;
-              sx = Math.max(0, Math.min(W - 1, Math.round(sx)));
-              sy = Math.max(0, Math.min(H - 1, Math.round(sy)));
-              var idx = (y * W + x) * 4;
-              var sidx = (sy * W + sx) * 4;
-              data[idx] = copy[sidx];
-              data[idx + 1] = copy[sidx + 1];
-              data[idx + 2] = copy[sidx + 2];
-            }
-          }
+        tmx = e.clientX - r.left;
+        tmy = e.clientY - r.top;
+        if (!active) {
+          mx = tmx;
+          my = tmy;
         }
-        ctx.putImageData(imageData, 0, 0);
-        rafId = requestAnimationFrame(animate);
+        active = true;
+        lens.style.display = "block";
+      });
+      wrap.addEventListener("mouseleave", function () {
+        active = false;
+        lens.style.display = "none";
+        ctx.clearRect(0, 0, W, H);
+      });
+
+      var rafId = 0;
+      function render() {
+        if (!canvas.isConnected) return;
+        tick++;
+
+        // Smooth follow
+        mx += (tmx - mx) * 0.2;
+        my += (tmy - my) * 0.2;
+
+        // Background crop position
+        var lz =
+          distType === "ripple"
+            ? 1 + Math.sin(tick * 0.055) * strength * 0.45
+            : zoom;
+        var bpx = lensR - mx * lz;
+        var bpy = lensR - my * lz;
+        lens.style.backgroundSize =
+          Math.round(W * lz) + "px " + Math.round(H * lz) + "px";
+        lens.style.backgroundPosition =
+          Math.round(bpx) + "px " + Math.round(bpy) + "px";
+        lens.style.left = Math.round(mx) + "px";
+        lens.style.top = Math.round(my) + "px";
+
+        // Canvas ring effects
+        if (active) {
+          ctx.clearRect(0, 0, W, H);
+
+          // Outer ambient glow
+          if (overlayOn) {
+            var gOut = ctx.createRadialGradient(
+              mx,
+              my,
+              lensR * 0.7,
+              mx,
+              my,
+              lensR + 22,
+            );
+            gOut.addColorStop(0, "rgba(255,255,255,0)");
+            gOut.addColorStop(0.65, "rgba(255,255,255,0.055)");
+            gOut.addColorStop(1, "rgba(255,255,255,0)");
+            ctx.beginPath();
+            ctx.arc(mx, my, lensR + 22, 0, Math.PI * 2);
+            ctx.fillStyle = gOut;
+            ctx.fill();
+          }
+
+          // Chromatic aberration rings
+          if (chromatic) {
+            ctx.beginPath();
+            ctx.arc(mx - 2, my - 1, lensR + 1, 0, Math.PI * 2);
+            ctx.strokeStyle = "rgba(255,55,55,0.5)";
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(mx + 2, my + 1, lensR + 1, 0, Math.PI * 2);
+            ctx.strokeStyle = "rgba(55,80,255,0.5)";
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+          }
+
+          // Main lens border
+          ctx.beginPath();
+          ctx.arc(mx, my, lensR, 0, Math.PI * 2);
+          ctx.strokeStyle = "rgba(255,255,255,0.3)";
+          ctx.lineWidth = 1;
+          ctx.stroke();
+
+          // Inner specular arc (top-left)
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(
+            mx - lensR * 0.18,
+            my - lensR * 0.18,
+            lensR * 0.82,
+            Math.PI * 1.1,
+            Math.PI * 1.68,
+          );
+          ctx.strokeStyle = "rgba(255,255,255,0.22)";
+          ctx.lineWidth = 2.5;
+          ctx.stroke();
+          ctx.restore();
+
+          // Centre crosshair
+          ctx.beginPath();
+          ctx.arc(mx, my, 2.5, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(255,255,255,0.6)";
+          ctx.fill();
+        }
+
+        rafId = requestAnimationFrame(render);
       }
-      function tryStartDistortion() {
-        if (imgReady && !rafId) rafId = requestAnimationFrame(animate);
-      }
+
+      var onResize = function () {
+        W = wrap.offsetWidth;
+        H = wrap.offsetHeight;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      };
+      window.addEventListener("resize", onResize);
+
       new IntersectionObserver(
         function (e) {
           if (e[0].isIntersecting) {
-            tryStartDistortion();
+            if (!rafId) rafId = requestAnimationFrame(render);
           } else {
             cancelAnimationFrame(rafId);
             rafId = 0;
@@ -18330,11 +20285,6 @@ window._VeltroInitDistortion = function () {
         },
         { threshold: 0.01 },
       ).observe(wrap);
-      if (!imgReady)
-        img.onload = function () {
-          imgReady = true;
-          tryStartDistortion();
-        };
     });
 };
 
@@ -19043,18 +20993,86 @@ window._VeltroInitMorphingText = function () {
     .querySelectorAll(".fw-widget-morphingText:not([data-morph-init])")
     .forEach(function (el) {
       el.setAttribute("data-morph-init", "1");
-      var words = JSON.parse(el.dataset.words || '["Hello","World","Veltro"]');
+      var wrap = el.querySelector(".veltro-morph-wrap");
+      if (!wrap) return;
+      var spans = wrap.querySelectorAll(".veltro-morph-word");
+      if (!spans.length) return;
+
+      var ds = wrap.dataset;
+      var morphSpeed = +(ds.morphSpeed || 2000);
+      var fadeSpeed = +(ds.fadeSpeed || 500);
+      var direction = ds.morphDirection || "forward";
+      var highlight = ds.highlight === "1";
+      var highlightColor = ds.highlightColor || "#cdfe00";
+      var dualColour = ds.dualColour === "1";
+      var dualColour2 = ds.dualColour2 || "#3b82f6";
+      var baseColor = wrap.querySelector(".veltro-morph-content")
+        ? window.getComputedStyle(wrap.querySelector(".veltro-morph-content"))
+            .color
+        : "";
+
       var index = 0;
-      var text = el.querySelector(".veltro-morph-text");
-      if (!text) return;
-      setInterval(function () {
-        index = (index + 1) % words.length;
-        text.style.opacity = "0";
+
+      function showWord(i) {
+        spans.forEach(function (s, si) {
+          if (si === i) {
+            s.style.opacity = "1";
+            if (highlight || dualColour) {
+              s.style.color = dualColour
+                ? i % 2 === 0
+                  ? baseColor
+                  : dualColour2
+                : highlightColor;
+            }
+          } else {
+            s.style.opacity = "0";
+          }
+        });
+      }
+
+      function nextIndex() {
+        if (direction === "backward") {
+          return (index - 1 + spans.length) % spans.length;
+        }
+        if (direction === "random") {
+          var n;
+          do {
+            n = Math.floor(Math.random() * spans.length);
+          } while (n === index && spans.length > 1);
+          return n;
+        }
+        return (index + 1) % spans.length;
+      }
+
+      showWord(0);
+
+      var timer = null;
+
+      function tick() {
+        spans[index].style.opacity = "0";
         setTimeout(function () {
-          text.textContent = words[index];
-          text.style.opacity = "1";
-        }, 300);
-      }, 2500);
+          index = nextIndex();
+          showWord(index);
+        }, fadeSpeed);
+      }
+
+      function start() {
+        if (timer) return;
+        timer = setInterval(tick, morphSpeed);
+      }
+
+      function stop() {
+        clearInterval(timer);
+        timer = null;
+      }
+
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) start();
+          else stop();
+        },
+        { threshold: 0.01 },
+      ).observe(el);
     });
 };
 
@@ -19273,14 +21291,15 @@ window._VeltroInitFluidSimulation = function () {
       if (!canvas) return;
       var ctx = canvas.getContext("2d");
       var dpr = window.devicePixelRatio || 1;
+      var W, H;
       function resize() {
-        canvas.width = el.offsetWidth * dpr;
-        canvas.height = el.offsetHeight * dpr;
+        W = el.offsetWidth;
+        H = el.offsetHeight;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       }
       resize();
-      var W = el.offsetWidth;
-      var H = el.offsetHeight;
 
       var wrap = el.querySelector(".veltro-fluid-wrap") || el;
       var ds = wrap.dataset;
@@ -19293,25 +21312,63 @@ window._VeltroInitFluidSimulation = function () {
       var fluidPressure = +(ds.fluidPressure || 0.5);
       var fluidTurbulence = +(ds.fluidTurbulence || 0.3);
       var colorBlend = ds.colorBlend || "gradient";
+      var fluidOpacity = +(ds.fluidOpacity || 80) / 100;
+      var fluidGlow = ds.fluidGlow !== "false";
       var mouseForce = +(ds.mouseForce || 5);
+      var particleStyle = ds.particleStyle || "soft";
+      var flowField = ds.flowField !== "false";
+      var connectionLines = ds.connectionLines === "true";
+      var glowSize = +(ds.glowSize || 12);
+
+      function hexToRgb(h) {
+        h = h.replace("#", "");
+        return {
+          r: parseInt(h.substring(0, 2), 16),
+          g: parseInt(h.substring(2, 4), 16),
+          b: parseInt(h.substring(4, 6), 16),
+        };
+      }
+      var c1 = hexToRgb(color1);
+      var c2 = hexToRgb(color2);
+      function lerpColor(a, b, t) {
+        t = Math.max(0, Math.min(1, t));
+        return (
+          "rgb(" +
+          Math.round(a.r + (b.r - a.r) * t) +
+          "," +
+          Math.round(a.g + (b.g - a.g) * t) +
+          "," +
+          Math.round(a.b + (b.b - a.b) * t) +
+          ")"
+        );
+      }
 
       var particles = [];
       for (var i = 0; i < particleCount; i++) {
+        var spawnY =
+          fluidMode === "fountain"
+            ? H * 0.9 + Math.random() * H * 0.1
+            : Math.random() * H;
         particles.push({
           x: Math.random() * W,
-          y: Math.random() * H,
+          y: spawnY,
           vx: (Math.random() - 0.5) * 2,
-          vy: (Math.random() - 0.5) * 2,
-          size: Math.random() * 3 + 1,
+          vy:
+            fluidMode === "fountain"
+              ? -(Math.random() * 3 + 1)
+              : (Math.random() - 0.5) * 2,
+          size: (Math.random() * 2 + 1) * (fluidDensity || 1),
           phase: Math.random() * Math.PI * 2,
-          baseColor: Math.random(),
+          baseColor: i / particleCount,
+          randColor: Math.random(),
+          life: Math.random(),
         });
       }
 
       var mouseX = W / 2,
         mouseY = H / 2,
-        prevMouseX = mouseX,
-        prevMouseY = mouseY;
+        prevMouseX = W / 2,
+        prevMouseY = H / 2;
       el.addEventListener("mousemove", function (e) {
         var rect = el.getBoundingClientRect();
         prevMouseX = mouseX;
@@ -19324,79 +21381,106 @@ window._VeltroInitFluidSimulation = function () {
         prevMouseY = mouseY;
       });
 
-      function hexToRgb(h) {
-        h = h.replace("#", "");
-        return {
-          r: parseInt(h.substring(0, 2), 16),
-          g: parseInt(h.substring(2, 4), 16),
-          b: parseInt(h.substring(4, 6), 16),
-        };
+      function flowNoise(x, y, t) {
+        var s = 0.003;
+        return (
+          Math.sin(x * s + t * 0.7) * Math.cos(y * s * 1.3 + t * 0.5) +
+          Math.sin(x * s * 2.1 - y * s * 0.9 + t * 1.1) * 0.5
+        );
       }
 
-      var c1 = hexToRgb(color1);
-      var c2 = hexToRgb(color2);
-
-      function lerpColor(a, b, t) {
-        var r = Math.round(a.r + (b.r - a.r) * t);
-        var g = Math.round(a.g + (b.g - a.g) * t);
-        var b2 = Math.round(a.b + (b.b - a.b) * t);
-        return "rgb(" + r + "," + g + "," + b2 + ")";
-      }
-
+      var tick = 0;
       var rafId = 0;
+      var decay = Math.max(0.92, 1 - viscosity * 0.08);
+
       function animate() {
         if (!canvas.isConnected) return;
-        W = el.offsetWidth;
-        H = el.offsetHeight;
+        tick += 0.016;
 
-        ctx.fillStyle =
-          "rgba(5,5,15," + Math.max(0.02, 1 - viscosity) * 0.15 + ")";
+        var trailAlpha = Math.max(0.02, (1 - viscosity) * 0.18);
+        ctx.fillStyle = "rgba(5,5,15," + trailAlpha + ")";
         ctx.fillRect(0, 0, W, H);
 
         var dmx = mouseX - prevMouseX;
         var dmy = mouseY - prevMouseY;
         var mouseSpeed = Math.sqrt(dmx * dmx + dmy * dmy);
 
-        particles.forEach(function (p) {
-          var dx = mouseX - p.x,
-            dy = mouseY - p.y;
-          var dist = Math.sqrt(dx * dx + dy * dy) + 1;
-
-          if (dist < 150) {
-            var f = (mouseForce * (1 - dist / 150)) / (viscosity + 0.1);
-            if (fluidMode === "burst") {
-              var angle = Math.atan2(dy, dx);
-              p.vx -= Math.cos(angle) * f * 0.5;
-              p.vy -= Math.sin(angle) * f * 0.5;
-            } else if (fluidMode === "swirl") {
-              p.vx += (-dy / dist) * f * 0.8;
-              p.vy += (dx / dist) * f * 0.8;
-            } else {
-              p.vx += (dx / dist) * f * 0.3 + dmx * 0.05;
-              p.vy += (dy / dist) * f * 0.3 + dmy * 0.05;
+        particles.forEach(function (p, pi) {
+          // Mode-based autonomous forces
+          if (fluidMode === "vortex") {
+            var cx = W / 2,
+              cy = H / 2;
+            var vdx = p.x - cx,
+              vdy = p.y - cy;
+            var vd = Math.sqrt(vdx * vdx + vdy * vdy) + 1;
+            var vf = 0.4 * fluidDensity;
+            p.vx += (-vdy / vd) * vf;
+            p.vy += (vdx / vd) * vf;
+            p.vx -= (vdx / vd) * 0.02;
+            p.vy -= (vdy / vd) * 0.02;
+          } else if (fluidMode === "wave") {
+            p.phase += 0.04;
+            p.vy +=
+              Math.sin(p.x * 0.015 + tick * 2 + p.phase) * 0.15 * fluidDensity;
+            p.vx += Math.cos(p.y * 0.01 + tick * 1.5) * 0.05;
+          } else if (fluidMode === "fountain") {
+            p.vy -= 0.08 * fluidDensity;
+            p.vx += (Math.random() - 0.5) * 0.1;
+            if (p.y < -10) {
+              p.x = W * 0.3 + Math.random() * W * 0.4;
+              p.y = H * 0.95;
+              p.vx = (Math.random() - 0.5) * 2;
+              p.vy = -(Math.random() * 3 + 2);
+            }
+          } else if (fluidMode === "flow") {
+            if (flowField) {
+              var angle = flowNoise(p.x, p.y, tick) * Math.PI * 2;
+              p.vx += Math.cos(angle) * 0.08 * fluidDensity;
+              p.vy += Math.sin(angle) * 0.08 * fluidDensity;
             }
           }
 
-          if (mouseSpeed > 10) {
-            p.vx += (Math.random() - 0.5) * mouseSpeed * 0.02;
-            p.vy += (Math.random() - 0.5) * mouseSpeed * 0.02;
+          // Mouse interaction
+          var dx = mouseX - p.x,
+            dy = mouseY - p.y;
+          var dist = Math.sqrt(dx * dx + dy * dy) + 1;
+          if (dist < 160) {
+            var f = (mouseForce * (1 - dist / 160)) / (viscosity + 0.1);
+            if (fluidMode === "burst") {
+              var ba = Math.atan2(dy, dx);
+              p.vx -= Math.cos(ba) * f * 0.6;
+              p.vy -= Math.sin(ba) * f * 0.6;
+            } else if (fluidMode === "swirl") {
+              p.vx += (-dy / dist) * f * 0.9;
+              p.vy += (dx / dist) * f * 0.9;
+            } else if (fluidMode === "vortex") {
+              p.vx += (dx / dist) * f * 0.2 + dmx * 0.04;
+              p.vy += (dy / dist) * f * 0.2 + dmy * 0.04;
+            } else {
+              p.vx += (dx / dist) * f * 0.25 + dmx * 0.06;
+              p.vy += (dy / dist) * f * 0.25 + dmy * 0.06;
+            }
           }
 
-          p.vx += (Math.random() - 0.5) * fluidTurbulence * 0.3;
-          p.vy += (Math.random() - 0.5) * fluidTurbulence * 0.3;
+          // Turbulence
+          p.vx += (Math.random() - 0.5) * fluidTurbulence * 0.25;
+          p.vy += (Math.random() - 0.5) * fluidTurbulence * 0.25;
 
-          p.vx *= 0.97;
-          p.vy *= 0.97;
+          // Damping
+          p.vx *= decay;
+          p.vy *= decay;
 
+          // Pressure — sample a stride of particles, not just first 5
           if (fluidPressure > 0) {
-            for (var n = 0; n < particles.length && n < 5; n++) {
+            var stride = Math.max(1, Math.floor(particleCount / 12));
+            for (var n = 0; n < particleCount; n += stride) {
               var q = particles[n];
               if (q === p) continue;
               var pdx = p.x - q.x,
                 pdy = p.y - q.y;
               var pd = Math.sqrt(pdx * pdx + pdy * pdy) + 1;
-              if (pd < 30) {
-                var push = fluidPressure * (1 - pd / 30) * 0.02;
+              if (pd < 28) {
+                var push = fluidPressure * (1 - pd / 28) * 0.025;
                 p.vx += (pdx / pd) * push;
                 p.vy += (pdy / pd) * push;
               }
@@ -19405,35 +21489,104 @@ window._VeltroInitFluidSimulation = function () {
 
           p.x += p.vx;
           p.y += p.vy;
-          if (p.x < 0) p.x = W;
-          if (p.x > W) p.x = 0;
-          if (p.y < 0) p.y = H;
-          if (p.y > H) p.y = 0;
 
+          if (fluidMode !== "fountain") {
+            if (p.x < 0) p.x = W;
+            if (p.x > W) p.x = 0;
+            if (p.y < 0) p.y = H;
+            if (p.y > H) p.y = 0;
+          } else {
+            if (p.x < 0 || p.x > W) p.vx *= -0.5;
+          }
+
+          // Color blending
           var blend;
           if (colorBlend === "random") {
-            blend = p.baseColor;
-          } else if (colorBlend === "split") {
-            blend = i < particleCount / 2 ? 0 : 1;
+            blend = p.randColor;
+          } else if (colorBlend === "alternating") {
+            blend = pi % 2 === 0 ? 0 : 1;
+          } else if (colorBlend === "solid") {
+            blend = 0;
+          } else if (colorBlend === "velocity") {
+            var spd = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+            blend = Math.min(1, spd / 8);
+          } else if (colorBlend === "position") {
+            blend = p.x / W;
           } else {
-            blend = Math.atan2(p.vy, p.vx) / Math.PI + 0.5;
+            // gradient — index-based
+            blend = p.baseColor;
           }
           var col = lerpColor(c1, c2, blend);
 
+          // Draw particle
           if (fluidGlow) {
-            ctx.shadowBlur = 8;
+            ctx.shadowBlur = glowSize;
             ctx.shadowColor = col;
           }
           ctx.globalAlpha = fluidOpacity;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fillStyle = col;
-          ctx.fill();
+
+          if (particleStyle === "ring") {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size + 1, 0, Math.PI * 2);
+            ctx.strokeStyle = col;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          } else if (particleStyle === "soft") {
+            var grad = ctx.createRadialGradient(
+              p.x,
+              p.y,
+              0,
+              p.x,
+              p.y,
+              p.size * 2.5,
+            );
+            grad.addColorStop(0, col);
+            grad.addColorStop(1, "rgba(0,0,0,0)");
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size * 2.5, 0, Math.PI * 2);
+            ctx.fillStyle = grad;
+            ctx.fill();
+          } else {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fillStyle = col;
+            ctx.fill();
+          }
+
           ctx.globalAlpha = 1;
           ctx.shadowBlur = 0;
         });
+
+        // Connection lines
+        if (connectionLines) {
+          var lineThresh = 60;
+          ctx.globalAlpha = fluidOpacity * 0.3;
+          for (var a = 0; a < particles.length; a += 2) {
+            for (var b2 = a + 1; b2 < particles.length; b2 += 2) {
+              var ldx = particles[a].x - particles[b2].x;
+              var ldy = particles[a].y - particles[b2].y;
+              var ld = Math.sqrt(ldx * ldx + ldy * ldy);
+              if (ld < lineThresh) {
+                ctx.beginPath();
+                ctx.moveTo(particles[a].x, particles[a].y);
+                ctx.lineTo(particles[b2].x, particles[b2].y);
+                ctx.strokeStyle = lerpColor(c1, c2, particles[a].baseColor);
+                ctx.lineWidth = (1 - ld / lineThresh) * 1.5;
+                ctx.stroke();
+              }
+            }
+          }
+          ctx.globalAlpha = 1;
+        }
+
         rafId = requestAnimationFrame(animate);
       }
+
+      function onResize() {
+        resize();
+      }
+      window.addEventListener("resize", onResize);
+
       new IntersectionObserver(
         function (e) {
           if (e[0].isIntersecting) {
@@ -19445,7 +21598,11 @@ window._VeltroInitFluidSimulation = function () {
         },
         { threshold: 0.01 },
       ).observe(el);
-      window.addEventListener("resize", resize);
+
+      el.addEventListener("disconnected", function () {
+        cancelAnimationFrame(rafId);
+        window.removeEventListener("resize", onResize);
+      });
     });
 };
 
@@ -19980,36 +22137,303 @@ window._VeltroInitCollisionChaos = function () {
       var canvas = el.querySelector("canvas");
       if (!canvas) return;
       var ctx = canvas.getContext("2d");
-      var W = (canvas.width = el.offsetWidth);
-      var H = (canvas.height = el.offsetHeight);
+      var dpr = window.devicePixelRatio || 1;
+      var W, H;
+      function resize() {
+        W = el.offsetWidth;
+        H = el.offsetHeight;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      resize();
+
+      var wrap = el.querySelector(".veltro-chaos-wrap") || el;
+      var ds = wrap.dataset;
+      var spawnRate = +(ds.spawnRate || 1);
+      var gravityStr = +(ds.gravity || 1) * 0.18;
+      var restitution = +(ds.restitution || 0.7);
+      var ballShape = ds.ballShape || "circle";
+      var rawColors = (
+        ds.ballColors || "#ff6b35,#cdfe00,#3b82f6,#ec4899,#f59e0b"
+      ).split(",");
+      var ballMinSize = +(ds.ballMinSize || 10);
+      var ballMaxSize = +(ds.ballMaxSize || 30);
+      var maxBalls = +(ds.maxBalls || 50);
+      var ballGlow = ds.ballGlow !== "false";
+      var friction = +(ds.friction || 0.99);
+      var ballStyle = ds.ballStyle || "glass";
+      var trailLength = +(ds.trailLength !== undefined ? ds.trailLength : 40);
+      var spawnOnClick = ds.spawnOnClick !== "false";
+      var trailAlpha = Math.max(0.04, Math.min(0.95, 1 - trailLength / 110));
+
+      function hexToRgb(h) {
+        h = (h || "#ffffff").replace("#", "").trim();
+        if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+        return [
+          parseInt(h.slice(0, 2), 16),
+          parseInt(h.slice(2, 4), 16),
+          parseInt(h.slice(4, 6), 16),
+        ];
+      }
+
+      var shapes = ["circle", "square", "triangle", "diamond"];
       var balls = [];
-      for (var i = 0; i < 15; i++) {
+      var spawnAccum = 0;
+
+      function pickShape() {
+        return ballShape === "mixed"
+          ? shapes[Math.floor(Math.random() * shapes.length)]
+          : ballShape;
+      }
+
+      function spawnBall(x, y, burst) {
+        if (balls.length >= maxBalls) return;
+        var r = ballMinSize + Math.random() * (ballMaxSize - ballMinSize);
+        var col =
+          rawColors[Math.floor(Math.random() * rawColors.length)].trim();
         balls.push({
-          x: Math.random() * W,
-          y: Math.random() * H,
-          vx: (Math.random() - 0.5) * 6,
-          vy: (Math.random() - 0.5) * 6,
-          r: Math.random() * 15 + 10,
-          color: "hsl(" + Math.random() * 360 + ",70%,60%)",
+          x: x !== undefined ? x : r + Math.random() * (W - r * 2),
+          y: y !== undefined ? y : -r - Math.random() * 40,
+          vx: burst
+            ? Math.cos(Math.random() * Math.PI * 2) * (3 + Math.random() * 5)
+            : (Math.random() - 0.5) * 3,
+          vy: burst
+            ? Math.sin(Math.random() * Math.PI * 2) * (3 + Math.random() * 5)
+            : Math.random() * 2 + 0.5,
+          r: r,
+          color: col,
+          rgb: hexToRgb(col),
+          shape: pickShape(),
+          rot: Math.random() * Math.PI * 2,
+          rotV: (Math.random() - 0.5) * 0.08,
+          born: 0,
+          scale: burst ? 0 : 1,
         });
       }
-      var rafId = 0;
-      function animate() {
-        if (!el.isConnected) return;
-        ctx.fillStyle = "rgba(10,10,20,0.25)";
-        ctx.fillRect(0, 0, W, H);
-        balls.forEach(function (b) {
-          b.x += b.vx;
-          b.y += b.vy;
-          if (b.x - b.r < 0 || b.x + b.r > W) b.vx *= -1;
-          if (b.y - b.r < 0 || b.y + b.r > H) b.vy *= -1;
+
+      for (var i = 0; i < Math.min(20, maxBalls); i++) {
+        var initR = ballMinSize + Math.random() * (ballMaxSize - ballMinSize);
+        var col0 =
+          rawColors[Math.floor(Math.random() * rawColors.length)].trim();
+        balls.push({
+          x: initR + Math.random() * (W - initR * 2),
+          y: initR + Math.random() * (H - initR * 2),
+          vx: (Math.random() - 0.5) * 5,
+          vy: (Math.random() - 0.5) * 5,
+          r: initR,
+          color: col0,
+          rgb: hexToRgb(col0),
+          shape: pickShape(),
+          rot: Math.random() * Math.PI * 2,
+          rotV: (Math.random() - 0.5) * 0.06,
+          born: 0,
+          scale: 1,
+        });
+      }
+
+      if (spawnOnClick) {
+        el.addEventListener("click", function (e) {
+          var rect = el.getBoundingClientRect();
+          var cx = e.clientX - rect.left,
+            cy = e.clientY - rect.top;
+          var burst = Math.min(6, maxBalls - balls.length);
+          for (var k = 0; k < burst; k++) spawnBall(cx, cy, true);
+        });
+      }
+
+      function drawBall(b) {
+        ctx.save();
+        ctx.translate(b.x, b.y);
+        if (b.shape !== "circle") ctx.rotate(b.rot);
+        if (b.scale !== 1) ctx.scale(b.scale, b.scale);
+
+        var r = b.r;
+        ctx.beginPath();
+        if (b.shape === "square") {
+          ctx.rect(-r, -r, r * 2, r * 2);
+        } else if (b.shape === "triangle") {
+          ctx.moveTo(0, -r);
+          ctx.lineTo(r * 0.866, r * 0.5);
+          ctx.lineTo(-r * 0.866, r * 0.5);
+          ctx.closePath();
+        } else if (b.shape === "diamond") {
+          ctx.moveTo(0, -r * 1.1);
+          ctx.lineTo(r * 0.75, 0);
+          ctx.lineTo(0, r * 1.1);
+          ctx.lineTo(-r * 0.75, 0);
+          ctx.closePath();
+        } else {
+          ctx.arc(0, 0, r, 0, Math.PI * 2);
+        }
+
+        if (ballStyle === "glass") {
+          var grad = ctx.createRadialGradient(
+            -r * 0.3,
+            -r * 0.35,
+            r * 0.05,
+            0,
+            0,
+            r * 1.05,
+          );
+          grad.addColorStop(0, "rgba(255,255,255,0.6)");
+          grad.addColorStop(0.3, b.color);
+          grad.addColorStop(
+            1,
+            "rgba(" + b.rgb[0] + "," + b.rgb[1] + "," + b.rgb[2] + ",0.35)",
+          );
+          if (ballGlow) {
+            ctx.shadowBlur = r * 1.4;
+            ctx.shadowColor = b.color;
+          }
+          ctx.fillStyle = grad;
+          ctx.fill();
+          // rim light
+          ctx.strokeStyle = "rgba(255,255,255,0.2)";
+          ctx.lineWidth = 1;
+          ctx.stroke();
+          // specular blob
           ctx.beginPath();
-          ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+          ctx.ellipse(
+            -r * 0.22,
+            -r * 0.28,
+            r * 0.3,
+            r * 0.16,
+            -0.5,
+            0,
+            Math.PI * 2,
+          );
+          ctx.fillStyle = "rgba(255,255,255,0.28)";
+          ctx.shadowBlur = 0;
+          ctx.fill();
+        } else if (ballStyle === "neon") {
+          ctx.shadowBlur = r * 2.5;
+          ctx.shadowColor = b.color;
+          ctx.fillStyle =
+            "rgba(" + b.rgb[0] + "," + b.rgb[1] + "," + b.rgb[2] + ",0.15)";
+          ctx.fill();
+          ctx.strokeStyle = b.color;
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          // inner ring
+          ctx.beginPath();
+          if (b.shape === "circle") ctx.arc(0, 0, r * 0.55, 0, Math.PI * 2);
+          ctx.strokeStyle = "rgba(255,255,255,0.5)";
+          ctx.lineWidth = 1;
+          ctx.shadowBlur = r;
+          ctx.stroke();
+        } else {
+          // solid
+          if (ballGlow) {
+            ctx.shadowBlur = r * 0.8;
+            ctx.shadowColor = b.color;
+          }
           ctx.fillStyle = b.color;
           ctx.fill();
-        });
+        }
+
+        ctx.restore();
+      }
+
+      var tick = 0;
+      var rafId = 0;
+
+      function animate() {
+        if (!canvas.isConnected) return;
+        tick++;
+
+        ctx.fillStyle = "rgba(5,5,20," + trailAlpha + ")";
+        ctx.fillRect(0, 0, W, H);
+
+        // Auto-spawn
+        spawnAccum += spawnRate * 0.016;
+        while (spawnAccum >= 1 && balls.length < maxBalls) {
+          spawnBall();
+          spawnAccum -= 1;
+        }
+
+        // Physics update
+        for (var i = 0; i < balls.length; i++) {
+          var b = balls[i];
+          b.born++;
+          if (b.scale < 1) b.scale = Math.min(1, b.scale + 0.08);
+
+          b.vy += gravityStr;
+          b.vx *= friction;
+          b.vy *= friction;
+          b.x += b.vx;
+          b.y += b.vy;
+          b.rot += b.rotV;
+
+          // Wall bounce
+          if (b.x - b.r < 0) {
+            b.x = b.r;
+            b.vx = Math.abs(b.vx) * restitution;
+            b.rotV *= -0.5;
+          }
+          if (b.x + b.r > W) {
+            b.x = W - b.r;
+            b.vx = -Math.abs(b.vx) * restitution;
+            b.rotV *= -0.5;
+          }
+          if (b.y + b.r > H) {
+            b.y = H - b.r;
+            b.vy = -Math.abs(b.vy) * restitution;
+            b.vx *= 0.97;
+          }
+          if (b.y - b.r < 0) {
+            b.y = b.r;
+            b.vy = Math.abs(b.vy) * restitution;
+          }
+        }
+
+        // Ball-to-ball collisions
+        for (var a = 0; a < balls.length; a++) {
+          for (var bb = a + 1; bb < balls.length; bb++) {
+            var ba = balls[a],
+              bbb = balls[bb];
+            var dx = bbb.x - ba.x,
+              dy = bbb.y - ba.y;
+            var dist = Math.sqrt(dx * dx + dy * dy);
+            var minD = ba.r + bbb.r;
+            if (dist < minD && dist > 0.001) {
+              var nx = dx / dist,
+                ny = dy / dist;
+              var overlap = (minD - dist) * 0.52;
+              ba.x -= nx * overlap;
+              ba.y -= ny * overlap;
+              bbb.x += nx * overlap;
+              bbb.y += ny * overlap;
+              var dvx = bbb.vx - ba.vx,
+                dvy = bbb.vy - ba.vy;
+              var dot = dvx * nx + dvy * ny;
+              if (dot < 0) {
+                var j = dot * restitution;
+                ba.vx += j * nx;
+                ba.vy += j * ny;
+                bbb.vx -= j * nx;
+                bbb.vy -= j * ny;
+                // Spin exchange on impact
+                ba.rotV += j * 0.03;
+                bbb.rotV -= j * 0.03;
+              }
+            }
+          }
+        }
+
+        // Draw — clear shadow before each frame of drawing
+        ctx.shadowBlur = 0;
+        for (var d = 0; d < balls.length; d++) drawBall(balls[d]);
+        ctx.shadowBlur = 0;
+
         rafId = requestAnimationFrame(animate);
       }
+
+      var onResize = function () {
+        resize();
+      };
+      window.addEventListener("resize", onResize);
+
       new IntersectionObserver(
         function (e) {
           if (e[0].isIntersecting) {
@@ -20032,51 +22456,348 @@ window._VeltroInitBlackHole = function () {
       var canvas = el.querySelector("canvas");
       if (!canvas) return;
       var ctx = canvas.getContext("2d");
-      var W = (canvas.width = el.offsetWidth);
-      var H = (canvas.height = el.offsetHeight);
+      var dpr = window.devicePixelRatio || 1;
+      var W, H;
+      function resize() {
+        W = el.offsetWidth;
+        H = el.offsetHeight;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      resize();
+
+      var wrap = el.querySelector(".veltro-blackhole-wrap") || el;
+      var ds = wrap.dataset;
+      var particleCount = +(ds.particleCount || 150);
+      var pullStrength = +(ds.pullStrength || 0.5);
+      var accretionColor = ds.accretionColor || "#ff6b35";
+      var bhSize = +(ds.blackHoleSize || 30);
+      var eventHorizon = +(ds.eventHorizon || 50);
+      var particleSize = +(ds.particleSize || 2);
+      var particleTrail = ds.particleTrail !== "false";
+      var accretionDisk = ds.accretionDisk !== "false";
+      var diskOpacity = +(ds.diskOpacity || 60) / 100;
+      var particleGlow = ds.particleGlow !== "false";
+      var jetEnabled = ds.jetEnabled === "true";
+      var jetColor = ds.jetColor || "#7c3aed";
+
+      function hexToRgb(h) {
+        h = (h || "#ffffff").replace("#", "");
+        return [
+          parseInt(h.slice(0, 2), 16),
+          parseInt(h.slice(2, 4), 16),
+          parseInt(h.slice(4, 6), 16),
+        ];
+      }
+      var acRgb = hexToRgb(accretionColor);
+      var jRgb = hexToRgb(jetColor);
+
+      // Particles in polar coords around centre
       var particles = [];
-      for (var i = 0; i < 200; i++) {
-        var angle = Math.random() * Math.PI * 2;
-        var dist = 50 + Math.random() * 150;
+      for (var i = 0; i < particleCount; i++) {
+        var minR = eventHorizon * 1.1;
+        var maxR0 = Math.min(W, H) * 0.45;
+        var r0 = minR + Math.pow(Math.random(), 0.6) * (maxR0 - minR);
         particles.push({
-          angle: angle,
-          dist: dist,
-          speed: 0.01 + Math.random() * 0.02,
-          size: Math.random() * 2 + 0.5,
+          angle: Math.random() * Math.PI * 2,
+          r: r0,
+          speed: pullStrength * 0.014 * Math.pow(minR / r0, 0.75),
+          spiralRate: 0.004 + Math.random() * 0.006,
+          size: particleSize * (0.4 + Math.random() * 0.9),
+          opacity: 0.45 + Math.random() * 0.55,
+          dir: Math.random() > 0.15 ? 1 : -1,
         });
       }
-      var t = 0;
+
+      // Jet stream particles (lazy-created)
+      var jetPts = [];
+      if (jetEnabled) {
+        for (var j = 0; j < 70; j++) {
+          var jdir = j % 2 === 0 ? 1 : -1;
+          jetPts.push({
+            x: (Math.random() - 0.5) * bhSize * 0.35,
+            y: jdir * (bhSize + Math.random() * Math.min(H, W) * 0.4),
+            spd: (1.8 + Math.random() * 2.5) * jdir,
+            sz: 0.8 + Math.random() * 1.8,
+            op: Math.random(),
+          });
+        }
+      }
+
+      // Background star field (drawn once)
+      var stars = [];
+      for (var s = 0; s < 120; s++) {
+        stars.push({
+          x: Math.random(),
+          y: Math.random(),
+          sz: Math.random() * 1.2 + 0.3,
+          op: Math.random() * 0.5 + 0.1,
+        });
+      }
+
+      var tick = 0;
       var rafId = 0;
-      function animate() {
-        if (!el.isConnected) return;
-        t += 0.016;
-        ctx.fillStyle = "rgba(5,5,15,0.15)";
-        ctx.fillRect(0, 0, W, H);
-        var cx = W / 2,
-          cy = H / 2;
-        particles.forEach(function (p) {
-          p.angle += p.speed;
-          p.dist = Math.max(30, p.dist - 0.2);
-          if (p.dist <= 30) p.dist = 50 + Math.random() * 150;
-          var x = cx + Math.cos(p.angle) * p.dist;
-          var y = cy + Math.sin(p.angle) * p.dist * 0.5;
+
+      function drawStars(cx, cy) {
+        stars.forEach(function (st) {
+          var sx = st.x * W;
+          var sy = st.y * H;
+          // Lensing: stars near BH get distorted outward
+          var ddx = sx - cx,
+            ddy = sy - cy;
+          var dd = Math.sqrt(ddx * ddx + ddy * ddy) + 1;
+          var lens = Math.max(0, 1 - (bhSize * 2.5) / dd);
+          ctx.globalAlpha = st.op * lens;
           ctx.beginPath();
-          ctx.arc(x, y, p.size, 0, Math.PI * 2);
-          ctx.fillStyle =
-            "hsla(" + ((p.angle * 50 + t * 30) % 360) + ",80%,60%,0.7)";
+          ctx.arc(sx, sy, st.sz, 0, Math.PI * 2);
+          ctx.fillStyle = "#fff";
           ctx.fill();
         });
+        ctx.globalAlpha = 1;
+      }
+
+      function drawAccretionDisk(cx, cy) {
+        if (!accretionDisk) return;
+        var maxR = Math.min(W, H) * 0.42;
+        var minR = eventHorizon * 1.05;
+        var bands = 48;
+
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.scale(1, 0.3); // perspective flatten
+
+        for (var b = bands - 1; b >= 0; b--) {
+          var t = b / (bands - 1);
+          var ro = minR + (maxR - minR) * (1 - t * 0.88);
+          var ri = ro - ((maxR - minR) / bands) * 1.4;
+          if (ri < minR * 0.9) ri = minR * 0.9;
+
+          var r2, g2, b2;
+          if (t < 0.25) {
+            // Innermost — blue-white hot
+            var tt = t / 0.25;
+            r2 = Math.round(255 * (1 - tt) + acRgb[0] * tt);
+            g2 = Math.round(240 * (1 - tt) + acRgb[1] * tt);
+            b2 = Math.round(230 * (1 - tt) + acRgb[2] * tt);
+          } else if (t < 0.65) {
+            // Mid — accretion color
+            r2 = acRgb[0];
+            g2 = acRgb[1];
+            b2 = acRgb[2];
+          } else {
+            // Outer — cool dim red
+            var tt2 = (t - 0.65) / 0.35;
+            r2 = Math.round(acRgb[0] * (1 - tt2) + 55 * tt2);
+            g2 = Math.round(acRgb[1] * (1 - tt2) + 12 * tt2);
+            b2 = Math.round(acRgb[2] * (1 - tt2) + 10 * tt2);
+          }
+
+          var alpha = diskOpacity * (0.25 + (1 - t) * 0.65);
+          var grad = ctx.createRadialGradient(0, 0, ri, 0, 0, ro);
+          grad.addColorStop(
+            0,
+            "rgba(" + r2 + "," + g2 + "," + b2 + "," + alpha * 1.4 + ")",
+          );
+          grad.addColorStop(1, "rgba(" + r2 + "," + g2 + "," + b2 + ",0)");
+
+          ctx.beginPath();
+          ctx.arc(0, 0, ro, 0, Math.PI * 2);
+          if (ri > 1) ctx.arc(0, 0, ri, 0, Math.PI * 2, true);
+          ctx.fillStyle = grad;
+          ctx.fill();
+        }
+
+        // Bright inner rim — nearside glow
+        ctx.shadowBlur = 18;
+        ctx.shadowColor =
+          "rgba(" + acRgb[0] + "," + acRgb[1] + "," + acRgb[2] + ",0.9)";
         ctx.beginPath();
-        ctx.arc(cx, cy, 25, 0, Math.PI * 2);
-        ctx.fillStyle = "#000";
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(cx, cy, 27, 0, Math.PI * 2);
-        ctx.strokeStyle = "#ff6b6b";
-        ctx.lineWidth = 2;
+        ctx.arc(0, 0, minR * 1.08, 0, Math.PI * 2);
+        ctx.strokeStyle =
+          "rgba(" +
+          acRgb[0] +
+          "," +
+          acRgb[1] +
+          "," +
+          acRgb[2] +
+          "," +
+          diskOpacity * 1.2 +
+          ")";
+        ctx.lineWidth = 2.5;
         ctx.stroke();
+        ctx.shadowBlur = 0;
+        ctx.restore();
+      }
+
+      function drawEventHorizon(cx, cy) {
+        // Lensing glow rings outside singularity
+        for (var ring = 5; ring >= 1; ring--) {
+          var rr = bhSize * (1 + ring * 0.22);
+          ctx.beginPath();
+          ctx.arc(cx, cy, rr, 0, Math.PI * 2);
+          ctx.strokeStyle = "rgba(255,210,150," + 0.04 / ring + ")";
+          ctx.lineWidth = ring * 4;
+          ctx.shadowBlur = ring * 10;
+          ctx.shadowColor = "rgba(255,170,80,0.25)";
+          ctx.stroke();
+        }
+        ctx.shadowBlur = 0;
+
+        // Photon ring — bright thin line
+        ctx.beginPath();
+        ctx.arc(cx, cy, bhSize * 1.07, 0, Math.PI * 2);
+        ctx.strokeStyle = "rgba(255,195,100,0.85)";
+        ctx.lineWidth = 1.5;
+        ctx.shadowBlur = 14;
+        ctx.shadowColor = "rgba(255,200,80,1)";
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        // Absolute black hole — radial gradient to hard edge
+        var sg = ctx.createRadialGradient(cx, cy, 0, cx, cy, bhSize * 1.02);
+        sg.addColorStop(0, "rgba(0,0,0,1)");
+        sg.addColorStop(0.85, "rgba(0,0,0,1)");
+        sg.addColorStop(1, "rgba(0,0,0,0.96)");
+        ctx.beginPath();
+        ctx.arc(cx, cy, bhSize * 1.02, 0, Math.PI * 2);
+        ctx.fillStyle = sg;
+        ctx.fill();
+      }
+
+      function drawJet(cx, cy) {
+        if (!jetEnabled) return;
+        var jLen = Math.min(H, W) * 0.44;
+
+        [-1, 1].forEach(function (dir) {
+          var g = ctx.createLinearGradient(cx, cy, cx, cy + dir * jLen);
+          g.addColorStop(
+            0,
+            "rgba(" + jRgb[0] + "," + jRgb[1] + "," + jRgb[2] + ",0.75)",
+          );
+          g.addColorStop(
+            0.35,
+            "rgba(" + jRgb[0] + "," + jRgb[1] + "," + jRgb[2] + ",0.25)",
+          );
+          g.addColorStop(
+            1,
+            "rgba(" + jRgb[0] + "," + jRgb[1] + "," + jRgb[2] + ",0)",
+          );
+          ctx.save();
+          ctx.shadowBlur = 22;
+          ctx.shadowColor = jetColor;
+          ctx.beginPath();
+          ctx.moveTo(cx - bhSize * 0.28, cy);
+          ctx.lineTo(cx + bhSize * 0.28, cy);
+          ctx.lineTo(cx + bhSize * 0.06, cy + dir * jLen);
+          ctx.lineTo(cx - bhSize * 0.06, cy + dir * jLen);
+          ctx.closePath();
+          ctx.fillStyle = g;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+          ctx.restore();
+        });
+
+        var jMax = Math.min(H, W) * 0.5;
+        jetPts.forEach(function (jp) {
+          jp.y += jp.spd;
+          if (Math.abs(jp.y) > jMax) {
+            jp.y = (jp.spd > 0 ? 1 : -1) * bhSize;
+            jp.x = (Math.random() - 0.5) * bhSize * 0.35;
+            jp.op = Math.random();
+          }
+          var fade = 1 - Math.abs(jp.y) / jMax;
+          ctx.beginPath();
+          ctx.arc(cx + jp.x, cy + jp.y, jp.sz, 0, Math.PI * 2);
+          ctx.fillStyle =
+            "rgba(" +
+            jRgb[0] +
+            "," +
+            jRgb[1] +
+            "," +
+            jRgb[2] +
+            "," +
+            jp.op * fade * 0.85 +
+            ")";
+          ctx.fill();
+        });
+      }
+
+      function animate() {
+        if (!canvas.isConnected) return;
+        tick += 0.016;
+
+        ctx.fillStyle = particleTrail
+          ? "rgba(2,2,10,0.13)"
+          : "rgba(2,2,10,0.96)";
+        ctx.fillRect(0, 0, W, H);
+
+        var cx = W / 2,
+          cy = H / 2;
+
+        drawStars(cx, cy);
+        drawAccretionDisk(cx, cy);
+
+        // Orbital particles
+        var minR = eventHorizon * 0.97;
+        var maxR = Math.min(W, H) * 0.45;
+        particles.forEach(function (p) {
+          p.angle += p.speed * p.dir;
+          p.r -= p.spiralRate * pullStrength;
+          if (p.r < minR) {
+            p.r = minR + Math.pow(Math.random(), 0.6) * (maxR - minR);
+            p.angle = Math.random() * Math.PI * 2;
+            p.speed =
+              pullStrength * 0.014 * Math.pow((eventHorizon * 1.1) / p.r, 0.75);
+          }
+
+          var px = cx + Math.cos(p.angle) * p.r;
+          var py = cy + Math.sin(p.angle) * p.r * 0.32;
+
+          // Nearside Doppler brightening
+          var doppler = 0.45 + Math.max(0, Math.sin(p.angle)) * 0.55;
+          // Radial temperature
+          var tRad = Math.max(
+            0,
+            Math.min(1, (p.r - eventHorizon) / (maxR - eventHorizon)),
+          );
+          var r3, g3, b3;
+          if (tRad < 0.3) {
+            var bl = tRad / 0.3;
+            r3 = Math.round(255 * (1 - bl) + acRgb[0] * bl);
+            g3 = Math.round(235 * (1 - bl) + acRgb[1] * bl);
+            b3 = Math.round(220 * (1 - bl) + acRgb[2] * bl);
+          } else {
+            var bl2 = Math.min(1, (tRad - 0.3) / 0.7);
+            r3 = Math.round(acRgb[0] * (1 - bl2) + 60 * bl2);
+            g3 = Math.round(acRgb[1] * (1 - bl2) + 15 * bl2);
+            b3 = Math.round(acRgb[2] * (1 - bl2) + 12 * bl2);
+          }
+
+          var alpha = p.opacity * doppler * (0.35 + (1 - tRad) * 0.65);
+          if (particleGlow) {
+            ctx.shadowBlur = p.size * 3.5;
+            ctx.shadowColor = "rgb(" + r3 + "," + g3 + "," + b3 + ")";
+          }
+          ctx.beginPath();
+          ctx.arc(px, py, p.size * (1 + (1 - tRad) * 0.4), 0, Math.PI * 2);
+          ctx.fillStyle =
+            "rgba(" + r3 + "," + g3 + "," + b3 + "," + alpha + ")";
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        });
+
+        drawJet(cx, cy);
+        drawEventHorizon(cx, cy);
+
         rafId = requestAnimationFrame(animate);
       }
+
+      var onResize = function () {
+        resize();
+      };
+      window.addEventListener("resize", onResize);
+
       new IntersectionObserver(
         function (e) {
           if (e[0].isIntersecting) {
@@ -20840,35 +23561,227 @@ window._VeltroInitGeometricPatterns = function () {
     .querySelectorAll(".fw-widget-geometricPatterns:not([data-gp-init])")
     .forEach(function (el) {
       el.setAttribute("data-gp-init", "1");
-      var canvas = el.querySelector("canvas");
+      var wrap = el.querySelector(".veltro-geopat-wrap");
+      if (!wrap) return;
+      var canvas = wrap.querySelector("canvas");
       if (!canvas) return;
       var ctx = canvas.getContext("2d");
-      var W = (canvas.width = el.offsetWidth);
-      var H = (canvas.height = el.offsetHeight);
+      canvas.width = el.offsetWidth || 800;
+      canvas.height = el.offsetHeight || 500;
       var t = 0;
       var rafId = 0;
+
+      function getProps() {
+        var colors = (wrap.dataset.colors || "#cdfe00,#3b82f6,#ec4899")
+          .split(",")
+          .map(function (c) {
+            return c.trim();
+          });
+        return {
+          patternType: wrap.dataset.patternType || "hexagons",
+          colors: colors.length ? colors : ["#cdfe00"],
+          speed: +(wrap.dataset.speed || 0.5),
+          cellSize: +(wrap.dataset.cellSize || 40),
+          strokeWidth: +(wrap.dataset.strokeWidth || 1.5),
+          lineOpacity: +(wrap.dataset.lineOpacity || 0.4),
+          filled: wrap.dataset.filled === "true",
+          colorMode: wrap.dataset.colorMode || "cycle",
+        };
+      }
+
+      function hexToRgba(hex, a) {
+        if (!hex || hex[0] !== "#") return "rgba(205,254,0," + a + ")";
+        var r = parseInt(hex.slice(1, 3), 16) || 0;
+        var g = parseInt(hex.slice(3, 5), 16) || 0;
+        var b = parseInt(hex.slice(5, 7), 16) || 0;
+        return "rgba(" + r + "," + g + "," + b + "," + a + ")";
+      }
+
+      function getColor(props, idx, dist) {
+        if (props.colorMode === "gradient") {
+          return (
+            "hsl(" +
+            ((((dist * 0.4 + t * 40 * props.speed) % 360) + 360) % 360) +
+            ",70%,65%)"
+          );
+        }
+        if (props.colorMode === "solid") return props.colors[0];
+        return props.colors[idx % props.colors.length];
+      }
+
+      function drawHex(pr, cx, cy, r, col, dist, idx) {
+        ctx.beginPath();
+        for (var i = 0; i < 6; i++) {
+          var a = (Math.PI / 3) * i + t * 0.15 * pr.speed + dist * 0.002;
+          var px = cx + r * Math.cos(a);
+          var py = cy + r * Math.sin(a);
+          i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        applyStyle(pr, idx, dist);
+      }
+
+      function applyStyle(pr, idx, dist) {
+        var c = getColor(pr, idx, dist);
+        ctx.lineWidth = pr.strokeWidth;
+        if (pr.filled) {
+          ctx.fillStyle = hexToRgba(
+            typeof c === "string" && c[0] === "#" ? c : null,
+            pr.lineOpacity * 0.35,
+          );
+          if (typeof c === "string" && c.startsWith("hsl")) {
+            ctx.fillStyle = c
+              .replace("hsl(", "hsla(")
+              .replace(")", "," + pr.lineOpacity * 0.35 + ")");
+          }
+          ctx.fill();
+        }
+        ctx.strokeStyle =
+          typeof c === "string" && c.startsWith("hsl")
+            ? c
+                .replace("hsl(", "hsla(")
+                .replace(")", "," + pr.lineOpacity + ")")
+            : hexToRgba(c, pr.lineOpacity);
+        ctx.stroke();
+      }
+
       function animate() {
-        if (!el.isConnected) return;
-        t += 0.01;
+        if (!el.isConnected) {
+          rafId = 0;
+          return;
+        }
+        var W = canvas.width;
+        var H = canvas.height;
+        var pr = getProps();
+        t += 0.008 * pr.speed;
         ctx.clearRect(0, 0, W, H);
-        var size = 40;
-        for (var x = 0; x < W; x += size) {
-          for (var y = 0; y < H; y += size) {
-            var dist = Math.sqrt(
-              (x - W / 2) * (x - W / 2) + (y - H / 2) * (y - H / 2),
-            );
-            var rotation = t + dist * 0.01;
-            ctx.save();
-            ctx.translate(x + size / 2, y + size / 2);
-            ctx.rotate(rotation);
-            ctx.strokeStyle =
-              "hsla(" + ((dist * 0.5 + t * 50) % 360) + ",60%,60%,0.3)";
-            ctx.strokeRect(-size / 3, -size / 3, size / 1.5, size / 1.5);
-            ctx.restore();
+        var cell = pr.cellSize;
+        var type = pr.patternType;
+        var idx = 0;
+
+        if (type === "hexagons") {
+          var r = cell * 0.58;
+          var hexW = r * 1.74;
+          var hexH = r * 2;
+          var cols = Math.ceil(W / hexW) + 3;
+          var rows = Math.ceil(H / hexH) + 3;
+          for (var row = -1; row < rows; row++) {
+            for (var col = -1; col < cols; col++) {
+              var cx = col * hexW + (row % 2 === 0 ? 0 : hexW / 2);
+              var cy = row * hexH * 0.87;
+              var dist = Math.sqrt(
+                (cx - W / 2) * (cx - W / 2) + (cy - H / 2) * (cy - H / 2),
+              );
+              ctx.save();
+              drawHex(pr, cx, cy, r * 0.92, col, dist, idx++);
+              ctx.restore();
+            }
+          }
+        } else if (type === "triangles") {
+          var th = cell * 0.866;
+          var cols2 = Math.ceil(W / cell) + 3;
+          var rows2 = Math.ceil(H / th) + 3;
+          for (var row2 = -1; row2 < rows2; row2++) {
+            for (var col2 = -1; col2 < cols2 * 2; col2++) {
+              var x0 = col2 * cell * 0.5;
+              var y0 = row2 * th;
+              var up = (col2 + row2) % 2 === 0;
+              var dist2 = Math.sqrt(
+                (x0 - W / 2) * (x0 - W / 2) + (y0 - H / 2) * (y0 - H / 2),
+              );
+              var pulse = Math.sin(t * 3 + dist2 * 0.012) * 0.08;
+              ctx.save();
+              ctx.beginPath();
+              if (up) {
+                ctx.moveTo(x0, y0 + th);
+                ctx.lineTo(x0 + cell * 0.5, y0);
+                ctx.lineTo(x0 + cell, y0 + th);
+              } else {
+                ctx.moveTo(x0, y0);
+                ctx.lineTo(x0 + cell * 0.5, y0 + th);
+                ctx.lineTo(x0 + cell, y0);
+              }
+              ctx.closePath();
+              var savedOp = pr.lineOpacity;
+              pr.lineOpacity = Math.max(0.05, pr.lineOpacity + pulse);
+              applyStyle(pr, idx++, dist2);
+              pr.lineOpacity = savedOp;
+              ctx.restore();
+            }
+          }
+        } else if (type === "circles") {
+          var cols3 = Math.ceil(W / cell) + 3;
+          var rows3 = Math.ceil(H / cell) + 3;
+          for (var row3 = -1; row3 < rows3; row3++) {
+            for (var col3 = -1; col3 < cols3; col3++) {
+              var cx3 = col3 * cell + cell * 0.5;
+              var cy3 = row3 * cell + cell * 0.5;
+              var dist3 = Math.sqrt(
+                (cx3 - W / 2) * (cx3 - W / 2) + (cy3 - H / 2) * (cy3 - H / 2),
+              );
+              var scale3 = 0.82 + Math.sin(t * 2.5 + dist3 * 0.018) * 0.18;
+              ctx.save();
+              ctx.beginPath();
+              ctx.arc(cx3, cy3, cell * 0.42 * scale3, 0, Math.PI * 2);
+              applyStyle(pr, idx++, dist3);
+              ctx.restore();
+            }
+          }
+        } else if (type === "squares") {
+          var cols4 = Math.ceil(W / cell) + 3;
+          var rows4 = Math.ceil(H / cell) + 3;
+          for (var row4 = -1; row4 < rows4; row4++) {
+            for (var col4 = -1; col4 < cols4; col4++) {
+              var cx4 = col4 * cell + cell * 0.5;
+              var cy4 = row4 * cell + cell * 0.5;
+              var dist4 = Math.sqrt(
+                (cx4 - W / 2) * (cx4 - W / 2) + (cy4 - H / 2) * (cy4 - H / 2),
+              );
+              var rot4 = t * 0.4 * pr.speed + dist4 * 0.003;
+              var s4 = cell * 0.42;
+              ctx.save();
+              ctx.translate(cx4, cy4);
+              ctx.rotate(rot4);
+              ctx.beginPath();
+              ctx.rect(-s4, -s4, s4 * 2, s4 * 2);
+              applyStyle(pr, idx++, dist4);
+              ctx.restore();
+            }
+          }
+        } else if (type === "stars") {
+          var cols5 = Math.ceil(W / cell) + 3;
+          var rows5 = Math.ceil(H / cell) + 3;
+          for (var row5 = -1; row5 < rows5; row5++) {
+            for (var col5 = -1; col5 < cols5; col5++) {
+              var cx5 = col5 * cell + cell * 0.5;
+              var cy5 = row5 * cell + cell * 0.5;
+              var dist5 = Math.sqrt(
+                (cx5 - W / 2) * (cx5 - W / 2) + (cy5 - H / 2) * (cy5 - H / 2),
+              );
+              var rot5 = t * 0.25 * pr.speed + dist5 * 0.002;
+              var ro = cell * 0.44;
+              var ri = ro * 0.42;
+              ctx.save();
+              ctx.translate(cx5, cy5);
+              ctx.rotate(rot5);
+              ctx.beginPath();
+              for (var si = 0; si < 10; si++) {
+                var ra = si % 2 === 0 ? ro : ri;
+                var sa = (Math.PI / 5) * si - Math.PI / 2;
+                si === 0
+                  ? ctx.moveTo(ra * Math.cos(sa), ra * Math.sin(sa))
+                  : ctx.lineTo(ra * Math.cos(sa), ra * Math.sin(sa));
+              }
+              ctx.closePath();
+              applyStyle(pr, idx++, dist5);
+              ctx.restore();
+            }
           }
         }
+
         rafId = requestAnimationFrame(animate);
       }
+
       new IntersectionObserver(
         function (e) {
           if (e[0].isIntersecting) {

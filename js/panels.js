@@ -67,10 +67,27 @@ FB.panels.buildLibrary = function () {
     Media: "#f59e0b",
     "Social Proof": "#ec4899",
     Conversion: "#ef4444",
+    Interactive: "#3b82f6",
+    Motion: "#8b5cf6",
   };
 
   var sections = {
-    Structure: ["nav", "megaNav", "slideNav", "fullscreenMenu", "footer"],
+    Structure: [
+      "nav",
+      "megaNav",
+      "slideNav",
+      "fullscreenMenu",
+      "footer",
+      "carousel3d",
+      "isometricGrid",
+      "perspectiveRooms",
+      "floatingIslands",
+      "layeredParallax",
+      "kineticLayout",
+      "morphingGrid",
+      "spatialNavigation",
+      "infiniteCanvas",
+    ],
     Content: [
       "hero",
       "orbsHero",
@@ -96,8 +113,43 @@ FB.panels.buildLibrary = function () {
       "cornerSection",
       "iridescentBtn",
       "particleButton",
+      "kineticText",
+      "textScramble",
+      "typewriterReveal",
+      "textMask",
+      "morphingCounter",
+      "liquidText",
+      "waveText",
+      "rotatingText3d",
+      "morphingText",
+      "kineticScramble",
+      "tiltCard3d",
+      "glitchSection",
+      "audioVisualizer",
+      "depthOfField",
+      "holographicCard",
+      "soundReactive",
+      "mirrorReflection",
+      "constellationLines",
+      "holographicOverlay",
+      "lightLeaks",
     ],
-    Media: ["clientCarousel", "liteVideo", "circularList", "horizontalScroll"],
+    Media: [
+      "clientCarousel",
+      "liteVideo",
+      "circularList",
+      "horizontalScroll",
+      "morphBlob",
+      "noiseGrain",
+      "gradientFlow",
+      "sectionBackground",
+      "glassmorphismStack",
+      "auroraBorealis",
+      "particleNebula",
+      "geometricPatterns",
+      "liquidGradient",
+      "shaderBg",
+    ],
     "Social Proof": [
       "testimonial",
       "trustPill",
@@ -105,6 +157,7 @@ FB.panels.buildLibrary = function () {
       "faq",
       "timeline",
       "counterSection",
+      "socialLinks",
     ],
     Conversion: [
       "cta",
@@ -112,6 +165,42 @@ FB.panels.buildLibrary = function () {
       "cookieConsent",
       "dayNightSwitcher",
       "scrollIndicator",
+      "whatsappWidget",
+    ],
+    Interactive: [
+      "physicsSandbox",
+      "imagePhysics",
+      "bubblePop",
+      "gravityWells",
+      "fluidSimulation",
+      "clothSimulation",
+      "magneticFields",
+      "pendulumWave",
+      "collisionChaos",
+      "blackHole",
+      "magneticCursor",
+      "particleTrail",
+      "cursorRipple",
+      "multiShapeTrail",
+      "cursorSpotlight",
+      "magneticText",
+      "cursorDistortion",
+      "colorSampler",
+      "gravityCursor",
+      "cursorLens",
+    ],
+    Motion: [
+      "stickyScrollStack",
+      "scrollVelocitySkew",
+      "parallaxImageStack",
+      "mosaicAssemble",
+      "scrollProgressRing",
+      "magneticScroll",
+      "parallaxDepth",
+      "scrollTriggered",
+      "horizontalScrollGallery",
+      "velocitySkew",
+      "scrollFluid",
     ],
   };
 
@@ -127,7 +216,7 @@ FB.panels.buildLibrary = function () {
     lib.appendChild(secEl);
 
     sections[sectionName].forEach(function (type) {
-      var def = FB.blocks.BLOCK_DEFS[type];
+      var def = FB.blocks.BLOCK_DEFS[type] || FB.widgets._registry[type];
       if (!def) return;
       var el = document.createElement("div");
       el.className = "block-item";
@@ -335,75 +424,6 @@ FB.panels.buildLibrary = function () {
           FB.canvas.insertBlock(type);
         });
         elib.appendChild(itemEl);
-      });
-    });
-  }
-
-  // Veltro Engine widgets — orange
-  var vlib = document.getElementById("veltro-library");
-  if (vlib) {
-    vlib.innerHTML = "";
-    var veltroColor = "#f97316";
-    var veltroWidgets = FB.widgets.byCategory("veltro");
-    var catOrder = [
-      "typography",
-      "physics",
-      "cursor",
-      "scroll",
-      "backgrounds",
-      "effects",
-      "spatial",
-    ];
-    var catLabels = {
-      typography: "Typography",
-      physics: "Physics",
-      cursor: "Cursor & Interaction",
-      scroll: "Scroll & Motion",
-      backgrounds: "Backgrounds & Textures",
-      effects: "Effects & Visual",
-      spatial: "Spatial & Layout",
-    };
-    var grouped = {};
-    Object.keys(veltroWidgets).forEach(function (type) {
-      var def = veltroWidgets[type];
-      var cat = def.subCategory || "Other";
-      if (!grouped[cat]) grouped[cat] = [];
-      grouped[cat].push({ type: type, def: def });
-    });
-    catOrder.forEach(function (cat) {
-      if (!grouped[cat] || !grouped[cat].length) return;
-      var header = document.createElement("div");
-      header.className = "veltro-cat-header";
-      header.textContent = catLabels[cat] || cat;
-      header.style.cssText =
-        "padding:8px 14px 4px;font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.5px;border-top:1px solid #222;margin-top:4px";
-      vlib.appendChild(header);
-      grouped[cat].forEach(function (item) {
-        var type = item.type;
-        var def = item.def;
-        var el = document.createElement("div");
-        el.className = "block-item";
-        el.draggable = true;
-        el.style.cssText = "padding:6px 14px";
-        el.innerHTML =
-          FB.panels._icon(def.icon || "\u26A1", veltroColor, 28, 22, 12) +
-          '<div><div class="block-label" style="font-size:11px">' +
-          def.label +
-          "</div>" +
-          (def.sublabel
-            ? '<div class="block-sublabel" style="font-size:9px;color:#666">' +
-              def.sublabel +
-              "</div>"
-            : "") +
-          "</div>";
-        el.addEventListener("dragstart", function (e) {
-          FB.canvas._dragLibType = type;
-          FB.canvas._dragSrcId = null;
-        });
-        el.addEventListener("click", function () {
-          FB.canvas.insertBlock(type);
-        });
-        vlib.appendChild(el);
       });
     });
   }
@@ -1257,17 +1277,473 @@ FB.panels.renderRightPanel = function () {
   }
   if (block.type === "clientCarousel") {
     contentHtml +=
-      '<div class="rp-row"><label>Label</label><input type="text" value="' +
-      p.label +
+      '<div class="rp-row"><label>Mode</label><select onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','mode',this.value)\"><option value=\"marquee\"" +
+      ((p.mode || "marquee") === "marquee" ? " selected" : "") +
+      '>Marquee</option><option value="grid"' +
+      ((p.mode || "marquee") === "grid" ? " selected" : "") +
+      ">Grid</option></select></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Style</label><select onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','style',this.value)\"><option value=\"pill\"" +
+      ((p.style || "pill") === "pill" ? " selected" : "") +
+      '>Pill</option><option value="minimal"' +
+      ((p.style || "pill") === "minimal" ? " selected" : "") +
+      '>Minimal</option><option value="card"' +
+      ((p.style || "pill") === "card" ? " selected" : "") +
+      '>Card</option><option value="neon"' +
+      ((p.style || "pill") === "neon" ? " selected" : "") +
+      '>Neon</option><option value="tag"' +
+      ((p.style || "pill") === "tag" ? " selected" : "") +
+      '>Tag</option><option value="outline"' +
+      ((p.style || "pill") === "outline" ? " selected" : "") +
+      ">Outline</option></select></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Label Text</label><input type="text" value="' +
+      (p.label || "Trusted by leading brands") +
       '" onchange="FB.panels.updateProp(\'' +
       block.id +
       "','label',this.value)\"></div>";
     contentHtml +=
-      '<div class="rp-row"><label>Speed (s)</label><input type="number" value="' +
-      p.speed +
+      '<div class="rp-row"><label>Show Label</label><select onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','showLabel',this.value==='true')\"><option value=\"true\"" +
+      (p.showLabel !== false ? " selected" : "") +
+      '>Yes</option><option value="false"' +
+      (p.showLabel === false ? " selected" : "") +
+      ">No</option></select></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Two Rows</label><select onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','twoRows',this.value==='true')\"><option value=\"false\"" +
+      (!p.twoRows ? " selected" : "") +
+      '>No</option><option value="true"' +
+      (p.twoRows ? " selected" : "") +
+      ">Yes</option></select></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Speed (s)</label><input type="number" min="5" max="120" value="' +
+      (p.speed || 30) +
       '" onchange="FB.panels.updateProp(\'' +
       block.id +
       "','speed',+this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Gap (px)</label><input type="number" min="8" max="120" value="' +
+      (p.gap || 24) +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','gap',+this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Font Size (px)</label><input type="number" min="10" max="32" value="' +
+      (p.fontSize || 14) +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','fontSize',+this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Separator</label><input type="text" value="' +
+      (p.separator || "✦") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','separator',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Padding V (px)</label><input type="number" min="0" max="120" value="' +
+      (p.paddingV || 48) +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','paddingV',+this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Accent Color</label><input type="color" value="' +
+      (p.accentColor || "#CDFE00") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','accentColor',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row" style="flex-direction:column;align-items:flex-start"><label>Clients (one per line)</label><textarea rows="6" style="width:100%;font-size:11px;font-family:monospace" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','clients',this.value.split('\\n').map(function(s){return s.trim()}).filter(Boolean))\">" +
+      (p.clients || []).join("\n") +
+      "</textarea></div>";
+  }
+  if (block.type === "circularList") {
+    contentHtml +=
+      '<div class="rp-row"><label>Mode</label><select onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','mode',this.value)\"><option value=\"ring\"" +
+      ((p.mode || "ring") === "ring" ? " selected" : "") +
+      '>Ring</option><option value="arc"' +
+      ((p.mode || "ring") === "arc" ? " selected" : "") +
+      ">Arc</option></select></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Item Style</label><select onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','itemStyle',this.value)\"><option value=\"pill\"" +
+      ((p.itemStyle || "pill") === "pill" ? " selected" : "") +
+      '>Pill</option><option value="minimal"' +
+      ((p.itemStyle || "pill") === "minimal" ? " selected" : "") +
+      '>Minimal</option><option value="card"' +
+      ((p.itemStyle || "pill") === "card" ? " selected" : "") +
+      '>Card</option><option value="number"' +
+      ((p.itemStyle || "pill") === "number" ? " selected" : "") +
+      '>Number</option><option value="dot"' +
+      ((p.itemStyle || "pill") === "dot" ? " selected" : "") +
+      '>Dot</option><option value="tag"' +
+      ((p.itemStyle || "pill") === "tag" ? " selected" : "") +
+      ">Tag</option></select></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Label</label><input type="text" value="' +
+      (p.label || "") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','label',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Center Text</label><input type="text" value="' +
+      (p.centerText || "") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','centerText',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Center Subtext</label><input type="text" value="' +
+      (p.centerSubtext || "") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','centerSubtext',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Ring Size (px)</label><input type="number" min="160" max="600" value="' +
+      (p.ringSize || 320) +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','ringSize',+this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Font Size (px)</label><input type="number" min="9" max="24" value="' +
+      (p.fontSize || 12) +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','fontSize',+this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Show Numbers</label><select onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','showNumbers',this.value==='true')\"><option value=\"true\"" +
+      (p.showNumbers !== false ? " selected" : "") +
+      '>Yes</option><option value="false"' +
+      (p.showNumbers === false ? " selected" : "") +
+      ">No</option></select></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Show Connectors</label><select onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','showConnectors',this.value==='true')\"><option value=\"true\"" +
+      (p.showConnectors !== false ? " selected" : "") +
+      '>Yes</option><option value="false"' +
+      (p.showConnectors === false ? " selected" : "") +
+      ">No</option></select></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Ring Border</label><select onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','ringBorder',this.value==='true')\"><option value=\"true\"" +
+      (p.ringBorder !== false ? " selected" : "") +
+      '>Yes</option><option value="false"' +
+      (p.ringBorder === false ? " selected" : "") +
+      ">No</option></select></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Multi-Color</label><select onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','multiColor',this.value==='true')\"><option value=\"false\"" +
+      (!p.multiColor ? " selected" : "") +
+      '>No</option><option value="true"' +
+      (p.multiColor ? " selected" : "") +
+      ">Yes</option></select></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Glow Items</label><select onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','glowItems',this.value==='true')\"><option value=\"false\"" +
+      (!p.glowItems ? " selected" : "") +
+      '>No</option><option value="true"' +
+      (p.glowItems ? " selected" : "") +
+      ">Yes</option></select></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Auto-Rotate</label><select onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','autoRotate',this.value==='true')\"><option value=\"false\"" +
+      (!p.autoRotate ? " selected" : "") +
+      '>No</option><option value="true"' +
+      (p.autoRotate ? " selected" : "") +
+      ">Yes</option></select></div>";
+    if (p.autoRotate) {
+      contentHtml +=
+        '<div class="rp-row"><label>Rotate Speed (s)</label><input type="number" min="5" max="120" value="' +
+        (p.rotateSpeed || 25) +
+        '" onchange="FB.panels.updateProp(\'' +
+        block.id +
+        "','rotateSpeed',+this.value)\"></div>";
+    }
+    contentHtml +=
+      '<div class="rp-row"><label>Padding V (px)</label><input type="number" min="0" max="160" value="' +
+      (p.paddingV || 80) +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','paddingV',+this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row" style="flex-direction:column;align-items:flex-start"><label>Items (one per line)</label><textarea rows="6" style="width:100%;font-size:11px;font-family:monospace" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','items',this.value.split('\\n').map(function(s){return s.trim()}).filter(Boolean))\">" +
+      (p.items || []).join("\n") +
+      "</textarea></div>";
+  }
+  if (block.type === "horizontalScroll") {
+    contentHtml +=
+      '<div class="rp-row"><label>Mode</label><select onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','mode',this.value)\">" +
+      '<option value="cards"' +
+      ((p.mode || "cards") === "cards" ? " selected" : "") +
+      ">Cards</option>" +
+      '<option value="featured"' +
+      ((p.mode || "cards") === "featured" ? " selected" : "") +
+      ">Featured</option>" +
+      '<option value="timeline"' +
+      ((p.mode || "cards") === "timeline" ? " selected" : "") +
+      ">Timeline</option>" +
+      '<option value="showcase"' +
+      ((p.mode || "cards") === "showcase" ? " selected" : "") +
+      ">Showcase</option>" +
+      "</select></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Card Style</label><select onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','cardStyle',this.value)\">" +
+      '<option value="gradient"' +
+      ((p.cardStyle || "gradient") === "gradient" ? " selected" : "") +
+      ">Gradient</option>" +
+      '<option value="glass"' +
+      ((p.cardStyle || "gradient") === "glass" ? " selected" : "") +
+      ">Glass</option>" +
+      '<option value="outlined"' +
+      ((p.cardStyle || "gradient") === "outlined" ? " selected" : "") +
+      ">Outlined</option>" +
+      '<option value="dark"' +
+      ((p.cardStyle || "gradient") === "dark" ? " selected" : "") +
+      ">Dark</option>" +
+      "</select></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Label</label><input type="text" value="' +
+      (p.label || "") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','label',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Headline</label><input type="text" value="' +
+      (p.headline || "") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','headline',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Subtext</label><input type="text" value="' +
+      (p.subtext || "") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','subtext',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Card Width (px)</label><input type="number" min="200" max="600" value="' +
+      (p.cardWidth || 320) +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','cardWidth',+this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Gap (px)</label><input type="number" min="8" max="64" value="' +
+      (p.gap || 24) +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','gap',+this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Padding V (px)</label><input type="number" min="0" max="160" value="' +
+      (p.paddingV || 80) +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','paddingV',+this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Show Numbers</label><select onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','showNumbers',this.value==='true')\">" +
+      '<option value="true"' +
+      (p.showNumbers !== false ? " selected" : "") +
+      ">Yes</option>" +
+      '<option value="false"' +
+      (p.showNumbers === false ? " selected" : "") +
+      ">No</option>" +
+      "</select></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Show Progress Bar</label><select onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','showProgress',this.value==='true')\">" +
+      '<option value="true"' +
+      (p.showProgress !== false ? " selected" : "") +
+      ">Yes</option>" +
+      '<option value="false"' +
+      (p.showProgress === false ? " selected" : "") +
+      ">No</option>" +
+      "</select></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Show Arrows</label><select onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','showArrows',this.value==='true')\">" +
+      '<option value="true"' +
+      (p.showArrows !== false ? " selected" : "") +
+      ">Yes</option>" +
+      '<option value="false"' +
+      (p.showArrows === false ? " selected" : "") +
+      ">No</option>" +
+      "</select></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Show Subtitles</label><select onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','showSubtitle',this.value==='true')\">" +
+      '<option value="true"' +
+      (p.showSubtitle !== false ? " selected" : "") +
+      ">Yes</option>" +
+      '<option value="false"' +
+      (p.showSubtitle === false ? " selected" : "") +
+      ">No</option>" +
+      "</select></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Show Tags</label><select onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','showTags',this.value==='true')\">" +
+      '<option value="true"' +
+      (p.showTags !== false ? " selected" : "") +
+      ">Yes</option>" +
+      '<option value="false"' +
+      (p.showTags === false ? " selected" : "") +
+      ">No</option>" +
+      "</select></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Accent Colour</label><input type="color" value="' +
+      (p.accentColor || "#CDFE00") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','accentColor',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#111111") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','bg',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Text Colour</label><input type="color" value="' +
+      (p.textColor || "#f7f6f2") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','textColor',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row" style="flex-direction:column;align-items:flex-start"><label style="margin-bottom:6px">Cards (JSON array)</label>' +
+      '<textarea rows="8" style="width:100%;font-size:10px;font-family:monospace;line-height:1.4" onchange="try{FB.panels.updateProp(\'' +
+      block.id +
+      "','cards',JSON.parse(this.value))}catch(e){}\">" +
+      JSON.stringify(p.cards || [], null, 2) +
+      "</textarea></div>";
+  }
+  if (block.type === "socialLinks") {
+    contentHtml +=
+      '<div class="rp-row"><label>Style</label><select onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','style',this.value)\">" +
+      ["cards", "minimal", "neon", "strip", "icons"]
+        .map(function (v) {
+          return (
+            '<option value="' +
+            v +
+            '"' +
+            ((p.style || "cards") === v ? " selected" : "") +
+            ">" +
+            v.charAt(0).toUpperCase() +
+            v.slice(1) +
+            "</option>"
+          );
+        })
+        .join("") +
+      "</select></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Label</label><input type="text" value="' +
+      (p.label || "") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','label',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Headline</label><input type="text" value="' +
+      (p.headline || "") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','headline',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Columns</label><input type="number" min="1" max="6" value="' +
+      (p.columns || 3) +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','columns',+this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Gap (px)</label><input type="number" min="4" max="48" value="' +
+      (p.gap || 16) +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','gap',+this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Padding V (px)</label><input type="number" min="0" max="160" value="' +
+      (p.paddingV || 80) +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','paddingV',+this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Show Handles</label><select onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','showHandles',this.value==='true')\">" +
+      '<option value="true"' +
+      (p.showHandles !== false ? " selected" : "") +
+      '>Yes</option><option value="false"' +
+      (p.showHandles === false ? " selected" : "") +
+      ">No</option></select></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Show Followers</label><select onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','showFollowers',this.value==='true')\">" +
+      '<option value="true"' +
+      (p.showFollowers !== false ? " selected" : "") +
+      '>Yes</option><option value="false"' +
+      (p.showFollowers === false ? " selected" : "") +
+      ">No</option></select></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Platform Colours</label><select onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','usePlatformColors',this.value==='true')\">" +
+      '<option value="true"' +
+      (p.usePlatformColors !== false ? " selected" : "") +
+      '>Yes</option><option value="false"' +
+      (p.usePlatformColors === false ? " selected" : "") +
+      ">No</option></select></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Accent Colour</label><input type="color" value="' +
+      (p.accentColor || "#ec4899") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','accentColor',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0a0a0f") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','bg',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Text Colour</label><input type="color" value="' +
+      (p.textColor || "#f7f6f2") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','textColor',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row" style="flex-direction:column;align-items:flex-start"><label style="margin-bottom:6px">Networks (JSON)</label>' +
+      '<textarea rows="10" style="width:100%;font-size:10px;font-family:monospace;line-height:1.4" onchange="try{FB.panels.updateProp(\'' +
+      block.id +
+      "','networks',JSON.parse(this.value))}catch(e){}\">" +
+      JSON.stringify(p.networks || [], null, 2) +
+      "</textarea>" +
+      '<p style="font-size:10px;opacity:0.45;margin:4px 0 0">Platforms: instagram twitter tiktok youtube linkedin facebook pinterest snapchat threads github discord behance dribbble whatsapp</p></div>';
   }
   if (block.type === "trustPill") {
     contentHtml +=
@@ -1336,6 +1812,94 @@ FB.panels.renderRightPanel = function () {
       '" onchange="FB.panels.updateProp(\'' +
       block.id +
       "','welcomeText',this.value)\"></div>";
+  }
+  if (block.type === "whatsappWidget") {
+    contentHtml +=
+      '<div class="rp-row"><label>Style</label><select onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','style',this.value)\">" +
+      '<option value="card"' +
+      ((p.style || "card") === "card" ? " selected" : "") +
+      ">Card</option>" +
+      '<option value="banner"' +
+      ((p.style || "card") === "banner" ? " selected" : "") +
+      ">Banner</option>" +
+      "</select></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Phone Number</label><input type="text" placeholder="+447700000000" value="' +
+      (p.phone || "") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','phone',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Pre-filled Message</label><input type="text" value="' +
+      (p.message || "") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','message',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Title / Name</label><input type="text" value="' +
+      (p.label || "Chat with us") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','label',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Subtext</label><input type="text" value="' +
+      (p.subtext || "") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','subtext',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Button Text</label><input type="text" value="' +
+      (p.buttonText || "Start a conversation") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','buttonText',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Status Text</label><input type="text" value="' +
+      (p.statusText || "Online now") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','statusText',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Show Status</label><select onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','showStatus',this.value==='true')\">" +
+      '<option value="true"' +
+      (p.showStatus !== false ? " selected" : "") +
+      '>Yes</option><option value="false"' +
+      (p.showStatus === false ? " selected" : "") +
+      ">No</option></select></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Padding V (px)</label><input type="number" min="0" max="160" value="' +
+      (p.paddingV || 64) +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','paddingV',+this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Button / Accent</label><input type="color" value="' +
+      (p.accentColor || "#25D366") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','accentColor',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Avatar Background</label><input type="color" value="' +
+      (p.avatarBg || "#128C7E") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','avatarBg',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0a0a0a") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','bg',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Text Colour</label><input type="color" value="' +
+      (p.textColor || "#f7f6f2") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','textColor',this.value)\"></div>";
   }
   if (block.type === "cookieConsent") {
     contentHtml +=

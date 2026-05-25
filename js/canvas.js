@@ -983,34 +983,117 @@ FB.canvas.renderBlockHTML = function (block) {
         "</div></div>"
       );
 
-    case "clientCarousel":
-      var logoItems = (p.logos || [])
-        .map(function (l) {
+    case "clientCarousel": {
+      var ccStyle = p.style || "pill";
+      var ccMode = p.mode || "marquee";
+      var ccTwoRows = !!p.twoRows;
+      var ccSpeed = p.speed || 30;
+      var ccGap = p.gap || 24;
+      var ccFontSize = p.fontSize || 14;
+      var ccShowLabel = p.showLabel !== false;
+      var ccAccent = p.accentColor || "#CDFE00";
+      var ccSep = p.separator || "✦";
+      var ccPaddingV = p.paddingV || 48;
+      var ccBg = p.bg || "#111111";
+      var ccText = p.textColor || "#f7f6f2";
+      var ccClients =
+        p.clients && p.clients.length
+          ? p.clients
+          : [
+              "Acme Corp",
+              "TechCo",
+              "DesignLab",
+              "StartupXYZ",
+              "BrandHQ",
+              "MediaPlus",
+            ];
+
+      // Build individual items
+      var ccItems;
+      if (p.logos && p.logos.length) {
+        ccItems = p.logos.map(function (l) {
           return (
-            '<img class="fw-carousel-logo" src="' +
+            '<span class="fw-cc-item"><img src="' +
             l.src +
             '" alt="' +
             l.alt +
-            '" loading="lazy">'
+            '" loading="lazy" style="height:28px;filter:grayscale(1);opacity:0.55;transition:all 0.3s"></span>'
           );
-        })
-        .join("");
-      return (
-        '<div class="fw-client-carousel" style="background:' +
-        p.bg +
-        ";color:" +
-        p.textColor +
-        '">' +
-        "<h3>" +
-        p.label +
-        "</h3>" +
-        '<div class="fw-carousel-track" style="animation-duration:' +
-        p.speed +
+        });
+      } else {
+        ccItems = ccClients.map(function (c) {
+          return '<span class="fw-cc-item">' + c + "</span>";
+        });
+      }
+
+      var ccSepHtml =
+        ccStyle === "minimal"
+          ? '<span class="fw-cc-sep" aria-hidden="true">' + ccSep + "</span>"
+          : "";
+      var ccItemsHtml = ccItems.join(ccSepHtml);
+      var ccContainerStyle = [
+        "background:" + ccBg,
+        "color:" + ccText,
+        "--cc-accent:" + ccAccent,
+        "--cc-gap:" + ccGap + "px",
+        "--cc-speed:" + ccSpeed + "s",
+        "--cc-bg:" + ccBg,
+        "font-size:" + ccFontSize + "px",
+        "padding:" + ccPaddingV + "px 0",
+      ].join(";");
+
+      var ccLabelHtml = ccShowLabel
+        ? '<p class="fw-cc-label">' + (p.label || "Trusted by") + "</p>"
+        : "";
+
+      if (ccMode === "grid") {
+        return (
+          '<div class="fw-client-carousel" data-style="' +
+          ccStyle +
+          '" data-mode="grid" style="' +
+          ccContainerStyle +
+          '">' +
+          ccLabelHtml +
+          '<div class="fw-cc-grid">' +
+          ccItemsHtml +
+          "</div></div>"
+        );
+      }
+
+      // Marquee — duplicate for seamless loop
+      var ccLoopHtml = ccItemsHtml + ccSepHtml + ccItemsHtml;
+      var ccRow1 =
+        '<div class="fw-cc-track" style="animation-duration:' +
+        ccSpeed +
         's">' +
-        logoItems +
-        logoItems +
+        ccLoopHtml +
+        "</div>";
+      var ccRow2 = "";
+      if (ccTwoRows) {
+        var ccRevItems = ccItems.slice().reverse();
+        var ccRevHtml =
+          ccRevItems.join(ccSepHtml) + ccSepHtml + ccRevItems.join(ccSepHtml);
+        ccRow2 =
+          '<div class="fw-cc-track fw-cc-track--rev" style="animation-duration:' +
+          ccSpeed * 1.2 +
+          's">' +
+          ccRevHtml +
+          "</div>";
+      }
+
+      return (
+        '<div class="fw-client-carousel" data-style="' +
+        ccStyle +
+        '" data-mode="marquee" style="' +
+        ccContainerStyle +
+        '">' +
+        ccLabelHtml +
+        '<div class="fw-cc-viewport">' +
+        ccRow1 +
+        ccRow2 +
         "</div></div>"
       );
+    }
 
     case "trustPill":
       return (
@@ -1397,41 +1480,177 @@ FB.canvas.renderBlockHTML = function (block) {
         "</ul></div></nav>"
       );
 
-    case "circularList":
-      var circItems = (p.items || [])
-        .map(function (item, i) {
-          var angle = (360 / (p.items || []).length) * i;
+    case "circularList": {
+      var clItems = p.items || [
+        "Design",
+        "Develop",
+        "Deploy",
+        "Grow",
+        "Optimise",
+        "Scale",
+      ];
+      var clN = clItems.length;
+      var clMode = p.mode || "ring";
+      var clStyle = p.itemStyle || "pill";
+      var clSize = +(p.ringSize || 320);
+      var clR = clSize / 2 - 54;
+      var clCx = clSize / 2;
+      var clCy = clSize / 2;
+      var clAccent = p.accentColor || "#CDFE00";
+      var clText = p.textColor || "#f7f6f2";
+      var clBg = p.bg || "#111111";
+      var clSpeed = +(p.rotateSpeed || 25);
+      var clAutoRotate = !!p.autoRotate;
+      var clConnectors = p.showConnectors !== false;
+      var clNumbers = p.showNumbers !== false;
+      var clMultiColor = !!p.multiColor;
+      var clGlow = !!p.glowItems;
+      var clCenterText = p.centerText || String(clN);
+      var clCenterSub = p.centerSubtext || "items";
+      var clPaddingV = +(p.paddingV || 80);
+      var clFontSize = +(p.fontSize || 12);
+
+      // Compute item positions
+      var clPos = [];
+      for (var ci = 0; ci < clN; ci++) {
+        var clDeg;
+        if (clMode === "arc") {
+          clDeg = -180 + (180 / Math.max(clN - 1, 1)) * ci;
+        } else {
+          clDeg = -90 + (360 / clN) * ci;
+        }
+        var clRad = (clDeg * Math.PI) / 180;
+        clPos.push({
+          x: Math.round(clCx + clR * Math.cos(clRad)),
+          y: Math.round(clCy + clR * Math.sin(clRad)),
+        });
+      }
+
+      // SVG connectors
+      var clSvg = "";
+      if (clConnectors) {
+        var clLines = clPos
+          .map(function (pos) {
+            return (
+              '<line x1="' +
+              clCx +
+              '" y1="' +
+              clCy +
+              '" x2="' +
+              pos.x +
+              '" y2="' +
+              pos.y +
+              '" stroke="' +
+              clAccent +
+              '" stroke-opacity="0.15" stroke-width="1" stroke-dasharray="3 5"/>'
+            );
+          })
+          .join("");
+        clSvg =
+          '<svg style="position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none">' +
+          clLines +
+          "</svg>";
+      }
+
+      // Items
+      var clItemsHtml = clPos
+        .map(function (pos, ci) {
+          var col = clMultiColor
+            ? "hsl(" + Math.round((ci * 360) / clN) + ",80%,65%)"
+            : clAccent;
+          var glowStyle = clGlow
+            ? "filter:drop-shadow(0 0 8px " + col + ")"
+            : "";
+          var numHtml = clNumbers
+            ? '<span class="fw-cl-num" style="background:' +
+              col +
+              ';color:#000">' +
+              (ci + 1).toString().padStart(2, "0") +
+              "</span>"
+            : "";
           return (
-            '<div class="fw-circ-item" style="transform:rotate(' +
-            angle +
-            'deg)">' +
-            '<span class="fw-circ-text" style="transform:rotate(-' +
-            angle +
-            "deg);color:" +
-            p.textColor +
+            '<div class="fw-cl-item fw-cl-s-' +
+            clStyle +
+            '" style="position:absolute;left:' +
+            pos.x +
+            "px;top:" +
+            pos.y +
+            "px;font-size:" +
+            clFontSize +
+            "px;" +
+            glowStyle +
+            '" data-i="' +
+            ci +
             '">' +
-            item +
+            numHtml +
+            '<span class="fw-cl-name" style="color:' +
+            clText +
+            '">' +
+            clItems[ci] +
             "</span></div>"
           );
         })
         .join("");
+
+      var clSpinClass = clAutoRotate ? " fw-cl-spinning" : "";
+      var clStageStyle =
+        "position:relative;width:" +
+        clSize +
+        "px;height:" +
+        clSize +
+        "px;margin:0 auto;flex-shrink:0;--cl-speed:" +
+        clSpeed +
+        "s";
+      var clRingBorder =
+        p.ringBorder !== false
+          ? '<div style="position:absolute;inset:0;border-radius:50%;border:1px solid rgba(255,255,255,0.07)"></div>'
+          : "";
+      var clInnerDot =
+        '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:' +
+        Math.round(clR * 0.14) +
+        "px;height:" +
+        Math.round(clR * 0.14) +
+        "px;border-radius:50%;background:" +
+        clAccent +
+        ';opacity:0.12"></div>';
+
       return (
-        '<div class="fw-circular-list fw-entrance" style="background:' +
-        p.bg +
-        ';padding:5rem 3rem">' +
-        '<p class="fw-circ-label" style="color:' +
-        p.accentColor +
-        '" contenteditable data-field="label">' +
-        p.label +
-        "</p>" +
-        '<div class="fw-circ-ring">' +
-        circItems +
-        '<div class="fw-circ-center" style="color:' +
-        p.accentColor +
+        '<div class="fw-circular-list" style="background:' +
+        clBg +
+        ";padding:" +
+        clPaddingV +
+        'px 3rem">' +
+        (p.label
+          ? '<p class="fw-cl-label" style="color:' +
+            clAccent +
+            '">' +
+            p.label +
+            "</p>"
+          : "") +
+        '<div class="fw-cl-stage' +
+        clSpinClass +
+        '" style="' +
+        clStageStyle +
         '">' +
-        (p.items || []).length +
-        "</div></div></div>"
+        clRingBorder +
+        clSvg +
+        '<div class="fw-cl-group">' +
+        clItemsHtml +
+        "</div>" +
+        '<div class="fw-cl-center" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center">' +
+        clInnerDot +
+        '<div style="position:relative;color:' +
+        clAccent +
+        ';font-size:2.4rem;font-weight:800;line-height:1;font-family:Lexend,sans-serif">' +
+        clCenterText +
+        "</div>" +
+        '<div style="color:' +
+        clText +
+        ';opacity:0.32;font-size:0.58rem;text-transform:uppercase;letter-spacing:3px;margin-top:0.2rem">' +
+        clCenterSub +
+        "</div></div></div></div>"
       );
+    }
 
     case "glitchText":
       return (
@@ -1667,6 +1886,338 @@ FB.canvas.renderBlockHTML = function (block) {
         "</div></div>"
       );
 
+    case "socialLinks":
+      var SL_PLAT = {
+        instagram: {
+          label: "Instagram",
+          color: "#E1306C",
+          path: "M7 2C4.24 2 2 4.24 2 7v10c0 2.76 2.24 5 5 5h10c2.76 0 5-2.24 5-5V7c0-2.76-2.24-5-5-5H7zm0 2h10c1.66 0 3 1.34 3 3v10c0 1.66-1.34 3-3 3H7c-1.66 0-3-1.34-3-3V7c0-1.66 1.34-3 3-3zm5 3a5 5 0 100 10A5 5 0 0012 7zm0 2a3 3 0 110 6 3 3 0 010-6zm5.5-.5a1 1 0 110 2 1 1 0 010-2z",
+        },
+        twitter: {
+          label: "X / Twitter",
+          color: "#ffffff",
+          path: "M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z",
+        },
+        tiktok: {
+          label: "TikTok",
+          color: "#69C9D0",
+          path: "M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 00-.79-.05A6.34 6.34 0 003.15 15.3a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.19a8.16 8.16 0 004.77 1.52V6.28a4.85 4.85 0 01-1-.41z",
+        },
+        youtube: {
+          label: "YouTube",
+          color: "#FF0000",
+          path: "M21.58 7.19a2.76 2.76 0 00-1.95-1.95C18 4.89 12 4.89 12 4.89s-6 0-7.63.35a2.76 2.76 0 00-1.95 1.95A28.9 28.9 0 002 12a28.9 28.9 0 00.42 4.81 2.76 2.76 0 001.95 1.95C6 19.11 12 19.11 12 19.11s6 0 7.63-.35a2.76 2.76 0 001.95-1.95A28.9 28.9 0 0022 12a28.9 28.9 0 00-.42-4.81zM9.75 15.02V8.98L15.5 12l-5.75 3.02z",
+        },
+        linkedin: {
+          label: "LinkedIn",
+          color: "#0A66C2",
+          path: "M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2zm2-5a2 2 0 110 4 2 2 0 010-4z",
+        },
+        facebook: {
+          label: "Facebook",
+          color: "#1877F2",
+          path: "M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z",
+        },
+        pinterest: {
+          label: "Pinterest",
+          color: "#E60023",
+          path: "M12 2C6.48 2 2 6.48 2 12a10 10 0 006.32 9.29c-.14-.7-.26-1.79.05-2.56l1.08-4.58s-.28-.55-.28-1.37c0-1.29.75-2.25 1.68-2.25.79 0 1.18.6 1.18 1.31 0 .8-.51 2-77 3.1-.22.91.45 1.65 1.35 1.65 1.62 0 2.71-2.09 2.71-4.56 0-1.89-1.28-3.21-3.12-3.21-2.12 0-3.37 1.59-3.37 3.23 0 .64.25 1.32.55 1.7a.22.22 0 01.05.21l-.2.83c-.04.14-.12.17-.26.1-.96-.45-1.56-1.86-1.56-2.99 0-2.43 1.82-4.66 5.25-4.66 2.76 0 4.9 1.96 4.9 4.59 0 2.74-1.73 4.95-4.13 4.95-.8 0-1.56-.42-1.82-91l-.5 1.86c-.18.69-.66 1.55-.99 2.08A10 10 0 0022 12c0-5.52-4.48-10-10-10z",
+        },
+        snapchat: {
+          label: "Snapchat",
+          color: "#FFFC00",
+          path: "M12 2a7.5 7.5 0 00-7.5 7.5v.7c-.21.1-.44.16-.7.16a1.7 1.7 0 01-.95-.3c-.07-.06-.14-.09-.22-.09-.14 0-.27.1-.3.24-.05.33.15.62.65.82.06.03.2.08.34.12a3.3 3.3 0 01-.12.5c0 .44.3.78.71.79.3.01.58-.14.87-.42.05-.05.1-.07.16-.07.05 0 .13.03.2.1.4.4 1.06.87 2.06 1.13.03 0 .05.04.05.07v.1c0 .07-.07.2-.24.33-.39.32-.95.48-1.6.48-.1 0-.22-.01-.33-.01l-.12-.02-.06.11c-.1.17-.21.32-.48.34h-.05c-.04 0-.24.02-.35.09-.14.1-.14.24-.02.34.16.13.43.23.62.29.57.16 1.16.25 1.76.25.28 0 .56-.02.85-.07l.06-.01.06.02c.2.05.41.08.62.08.3 0 .61-.08.89-.23.25.05.5.08.77.08 1 0 2.04-.35 2.71-1.11l.07-.08c.14-.16.26-.34.34-.53.37-.1.7-.25.95-.46.05-.04.08-.08.08-.13 0-.08-.07-.15-.16-.16a.35.35 0 01-.16-.06c-.18-.14-.22-.34-.22-.55v-.03c.3-.29.49-.56.54-.68.15-.32.22-.66.22-1.03v-.08a1.9 1.9 0 01-.64-.15v-.7A7.5 7.5 0 0012 2z",
+        },
+        threads: {
+          label: "Threads",
+          color: "#ffffff",
+          path: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.42 7.49a5.06 5.06 0 00-.22-.1c-.13-2.04-1.22-3.21-3.09-3.22h-.05c-1.11 0-2.04.47-2.6 1.33l1.02.7c.42-.64 1.08-.77 1.58-.77h.03c.61 0 1.07.18 1.37.54.22.26.36.62.43 1.07a7.9 7.9 0 00-1.75-.06c-1.76.1-2.89 1.1-2.82 2.49.04.71.4 1.32.99 1.72.5.34 1.15.51 1.82.47 1.08-.06 1.93-.55 2.43-1.38.38-.63.58-1.44.6-2.47.32.19.59.43.79.73.36.54.43 1.14.2 1.71-.23.56-.71 1.02-1.37 1.3-1.21.52-2.59.46-3.9-.17-1.63-.79-2.5-2.13-2.42-3.78.07-1.47.87-2.74 2.14-3.57 1.08-.73 2.47-1.05 3.96-.89l.12.02c1.24.16 2.2.53 2.9 1.12.64.54 1.04 1.24 1.2 2.08l1.17-.21c-.2-1.07-.7-1.97-1.48-2.64z",
+        },
+        github: {
+          label: "GitHub",
+          color: "#ffffff",
+          path: "M12 2C6.37 2 2 6.37 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z",
+        },
+        discord: {
+          label: "Discord",
+          color: "#5865F2",
+          path: "M20.32 4.37a19.8 19.8 0 00-4.88-1.52.07.07 0 00-.08.04 13.8 13.8 0 00-.61 1.25 18.3 18.3 0 00-5.49 0 12.6 12.6 0 00-.62-1.25.08.08 0 00-.08-.04A19.7 19.7 0 003.68 4.37a.07.07 0 00-.03.03C.53 9.05-.32 13.58.1 18.06a.08.08 0 00.03.06 19.9 19.9 0 005.99 3.03.08.08 0 00.08-.03c.46-.63.87-1.3 1.23-2a.08.08 0 00-.04-.1 13.1 13.1 0 01-1.87-.9.08.08 0 010-.13c.13-.09.25-.19.37-.29a.07.07 0 01.08-.01c3.93 1.79 8.18 1.79 12.06 0a.07.07 0 01.08.01c.12.1.24.2.37.29a.08.08 0 010 .13 12.3 12.3 0 01-1.87.89.08.08 0 00-.04.11c.36.7.77 1.36 1.22 1.99a.07.07 0 00.08.03 19.8 19.8 0 006-3.03.08.08 0 00.03-.05c.5-5.18-.84-9.67-3.55-13.66a.06.06 0 00-.03-.03zM8.02 15.33c-1.18 0-2.16-1.09-2.16-2.42s.96-2.42 2.16-2.42c1.21 0 2.18 1.1 2.16 2.42 0 1.33-.95 2.42-2.16 2.42zm7.97 0c-1.18 0-2.16-1.09-2.16-2.42s.96-2.42 2.16-2.42c1.21 0 2.18 1.1 2.16 2.42 0 1.33-.95 2.42-2.16 2.42z",
+        },
+        behance: {
+          label: "Behance",
+          color: "#1769FF",
+          path: "M22 7h-7V5h7v2zM2 19V5h7.27C12 5 14 6.26 14 9c0 1.57-.79 2.54-2 3.06 1.84.56 3 1.73 3 4 0 2.96-2.31 3-4.37 3H2zm2-8h4.27c1.11 0 1.73-.56 1.73-1.5S9.56 8 8.5 8H4v3zm0 6h4.63C10 17 11 16.5 11 15s-1-2-2.37-2H4v4zm11.5.5c1 .15 1.83-.57 2-1.5H15a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3h6c-.17 1.03-1 1.85-2 2-.59 0-1.08-.27-1.4-.7H13c.56 1.06 1.66 1.7 2.5 2z",
+        },
+        dribbble: {
+          label: "Dribbble",
+          color: "#EA4C89",
+          path: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c5.51 0 10-4.48 10-10S17.51 2 12 2zm6.6 4.61a8.5 8.5 0 011.93 5.31c-.28-.05-3.1-.63-5.94-.27-.07-.14-.12-.29-.18-.44a25.4 25.4 0 00-.56-1.24c3.14-1.28 4.58-3.12 4.76-3.36zM12 3.48c2.17 0 4.15.81 5.66 2.15-.15.22-1.44 1.94-4.48 3.08-1.4-2.57-2.95-4.68-3.19-5A8.7 8.7 0 0112 3.48zm-3.63.8a53.9 53.9 0 013.17 4.94c-4 1.06-7.52 1.04-7.9 1.04a8.58 8.58 0 014.73-5.98zM3.45 12v-.26c.37.01 4.51.07 8.78-1.21.25.48.48.97.69 1.45-.11.03-.23.07-.34.1-4.4 1.42-6.74 5.3-6.94 5.63A8.52 8.52 0 013.45 12zm8.55 8.55a8.48 8.48 0 01-5.24-1.8c.15-.31 1.89-3.66 6.7-5.34l.05-.02a35.3 35.3 0 011.82 6.48 8.4 8.4 0 01-3.33.68zm4.76-1.46c-.09-.52-.54-3.01-1.66-6.08 2.68-.42 5.02.27 5.31.37a8.47 8.47 0 01-3.65 5.71z",
+        },
+        whatsapp: {
+          label: "WhatsApp",
+          color: "#25D366",
+          path: "M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15s-.77.97-.94 1.16c-.17.2-.35.22-.64.08-.3-.15-1.26-.46-2.39-1.48-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51-.17-.01-.37-.01-.57-.01-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.06 2.88 1.21 3.07c.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.69.62.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35zm-5.42 7.4h-.004a9.87 9.87 0 01-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 01-1.51-5.26C2.16 6.44 6.6 2 12.05 2c2.64 0 5.12 1.03 6.99 2.9a9.82 9.82 0 012.89 6.99c-.003 5.45-4.437 9.88-9.885 9.88zM20.46 3.53A11.82 11.82 0 0012.05 0C5.5 0 .16 5.33.16 11.89c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.88 11.88 0 005.68 1.45h.005c6.56 0 11.89-5.34 11.89-11.9a11.82 11.82 0 00-3.48-8.37z",
+        },
+      };
+      var slStyle = p.style || "cards";
+      var slBg = p.bg || "#0a0a0f";
+      var slAcc = p.accentColor || "#ec4899";
+      var slTxt = p.textColor || "#f7f6f2";
+      var slPV = +(p.paddingV || 80);
+      var slCols = +(p.columns || 3);
+      var slNetworks = p.networks || [];
+      var slUsePlat = p.usePlatformColors !== false;
+      var slCards = slNetworks
+        .map(function (n) {
+          var pd = SL_PLAT[n.platform] || {
+            label: n.platform,
+            color: slAcc,
+            path: "M12 2a10 10 0 100 20A10 10 0 0012 2z",
+          };
+          var ic = slUsePlat ? pd.color : slAcc;
+          var icon =
+            '<svg class="fw-sl-icon" viewBox="0 0 24 24" fill="' +
+            ic +
+            '"><path d="' +
+            pd.path +
+            '"/></svg>';
+          if (slStyle === "strip" || slStyle === "icons") {
+            return (
+              '<a class="fw-sl-chip" href="' +
+              (n.url || "#") +
+              '" style="--sl-ic:' +
+              ic +
+              '" title="' +
+              pd.label +
+              '">' +
+              icon +
+              "</a>"
+            );
+          }
+          if (slStyle === "minimal") {
+            return (
+              '<a class="fw-sl-row" href="' +
+              (n.url || "#") +
+              '" style="--sl-ic:' +
+              ic +
+              '">' +
+              '<span class="fw-sl-row-icon">' +
+              icon +
+              "</span>" +
+              '<span class="fw-sl-row-name" style="color:' +
+              slTxt +
+              '">' +
+              pd.label +
+              "</span>" +
+              (n.handle && p.showHandles !== false
+                ? '<span class="fw-sl-row-handle">' + n.handle + "</span>"
+                : "") +
+              '<span class="fw-sl-row-arrow" style="color:' +
+              slAcc +
+              '">→</span>' +
+              "</a>"
+            );
+          }
+          if (slStyle === "neon") {
+            return (
+              '<a class="fw-sl-neon" href="' +
+              (n.url || "#") +
+              '" style="--sl-ic:' +
+              ic +
+              ";--sl-bg:" +
+              slBg +
+              '">' +
+              '<div class="fw-sl-neon-icon">' +
+              icon +
+              "</div>" +
+              '<div class="fw-sl-neon-info">' +
+              '<span class="fw-sl-neon-name" style="color:' +
+              slTxt +
+              '">' +
+              pd.label +
+              "</span>" +
+              (n.handle && p.showHandles !== false
+                ? '<span class="fw-sl-neon-handle">' + n.handle + "</span>"
+                : "") +
+              "</div>" +
+              (n.followers && p.showFollowers !== false
+                ? '<span class="fw-sl-neon-count" style="color:' +
+                  ic +
+                  '">' +
+                  n.followers +
+                  "</span>"
+                : "") +
+              "</a>"
+            );
+          }
+          return (
+            '<a class="fw-sl-card" href="' +
+            (n.url || "#") +
+            '" style="--sl-ic:' +
+            ic +
+            '">' +
+            '<div class="fw-sl-card-icon">' +
+            icon +
+            "</div>" +
+            '<div class="fw-sl-card-info">' +
+            '<span class="fw-sl-card-name" style="color:' +
+            slTxt +
+            '">' +
+            pd.label +
+            "</span>" +
+            (n.handle && p.showHandles !== false
+              ? '<span class="fw-sl-card-handle">' + n.handle + "</span>"
+              : "") +
+            "</div>" +
+            (n.followers && p.showFollowers !== false
+              ? '<div class="fw-sl-card-followers"><span class="fw-sl-card-count" style="color:' +
+                ic +
+                '">' +
+                n.followers +
+                '</span><span class="fw-sl-card-flabel">followers</span></div>'
+              : "") +
+            "</a>"
+          );
+        })
+        .join("");
+      var slTrackStyle =
+        slStyle === "strip" || slStyle === "icons"
+          ? "display:flex;flex-wrap:wrap;gap:" +
+            +(p.gap || 16) +
+            "px;align-items:center;justify-content:center"
+          : "display:grid;grid-template-columns:repeat(" +
+            slCols +
+            ",1fr);gap:" +
+            +(p.gap || 16) +
+            "px";
+      return (
+        '<div class="fw-sl-wrap fw-entrance" style="background:' +
+        slBg +
+        ";padding:" +
+        slPV +
+        'px 3rem">' +
+        (p.showLabel !== false && p.label
+          ? '<p class="fw-sl-label" style="color:' +
+            slAcc +
+            '" contenteditable data-field="label">' +
+            p.label +
+            "</p>"
+          : "") +
+        (p.headline
+          ? '<h2 class="fw-sl-headline" style="color:' +
+            slTxt +
+            '" contenteditable data-field="headline">' +
+            p.headline +
+            "</h2>"
+          : "") +
+        '<div class="fw-sl-track" style="' +
+        slTrackStyle +
+        '">' +
+        slCards +
+        "</div>" +
+        "</div>"
+      );
+
+    case "whatsappWidget":
+      var waPhone = (p.phone || "").replace(/[^0-9+]/g, "");
+      var waMsg = encodeURIComponent(
+        p.message || "Hi! I'd love to find out more.",
+      );
+      var waHref =
+        "https://wa.me/" + waPhone.replace(/^\+/, "") + "?text=" + waMsg;
+      var waAcc = p.accentColor || "#25D366";
+      var waBg = p.bg || "#0a0a0a";
+      var waTxt = p.textColor || "#f7f6f2";
+      var waStyle = p.style || "card";
+      var waIcon =
+        '<svg class="fw-wa-icon" viewBox="0 0 24 24" fill="' +
+        waAcc +
+        '"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15s-.77.97-.94 1.16c-.17.2-.35.22-.64.08-.3-.15-1.26-.46-2.39-1.48-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51-.17-.01-.37-.01-.57-.01-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.06 2.88 1.21 3.07c.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.69.62.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35zm-5.42 7.4h-.004a9.87 9.87 0 01-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 01-1.51-5.26C2.16 6.44 6.6 2 12.05 2c2.64 0 5.12 1.03 6.99 2.9a9.82 9.82 0 012.89 6.99c-.003 5.45-4.437 9.88-9.885 9.88zM20.46 3.53A11.82 11.82 0 0012.05 0C5.5 0 .16 5.33.16 11.89c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.88 11.88 0 005.68 1.45h.005c6.56 0 11.89-5.34 11.89-11.9a11.82 11.82 0 00-3.48-8.37z"/></svg>';
+      if (waStyle === "banner") {
+        return (
+          '<div class="fw-wa-banner fw-entrance" style="background:' +
+          waBg +
+          ";padding:" +
+          +(p.paddingV || 64) * 0.5 +
+          "px 3rem;border-left:3px solid " +
+          waAcc +
+          '">' +
+          '<div class="fw-wa-banner-inner">' +
+          waIcon +
+          '<div class="fw-wa-banner-text">' +
+          '<span class="fw-wa-banner-label" style="color:' +
+          waTxt +
+          '" contenteditable data-field="label">' +
+          (p.label || "Chat with us") +
+          "</span>" +
+          (p.subtext
+            ? '<span class="fw-wa-banner-sub" style="color:' +
+              waTxt +
+              '">' +
+              p.subtext +
+              "</span>"
+            : "") +
+          "</div>" +
+          '<a class="fw-wa-btn fw-wa-btn--sm" href="' +
+          waHref +
+          '" style="background:' +
+          waAcc +
+          ';color:#fff">' +
+          (p.buttonText || "Open WhatsApp") +
+          "</a>" +
+          "</div></div>"
+        );
+      }
+      return (
+        '<div class="fw-wa-wrap fw-entrance" style="background:' +
+        waBg +
+        ";padding:" +
+        +(p.paddingV || 64) +
+        'px 3rem">' +
+        '<div class="fw-wa-card" style="border-color:rgba(' +
+        (waBg === "#ffffff" || waBg === "#fff" ? "0,0,0" : "255,255,255") +
+        ',0.08)">' +
+        '<div class="fw-wa-card-header">' +
+        '<div class="fw-wa-avatar" style="background:' +
+        (p.avatarBg || "#128C7E") +
+        '">' +
+        waIcon +
+        "</div>" +
+        '<div class="fw-wa-card-meta">' +
+        '<span class="fw-wa-card-name" style="color:' +
+        waTxt +
+        '" contenteditable data-field="label">' +
+        (p.label || "Chat with us") +
+        "</span>" +
+        (p.showStatus !== false
+          ? '<span class="fw-wa-status"><span class="fw-wa-dot" style="background:' +
+            waAcc +
+            '"></span><span style="color:' +
+            waTxt +
+            '">' +
+            (p.statusText || "Online now") +
+            "</span></span>"
+          : "") +
+        "</div>" +
+        "</div>" +
+        '<p class="fw-wa-subtext" style="color:' +
+        waTxt +
+        '">' +
+        (p.subtext || "") +
+        "</p>" +
+        '<a class="fw-wa-btn" href="' +
+        waHref +
+        '" style="background:' +
+        waAcc +
+        ';color:#fff">' +
+        waIcon +
+        "<span>" +
+        (p.buttonText || "Start a conversation") +
+        "</span>" +
+        "</a>" +
+        "</div></div>"
+      );
+
     case "cornerSection":
       return (
         '<div class="fw-corner-block fw-entrance" style="background:' +
@@ -1697,44 +2248,169 @@ FB.canvas.renderBlockHTML = function (block) {
       );
 
     case "horizontalScroll":
-      var hCards = (p.cards || [])
-        .map(function (c) {
+      var hsMode = p.mode || "cards";
+      var hsStyle = p.cardStyle || "gradient";
+      var hsW = +(p.cardWidth || 320);
+      var hsGap = +(p.gap || 24);
+      var hsAcc = p.accentColor || "#CDFE00";
+      var hsTxt = p.textColor || "#f7f6f2";
+      var hsBg = p.bg || "#111111";
+      var hsPV = +(p.paddingV || 80);
+      var hsScrollDist = hsW + hsGap;
+      var hsCards2 = (p.cards || [])
+        .map(function (c, ci) {
+          var num = (ci + 1 < 10 ? "0" : "") + (ci + 1);
+          if (hsMode === "timeline") {
+            return (
+              '<div class="fw-hs-card fw-hs-card--timeline" style="width:' +
+              hsW +
+              "px;--hs-acc:" +
+              hsAcc +
+              '">' +
+              '<div class="fw-hs-tl-year" style="color:' +
+              hsAcc +
+              '">' +
+              (c.tag || String(2024 - ci)) +
+              "</div>" +
+              '<div class="fw-hs-tl-dot" style="background:' +
+              hsAcc +
+              '"></div>' +
+              '<h3 class="fw-hs-tl-title" style="color:' +
+              hsTxt +
+              '">' +
+              c.title +
+              "</h3>" +
+              '<p class="fw-hs-tl-sub" style="color:' +
+              hsTxt +
+              '">' +
+              (c.subtitle || c.category || "") +
+              "</p>" +
+              "</div>"
+            );
+          }
+          var cardW = hsMode === "featured" ? Math.round(hsW * 1.3) : hsW;
+          var aspect =
+            hsMode === "showcase"
+              ? "padding-top:160%"
+              : hsMode === "featured"
+                ? "padding-top:56%"
+                : "padding-top:70%";
+          var numHtml =
+            p.showNumbers !== false
+              ? '<div class="fw-hs-card-num">' + num + "</div>"
+              : "";
+          var tagHtml =
+            p.showTags !== false && c.tag
+              ? '<span class="fw-hs-card-tag" style="background:' +
+                hsAcc +
+                ';color:#111">' +
+                c.tag +
+                "</span>"
+              : "";
+          var catHtml = c.category
+            ? '<span class="fw-hs-card-cat">' + c.category + "</span>"
+            : "";
+          var subHtml =
+            p.showSubtitle !== false && c.subtitle
+              ? '<p class="fw-hs-card-sub">' + c.subtitle + "</p>"
+              : "";
           return (
-            '<div class="fw-hscroll-card">' +
-            '<div class="fw-hscroll-card-bg" style="background:' +
-            c.bg +
+            '<div class="fw-hs-card fw-hs-card--' +
+            hsStyle +
+            '" style="width:' +
+            cardW +
+            'px">' +
+            '<div class="fw-hs-card-bg" style="' +
+            aspect +
+            ";background:" +
+            (c.bg || "#222") +
             '"></div>' +
-            '<div class="fw-hscroll-card-info">' +
-            '<span class="fw-hscroll-card-cat" style="color:' +
-            p.accentColor +
-            '">' +
-            c.category +
-            "</span>" +
-            '<h3 class="fw-hscroll-card-title" style="color:' +
-            p.textColor +
-            '">' +
+            '<div class="fw-hs-card-overlay">' +
+            numHtml +
+            '<div class="fw-hs-card-bottom">' +
+            (tagHtml || catHtml
+              ? '<div class="fw-hs-card-meta">' + tagHtml + catHtml + "</div>"
+              : "") +
+            '<h3 class="fw-hs-card-title">' +
             c.title +
-            "</h3></div></div>"
+            "</h3>" +
+            subHtml +
+            "</div>" +
+            "</div>" +
+            "</div>"
           );
         })
         .join("");
+      var hsArrows =
+        p.showArrows !== false
+          ? '<div class="fw-hs-arrows">' +
+            '<button class="fw-hs-arrow" style="color:' +
+            hsTxt +
+            "\" onclick=\"var t=this.closest('.fw-hs-wrap').querySelector('.fw-hs-track');t.scrollBy({left:-" +
+            hsScrollDist +
+            ",behavior:'smooth'})\">" +
+            '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M11 3.5L5.5 9 11 14.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+            "</button>" +
+            '<button class="fw-hs-arrow" style="color:' +
+            hsTxt +
+            "\" onclick=\"var t=this.closest('.fw-hs-wrap').querySelector('.fw-hs-track');t.scrollBy({left:" +
+            hsScrollDist +
+            ",behavior:'smooth'})\">" +
+            '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M7 3.5L12.5 9 7 14.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+            "</button>" +
+            "</div>"
+          : "";
+      var hsProgress =
+        p.showProgress !== false
+          ? '<div class="fw-hs-progress"><div class="fw-hs-progress-bar" style="background:' +
+            hsAcc +
+            '"></div></div>'
+          : "";
+      var hsOnscroll =
+        p.showProgress !== false
+          ? " onscroll=\"var r=this.scrollLeft/(this.scrollWidth-this.clientWidth||1);this.closest('.fw-hs-wrap').querySelector('.fw-hs-progress-bar').style.width=(r*100)+'%'\""
+          : "";
       return (
-        '<div class="fw-hscroll-block fw-entrance" style="background:' +
-        p.bg +
-        ';padding:5rem 0 5rem 3rem">' +
-        '<p class="fw-hscroll-label" style="color:' +
-        p.accentColor +
+        '<div class="fw-hs-wrap fw-entrance" style="background:' +
+        hsBg +
+        ";padding:" +
+        hsPV +
+        "px 0 " +
+        hsPV +
+        'px 3rem">' +
+        '<div class="fw-hs-header" style="padding-right:3rem;margin-bottom:' +
+        (hsMode === "timeline" ? "3rem" : "2rem") +
+        '">' +
+        "<div>" +
+        '<p class="fw-hs-label" style="color:' +
+        hsAcc +
         '" contenteditable data-field="label">' +
-        p.label +
+        (p.label || "") +
         "</p>" +
-        '<h2 class="fw-hscroll-headline" style="color:' +
-        p.textColor +
+        '<h2 class="fw-hs-headline" style="color:' +
+        hsTxt +
         '" contenteditable data-field="headline">' +
-        p.headline +
+        (p.headline || "") +
         "</h2>" +
-        '<div class="fw-hscroll-track">' +
-        hCards +
-        "</div></div>"
+        (p.subtext
+          ? '<p class="fw-hs-subtext" style="color:' +
+            hsTxt +
+            '" contenteditable data-field="subtext">' +
+            p.subtext +
+            "</p>"
+          : "") +
+        "</div>" +
+        hsArrows +
+        "</div>" +
+        hsProgress +
+        '<div class="fw-hs-track" style="gap:' +
+        hsGap +
+        'px"' +
+        hsOnscroll +
+        ">" +
+        hsCards2 +
+        "</div>" +
+        "</div>"
       );
 
     case "ecomProductCard":
