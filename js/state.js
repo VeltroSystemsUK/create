@@ -1,4 +1,4 @@
-const FB = {};
+window.FB = {};
 
 FB.state = {
   blocks: [],

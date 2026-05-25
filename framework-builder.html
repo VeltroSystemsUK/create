@@ -451,6 +451,23 @@
     <div id="app">
       <!-- LEFT PANEL -->
       <div id="left-panel">
+        <div class="lp-search-wrap">
+          <input
+            type="text"
+            class="lp-search-input"
+            id="lp-search-input"
+            placeholder="Search blocks, widgets, elements..."
+          />
+          <span class="lp-search-icon">🔍</span>
+          <button
+            class="lp-search-clear"
+            id="lp-search-clear"
+            onclick="FB.panels.clearSearch()"
+            style="display: none"
+          >
+            ✕
+          </button>
+        </div>
         <div class="lp-accordion">
           <div
             class="lp-acc-header"
@@ -728,6 +745,15 @@
           </div>
 
           <div id="ds-tab-elements" class="ds-tab-content active">
+            <div class="lp-search-wrap" style="padding: 8px 10px 0">
+              <input
+                type="text"
+                class="lp-search-input"
+                id="ds-search-input"
+                placeholder="Search blocks..."
+              />
+              <span class="lp-search-icon">&nbsp;</span>
+            </div>
             <div id="ds-tool-row"></div>
             <div id="ds-elements-body"></div>
           </div>
@@ -746,6 +772,13 @@
               onclick="FB.ai.open()"
             >
               ✨ AI Template Builder
+            </button>
+            <button
+              class="ds-full-btn"
+              style="background: #cdfe00; color: #111"
+              onclick="FB.motion.open()"
+            >
+              🎬 Motion Creator
             </button>
             <div class="ds-section-label" style="padding: 8px 8px 4px">
               My Designs
@@ -919,36 +952,20 @@
     <div id="toast"></div>
     <div id="fw-page-enter"></div>
 
-    <script src="js/state.js?v=3"></script>
-    <script src="js/pages.js?v=1"></script>
-    <script src="js/blocks.js?v=99"></script>
-    <script src="js/theme.js?v=1"></script>
-    <script src="js/canvas.js?v=100"></script>
-    <script src="js/panels.js?v=101"></script>
-    <script src="js/export.js?v=3"></script>
-    <script src="js/cms-schema.js"></script>
-    <script src="js/templates.js?v=2"></script>
-    <script src="js/scraper.js?v=2"></script>
-    <script src="js/widgets.js?v=3"></script>
-    <script src="widgets/basic.js?v=2"></script>
-    <script src="widgets/content.js?v=2"></script>
-    <script src="widgets/media.js?v=2"></script>
-    <script src="widgets/layout.js?v=4"></script>
-    <script src="widgets/interactive.js?v=2"></script>
-    <script src="widgets/gallery-like.js?v=2"></script>
-    <script src="widgets/embed.js?v=2"></script>
-    <script src="widgets/veltro.js?v=11"></script>
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
-    <script src="js/help.js"></script>
-    <script src="js/ai-knowledge.js?v=1"></script>
-    <script src="js/ai-service.js?v=1"></script>
-    <script src="js/ai-templates.js?v=1"></script>
-    <script src="js/app.js?v=3"></script>
-    <script src="js/theme-toggle.js?v=1"></script>
-    <script src="js/language.js?v=1"></script>
-    <script src="js/design.js?v=2"></script>
-    <script src="widgets/design-templates.js?v=1"></script>
+    <script type="module" src="/src/main.js"></script>
     <div id="google-translate-root" style="display: none"></div>
+
+    <!-- MOTION CREATOR OVERLAY -->
+    <div id="ds-motion-overlay" style="display: none">
+      <div id="ds-motion-modal">
+        <div class="ds-modal-head">
+          <span>🎬 Motion Creator</span>
+          <button onclick="FB.motion.close()">✕</button>
+        </div>
+        <div id="ds-motion-main"></div>
+      </div>
+    </div>
     <script>
       function googleTranslateElementInit() {
         new google.translate.TranslateElement(
