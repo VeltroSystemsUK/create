@@ -1124,8 +1124,15 @@ FB.canvas.renderBlockHTML = function (block) {
     case "cookieConsent":
       var catHtml = (p.categories || [])
         .map(function (c) {
+          var checked = c.required ? "checked disabled" : "checked";
           return (
-            '<div style="padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.1)">' +
+            '<div class="fw-cookie-category" style="padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.1);display:flex;align-items:flex-start;gap:0.5rem">' +
+            '<input type="checkbox" class="fw-cookie-cat-toggle" data-cat="' +
+            (c.id || "") +
+            '" ' +
+            checked +
+            ' style="margin-top:0.2rem">' +
+            '<div style="flex:1">' +
             "<strong>" +
             c.name +
             "</strong>" +
@@ -1133,8 +1140,8 @@ FB.canvas.renderBlockHTML = function (block) {
               ? ' <span style="font-size:0.7rem;opacity:0.5">Always Active</span>'
               : "") +
             '<p style="font-size:0.8rem;opacity:0.6;margin-top:0.25rem">' +
-            c.description +
-            "</p></div>"
+            (c.description || "") +
+            "</p></div></div>"
           );
         })
         .join("");
@@ -1145,26 +1152,26 @@ FB.canvas.renderBlockHTML = function (block) {
         p.textColor +
         '">' +
         '<div class="fw-cookie-message"><strong>' +
-        p.title +
+        (p.title || "") +
         "</strong><br>" +
-        p.message +
+        (p.message || "") +
         "</div>" +
         '<div class="fw-cookie-options">' +
-        '<button class="fw-cookie-btn fw-cookie-btn-secondary">' +
-        p.declineText +
+        '<button class="fw-cookie-btn fw-cookie-btn-secondary" data-cookie-action="decline">' +
+        (p.declineText || "Decline") +
         "</button>" +
-        '<button class="fw-cookie-btn fw-cookie-btn-tertiary">' +
-        p.customizeText +
+        '<button class="fw-cookie-btn fw-cookie-btn-tertiary" data-cookie-action="customize">' +
+        (p.customizeText || "Customize") +
         "</button>" +
-        '<button class="fw-cookie-btn fw-cookie-btn-primary" style="background:' +
+        '<button class="fw-cookie-btn fw-cookie-btn-primary" data-cookie-action="accept" style="background:' +
         p.accentColor +
         ";color:" +
         (p.accentColor === "#CDFE00" ? "#111" : "#fff") +
         '">' +
-        p.acceptText +
+        (p.acceptText || "Accept All") +
         "</button>" +
         "</div>" +
-        '<div style="width:100%;margin-top:1rem;display:none" id="cookie-categories">' +
+        '<div class="fw-cookie-categories" style="width:100%;margin-top:1rem;display:none">' +
         catHtml +
         "</div></div>"
       );
@@ -2868,16 +2875,18 @@ FB.canvas._applyWrapperStyles = function (block, wrapper) {
     wrapper.style.background = "";
   }
 
-  // Color alpha overlay
-  if (p._bgAlpha !== undefined && p._bgAlpha < 1 && !p._bgGradient) {
-    var bgHex = (p.bg || "#111111").replace("#", "");
-    var r = parseInt(bgHex.substring(0, 2), 16);
-    var g = parseInt(bgHex.substring(2, 4), 16);
-    var b2 = parseInt(bgHex.substring(4, 6), 16);
-    wrapper.style.backgroundColor =
-      "rgba(" + r + "," + g + "," + b2 + "," + p._bgAlpha + ")";
-  } else if (!p._bgGradient) {
-    wrapper.style.backgroundColor = "";
+  // Background color with optional alpha
+  if (!p._bgGradient) {
+    if (p._bgAlpha !== undefined && p._bgAlpha < 1) {
+      var bgHex = (p.bg || "#111111").replace("#", "");
+      var r = parseInt(bgHex.substring(0, 2), 16);
+      var g = parseInt(bgHex.substring(2, 4), 16);
+      var b2 = parseInt(bgHex.substring(4, 6), 16);
+      wrapper.style.backgroundColor =
+        "rgba(" + r + "," + g + "," + b2 + "," + p._bgAlpha + ")";
+    } else {
+      wrapper.style.backgroundColor = p.bg || "";
+    }
   }
 
   // Effects
@@ -3230,12 +3239,7 @@ FB.canvas.render = function () {
     FB.canvas.initSvgDraw();
     FB.canvas.initCountdown();
     FB.canvas.initProductTabs();
-    if (typeof window._VeltroInitShaders === "function")
-      window._VeltroInitShaders();
-    if (typeof window._VeltroInitInfiniteCanvas === "function")
-      window._VeltroInitInfiniteCanvas();
-    if (typeof window._VeltroInitPhysics === "function")
-      window._VeltroInitPhysics();
+    if (typeof window._VeltroInitAll === "function") window._VeltroInitAll();
   }, 0);
   FB.panels.renderLayers();
 };
@@ -3664,18 +3668,10 @@ FB.canvas.refreshBlock = function (id) {
   } else if (block.type === "row") {
     FB.canvas._renderContainerChildren(block, wrapper);
   }
-  if (
-    typeof window._VeltroInitShaders === "function" ||
-    typeof window._VeltroInitInfiniteCanvas === "function" ||
-    typeof window._VeltroInitPhysics === "function"
-  ) {
+  FB.canvas._applyWrapperStyles(block, wrapper);
+  if (typeof window._VeltroInitAll === "function") {
     setTimeout(function () {
-      if (typeof window._VeltroInitShaders === "function")
-        window._VeltroInitShaders();
-      if (typeof window._VeltroInitInfiniteCanvas === "function")
-        window._VeltroInitInfiniteCanvas();
-      if (typeof window._VeltroInitPhysics === "function")
-        window._VeltroInitPhysics();
+      window._VeltroInitAll();
     }, 0);
   }
 };

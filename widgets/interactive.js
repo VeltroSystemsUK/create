@@ -61,7 +61,16 @@ FB.widgets.register("counter", {
       (p.size || 48) +
       '" oninput="FB.panels.updateWidgetProp(\'' +
       id +
-      "','size',+this.value);this.previousElementSibling.textContent='Size: '+this.value+'px'\"></div>"
+      "','size',+this.value);this.previousElementSibling.textContent='Size: '+this.value+'px'\"></div>" +
+      '<div class="rp-row"><label>Color</label><div class="color-row"><input type="color" value="' +
+      (p.color || "#111111") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      '\',\'color\',this.value)"><input type="text" value="' +
+      (p.color || "#111111") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','color',this.value)\"></div></div>"
     );
   },
 });
@@ -106,7 +115,16 @@ FB.widgets.register("progressBar", {
       (p.percent || 75) +
       '" oninput="FB.panels.updateWidgetProp(\'' +
       id +
-      "','percent',+this.value);this.previousElementSibling.textContent='Percent: '+this.value+'%'\"></div>"
+      "','percent',+this.value);this.previousElementSibling.textContent='Percent: '+this.value+'%'\"></div>" +
+      '<div class="rp-row"><label>Bar Color</label><div class="color-row"><input type="color" value="' +
+      (p.color || "#CDFE00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      '\',\'color\',this.value)"><input type="text" value="' +
+      (p.color || "#CDFE00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','color',this.value)\"></div></div>"
     );
   },
 });
@@ -205,7 +223,16 @@ FB.widgets.register("animatedHeadline", {
       p.afterText +
       '" onchange="FB.panels.updateWidgetProp(\'' +
       id +
-      "','afterText',this.value)\"></div>"
+      "','afterText',this.value)\"></div>" +
+      '<div class="rp-row"><label>Color</label><div class="color-row"><input type="color" value="' +
+      (p.color || "#111111") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      '\',\'color\',this.value)"><input type="text" value="' +
+      (p.color || "#111111") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','color',this.value)\"></div></div>"
     );
   },
 });

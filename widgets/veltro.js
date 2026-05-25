@@ -4466,6 +4466,26 @@ FB.widgets.register("imagePhysics", {
       "','hoverTransition',+this.value)\"></div>";
     html += "</div></div>";
     html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Images</span></div><div class="rp-section-body">';
+    var imgs =
+      p.images && p.images.length
+        ? p.images
+        : ["https://picsum.photos/100/100?random=1"];
+    html +=
+      '<div class="rp-row" style="flex-direction:column;align-items:flex-start"><label>Image URLs</label>';
+    html +=
+      '<textarea rows="' +
+      Math.max(3, Math.min(8, imgs.length)) +
+      '" style="width:100%;font-size:11px;font-family:monospace;background:#1a1a1a;border:1px solid #333;border-radius:4px;color:#fff;padding:4px" onchange="try{var v=this.value.split(\'\n\').filter(function(s){return s.trim()}).map(function(s){return s.trim()});FB.panels.updateWidgetProp(\'' +
+      id +
+      "','images',v.length?v:['https://picsum.photos/100/100?random=1'])}catch(e){}" +
+      '">' +
+      imgs.join("\n").replace(/</g, "&lt;") +
+      "</textarea>";
+    html +=
+      '<span style="font-size:9px;opacity:0.5;margin-top:2px">One URL per line. Supports any image URL (Unsplash, Picsum, your own host).</span>';
+    html += "</div></div></div>";
+    html +=
       '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Advanced Physics Options</span></div><div class="rp-section-body">';
     html +=
       '<div class="rp-row"><label>Image Shape</label><select onchange="FB.panels.updateWidgetProp(\'' +
@@ -14454,6 +14474,10 @@ FB.widgets.register("pendulumWave", {
     showTrail: false,
     trailLength: 20,
     gravity: 1,
+    layout: "bottom",
+    bobShape: "circle",
+    glow: false,
+    waveMode: "sine",
   },
   render: function (p) {
     var id = p._blockId || "pendulum";
@@ -14546,6 +14570,16 @@ FB.widgets.register("pendulumWave", {
       (p.trailLength || 20) +
       '" data-gravity="' +
       (p.gravity || 1) +
+      '" data-layout="' +
+      (p.layout || "bottom") +
+      '" data-bob-shape="' +
+      (p.bobShape || "circle") +
+      '" data-glow="' +
+      (p.glow ? "true" : "false") +
+      '" data-wave-mode="' +
+      (p.waveMode || "sine") +
+      '" data-color2="' +
+      (p.color2 || "#3b82f6") +
       '" style="height:' +
       p.height +
       "px;" +
@@ -14788,6 +14822,49 @@ FB.widgets.register("pendulumWave", {
       '" onchange="FB.panels.updateWidgetProp(\'' +
       id +
       "','hoverTransition',+this.value)\"></div>";
+    html += "</div></div>";
+    html +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Appearance & Behaviour</span></div><div class="rp-section-body">';
+    html +=
+      '<div class="rp-row"><label>Layout</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','layout',this.value)\"><option value=\"bottom\"" +
+      ((p.layout || "bottom") === "bottom" ? " selected" : "") +
+      '>Hanging (top anchor)</option><option value="center"' +
+      ((p.layout || "bottom") === "center" ? " selected" : "") +
+      '>Radial (center)</option><option value="scattered"' +
+      ((p.layout || "bottom") === "scattered" ? " selected" : "") +
+      ">Scattered</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Bob Shape</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bobShape',this.value)\"><option value=\"circle\"" +
+      ((p.bobShape || "circle") === "circle" ? " selected" : "") +
+      '>Circle</option><option value="ring"' +
+      ((p.bobShape || "circle") === "ring" ? " selected" : "") +
+      '>Ring</option><option value="diamond"' +
+      ((p.bobShape || "circle") === "diamond" ? " selected" : "") +
+      '>Diamond</option><option value="drop"' +
+      ((p.bobShape || "circle") === "drop" ? " selected" : "") +
+      ">Drop</option></select></div>";
+    html +=
+      '<div class="rp-row"><label>Wave Mode</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','waveMode',this.value)\"><option value=\"sine\"" +
+      ((p.waveMode || "sine") === "sine" ? " selected" : "") +
+      '>Sine Wave</option><option value="progressive"' +
+      ((p.waveMode || "sine") === "progressive" ? " selected" : "") +
+      '>Progressive</option><option value="chaos"' +
+      ((p.waveMode || "sine") === "chaos" ? " selected" : "") +
+      '>Chaos</option><option value="bounce"' +
+      ((p.waveMode || "sine") === "bounce" ? " selected" : "") +
+      ">Bounce</option></select></div>";
+    html +=
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.glow ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','glow',this.checked)\"> Glow</label></div>";
     html += "</div></div>";
     html +=
       '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Advanced Pendulum Options</span></div><div class="rp-section-body">';
@@ -15940,8 +16017,354 @@ FB.widgets.register("velocitySkew", {
   },
 });
 
-// ── VELTRO ENGINE BATCH 5: BACKGROUNDS & TEXTURES (4 NEW WIDGETS) ──
-// 1. Aurora Borealis
+// ── SCROLL FLUID (WebGL scroll-driven fluid simulation) ──
+FB.widgets.register("scrollFluid", {
+  label: "Scroll Fluid",
+  sublabel: "Scroll-driven WebGL fluid",
+  icon: "🌊",
+  iconBg: "#0a1628",
+  iconColor: "#60a5fa",
+  category: "veltro",
+  subCategory: "scroll",
+  defaultProps: {
+    height: 400,
+    bg: "#050510",
+    color1: "#3b82f6",
+    color2: "#ec4899",
+    scrollStrength: 0.5,
+    cursorStrength: 0.2,
+    decay: 0.99,
+    intensity: 1,
+    resolution: 256,
+  },
+  render: function (id, p) {
+    return (
+      '<div class="veltro-fluid-wrap" id="sf-' +
+      id +
+      '" data-color1="' +
+      (p.color1 || "#3b82f6") +
+      '" data-color2="' +
+      (p.color2 || "#ec4899") +
+      '" data-scroll-strength="' +
+      (p.scrollStrength || 0.5) +
+      '" data-cursor-strength="' +
+      (p.cursorStrength || 0.2) +
+      '" data-decay="' +
+      (p.decay || 0.99) +
+      '" data-intensity="' +
+      (p.intensity || 1) +
+      '" data-resolution="' +
+      (p.resolution || 256) +
+      '" style="height:' +
+      p.height +
+      "px;background:" +
+      p.bg +
+      ';position:relative;overflow:hidden;border-radius:4px"><canvas class="veltro-fluid-canvas" style="position:absolute;inset:0;width:100%;height:100%" data-fluid-scroll-init="1"></canvas></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    var h =
+      '<div class="rp-row"><label>Height (px)</label><input type="number" value="' +
+      (p.height || 400) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Color 1</label><input type="color" value="' +
+      (p.color1 || "#3b82f6") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','color1',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Color 2</label><input type="color" value="' +
+      (p.color2 || "#ec4899") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','color2',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Scroll</label><input type="range" min="0" max="2" step="0.1" value="' +
+      (p.scrollStrength || 0.5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','scrollStrength',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Cursor</label><input type="range" min="0" max="1" step="0.05" value="' +
+      (p.cursorStrength || 0.2) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','cursorStrength',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Decay</label><input type="range" min="0.95" max="0.999" step="0.001" value="' +
+      (p.decay || 0.99) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','decay',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Intensity</label><input type="range" min="0.1" max="3" step="0.1" value="' +
+      (p.intensity || 1) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','intensity',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Res</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','resolution',+this.value)\"><option value=\"128\"" +
+      ((p.resolution || 256) === 128 ? " selected" : "") +
+      '>128</option><option value="256"' +
+      ((p.resolution || 256) === 256 ? " selected" : "") +
+      '>256</option><option value="512"' +
+      ((p.resolution || 256) === 512 ? " selected" : "") +
+      ">512</option></select></div>";
+    return h;
+  },
+});
+
+// ── Direction-wheel drag helper (used by velocityFluidBg edit panel) ──
+window._VfbWheelDrag = function (el, id) {
+  function mv(e) {
+    var r = el.getBoundingClientRect();
+    var a =
+      (Math.round(
+        (Math.atan2(-(e.clientY - (r.top + 24)), e.clientX - (r.left + 24)) *
+          180) /
+          Math.PI,
+      ) +
+        360) %
+      360;
+    var inp = document.getElementById("vfb-ang-" + id);
+    if (inp) inp.value = a;
+    FB.panels.updateWidgetProp(id, "flowAngle", a);
+    var n = el.querySelector("span");
+    if (n) n.style.transform = "translateX(-50%) rotate(" + (a - 90) + "deg)";
+  }
+  function up() {
+    window.removeEventListener("mousemove", mv);
+    window.removeEventListener("mouseup", up);
+  }
+  window.addEventListener("mousemove", mv);
+  window.addEventListener("mouseup", up);
+};
+
+FB.widgets.register("velocityFluidBg", {
+  label: "Velocity Fluid BG",
+  sublabel: "Scroll-reactive WebGL fluid",
+  icon: "〰",
+  iconBg: "#050518",
+  iconColor: "#818cf8",
+  category: "veltro",
+  subCategory: "backgrounds",
+  defaultProps: {
+    height: 600,
+    bg: "#050510",
+    color1: "#818cf8",
+    color2: "#f472b6",
+    viscosityPreset: "water",
+    scrollSensitivity: 1.0,
+    flowAngle: 90,
+    chaosEnabled: false,
+    chaosFrequency: 2.0,
+    resolution: 256,
+  },
+  render: function (id, p) {
+    var angle = p.flowAngle !== undefined ? p.flowAngle : 90;
+    return (
+      '<div class="vfbg-wrap" id="vfbg-' +
+      id +
+      '" data-color1="' +
+      (p.color1 || "#818cf8") +
+      '" data-color2="' +
+      (p.color2 || "#f472b6") +
+      '" data-viscosity="' +
+      (p.viscosityPreset || "water") +
+      '" data-sensitivity="' +
+      (p.scrollSensitivity !== undefined ? p.scrollSensitivity : 1) +
+      '" data-flow-angle="' +
+      angle +
+      '" data-chaos="' +
+      (p.chaosEnabled ? "1" : "0") +
+      '" data-chaos-freq="' +
+      (p.chaosFrequency || 2) +
+      '" data-resolution="' +
+      (p.resolution || 256) +
+      '" style="height:' +
+      (p.height || 600) +
+      "px;background:" +
+      (p.bg || "#050510") +
+      ';position:relative;overflow:hidden;border-radius:4px"><canvas class="vfbg-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    var angle = p.flowAngle !== undefined ? p.flowAngle : 90;
+    var needleRot = angle - 90;
+    var chaos = !!p.chaosEnabled;
+    var visc = p.viscosityPreset || "water";
+    var PRESETS = [
+      {
+        label: "Liquid Silk",
+        tip: "Molten mercury — long ripple, high sensitivity",
+        d: {
+          viscosityPreset: "air",
+          scrollSensitivity: 2.5,
+          flowAngle: 90,
+          chaosEnabled: false,
+          chaosFrequency: 1,
+          color1: "#60c8ff",
+          color2: "#e879f9",
+        },
+      },
+      {
+        label: "Digital Glitch",
+        tip: "Turbulent data-stream — high viscosity + chaos",
+        d: {
+          viscosityPreset: "glycerin",
+          scrollSensitivity: 2.0,
+          flowAngle: 45,
+          chaosEnabled: true,
+          chaosFrequency: 8,
+          color1: "#00ffcc",
+          color2: "#ff0066",
+        },
+      },
+      {
+        label: "Subtle Smoke",
+        tip: "Quiet ink-drop ambience — minimal sensitivity",
+        d: {
+          viscosityPreset: "honey",
+          scrollSensitivity: 0.3,
+          flowAngle: 90,
+          chaosEnabled: false,
+          chaosFrequency: 1,
+          color1: "#c4b5fd",
+          color2: "#e0e7ff",
+        },
+      },
+    ];
+    var h = "";
+    h +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Presets</span></div><div class="rp-section-body">';
+    h +=
+      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin-bottom:4px">';
+    PRESETS.forEach(function (pre) {
+      var calls = Object.keys(pre.d)
+        .map(function (k) {
+          return (
+            "FB.panels.updateWidgetProp('" +
+            id +
+            "','" +
+            k +
+            "'," +
+            JSON.stringify(pre.d[k]) +
+            ")"
+          );
+        })
+        .join(",");
+      h +=
+        '<button title="' +
+        pre.tip +
+        '" style="padding:5px 4px;font-size:10px;font-weight:600;border-radius:4px;border:1px solid rgba(129,140,248,0.3);background:rgba(129,140,248,0.08);color:#a5b4fc;cursor:pointer" onclick="(' +
+        calls.replace(/"/g, "&quot;") +
+        ')">' +
+        pre.label +
+        "</button>";
+    });
+    h += "</div></div></div>";
+    h +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Fluid Physics</span></div><div class="rp-section-body">';
+    h +=
+      '<div class="rp-row"><label>Viscosity</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','viscosityPreset',this.value)\">" +
+      ["air", "water", "honey", "glycerin"]
+        .map(function (v) {
+          return (
+            '<option value="' +
+            v +
+            '"' +
+            (visc === v ? " selected" : "") +
+            ">" +
+            v.charAt(0).toUpperCase() +
+            v.slice(1) +
+            "</option>"
+          );
+        })
+        .join("") +
+      "</select></div>";
+    h +=
+      '<div class="rp-row"><label>Scroll Sensitivity</label><div style="display:flex;align-items:center;gap:6px"><input type="range" min="0.1" max="3" step="0.1" value="' +
+      (p.scrollSensitivity !== undefined ? p.scrollSensitivity : 1) +
+      '" style="flex:1" oninput="this.nextElementSibling.textContent=this.value;FB.panels.updateWidgetProp(\'' +
+      id +
+      "','scrollSensitivity',+this.value)\"><span style=\"width:28px;font-size:11px;color:rgba(255,255,255,0.5)\">" +
+      (p.scrollSensitivity !== undefined ? p.scrollSensitivity : 1) +
+      "</span></div></div>";
+    h +=
+      '<div class="rp-row" style="flex-wrap:wrap"><label>Flow Direction</label><div style="display:flex;align-items:center;gap:10px;width:100%;margin-top:6px">';
+    h +=
+      '<div id="vfb-wheel-' +
+      id +
+      '" style="width:48px;height:48px;border-radius:50%;border:1px solid rgba(129,140,248,0.35);cursor:pointer;position:relative;background:rgba(129,140,248,0.06);flex-shrink:0" onmousedown="window._VfbWheelDrag(this,\'' +
+      id +
+      "')\">" +
+      '<span style="position:absolute;top:5px;left:50%;width:2px;height:16px;background:#818cf8;border-radius:1px;transform-origin:bottom center;transform:translateX(-50%) rotate(' +
+      needleRot +
+      'deg)"></span>' +
+      '<span style="position:absolute;bottom:5px;left:50%;width:6px;height:6px;background:#818cf8;border-radius:50%;transform:translateX(-50%)"></span>' +
+      "</div>";
+    h +=
+      '<div style="display:flex;flex-direction:column;gap:3px"><input id="vfb-ang-' +
+      id +
+      '" type="number" min="0" max="360" value="' +
+      angle +
+      '" style="width:58px" onchange="var a=(+this.value+360)%360;FB.panels.updateWidgetProp(\'' +
+      id +
+      "','flowAngle',a);var w=document.getElementById('vfb-wheel-" +
+      id +
+      "');if(w){var n=w.querySelector('span');if(n)n.style.transform='translateX(-50%) rotate('+(a-90)+'deg)';}\">" +
+      '<span style="font-size:10px;color:rgba(255,255,255,0.35)">0°=right · 90°=up</span></div>';
+    h += "</div></div>";
+    h +=
+      '<div class="rp-row"><label>Chaos / Turbulence</label><input type="checkbox"' +
+      (chaos ? " checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','chaosEnabled',this.checked)\"></div>";
+    if (chaos) {
+      h +=
+        '<div class="rp-row"><label>Turb. Frequency</label><div style="display:flex;align-items:center;gap:6px"><input type="range" min="0.5" max="12" step="0.5" value="' +
+        (p.chaosFrequency || 2) +
+        '" style="flex:1" oninput="this.nextElementSibling.textContent=this.value;FB.panels.updateWidgetProp(\'' +
+        id +
+        "','chaosFrequency',+this.value)\"><span style=\"width:24px;font-size:11px;color:rgba(255,255,255,0.5)\">" +
+        (p.chaosFrequency || 2) +
+        "</span></div></div>";
+    }
+    h += "</div></div>";
+    h +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Colour & Size</span></div><div class="rp-section-body">';
+    h +=
+      '<div class="rp-row"><label>Color A</label><input type="color" value="' +
+      (p.color1 || "#818cf8") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','color1',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Color B</label><input type="color" value="' +
+      (p.color2 || "#f472b6") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','color2',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Height (px)</label><input type="number" value="' +
+      (p.height || 600) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>";
+    h += "</div></div>";
+    return h;
+  },
+});
+
+// ── VELTRO ENGINE BATCH 5: BACKGROUNDS & TEXTURES ──
 FB.widgets.register("auroraBorealis", {
   label: "Aurora Borealis",
   sublabel: "Northern lights effect",
@@ -16784,7 +17207,8 @@ window._VeltroInitPhysics = function () {
         Matter.Composite.add(engine.world, bodies.concat(walls));
         Matter.Runner.run(runner, engine);
         var labels = wrap.querySelector(".veltro-physics-labels");
-        (function loop() {
+        var rafId = 0;
+        function loop() {
           if (!wrap.isConnected) {
             Matter.Runner.stop(runner);
             Matter.Engine.clear(engine);
@@ -16810,8 +17234,19 @@ window._VeltroInitPhysics = function () {
             el.style.top = b.position.y - hh + "px";
             el.style.transform = "rotate(" + b.angle + "rad)";
           });
-          requestAnimationFrame(loop);
-        })();
+          rafId = requestAnimationFrame(loop);
+        }
+        new IntersectionObserver(
+          function (e) {
+            if (e[0].isIntersecting) {
+              if (!rafId) rafId = requestAnimationFrame(loop);
+            } else {
+              cancelAnimationFrame(rafId);
+              rafId = 0;
+            }
+          },
+          { threshold: 0.01 },
+        ).observe(wrap);
         wrap.addEventListener("click", function (e) {
           var rect = wrap.getBoundingClientRect();
           var mx = e.clientX - rect.left,
@@ -16828,6 +17263,205 @@ window._VeltroInitPhysics = function () {
             }
           });
         });
+      });
+    });
+};
+
+window._VeltroInitImagePhysics = function () {
+  document
+    .querySelectorAll(".veltro-iphys-wrap:not([data-iphys-init])")
+    .forEach(function (wrap) {
+      wrap.dataset.iphysInit = "1";
+      var canvas = wrap.querySelector(".veltro-iphys-canvas");
+      if (!canvas) return;
+      var W = wrap.offsetWidth || 600;
+      var H = wrap.offsetHeight || 400;
+      canvas.width = W;
+      canvas.height = H;
+      var ctx = canvas.getContext("2d");
+      var gravity = +(wrap.dataset.gravity || 1);
+      var restitution = +(wrap.dataset.restitution || 0.5);
+      var imageShape = wrap.dataset.imageShape || "square";
+      var borderRadius = +(wrap.dataset.imageBorderRadius || 8);
+      var borderWidth = +(wrap.dataset.imageBorderWidth || 0);
+      var borderColor = wrap.dataset.imageBorderColor || "#ffffff";
+      var mouseInteraction = wrap.dataset.mouseInteraction !== "false";
+      var mouseForce = +(wrap.dataset.mouseForce || 5);
+      var windEnabled = wrap.dataset.windEnabled === "true";
+      var windStrength = +(wrap.dataset.windStrength || 0);
+      var images = JSON.parse(wrap.dataset.images || "[]");
+      var SIZE = Math.max(50, Math.min(Math.min(W, H) * 0.18, 120));
+
+      var imgObjs = images.map(function (src) {
+        var img = new Image();
+        img.crossOrigin = "anonymous";
+        img.src = src;
+        return img;
+      });
+
+      window._VeltroLoadMatter(function (Matter) {
+        var engine = Matter.Engine.create({ gravity: { y: gravity } });
+        var runner = Matter.Runner.create();
+        var opts = {
+          restitution: restitution,
+          friction: 0.1,
+          frictionAir: 0.01,
+        };
+        var bodies = images.map(function (src, i) {
+          var x = W * 0.2 + (i % 3) * (W * 0.3);
+          var y = H * 0.1 + Math.floor(i / 3) * SIZE * 1.6;
+          if (imageShape === "circle") {
+            return Matter.Bodies.circle(x, y, SIZE / 2, opts);
+          }
+          var cr = Math.min(borderRadius, SIZE / 4);
+          return Matter.Bodies.rectangle(
+            x,
+            y,
+            SIZE,
+            SIZE,
+            cr > 0
+              ? Object.assign({}, opts, { chamfer: { radius: cr } })
+              : opts,
+          );
+        });
+        var walls = [
+          Matter.Bodies.rectangle(W / 2, H + 25, W * 2, 50, { isStatic: true }),
+          Matter.Bodies.rectangle(-25, H / 2, 50, H * 2, { isStatic: true }),
+          Matter.Bodies.rectangle(W + 25, H / 2, 50, H * 2, { isStatic: true }),
+          Matter.Bodies.rectangle(W / 2, -25, W * 2, 50, { isStatic: true }),
+        ];
+        Matter.Composite.add(engine.world, bodies.concat(walls));
+        Matter.Runner.run(runner, engine);
+
+        var mousePos = { x: -9999, y: -9999 };
+        if (mouseInteraction) {
+          canvas.addEventListener("mousemove", function (e) {
+            var rect = canvas.getBoundingClientRect();
+            mousePos.x = e.clientX - rect.left;
+            mousePos.y = e.clientY - rect.top;
+          });
+          canvas.addEventListener("mouseleave", function () {
+            mousePos.x = -9999;
+            mousePos.y = -9999;
+          });
+          canvas.addEventListener("click", function (e) {
+            var rect = canvas.getBoundingClientRect();
+            var mx = e.clientX - rect.left;
+            var my = e.clientY - rect.top;
+            bodies.forEach(function (b) {
+              var dx = b.position.x - mx;
+              var dy = b.position.y - my;
+              var dist = Math.hypot(dx, dy);
+              if (dist < SIZE * 2 && dist > 0) {
+                var f = mouseForce * 0.001;
+                Matter.Body.applyForce(b, b.position, {
+                  x: (dx / dist) * f,
+                  y: (dy / dist) * f - f * 0.5,
+                });
+              }
+            });
+          });
+        }
+
+        var rafId = 0;
+        function loop() {
+          if (!wrap.isConnected) {
+            Matter.Runner.stop(runner);
+            Matter.Engine.clear(engine);
+            return;
+          }
+          var cw = wrap.offsetWidth || 600;
+          var ch = wrap.offsetHeight || 400;
+          if (cw !== W || ch !== H) {
+            W = cw;
+            H = ch;
+            canvas.width = W;
+            canvas.height = H;
+            Matter.Body.setPosition(walls[0], { x: W / 2, y: H + 25 });
+            Matter.Body.setPosition(walls[1], { x: -25, y: H / 2 });
+            Matter.Body.setPosition(walls[2], { x: W + 25, y: H / 2 });
+            Matter.Body.setPosition(walls[3], { x: W / 2, y: -25 });
+          }
+          if (windEnabled && windStrength) {
+            bodies.forEach(function (b) {
+              Matter.Body.applyForce(b, b.position, {
+                x: windStrength * 0.0001,
+                y: 0,
+              });
+            });
+          }
+          if (mouseInteraction && mousePos.x > -9000) {
+            bodies.forEach(function (b) {
+              var dx = b.position.x - mousePos.x;
+              var dy = b.position.y - mousePos.y;
+              var dist = Math.hypot(dx, dy);
+              if (dist < SIZE * 1.5 && dist > 0) {
+                var f = mouseForce * 0.00005;
+                Matter.Body.applyForce(b, b.position, {
+                  x: (dx / dist) * f,
+                  y: (dy / dist) * f,
+                });
+              }
+            });
+          }
+          ctx.clearRect(0, 0, W, H);
+          bodies.forEach(function (b, i) {
+            var img = imgObjs[i];
+            if (!img) return;
+            var hs = SIZE / 2;
+            var r = Math.min(borderRadius, hs / 2);
+            function drawShape() {
+              ctx.beginPath();
+              if (imageShape === "circle") {
+                ctx.arc(0, 0, hs, 0, Math.PI * 2);
+              } else {
+                ctx.moveTo(-hs + r, -hs);
+                ctx.lineTo(hs - r, -hs);
+                ctx.arcTo(hs, -hs, hs, -hs + r, r);
+                ctx.lineTo(hs, hs - r);
+                ctx.arcTo(hs, hs, hs - r, hs, r);
+                ctx.lineTo(-hs + r, hs);
+                ctx.arcTo(-hs, hs, -hs, hs - r, r);
+                ctx.lineTo(-hs, -hs + r);
+                ctx.arcTo(-hs, -hs, -hs + r, -hs, r);
+                ctx.closePath();
+              }
+            }
+            ctx.save();
+            ctx.translate(b.position.x, b.position.y);
+            ctx.rotate(b.angle);
+            ctx.save();
+            drawShape();
+            ctx.clip();
+            if (img.complete && img.naturalWidth) {
+              ctx.drawImage(img, -hs, -hs, SIZE, SIZE);
+            } else {
+              ctx.fillStyle = "rgba(255,255,255,0.1)";
+              ctx.fill();
+            }
+            ctx.restore();
+            if (borderWidth > 0) {
+              drawShape();
+              ctx.strokeStyle = borderColor;
+              ctx.lineWidth = borderWidth;
+              ctx.stroke();
+            }
+            ctx.restore();
+          });
+          rafId = requestAnimationFrame(loop);
+        }
+
+        new IntersectionObserver(
+          function (e) {
+            if (e[0].isIntersecting) {
+              if (!rafId) rafId = requestAnimationFrame(loop);
+            } else {
+              cancelAnimationFrame(rafId);
+              rafId = 0;
+            }
+          },
+          { threshold: 0.01 },
+        ).observe(wrap);
       });
     });
 };
@@ -16935,7 +17569,8 @@ window._VeltroInitShaders = function () {
         },
       };
       var t = 0;
-      (function loop() {
+      var rafId = 0;
+      function loop() {
         if (!c.isConnected) return;
         t += 0.016;
         c.width = c.offsetWidth;
@@ -16959,8 +17594,19 @@ window._VeltroInitShaders = function () {
         gl.uniform3fv(s.uCB, hex3(pr.colorB));
         gl.uniform3fv(s.uCC, hex3(pr.colorC));
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-        requestAnimationFrame(loop);
-      })();
+        rafId = requestAnimationFrame(loop);
+      }
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(loop);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(c);
     });
 };
 
@@ -17030,7 +17676,8 @@ window._VeltroInitInfiniteCanvas = function () {
       window.addEventListener("mousemove", handleMouseMove);
       window.addEventListener("mouseup", handleMouseUp);
       var frameCount = 0;
-      (function loop() {
+      var rafId = 0;
+      function loop() {
         if (!viewport.isConnected) {
           window.removeEventListener("mousemove", handleMouseMove);
           window.removeEventListener("mouseup", handleMouseUp);
@@ -17071,8 +17718,19 @@ window._VeltroInitInfiniteCanvas = function () {
             zoom: state.zoom,
           };
         }
-        requestAnimationFrame(loop);
-      })();
+        rafId = requestAnimationFrame(loop);
+      }
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(loop);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(viewport);
     });
 };
 
@@ -17173,6 +17831,7 @@ window._VeltroInitLiquidText = function () {
       var frequency = +(wrap.dataset.frequency || 0.05);
       var speed = +(wrap.dataset.speed || 0.02);
       var time = 0;
+      var rafId = 0;
       function animate() {
         if (!wrap.isConnected) return;
         time += speed;
@@ -17180,9 +17839,19 @@ window._VeltroInitLiquidText = function () {
           var y = Math.sin(i * frequency + time) * amplitude;
           char.style.transform = "translateY(" + y + "px)";
         });
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       }
-      animate();
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(wrap);
     });
 };
 
@@ -17201,7 +17870,7 @@ window._VeltroInitBubblePop = function () {
         H = rect.height;
         canvas.width = W * dpr;
         canvas.height = H * dpr;
-        ctx.scale(dpr, dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       }
       resize();
       var bubbleCount = +(wrap.dataset.bubbleCount || 20);
@@ -17221,6 +17890,7 @@ window._VeltroInitBubblePop = function () {
           color: colors[i % colors.length],
         });
       }
+      var rafId = 0;
       function animate() {
         if (!wrap.isConnected) return;
         ctx.clearRect(0, 0, W, H);
@@ -17236,9 +17906,19 @@ window._VeltroInitBubblePop = function () {
           ctx.fill();
         });
         ctx.globalAlpha = 1;
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       }
-      animate();
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(wrap);
       wrap.addEventListener("click", function (e) {
         var rect = wrap.getBoundingClientRect();
         var mx = e.clientX - rect.left,
@@ -17281,15 +17961,26 @@ window._VeltroInitAudioVisualizer = function () {
     .forEach(function (wrap) {
       wrap.setAttribute("data-init", "1");
       var bars = wrap.querySelectorAll(".veltro-audio-bar");
+      var rafId = 0;
       function animate() {
         if (!wrap.isConnected) return;
         bars.forEach(function (bar) {
           var h = 20 + Math.random() * 80;
           bar.style.height = h + "%";
         });
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       }
-      animate();
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(wrap);
     });
 };
 
@@ -17308,7 +17999,7 @@ window._VeltroInitConstellation = function () {
         H = rect.height;
         canvas.width = W * dpr;
         canvas.height = H * dpr;
-        ctx.scale(dpr, dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       }
       resize();
       var starCount = +(wrap.dataset.starCount || 80);
@@ -17325,6 +18016,7 @@ window._VeltroInitConstellation = function () {
           r: Math.random() * 2 + 1,
         });
       }
+      var rafId = 0;
       function animate() {
         if (!wrap.isConnected) return;
         ctx.clearRect(0, 0, W, H);
@@ -17354,9 +18046,19 @@ window._VeltroInitConstellation = function () {
             }
           }
         }
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       }
-      animate();
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(wrap);
     });
 };
 
@@ -17375,7 +18077,7 @@ window._VeltroInitGeometryDraw = function () {
         H = rect.height;
         canvas.width = W * dpr;
         canvas.height = H * dpr;
-        ctx.scale(dpr, dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       }
       resize();
       var color = wrap.dataset.color || "#cdfe00";
@@ -17469,7 +18171,9 @@ window._VeltroInitMultiShapeTrail = function () {
         }
         ctx.fill();
       }
+      var rafId = 0;
       function animate() {
+        if (!wrap.isConnected) return;
         ctx.clearRect(0, 0, W, H);
         trail.unshift({ x: mouseX, y: mouseY });
         if (trail.length > trailLength) trail.pop();
@@ -17483,9 +18187,19 @@ window._VeltroInitMultiShapeTrail = function () {
           drawShape(shape, point.x, point.y, size, color);
         });
         ctx.globalAlpha = 1;
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       }
-      animate();
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(wrap);
     });
 };
 
@@ -17570,7 +18284,10 @@ window._VeltroInitDistortion = function () {
         mouseX = e.clientX - r.left;
         mouseY = e.clientY - r.top;
       });
+      var rafId = 0;
+      var imgReady = img.complete;
       function animate() {
+        if (!wrap.isConnected) return;
         ctx.clearRect(0, 0, W, H);
         ctx.drawImage(img, 0, 0, W, H);
         var imageData = ctx.getImageData(0, 0, W, H);
@@ -17597,10 +18314,27 @@ window._VeltroInitDistortion = function () {
           }
         }
         ctx.putImageData(imageData, 0, 0);
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       }
-      if (img.complete) animate();
-      else img.onload = animate;
+      function tryStartDistortion() {
+        if (imgReady && !rafId) rafId = requestAnimationFrame(animate);
+      }
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            tryStartDistortion();
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(wrap);
+      if (!imgReady)
+        img.onload = function () {
+          imgReady = true;
+          tryStartDistortion();
+        };
     });
 };
 
@@ -17680,7 +18414,9 @@ window._VeltroInitGravityCursor = function () {
         mouseX = e.clientX - r.left;
         mouseY = e.clientY - r.top;
       });
+      var rafId = 0;
       function animate() {
+        if (!wrap.isConnected) return;
         ctx.fillStyle = "rgba(13,13,26,0.1)";
         ctx.fillRect(0, 0, W, H);
         particles.forEach(function (p) {
@@ -17705,9 +18441,19 @@ window._VeltroInitGravityCursor = function () {
           ctx.fillStyle = particleColor;
           ctx.fill();
         });
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       }
-      animate();
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(wrap);
     });
 };
 
@@ -17790,7 +18536,9 @@ window._VeltroInitParticleTrail = function () {
           });
         }
       });
+      var rafId = 0;
       function animate() {
+        if (!wrap.isConnected) return;
         ctx.clearRect(0, 0, W, H);
         for (var i = particles.length - 1; i >= 0; i--) {
           var p = particles[i];
@@ -17808,9 +18556,19 @@ window._VeltroInitParticleTrail = function () {
           ctx.fill();
         }
         ctx.globalAlpha = 1;
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       }
-      animate();
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(wrap);
     });
 };
 
@@ -17994,6 +18752,7 @@ window._VeltroInitMorphBlob = function () {
       var blob = el.querySelector(".veltro-morph-blob");
       if (!blob) return;
       var t = 0;
+      var rafId = 0;
       function animate() {
         t += 0.01;
         var r1 = 50 + Math.sin(t) * 10;
@@ -18017,9 +18776,19 @@ window._VeltroInitMorphBlob = function () {
           "% " +
           r1 +
           "%";
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       }
-      animate();
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(el);
     });
 };
 
@@ -18034,7 +18803,9 @@ window._VeltroInitNoiseGrain = function () {
       var W = (canvas.width = el.offsetWidth);
       var H = (canvas.height = el.offsetHeight);
       var imgData = ctx.createImageData(W, H);
+      var rafId = 0;
       function animate() {
+        if (!el.isConnected) return;
         for (var i = 0; i < imgData.data.length; i += 4) {
           var v = Math.random() * 255;
           imgData.data[i] = v;
@@ -18043,9 +18814,19 @@ window._VeltroInitNoiseGrain = function () {
           imgData.data[i + 3] = 15;
         }
         ctx.putImageData(imgData, 0, 0);
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       }
-      animate();
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(el);
     });
 };
 
@@ -18057,12 +18838,24 @@ window._VeltroInitGradientFlow = function () {
       var bg = el.querySelector(".veltro-gradient-bg");
       if (!bg) return;
       var hue = 0;
+      var rafId = 0;
       function animate() {
+        if (!el.isConnected) return;
         hue = (hue + 0.2) % 360;
         bg.style.filter = "hue-rotate(" + hue + "deg)";
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       }
-      animate();
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(el);
     });
 };
 
@@ -18154,14 +18947,26 @@ window._VeltroInitSoundReactive = function () {
     .forEach(function (el) {
       el.setAttribute("data-sound-init", "1");
       var bars = el.querySelectorAll(".veltro-sound-bar");
+      var rafId = 0;
       function animate() {
+        if (!el.isConnected) return;
         bars.forEach(function (bar) {
           var h = Math.random() * 80 + 20;
           bar.style.height = h + "%";
         });
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       }
-      animate();
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(el);
     });
 };
 
@@ -18182,15 +18987,27 @@ window._VeltroInitWaveText = function () {
       el.setAttribute("data-wave-init", "1");
       var chars = el.querySelectorAll(".veltro-wave-char");
       var t = 0;
+      var rafId = 0;
       function animate() {
+        if (!el.isConnected) return;
         t += 0.05;
         chars.forEach(function (c, i) {
           var y = Math.sin(t + i * 0.3) * 10;
           c.style.transform = "translateY(" + y + "px)";
         });
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       }
-      animate();
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(el);
     });
 };
 
@@ -18200,12 +19017,24 @@ window._VeltroInitRotatingText3d = function () {
     .forEach(function (el) {
       el.setAttribute("data-rot3d-init", "1");
       var t = 0;
+      var rafId = 0;
       function animate() {
+        if (!el.isConnected) return;
         t += 0.5;
         el.style.transform = "perspective(500px) rotateY(" + t + "deg)";
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       }
-      animate();
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(el);
     });
 };
 
@@ -18271,33 +19100,136 @@ window._VeltroInitGravityWells = function () {
       var canvas = el.querySelector("canvas");
       if (!canvas) return;
       var ctx = canvas.getContext("2d");
-      var W = (canvas.width = el.offsetWidth);
-      var H = (canvas.height = el.offsetHeight);
+      var dpr = window.devicePixelRatio || 1;
+      function resize() {
+        canvas.width = el.offsetWidth * dpr;
+        canvas.height = el.offsetHeight * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      resize();
+      var W = el.offsetWidth;
+      var H = el.offsetHeight;
+
+      var wrap = el.querySelector(".veltro-gravwell-wrap") || el;
+      var ds = wrap.dataset;
+      var particleCount = +(ds.particleCount || 100);
+      var wellStrength = +(ds.wellStrength || 0.5);
+      var particleColor = ds.particleColor || "#cdfe00";
+      var wellCount = +(ds.wellCount || 3);
+      var wellRadius = +(ds.wellRadius || 20);
+      var particleSize = +(ds.particleSize || 2);
+      var particleTrail = ds.particleTrail !== "false";
+      var wellMode = ds.wellMode || "attract";
+      var randomColor = ds.particleRandomColor === "true";
+      var wellGlow = ds.wellGlow !== "false";
+      var glowColor = ds.glowColor || "#34d399";
+
       var particles = [];
-      var wells = [
-        { x: W * 0.3, y: H * 0.5, strength: 2 },
-        { x: W * 0.7, y: H * 0.5, strength: 2 },
-      ];
-      for (var i = 0; i < 80; i++) {
+      for (var i = 0; i < particleCount; i++) {
         particles.push({
           x: Math.random() * W,
           y: Math.random() * H,
           vx: (Math.random() - 0.5) * 2,
           vy: (Math.random() - 0.5) * 2,
-          size: Math.random() * 2 + 1,
+          size: particleSize * (0.5 + Math.random()),
+          hue: Math.random() * 360,
         });
       }
+
+      var wells = [];
+      function initWells(count) {
+        wells = [];
+        for (var i = 0; i < count; i++) {
+          var angle = (i / count) * Math.PI * 2;
+          var r = Math.min(W, H) * 0.3;
+          wells.push({
+            x: W / 2 + Math.cos(angle) * r,
+            y: H / 2 + Math.sin(angle) * r,
+            strength: wellStrength,
+          });
+        }
+      }
+      initWells(wellCount);
+
+      el.addEventListener("click", function (e) {
+        var rect = el.getBoundingClientRect();
+        var mx = e.clientX - rect.left,
+          my = e.clientY - rect.top;
+        var closest = null,
+          minDist = Infinity;
+        wells.forEach(function (w) {
+          var d = Math.hypot(w.x - mx, w.y - my);
+          if (d < minDist) {
+            minDist = d;
+            closest = w;
+          }
+        });
+        if (closest && minDist < Math.max(wellRadius * 2, 40)) {
+          wells = wells.filter(function (w) {
+            return w !== closest;
+          });
+        } else {
+          wells.push({ x: mx, y: my, strength: wellStrength });
+        }
+      });
+
+      var rafId = 0;
       function animate() {
-        ctx.fillStyle = "rgba(10,10,20,0.2)";
+        if (!canvas.isConnected) return;
+        W = el.offsetWidth;
+        H = el.offsetHeight;
+
+        if (particleTrail) {
+          ctx.fillStyle = "rgba(10,10,20,0.15)";
+        } else {
+          ctx.clearRect(0, 0, W, H);
+        }
         ctx.fillRect(0, 0, W, H);
+
+        wells.forEach(function (w) {
+          if (wellGlow) {
+            var grad = ctx.createRadialGradient(
+              w.x,
+              w.y,
+              0,
+              w.x,
+              w.y,
+              wellRadius * 3,
+            );
+            grad.addColorStop(0, glowColor + "40");
+            grad.addColorStop(1, glowColor + "00");
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(w.x, w.y, wellRadius * 3, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.beginPath();
+          ctx.arc(w.x, w.y, wellRadius, 0, Math.PI * 2);
+          ctx.strokeStyle = glowColor;
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          ctx.fillStyle = glowColor + "30";
+          ctx.fill();
+        });
+
         particles.forEach(function (p) {
           wells.forEach(function (w) {
             var dx = w.x - p.x,
               dy = w.y - p.y;
             var dist = Math.sqrt(dx * dx + dy * dy) + 1;
-            var force = (w.strength * 50) / (dist * dist);
-            p.vx += (dx / dist) * force;
-            p.vy += (dy / dist) * force;
+            if (wellMode === "repel") {
+              var force = (w.strength * 100) / (dist * dist);
+              p.vx -= (dx / dist) * force;
+              p.vy -= (dy / dist) * force;
+            } else if (wellMode === "orbit") {
+              var f = (w.strength * 30) / (dist + 10);
+              p.vx += (-dy / dist) * f;
+              p.vy += (dx / dist) * f;
+            } else {
+              var force = (w.strength * 50) / (dist * dist);
+              p.vx += (dx / dist) * force;
+              p.vy += (dy / dist) * force;
+            }
           });
           p.vx *= 0.98;
           p.vy *= 0.98;
@@ -18307,14 +19239,28 @@ window._VeltroInitGravityWells = function () {
           if (p.x > W) p.x = 0;
           if (p.y < 0) p.y = H;
           if (p.y > H) p.y = 0;
+          var col = randomColor
+            ? "hsl(" + ((p.hue + Date.now() * 0.01) % 360) + ",70%,60%)"
+            : particleColor;
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fillStyle = "#00d4ff";
+          ctx.fillStyle = col;
           ctx.fill();
         });
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       }
-      animate();
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(el);
+      window.addEventListener("resize", resize);
     });
 };
 
@@ -18326,33 +19272,180 @@ window._VeltroInitFluidSimulation = function () {
       var canvas = el.querySelector("canvas");
       if (!canvas) return;
       var ctx = canvas.getContext("2d");
-      var W = (canvas.width = el.offsetWidth);
-      var H = (canvas.height = el.offsetHeight);
+      var dpr = window.devicePixelRatio || 1;
+      function resize() {
+        canvas.width = el.offsetWidth * dpr;
+        canvas.height = el.offsetHeight * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      resize();
+      var W = el.offsetWidth;
+      var H = el.offsetHeight;
+
+      var wrap = el.querySelector(".veltro-fluid-wrap") || el;
+      var ds = wrap.dataset;
+      var particleCount = +(ds.particleCount || 200);
+      var viscosity = +(ds.viscosity || 0.5);
+      var color1 = ds.color1 || "#3b82f6";
+      var color2 = ds.color2 || "#ec4899";
+      var fluidMode = ds.fluidMode || "flow";
+      var fluidDensity = +(ds.fluidDensity || 1);
+      var fluidPressure = +(ds.fluidPressure || 0.5);
+      var fluidTurbulence = +(ds.fluidTurbulence || 0.3);
+      var colorBlend = ds.colorBlend || "gradient";
+      var mouseForce = +(ds.mouseForce || 5);
+
+      var particles = [];
+      for (var i = 0; i < particleCount; i++) {
+        particles.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 2,
+          vy: (Math.random() - 0.5) * 2,
+          size: Math.random() * 3 + 1,
+          phase: Math.random() * Math.PI * 2,
+          baseColor: Math.random(),
+        });
+      }
+
       var mouseX = W / 2,
-        mouseY = H / 2;
+        mouseY = H / 2,
+        prevMouseX = mouseX,
+        prevMouseY = mouseY;
       el.addEventListener("mousemove", function (e) {
         var rect = el.getBoundingClientRect();
+        prevMouseX = mouseX;
+        prevMouseY = mouseY;
         mouseX = e.clientX - rect.left;
         mouseY = e.clientY - rect.top;
       });
-      var t = 0;
-      function animate() {
-        t += 0.02;
-        ctx.fillStyle = "rgba(5,5,15,0.1)";
-        ctx.fillRect(0, 0, W, H);
-        for (var i = 0; i < 20; i++) {
-          var angle = t + i * 0.5;
-          var r = 50 + Math.sin(t + i) * 30;
-          var x = mouseX + Math.cos(angle) * r;
-          var y = mouseY + Math.sin(angle) * r;
-          ctx.beginPath();
-          ctx.arc(x, y, 3, 0, Math.PI * 2);
-          ctx.fillStyle = "hsla(" + ((t * 50 + i * 20) % 360) + ",70%,60%,0.5)";
-          ctx.fill();
-        }
-        requestAnimationFrame(animate);
+      el.addEventListener("mouseleave", function () {
+        prevMouseX = mouseX;
+        prevMouseY = mouseY;
+      });
+
+      function hexToRgb(h) {
+        h = h.replace("#", "");
+        return {
+          r: parseInt(h.substring(0, 2), 16),
+          g: parseInt(h.substring(2, 4), 16),
+          b: parseInt(h.substring(4, 6), 16),
+        };
       }
-      animate();
+
+      var c1 = hexToRgb(color1);
+      var c2 = hexToRgb(color2);
+
+      function lerpColor(a, b, t) {
+        var r = Math.round(a.r + (b.r - a.r) * t);
+        var g = Math.round(a.g + (b.g - a.g) * t);
+        var b2 = Math.round(a.b + (b.b - a.b) * t);
+        return "rgb(" + r + "," + g + "," + b2 + ")";
+      }
+
+      var rafId = 0;
+      function animate() {
+        if (!canvas.isConnected) return;
+        W = el.offsetWidth;
+        H = el.offsetHeight;
+
+        ctx.fillStyle =
+          "rgba(5,5,15," + Math.max(0.02, 1 - viscosity) * 0.15 + ")";
+        ctx.fillRect(0, 0, W, H);
+
+        var dmx = mouseX - prevMouseX;
+        var dmy = mouseY - prevMouseY;
+        var mouseSpeed = Math.sqrt(dmx * dmx + dmy * dmy);
+
+        particles.forEach(function (p) {
+          var dx = mouseX - p.x,
+            dy = mouseY - p.y;
+          var dist = Math.sqrt(dx * dx + dy * dy) + 1;
+
+          if (dist < 150) {
+            var f = (mouseForce * (1 - dist / 150)) / (viscosity + 0.1);
+            if (fluidMode === "burst") {
+              var angle = Math.atan2(dy, dx);
+              p.vx -= Math.cos(angle) * f * 0.5;
+              p.vy -= Math.sin(angle) * f * 0.5;
+            } else if (fluidMode === "swirl") {
+              p.vx += (-dy / dist) * f * 0.8;
+              p.vy += (dx / dist) * f * 0.8;
+            } else {
+              p.vx += (dx / dist) * f * 0.3 + dmx * 0.05;
+              p.vy += (dy / dist) * f * 0.3 + dmy * 0.05;
+            }
+          }
+
+          if (mouseSpeed > 10) {
+            p.vx += (Math.random() - 0.5) * mouseSpeed * 0.02;
+            p.vy += (Math.random() - 0.5) * mouseSpeed * 0.02;
+          }
+
+          p.vx += (Math.random() - 0.5) * fluidTurbulence * 0.3;
+          p.vy += (Math.random() - 0.5) * fluidTurbulence * 0.3;
+
+          p.vx *= 0.97;
+          p.vy *= 0.97;
+
+          if (fluidPressure > 0) {
+            for (var n = 0; n < particles.length && n < 5; n++) {
+              var q = particles[n];
+              if (q === p) continue;
+              var pdx = p.x - q.x,
+                pdy = p.y - q.y;
+              var pd = Math.sqrt(pdx * pdx + pdy * pdy) + 1;
+              if (pd < 30) {
+                var push = fluidPressure * (1 - pd / 30) * 0.02;
+                p.vx += (pdx / pd) * push;
+                p.vy += (pdy / pd) * push;
+              }
+            }
+          }
+
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0) p.x = W;
+          if (p.x > W) p.x = 0;
+          if (p.y < 0) p.y = H;
+          if (p.y > H) p.y = 0;
+
+          var blend;
+          if (colorBlend === "random") {
+            blend = p.baseColor;
+          } else if (colorBlend === "split") {
+            blend = i < particleCount / 2 ? 0 : 1;
+          } else {
+            blend = Math.atan2(p.vy, p.vx) / Math.PI + 0.5;
+          }
+          var col = lerpColor(c1, c2, blend);
+
+          if (fluidGlow) {
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = col;
+          }
+          ctx.globalAlpha = fluidOpacity;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = col;
+          ctx.fill();
+          ctx.globalAlpha = 1;
+          ctx.shadowBlur = 0;
+        });
+        rafId = requestAnimationFrame(animate);
+      }
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(el);
+      window.addEventListener("resize", resize);
     });
 };
 
@@ -18364,30 +19457,79 @@ window._VeltroInitClothSimulation = function () {
       var canvas = el.querySelector("canvas");
       if (!canvas) return;
       var ctx = canvas.getContext("2d");
-      var W = (canvas.width = el.offsetWidth);
-      var H = (canvas.height = el.offsetHeight);
-      var cols = 15,
-        rows = 10,
-        spacing = 20;
+      var dpr = window.devicePixelRatio || 1;
+      function resize() {
+        canvas.width = el.offsetWidth * dpr;
+        canvas.height = el.offsetHeight * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      resize();
+      var W = el.offsetWidth;
+      var H = el.offsetHeight;
+
+      var wrap = el.querySelector(".veltro-cloth-wrap") || el;
+      var ds = wrap.dataset;
+      var cols = +(ds.cols || 20);
+      var rows = +(ds.rows || 15);
+      var stiffness = +(ds.stiffness || 0.9);
+      var damping = +(ds.damping || 0.9);
+      var color = ds.color || "#cdfe00";
+      var clothGravity = +(ds.clothGravity || 0.5);
+      var clothWind = ds.clothWind === "true";
+      var windStrength = +(ds.windStrength || 0.2);
+      var lineWidth = +(ds.lineWidth || 1);
+      var lineOpacity = +(ds.lineOpacity || 80) / 100;
+      var pinEdges = ds.pinEdges || "top";
+      var mouseTear = ds.mouseTear === "true";
+      var tearForce = +(ds.tearForce || 10);
+      var useGradient = ds.useGradient === "true";
+
+      var spacing = Math.min(W / (cols + 1), H / (rows + 1), 25);
+      var offsetX = (W - (cols - 1) * spacing) / 2;
+      var offsetY = 40;
+
+      function hexToRgb(h) {
+        h = h.replace("#", "");
+        return {
+          r: parseInt(h.substring(0, 2), 16),
+          g: parseInt(h.substring(2, 4), 16),
+          b: parseInt(h.substring(4, 6), 16),
+        };
+      }
+
+      var pointColor = hexToRgb(color);
+
       var points = [];
       for (var y = 0; y < rows; y++) {
         for (var x = 0; x < cols; x++) {
+          var px = x * spacing + offsetX;
+          var py = y * spacing + offsetY;
+          var pinned =
+            (pinEdges === "top" && y === 0) ||
+            (pinEdges === "all" &&
+              (y === 0 || y === rows - 1 || x === 0 || x === cols - 1));
           points.push({
-            x: x * spacing + (W - cols * spacing) / 2,
-            y: y * spacing + 50,
-            ox: x * spacing + (W - cols * spacing) / 2,
-            oy: y * spacing + 50,
+            x: px,
+            y: py,
+            ox: px,
+            oy: py,
             vx: 0,
             vy: 0,
-            pinned: y === 0,
+            pinned: pinned,
+            active: true,
           });
         }
       }
+
       var mouseX = 0,
         mouseY = 0,
+        prevMouseX = 0,
+        prevMouseY = 0,
         mouseDown = false;
       el.addEventListener("mousemove", function (e) {
         var rect = el.getBoundingClientRect();
+        prevMouseX = mouseX;
+        prevMouseY = mouseY;
         mouseX = e.clientX - rect.left;
         mouseY = e.clientY - rect.top;
       });
@@ -18397,47 +19539,132 @@ window._VeltroInitClothSimulation = function () {
       el.addEventListener("mouseup", function () {
         mouseDown = false;
       });
+      el.addEventListener("mouseleave", function () {
+        mouseDown = false;
+      });
+
+      var windTime = 0;
+
+      var rafId = 0;
       function animate() {
+        if (!canvas.isConnected) return;
+        W = el.offsetWidth;
+        H = el.offsetHeight;
+        windTime += 0.02;
+
         ctx.clearRect(0, 0, W, H);
+
+        var windX = clothWind ? Math.sin(windTime) * windStrength * 3 : 0;
+
         points.forEach(function (p) {
-          if (p.pinned) return;
+          if (p.pinned || !p.active) return;
+
           var dx = mouseX - p.x,
             dy = mouseY - p.y;
           var dist = Math.sqrt(dx * dx + dy * dy);
-          if (mouseDown && dist < 50) {
-            p.vx += dx * 0.01;
-            p.vy += dy * 0.01;
+
+          if (mouseDown) {
+            if (dist < 60) {
+              var pf = 1 - dist / 60;
+              p.vx += dx * pf * 0.03;
+              p.vy += dy * pf * 0.03;
+            }
+            if (mouseTear && dist < 20) {
+              var tearDist =
+                Math.abs(prevMouseX - mouseX) + Math.abs(prevMouseY - mouseY);
+              if (tearDist > tearForce) {
+                p.active = false;
+                return;
+              }
+            }
           }
-          p.vy += 0.2;
-          p.vx += (p.ox - p.x) * 0.01;
-          p.vy += (p.oy - p.y) * 0.01;
-          p.vx *= 0.95;
-          p.vy *= 0.95;
+
+          p.vy += clothGravity * 0.5;
+          p.vx += windX * 0.05;
+          p.vx += (p.ox - p.x) * stiffness * 0.02;
+          p.vy += (p.oy - p.y) * stiffness * 0.02;
+          p.vx *= damping * 0.97 + 0.03;
+          p.vy *= damping * 0.97 + 0.03;
           p.x += p.vx;
           p.y += p.vy;
         });
+
         ctx.beginPath();
+        ctx.lineWidth = lineWidth;
+        var maxDist = spacing * 2.5;
+
         for (var y = 0; y < rows; y++) {
           for (var x = 0; x < cols - 1; x++) {
-            var p1 = points[y * cols + x],
-              p2 = points[y * cols + x + 1];
+            var idx = y * cols + x;
+            var p1 = points[idx],
+              p2 = points[idx + 1];
+            if (!p1.active || !p2.active) continue;
+            if (Math.hypot(p1.x - p2.x, p1.y - p2.y) > maxDist) continue;
             ctx.moveTo(p1.x, p1.y);
             ctx.lineTo(p2.x, p2.y);
           }
         }
         for (var x = 0; x < cols; x++) {
           for (var y = 0; y < rows - 1; y++) {
-            var p1 = points[y * cols + x],
-              p2 = points[(y + 1) * cols + x];
+            var idx = y * cols + x;
+            var p1 = points[idx],
+              p2 = points[idx + cols];
+            if (!p1.active || !p2.active) continue;
+            if (Math.hypot(p1.x - p2.x, p1.y - p2.y) > maxDist) continue;
             ctx.moveTo(p1.x, p1.y);
             ctx.lineTo(p2.x, p2.y);
           }
         }
-        ctx.strokeStyle = "rgba(0,212,255,0.5)";
+
+        if (useGradient) {
+          var grad = ctx.createLinearGradient(0, 0, W, H);
+          var c2r = Math.min(255, pointColor.r + 80);
+          var c2g = Math.min(255, pointColor.g + 80);
+          var c2b = Math.min(255, pointColor.b + 80);
+          grad.addColorStop(
+            0,
+            "rgba(" +
+              pointColor.r +
+              "," +
+              pointColor.g +
+              "," +
+              pointColor.b +
+              "," +
+              lineOpacity +
+              ")",
+          );
+          grad.addColorStop(
+            1,
+            "rgba(" + c2r + "," + c2g + "," + c2b + "," + lineOpacity + ")",
+          );
+          ctx.strokeStyle = grad;
+        } else {
+          ctx.strokeStyle =
+            "rgba(" +
+            pointColor.r +
+            "," +
+            pointColor.g +
+            "," +
+            pointColor.b +
+            "," +
+            lineOpacity +
+            ")";
+        }
         ctx.stroke();
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       }
-      animate();
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(el);
+      window.addEventListener("resize", resize);
     });
 };
 
@@ -18459,7 +19686,9 @@ window._VeltroInitMagneticFields = function () {
           angle: Math.random() * Math.PI * 2,
         });
       }
+      var rafId = 0;
       function animate() {
+        if (!el.isConnected) return;
         ctx.fillStyle = "rgba(8,8,16,0.1)";
         ctx.fillRect(0, 0, W, H);
         particles.forEach(function (p) {
@@ -18479,9 +19708,19 @@ window._VeltroInitMagneticFields = function () {
           ctx.fillStyle = "#ff6b6b";
           ctx.fill();
         });
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       }
-      animate();
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(el);
     });
 };
 
@@ -18493,44 +19732,246 @@ window._VeltroInitPendulumWave = function () {
       var canvas = el.querySelector("canvas");
       if (!canvas) return;
       var ctx = canvas.getContext("2d");
-      var W = (canvas.width = el.offsetWidth);
-      var H = (canvas.height = el.offsetHeight);
-      var pendulums = [];
-      for (var i = 0; i < 12; i++) {
-        pendulums.push({
-          length: 100 + i * 15,
-          angle: Math.PI / 4,
-          speed: 0.02 + i * 0.002,
-          phase: i * 0.3,
-        });
+
+      var wrap = el.querySelector("[class*='pendulum-wrap']") || el;
+      var ds = wrap.dataset;
+      var count = Math.max(2, +(ds.count || 12));
+      var speed = +(ds.speed || 1);
+      var color = ds.color || "#cdfe00";
+      var color2 = ds.color2 || "#3b82f6";
+      var colorMode = ds.colorMode || "single";
+      var lineColor = ds.lineColor || "";
+      var trailOn = ds.showTrail === "true";
+      var trailLen = Math.max(5, +(ds.trailLength || 20));
+      var amp = +(ds.amplitude || 80);
+      var pLen = Math.max(30, +(ds.pendulumLength || 100));
+      var bobSize = Math.max(2, +(ds.bobSize || 6));
+      var lineW = Math.max(0, +(ds.lineWidth || 1));
+      var gravity = +(ds.gravity || 1);
+      var layout = ds.layout || "bottom";
+      var bobShape = ds.bobShape || "circle";
+      var glow = ds.glow === "true";
+      var waveMode = ds.waveMode || "sine";
+
+      function resize() {
+        canvas.width = el.offsetWidth;
+        canvas.height = el.offsetHeight;
       }
-      var t = 0;
-      function animate() {
-        t += 0.016;
-        ctx.fillStyle = "rgba(5,5,15,0.2)";
-        ctx.fillRect(0, 0, W, H);
-        var originX = W / 2,
-          originY = 50;
-        pendulums.forEach(function (p, i) {
-          var angle = p.angle * Math.cos(t * p.speed * 10 + p.phase);
-          var x = originX + Math.sin(angle) * p.length;
-          var y = originY + Math.cos(angle) * p.length;
-          ctx.beginPath();
-          ctx.moveTo(originX, originY);
-          ctx.lineTo(x, y);
-          ctx.strokeStyle = "hsla(" + i * 30 + ",70%,60%,0.6)";
+      resize();
+      var W = canvas.width,
+        H = canvas.height;
+
+      var pendulums = [],
+        trails = [];
+      for (var i = 0; i < count; i++) {
+        var ratio = i / Math.max(count - 1, 1);
+        if (layout === "center") {
+          var a = (i / count) * Math.PI * 2;
+          var r = Math.min(W, H) * 0.25;
+          pendulums.push({
+            ax: W / 2 + Math.cos(a) * r,
+            ay: H / 2 + Math.sin(a) * r,
+            len: pLen * (0.6 + ratio * 0.6),
+            angle: 0.3,
+            vel: 0,
+            phase: ratio * Math.PI * 0.8,
+            freq:
+              waveMode === "progressive"
+                ? 0.7 + ratio * 0.3
+                : 0.88 + ratio * 0.12,
+          });
+        } else if (layout === "scattered") {
+          pendulums.push({
+            ax: 30 + Math.random() * Math.max(W - 60, 1),
+            ay: 30 + Math.random() * Math.max(H * 0.3, 1),
+            len: pLen * (0.5 + Math.random() * 0.8),
+            angle: 0.15 + Math.random() * 0.2,
+            vel: 0,
+            phase: Math.random() * Math.PI * 2,
+            freq: 0.8 + Math.random() * 0.4,
+          });
+        } else {
+          pendulums.push({
+            ax: ((i + 0.5) / count) * W,
+            ay: Math.min(H * 0.12, 40),
+            len: pLen * (0.7 + ratio * 0.6),
+            angle: Math.PI / 4,
+            vel: 0,
+            phase: ratio * Math.PI * 0.8,
+            freq: 0.02 + ratio * 0.012,
+          });
+        }
+        if (trailOn) trails.push([]);
+      }
+
+      el.addEventListener("mousemove", function (e) {
+        var rect = el.getBoundingClientRect();
+        var mx = e.clientX - rect.left,
+          my = e.clientY - rect.top;
+        for (var k = 0; k < pendulums.length; k++) {
+          var p = pendulums[k];
+          var dx = mx - p.ax,
+            dy = my - p.ay;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < p.len * 1.5) {
+            p.angle += (dx > 0 ? 1 : -1) * (1 - dist / (p.len * 1.5)) * 0.005;
+          }
+        }
+      });
+
+      function drawBob(x, y, r, col) {
+        ctx.beginPath();
+        if (bobShape === "ring") {
+          ctx.arc(x, y, r, 0, 7);
+          ctx.strokeStyle = col;
+          ctx.lineWidth = Math.max(2, r * 0.35);
           ctx.stroke();
-          ctx.beginPath();
-          ctx.arc(x, y, 6, 0, Math.PI * 2);
-          ctx.fillStyle = "hsla(" + i * 30 + ",70%,60%,0.9)";
+        } else if (bobShape === "diamond") {
+          ctx.moveTo(x, y - r * 1.4);
+          ctx.lineTo(x + r, y);
+          ctx.lineTo(x, y + r * 1.4);
+          ctx.lineTo(x - r, y);
+          ctx.closePath();
+          ctx.fillStyle = col;
           ctx.fill();
-        });
-        requestAnimationFrame(animate);
+        } else if (bobShape === "drop") {
+          ctx.moveTo(x, y - r * 1.6);
+          ctx.bezierCurveTo(
+            x + r,
+            y - r * 0.3,
+            x + r,
+            y + r * 1,
+            x,
+            y + r * 1.2,
+          );
+          ctx.bezierCurveTo(
+            x - r,
+            y + r * 1,
+            x - r,
+            y - r * 0.3,
+            x,
+            y - r * 1.6,
+          );
+          ctx.closePath();
+          ctx.fillStyle = col;
+          ctx.fill();
+        } else {
+          ctx.arc(x, y, r, 0, 7);
+          ctx.fillStyle = col;
+          ctx.fill();
+        }
       }
-      animate();
+
+      var t = 0;
+      var rafId = 0;
+      function animate() {
+        if (!el.isConnected) return;
+        t += 0.016 * speed;
+        if (trailOn) {
+          ctx.fillStyle = "rgba(5,5,15,0.1)";
+          ctx.fillRect(0, 0, W, H);
+        } else {
+          ctx.fillStyle = "#0d0d1a";
+          ctx.fillRect(0, 0, W, H);
+        }
+
+        for (var k = 0; k < pendulums.length; k++) {
+          var p = pendulums[k];
+          var ratio = k / Math.max(count - 1, 1);
+          var angle;
+
+          if (waveMode === "bounce") {
+            angle = Math.sin(t * p.freq * 3 + p.phase) * 0.6;
+          } else if (waveMode === "chaos") {
+            angle =
+              Math.sin(t * 0.7 + p.phase) * 0.4 +
+              Math.sin(t * 1.3 + ratio * 2) * 0.3;
+          } else if (waveMode === "progressive") {
+            angle = Math.sin(t * (0.8 + ratio * 0.2) + ratio * 1.5) * 0.5;
+          } else if (layout === "bottom") {
+            angle = p.angle * Math.cos(t * p.freq * 10 + p.phase);
+          } else {
+            angle = Math.sin(t * p.freq * 8 + p.phase) * 0.5;
+          }
+
+          var bx = p.ax + Math.sin(angle) * p.len * (amp / 80);
+          var by = p.ay + Math.cos(angle) * p.len;
+
+          if (trailOn && trails[k]) {
+            trails[k].push([bx, by]);
+            if (trails[k].length > trailLen) trails[k].shift();
+          }
+
+          var col;
+          if (colorMode === "rainbow") {
+            col = "hsl(" + (((k * 360) / count + t * 50) % 360) + ",80%,60%)";
+          } else if (colorMode === "gradient") {
+            var h1 = parseInt(color.slice(1, 3), 16),
+              h2 = parseInt(color.slice(3, 5), 16),
+              h3 = parseInt(color.slice(5, 7), 16);
+            var t1 = parseInt(color2.slice(1, 3), 16),
+              t2 = parseInt(color2.slice(3, 5), 16),
+              t3 = parseInt(color2.slice(5, 7), 16);
+            col =
+              "rgb(" +
+              Math.round(h1 + (t1 - h1) * ratio) +
+              "," +
+              Math.round(h2 + (t2 - h2) * ratio) +
+              "," +
+              Math.round(h3 + (t3 - h3) * ratio) +
+              ")";
+          } else {
+            col = color;
+          }
+
+          if (glow) {
+            ctx.shadowBlur = bobSize * 4;
+            ctx.shadowColor = col;
+          }
+
+          if (trailOn && trails[k] && trails[k].length > 1) {
+            for (var j = 1; j < trails[k].length; j++) {
+              var a = j / trails[k].length;
+              ctx.beginPath();
+              ctx.arc(
+                trails[k][j][0],
+                trails[k][j][1],
+                bobSize * a * 0.3,
+                0,
+                7,
+              );
+              ctx.fillStyle = col;
+              ctx.globalAlpha = a * 0.3;
+              ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+          }
+
+          ctx.beginPath();
+          ctx.moveTo(p.ax, p.ay);
+          ctx.lineTo(bx, by);
+          ctx.strokeStyle = lineColor || col;
+          ctx.lineWidth = lineW;
+          ctx.stroke();
+
+          drawBob(bx, by, bobSize, col);
+          ctx.shadowBlur = 0;
+        }
+        rafId = requestAnimationFrame(animate);
+      }
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(el);
     });
 };
-
 window._VeltroInitCollisionChaos = function () {
   document
     .querySelectorAll(".fw-widget-collisionChaos:not([data-cc-init])")
@@ -18552,7 +19993,9 @@ window._VeltroInitCollisionChaos = function () {
           color: "hsl(" + Math.random() * 360 + ",70%,60%)",
         });
       }
+      var rafId = 0;
       function animate() {
+        if (!el.isConnected) return;
         ctx.fillStyle = "rgba(10,10,20,0.25)";
         ctx.fillRect(0, 0, W, H);
         balls.forEach(function (b) {
@@ -18565,9 +20008,19 @@ window._VeltroInitCollisionChaos = function () {
           ctx.fillStyle = b.color;
           ctx.fill();
         });
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       }
-      animate();
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(el);
     });
 };
 
@@ -18593,7 +20046,9 @@ window._VeltroInitBlackHole = function () {
         });
       }
       var t = 0;
+      var rafId = 0;
       function animate() {
+        if (!el.isConnected) return;
         t += 0.016;
         ctx.fillStyle = "rgba(5,5,15,0.15)";
         ctx.fillRect(0, 0, W, H);
@@ -18620,9 +20075,19 @@ window._VeltroInitBlackHole = function () {
         ctx.strokeStyle = "#ff6b6b";
         ctx.lineWidth = 2;
         ctx.stroke();
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       }
-      animate();
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(el);
     });
 };
 
@@ -18699,7 +20164,9 @@ window._VeltroInitVelocitySkew = function () {
       var targets = el.querySelectorAll(".veltro-velocity-target");
       var lastScroll = 0,
         velocity = 0;
+      var rafId = 0;
       function update() {
+        if (!el.isConnected) return;
         var current = window.scrollY || window.pageYOffset;
         velocity += (current - lastScroll - velocity) * 0.1;
         lastScroll = current;
@@ -18707,9 +20174,549 @@ window._VeltroInitVelocitySkew = function () {
           t.style.transform =
             "skewX(" + Math.max(-8, Math.min(8, velocity)) + "deg)";
         });
-        requestAnimationFrame(update);
+        rafId = requestAnimationFrame(update);
       }
-      update();
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(update);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(el);
+    });
+};
+
+// ── Scroll Fluid (WebGL fluid sim) ──
+window._VeltroInitScrollFluid = function () {
+  document
+    .querySelectorAll(".fw-widget-scrollFluid:not([data-sf-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-sf-init", "1");
+      var canvas = el.querySelector("canvas");
+      if (!canvas) return;
+      var gl =
+        canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+      if (!gl) return;
+      var wrap = el.querySelector(".veltro-fluid-wrap") || el;
+      var ds = wrap.dataset;
+
+      var color1 = ds.color1 || "#3b82f6";
+      var color2 = ds.color2 || "#ec4899";
+      var scrollStrength = +(ds.scrollStrength || 0.5);
+      var cursorStrength = +(ds.cursorStrength || 0.2);
+      var decay = +(ds.decay || 0.99);
+      var intensity = +(ds.intensity || 1);
+      var simRes = Math.max(64, Math.min(512, +(ds.resolution || 256)));
+      var W = 0,
+        H = 0;
+
+      function hex3(h) {
+        return [
+          parseInt(h.slice(1, 3), 16) / 255,
+          parseInt(h.slice(3, 5), 16) / 255,
+          parseInt(h.slice(5, 7), 16) / 255,
+        ];
+      }
+
+      function compileShader(src, type) {
+        var s = gl.createShader(type);
+        gl.shaderSource(s, src);
+        gl.compileShader(s);
+        if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+          gl.deleteShader(s);
+          return null;
+        }
+        return s;
+      }
+
+      function createProgram(vSrc, fSrc) {
+        var vs = compileShader(vSrc, gl.VERTEX_SHADER);
+        var fs = compileShader(fSrc, gl.FRAGMENT_SHADER);
+        if (!vs || !fs) return null;
+        var p = gl.createProgram();
+        gl.attachShader(p, vs);
+        gl.attachShader(p, fs);
+        gl.linkProgram(p);
+        if (!gl.getProgramParameter(p, gl.LINK_STATUS)) {
+          gl.deleteProgram(p);
+          return null;
+        }
+        return p;
+      }
+
+      var vertSrc =
+        "attribute vec2 a_pos;varying vec2 v_uv;void main(){v_uv=a_pos*0.5+0.5;gl_Position=vec4(a_pos,0.0,1.0);}";
+
+      var simFragSrc =
+        "precision highp float;uniform sampler2D u_vel;uniform vec2 u_scroll;uniform vec2 u_mouse;uniform float u_dt;uniform float u_decay;uniform float u_scrollStr;uniform float u_cursorStr;uniform vec2 u_res;varying vec2 v_uv;void main(){vec2 vel=texture2D(u_vel,v_uv).rg;vec2 prev=v_uv-vel*u_dt*8.0/u_res;vec2 adv=texture2D(u_vel,clamp(prev,0.001,0.999)).rg;float mask=smoothstep(0.0,0.4,1.0-abs(v_uv.x-0.5))*0.6+0.4;adv+=u_scroll*u_scrollStr*mask*u_dt*5.0;float dm=exp(-length(v_uv-u_mouse)*3.0);adv+=normalize(u_mouse-v_uv)*u_cursorStr*dm*u_dt*3.0;adv*=u_decay;gl_FragColor=vec4(clamp(adv,-1.0,1.0),0.0,1.0);}";
+
+      var dispFragSrc =
+        "precision highp float;uniform sampler2D u_vel;uniform vec3 u_c1;uniform vec3 u_c2;uniform float u_intensity;varying vec2 v_uv;void main(){vec2 vel=texture2D(u_vel,v_uv).rg;float sp=length(vel);float m=clamp(sp*u_intensity*15.0,0.0,1.0);vec3 col=mix(u_c1,u_c2,m);col+=vec3(vel.y*0.15,0.0,-vel.y*0.1);gl_FragColor=vec4(col,m*0.8+0.2);}";
+
+      var simProg = createProgram(vertSrc, simFragSrc);
+      var dispProg = createProgram(vertSrc, dispFragSrc);
+      if (!simProg || !dispProg) return;
+
+      var quadBuf = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
+      gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]),
+        gl.STATIC_DRAW,
+      );
+
+      function createFBO(w, h) {
+        var tex = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, tex);
+        gl.texImage2D(
+          gl.TEXTURE_2D,
+          0,
+          gl.RGBA,
+          w,
+          h,
+          0,
+          gl.RGBA,
+          gl.UNSIGNED_BYTE,
+          null,
+        );
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        var fbo = gl.createFramebuffer();
+        gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+        gl.framebufferTexture2D(
+          gl.FRAMEBUFFER,
+          gl.COLOR_ATTACHMENT0,
+          gl.TEXTURE_2D,
+          tex,
+          0,
+        );
+        return { fbo: fbo, tex: tex };
+      }
+
+      var fbo1 = createFBO(simRes, simRes);
+      var fbo2 = createFBO(simRes, simRes);
+      var curFBO = fbo1;
+
+      function resize() {
+        W = el.offsetWidth;
+        H = el.offsetHeight;
+        if (W < 1 || H < 1) return;
+        canvas.width = W;
+        canvas.height = H;
+        gl.viewport(0, 0, W, H);
+      }
+      resize();
+
+      // Scroll velocity tracking
+      var lastScrollY = window.scrollY;
+      var lastTime = performance.now();
+      var scrollVel = 0;
+      var targetScrollVel = 0;
+
+      window.addEventListener(
+        "scroll",
+        function () {
+          var now = performance.now();
+          var dy = window.scrollY - lastScrollY;
+          var dt = Math.max(1, now - lastTime);
+          targetScrollVel = dy / dt;
+          lastScrollY = window.scrollY;
+          lastTime = now;
+        },
+        { passive: true },
+      );
+
+      // Mouse tracking
+      var mouseX = 0.5,
+        mouseY = 0.5;
+      var prevMX = 0.5,
+        prevMY = 0.5;
+      canvas.addEventListener("mousemove", function (e) {
+        var rect = canvas.getBoundingClientRect();
+        prevMX = mouseX;
+        prevMY = mouseY;
+        mouseX = (e.clientX - rect.left) / W;
+        mouseY = 1 - (e.clientY - rect.top) / H;
+      });
+      canvas.addEventListener("mouseleave", function () {
+        prevMX = mouseX;
+        prevMY = mouseY;
+      });
+
+      // Intersection Observer
+      var visible = true;
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          visible = e.isIntersecting;
+        });
+      });
+      obs.observe(el);
+
+      // Animation loop
+      var prevTime = performance.now();
+      function animate() {
+        if (!canvas.isConnected) {
+          obs.disconnect();
+          return;
+        }
+        var now = performance.now();
+        var dt = Math.min(0.05, (now - prevTime) / 1000);
+        prevTime = now;
+
+        // Smooth scroll velocity
+        scrollVel += (targetScrollVel - scrollVel) * 0.1;
+        targetScrollVel *= 0.95;
+
+        resize();
+
+        if (visible && W > 0 && H > 0) {
+          var mVX = (mouseX - prevMX) * 10;
+          var mVY = (mouseY - prevMY) * 10;
+
+          // Simulation step
+          gl.useProgram(simProg);
+          gl.bindFramebuffer(gl.FRAMEBUFFER, curFBO.fbo);
+          gl.viewport(0, 0, simRes, simRes);
+          gl.activeTexture(gl.TEXTURE0);
+          gl.bindTexture(gl.TEXTURE_2D, (curFBO === fbo1 ? fbo2 : fbo1).tex);
+          gl.uniform1i(gl.getUniformLocation(simProg, "u_vel"), 0);
+          gl.uniform2f(
+            gl.getUniformLocation(simProg, "u_scroll"),
+            0,
+            scrollVel * scrollStrength * 0.5,
+          );
+          gl.uniform2f(
+            gl.getUniformLocation(simProg, "u_mouse"),
+            mouseX,
+            mouseY,
+          );
+          gl.uniform1f(gl.getUniformLocation(simProg, "u_dt"), dt);
+          gl.uniform1f(gl.getUniformLocation(simProg, "u_decay"), decay);
+          gl.uniform1f(
+            gl.getUniformLocation(simProg, "u_scrollStr"),
+            scrollStrength,
+          );
+          gl.uniform1f(
+            gl.getUniformLocation(simProg, "u_cursorStr"),
+            cursorStrength,
+          );
+          gl.uniform2f(gl.getUniformLocation(simProg, "u_res"), simRes, simRes);
+          gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
+          var loc = gl.getAttribLocation(simProg, "a_pos");
+          gl.enableVertexAttribArray(loc);
+          gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+          gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+          curFBO = curFBO === fbo1 ? fbo2 : fbo1;
+
+          // Display step
+          gl.useProgram(dispProg);
+          gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+          gl.viewport(0, 0, W, H);
+          gl.activeTexture(gl.TEXTURE0);
+          gl.bindTexture(gl.TEXTURE_2D, curFBO.tex);
+          gl.uniform1i(gl.getUniformLocation(dispProg, "u_vel"), 0);
+          var c1 = hex3(color1),
+            c2 = hex3(color2);
+          gl.uniform3f(
+            gl.getUniformLocation(dispProg, "u_c1"),
+            c1[0],
+            c1[1],
+            c1[2],
+          );
+          gl.uniform3f(
+            gl.getUniformLocation(dispProg, "u_c2"),
+            c2[0],
+            c2[1],
+            c2[2],
+          );
+          gl.uniform1f(
+            gl.getUniformLocation(dispProg, "u_intensity"),
+            intensity,
+          );
+          var loc2 = gl.getAttribLocation(dispProg, "a_pos");
+          gl.enableVertexAttribArray(loc2);
+          gl.vertexAttribPointer(loc2, 2, gl.FLOAT, false, 0, 0);
+          gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        }
+
+        requestAnimationFrame(animate);
+      }
+      animate();
+    });
+};
+
+window._VeltroInitVelocityFluidBg = function () {
+  var VISC_DECAY = { air: 0.999, water: 0.995, honey: 0.965, glycerin: 0.93 };
+
+  var VS =
+    "attribute vec2 a_pos;varying vec2 v_uv;" +
+    "void main(){v_uv=a_pos*0.5+0.5;gl_Position=vec4(a_pos,0.0,1.0);}";
+
+  var SIM_FS =
+    "precision highp float;" +
+    "uniform sampler2D u_vel;" +
+    "uniform vec2 u_scroll,u_mouse,u_res;" +
+    "uniform float u_dt,u_decay,u_scrollStr,u_chaos,u_chaosFreq,u_time;" +
+    "varying vec2 v_uv;" +
+    "float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}" +
+    "float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);" +
+    "return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}" +
+    "void main(){" +
+    "vec2 vel=texture2D(u_vel,v_uv).rg;" +
+    "vec2 prev=v_uv-vel*u_dt*8.0/u_res;" +
+    "vec2 adv=texture2D(u_vel,clamp(prev,0.001,0.999)).rg;" +
+    "float mask=smoothstep(0.0,0.4,1.0-abs(v_uv.x-0.5))*0.6+0.4;" +
+    "adv+=u_scroll*u_scrollStr*mask*u_dt*5.0;" +
+    "float dm=exp(-length(v_uv-u_mouse)*3.0);" +
+    "adv+=normalize(u_mouse-v_uv)*0.15*dm*u_dt*3.0;" +
+    "if(u_chaos>0.001){" +
+    "float n1=noise(v_uv*u_chaosFreq+u_time*0.3)*6.2832;" +
+    "float n2=noise(v_uv*u_chaosFreq*1.7-u_time*0.15)*6.2832;" +
+    "adv+=vec2(cos(n1),sin(n1))*u_chaos*u_dt*0.4;" +
+    "adv+=vec2(-sin(n2),cos(n2))*u_chaos*u_dt*0.2;}" +
+    "adv*=u_decay;" +
+    "gl_FragColor=vec4(clamp(adv,-1.0,1.0),0.0,1.0);}";
+
+  var DISP_FS =
+    "precision highp float;" +
+    "uniform sampler2D u_vel;" +
+    "uniform vec3 u_c1,u_c2;" +
+    "uniform float u_intensity;" +
+    "varying vec2 v_uv;" +
+    "void main(){" +
+    "vec2 vel=texture2D(u_vel,v_uv).rg;" +
+    "float sp=length(vel);" +
+    "float m=clamp(sp*u_intensity*15.0,0.0,1.0);" +
+    "vec3 col=mix(u_c1,u_c2,m);" +
+    "col+=vec3(vel.y*0.15,0.0,-vel.y*0.1);" +
+    "gl_FragColor=vec4(col,1.0);}";
+
+  function hex3(h) {
+    return [
+      parseInt(h.slice(1, 3), 16) / 255,
+      parseInt(h.slice(3, 5), 16) / 255,
+      parseInt(h.slice(5, 7), 16) / 255,
+    ];
+  }
+
+  function makeProgram(gl, vSrc, fSrc) {
+    function compile(src, type) {
+      var s = gl.createShader(type);
+      gl.shaderSource(s, src);
+      gl.compileShader(s);
+      return gl.getShaderParameter(s, gl.COMPILE_STATUS) ? s : null;
+    }
+    var vs = compile(vSrc, gl.VERTEX_SHADER);
+    var fs = compile(fSrc, gl.FRAGMENT_SHADER);
+    if (!vs || !fs) return null;
+    var prog = gl.createProgram();
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    return gl.getProgramParameter(prog, gl.LINK_STATUS) ? prog : null;
+  }
+
+  function makeFBO(gl, w, h) {
+    var tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.RGBA,
+      w,
+      h,
+      0,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      null,
+    );
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    var fbo = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    gl.framebufferTexture2D(
+      gl.FRAMEBUFFER,
+      gl.COLOR_ATTACHMENT0,
+      gl.TEXTURE_2D,
+      tex,
+      0,
+    );
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    return { fbo: fbo, tex: tex };
+  }
+
+  document
+    .querySelectorAll(".vfbg-wrap:not([data-vfbg-init])")
+    .forEach(function (wrap) {
+      wrap.dataset.vfbgInit = "1";
+      var canvas = wrap.querySelector(".vfbg-canvas");
+      if (!canvas) return;
+      var gl =
+        canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+      if (!gl) return;
+
+      var ds = wrap.dataset;
+      var color1 = ds.color1 || "#818cf8";
+      var color2 = ds.color2 || "#f472b6";
+      var viscKey = ds.viscosity || "water";
+      var decay = VISC_DECAY[viscKey] || 0.995;
+      var sensitivity = +(ds.sensitivity || 1);
+      var flowAngle = +(ds.flowAngle || 90);
+      var chaosEnabled = ds.chaos === "1";
+      var chaosFreq = +(ds.chaosFreq || 2);
+      var simRes = Math.max(64, Math.min(512, +(ds.resolution || 256)));
+
+      var simProg = makeProgram(gl, VS, SIM_FS);
+      var dispProg = makeProgram(gl, VS, DISP_FS);
+      if (!simProg || !dispProg) return;
+
+      var quadBuf = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
+      gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]),
+        gl.STATIC_DRAW,
+      );
+
+      var fbo1 = makeFBO(gl, simRes, simRes);
+      var fbo2 = makeFBO(gl, simRes, simRes);
+      var cur = fbo1;
+
+      var W = 0,
+        H = 0;
+      function resize() {
+        W = wrap.offsetWidth;
+        H = wrap.offsetHeight;
+        if (W < 1 || H < 1) return;
+        canvas.width = W;
+        canvas.height = H;
+        gl.viewport(0, 0, W, H);
+      }
+      resize();
+
+      var lastScrollY = window.scrollY;
+      var lastScrollT = performance.now();
+      var scrollVel = 0;
+      var targetScrollVel = 0;
+      window.addEventListener(
+        "scroll",
+        function () {
+          var now = performance.now();
+          var dy = window.scrollY - lastScrollY;
+          var dt = Math.max(1, now - lastScrollT);
+          targetScrollVel = dy / dt;
+          lastScrollY = window.scrollY;
+          lastScrollT = now;
+        },
+        { passive: true },
+      );
+
+      var mouseX = 0.5,
+        mouseY = 0.5;
+      canvas.addEventListener("mousemove", function (e) {
+        var r = canvas.getBoundingClientRect();
+        mouseX = (e.clientX - r.left) / W;
+        mouseY = 1 - (e.clientY - r.top) / H;
+      });
+      canvas.addEventListener("mouseleave", function () {
+        mouseX = 0.5;
+        mouseY = 0.5;
+      });
+
+      var time = 0;
+      var prevT = performance.now();
+      var rafId = 0;
+
+      function bindQuad(prog) {
+        gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
+        var loc = gl.getAttribLocation(prog, "a_pos");
+        gl.enableVertexAttribArray(loc);
+        gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+      }
+
+      function loop() {
+        if (!wrap.isConnected) return;
+        var now = performance.now();
+        var dt = Math.min(0.05, (now - prevT) / 1000);
+        prevT = now;
+        time += dt;
+
+        scrollVel += (targetScrollVel - scrollVel) * 0.1;
+        targetScrollVel *= 0.95;
+
+        resize();
+        if (W < 1 || H < 1) {
+          rafId = requestAnimationFrame(loop);
+          return;
+        }
+
+        var rad = (flowAngle * Math.PI) / 180;
+        var fx = Math.cos(rad) * scrollVel * sensitivity * 0.5;
+        var fy = Math.sin(rad) * scrollVel * sensitivity * 0.5;
+
+        // simulation step
+        gl.useProgram(simProg);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, cur.fbo);
+        gl.viewport(0, 0, simRes, simRes);
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, (cur === fbo1 ? fbo2 : fbo1).tex);
+        gl.uniform1i(gl.getUniformLocation(simProg, "u_vel"), 0);
+        gl.uniform2f(gl.getUniformLocation(simProg, "u_scroll"), fx, fy);
+        gl.uniform2f(gl.getUniformLocation(simProg, "u_mouse"), mouseX, mouseY);
+        gl.uniform1f(gl.getUniformLocation(simProg, "u_dt"), dt);
+        gl.uniform1f(gl.getUniformLocation(simProg, "u_decay"), decay);
+        gl.uniform1f(
+          gl.getUniformLocation(simProg, "u_scrollStr"),
+          sensitivity,
+        );
+        gl.uniform1f(
+          gl.getUniformLocation(simProg, "u_chaos"),
+          chaosEnabled ? 1.0 : 0.0,
+        );
+        gl.uniform1f(gl.getUniformLocation(simProg, "u_chaosFreq"), chaosFreq);
+        gl.uniform1f(gl.getUniformLocation(simProg, "u_time"), time);
+        gl.uniform2f(gl.getUniformLocation(simProg, "u_res"), simRes, simRes);
+        bindQuad(simProg);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        cur = cur === fbo1 ? fbo2 : fbo1;
+
+        // display step
+        gl.useProgram(dispProg);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        gl.viewport(0, 0, W, H);
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, cur.tex);
+        gl.uniform1i(gl.getUniformLocation(dispProg, "u_vel"), 0);
+        var c1 = hex3(color1),
+          c2 = hex3(color2);
+        gl.uniform3fv(gl.getUniformLocation(dispProg, "u_c1"), c1);
+        gl.uniform3fv(gl.getUniformLocation(dispProg, "u_c2"), c2);
+        gl.uniform1f(gl.getUniformLocation(dispProg, "u_intensity"), 1.0);
+        bindQuad(dispProg);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+        rafId = requestAnimationFrame(loop);
+      }
+
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(loop);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(wrap);
     });
 };
 
@@ -18737,7 +20744,9 @@ window._VeltroInitAuroraBorealis = function () {
         });
       }
       var t = 0;
+      var rafId = 0;
       function animate() {
+        if (!el.isConnected) return;
         t += 0.016;
         ctx.fillStyle = "rgba(5,5,15,0.1)";
         ctx.fillRect(0, 0, W, H);
@@ -18756,9 +20765,19 @@ window._VeltroInitAuroraBorealis = function () {
           ctx.fillStyle = "hsla(" + w.hue + ",70%,60%,0.15)";
           ctx.fill();
         });
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       }
-      animate();
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(el);
     });
 };
 
@@ -18783,7 +20802,9 @@ window._VeltroInitParticleNebula = function () {
           hue: Math.random() * 60 + 240,
         });
       }
+      var rafId = 0;
       function animate() {
+        if (!el.isConnected) return;
         ctx.fillStyle = "rgba(3,3,10,0.2)";
         ctx.fillRect(0, 0, W, H);
         particles.forEach(function (p) {
@@ -18798,9 +20819,19 @@ window._VeltroInitParticleNebula = function () {
           ctx.fillStyle = "hsla(" + p.hue + ",80%,70%,0.6)";
           ctx.fill();
         });
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       }
-      animate();
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(el);
     });
 };
 
@@ -18815,7 +20846,9 @@ window._VeltroInitGeometricPatterns = function () {
       var W = (canvas.width = el.offsetWidth);
       var H = (canvas.height = el.offsetHeight);
       var t = 0;
+      var rafId = 0;
       function animate() {
+        if (!el.isConnected) return;
         t += 0.01;
         ctx.clearRect(0, 0, W, H);
         var size = 40;
@@ -18834,9 +20867,19 @@ window._VeltroInitGeometricPatterns = function () {
             ctx.restore();
           }
         }
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       }
-      animate();
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(el);
     });
 };
 
@@ -18861,7 +20904,9 @@ window._VeltroInitLiquidGradient = function () {
           hue: Math.random() * 360,
         });
       }
+      var rafId = 0;
       function animate() {
+        if (!el.isConnected) return;
         ctx.fillStyle = "#050510";
         ctx.fillRect(0, 0, W, H);
         blobs.forEach(function (b) {
@@ -18879,9 +20924,19 @@ window._VeltroInitLiquidGradient = function () {
           ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
           ctx.fill();
         });
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       }
-      animate();
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(el);
     });
 };
 
@@ -18895,15 +20950,27 @@ window._VeltroInitHolographicOverlay = function () {
       var overlay = el.querySelector(".veltro-holo-overlay");
       if (!overlay) return;
       var t = 0;
+      var rafId = 0;
       function animate() {
+        if (!el.isConnected) return;
         t += 0.02;
         overlay.style.background =
           "linear-gradient(" +
           t * 30 +
           "deg, rgba(0,212,255,0.1) 0%, rgba(255,0,128,0.1) 50%, rgba(0,212,255,0.1) 100%)";
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       }
-      animate();
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(el);
     });
 };
 
@@ -18951,10 +21018,12 @@ window._VeltroInitCarousel3d = function () {
           item.style.opacity = ((z + radius) / (2 * radius)) * 0.8 + 0.2;
         });
       }
+      var rafId = 0;
       function animate() {
+        if (!el.isConnected) return;
         if (!isDragging) angle += 0.2;
         update();
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       }
       el.addEventListener("mousedown", function (e) {
         isDragging = true;
@@ -18968,7 +21037,17 @@ window._VeltroInitCarousel3d = function () {
       document.addEventListener("mouseup", function () {
         isDragging = false;
       });
-      animate();
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(el);
     });
 };
 
@@ -19023,7 +21102,9 @@ window._VeltroInitFloatingIslands = function () {
       el.setAttribute("data-fi-init", "1");
       var islands = el.querySelectorAll(".veltro-island");
       var t = 0;
+      var rafId = 0;
       function animate() {
+        if (!el.isConnected) return;
         t += 0.016;
         islands.forEach(function (island, i) {
           var y = Math.sin(t + i * 1.5) * 15;
@@ -19031,9 +21112,19 @@ window._VeltroInitFloatingIslands = function () {
           island.style.transform =
             "translateY(" + y + "px) rotate(" + r + "deg)";
         });
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       }
-      animate();
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(el);
     });
 };
 
@@ -19097,15 +21188,27 @@ window._VeltroInitMorphingGrid = function () {
       el.setAttribute("data-mg-init", "1");
       var cells = el.querySelectorAll(".veltro-mg-cell");
       var t = 0;
+      var rafId = 0;
       function animate() {
+        if (!el.isConnected) return;
         t += 0.02;
         cells.forEach(function (cell, i) {
           var scale = 1 + Math.sin(t + i * 0.5) * 0.1;
           cell.style.transform = "scale(" + scale + ")";
         });
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       }
-      animate();
+      new IntersectionObserver(
+        function (e) {
+          if (e[0].isIntersecting) {
+            if (!rafId) rafId = requestAnimationFrame(animate);
+          } else {
+            cancelAnimationFrame(rafId);
+            rafId = 0;
+          }
+        },
+        { threshold: 0.01 },
+      ).observe(el);
     });
 };
 
@@ -19134,6 +21237,57 @@ window._VeltroInitSpatialNavigation = function () {
     });
 };
 
+window._VeltroInitCookieConsent = function () {
+  var COOKIE_KEY = "fw_cookie_consent";
+  document.querySelectorAll(".fw-cookie-banner").forEach(function (banner) {
+    if (banner.dataset.cookieInit) return;
+    banner.dataset.cookieInit = "1";
+
+    if (localStorage.getItem(COOKIE_KEY)) {
+      banner.style.display = "none";
+      return;
+    }
+
+    function getCategoryState() {
+      var state = {};
+      banner.querySelectorAll(".fw-cookie-cat-toggle").forEach(function (cb) {
+        state[cb.dataset.cat || cb.name] = cb.checked;
+      });
+      return state;
+    }
+
+    banner.querySelectorAll("[data-cookie-action]").forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        var action = e.currentTarget.dataset.cookieAction;
+        var consent = {
+          accepted: action === "accept",
+          declined: action === "decline",
+          timestamp: Date.now(),
+          categories: getCategoryState(),
+        };
+        if (action === "accept") {
+          banner
+            .querySelectorAll(".fw-cookie-cat-toggle:not(:disabled)")
+            .forEach(function (cb) {
+              cb.checked = true;
+            });
+          consent.categories = getCategoryState();
+          localStorage.setItem(COOKIE_KEY, JSON.stringify(consent));
+          banner.style.display = "none";
+        } else if (action === "decline") {
+          localStorage.setItem(COOKIE_KEY, JSON.stringify(consent));
+          banner.style.display = "none";
+        } else if (action === "customize") {
+          var panel = banner.querySelector(".fw-cookie-categories");
+          if (panel)
+            panel.style.display =
+              panel.style.display === "none" ? "block" : "none";
+        }
+      });
+    });
+  });
+};
+
 // ── Master Initializer ──
 window._VeltroInitAll = function () {
   var inits = [
@@ -19144,6 +21298,7 @@ window._VeltroInitAll = function () {
     "_VeltroInitCounter",
     "_VeltroInitLiquidText",
     "_VeltroInitPhysics",
+    "_VeltroInitImagePhysics",
     "_VeltroInitBubblePop",
     "_VeltroInitMagneticCursor",
     "_VeltroInitParticleTrail",
@@ -19181,6 +21336,7 @@ window._VeltroInitAll = function () {
     "_VeltroInitRotatingText3d",
     "_VeltroInitMorphingText",
     "_VeltroInitKineticScramble",
+    "_VeltroInitCookieConsent",
     "_VeltroInitGravityWells",
     "_VeltroInitFluidSimulation",
     "_VeltroInitClothSimulation",
@@ -19192,6 +21348,8 @@ window._VeltroInitAll = function () {
     "_VeltroInitScrollTriggered",
     "_VeltroInitHorizontalScrollGallery",
     "_VeltroInitVelocitySkew",
+    "_VeltroInitScrollFluid",
+    "_VeltroInitVelocityFluidBg",
     "_VeltroInitAuroraBorealis",
     "_VeltroInitParticleNebula",
     "_VeltroInitGeometricPatterns",

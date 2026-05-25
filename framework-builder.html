@@ -722,21 +722,21 @@
               data-tab="elements"
               onclick="FB.design.switchLeftTab('elements')"
             >
-              Elements
+              <span class="ds-tab-icon">◈</span> Elements
             </button>
             <button
               class="ds-tab"
               data-tab="layers"
               onclick="FB.design.switchLeftTab('layers')"
             >
-              Layers
+              <span class="ds-tab-icon">☰</span> Layers
             </button>
             <button
               class="ds-tab"
               data-tab="assets"
               onclick="FB.design.switchLeftTab('assets')"
             >
-              Assets
+              <span class="ds-tab-icon">◇</span> Assets
             </button>
           </div>
 
@@ -752,6 +752,13 @@
           <div id="ds-tab-assets" class="ds-tab-content">
             <button class="ds-full-btn" onclick="FB.design.templates.open()">
               ⊞ Browse Templates
+            </button>
+            <button
+              class="ds-full-btn"
+              style="background: #f97316; color: #fff"
+              onclick="FB.ai.open()"
+            >
+              ✨ AI Template Builder
             </button>
             <div class="ds-section-label" style="padding: 8px 8px 4px">
               My Designs
@@ -866,6 +873,17 @@
         <div id="ds-ai-status"></div>
       </div>
     </div>
+
+    <!-- AI TEMPLATE BUILDER OVERLAY -->
+    <div id="ds-ai-template-overlay" style="display: none">
+      <div id="ds-ai-template-modal">
+        <div class="ds-modal-head">
+          <span>🤖 AI Template Builder</span>
+          <button onclick="FB.ai.close()">✕</button>
+        </div>
+        <div id="ds-ai-template-main"></div>
+      </div>
+    </div>
     <!-- EXPORT MODAL -->
     <div id="modal-overlay">
       <div id="modal">
@@ -935,6 +953,9 @@
     <script src="widgets/veltro.js?v=11"></script>
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
     <script src="js/help.js"></script>
+    <script src="js/ai-knowledge.js?v=1"></script>
+    <script src="js/ai-service.js?v=1"></script>
+    <script src="js/ai-templates.js?v=1"></script>
     <script src="js/app.js?v=3"></script>
     <script src="js/theme-toggle.js?v=1"></script>
     <script src="js/language.js?v=1"></script>

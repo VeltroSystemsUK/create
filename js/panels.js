@@ -345,31 +345,66 @@ FB.panels.buildLibrary = function () {
     vlib.innerHTML = "";
     var veltroColor = "#f97316";
     var veltroWidgets = FB.widgets.byCategory("veltro");
+    var catOrder = [
+      "typography",
+      "physics",
+      "cursor",
+      "scroll",
+      "backgrounds",
+      "effects",
+      "spatial",
+    ];
+    var catLabels = {
+      typography: "Typography",
+      physics: "Physics",
+      cursor: "Cursor & Interaction",
+      scroll: "Scroll & Motion",
+      backgrounds: "Backgrounds & Textures",
+      effects: "Effects & Visual",
+      spatial: "Spatial & Layout",
+    };
+    var grouped = {};
     Object.keys(veltroWidgets).forEach(function (type) {
       var def = veltroWidgets[type];
-      var el = document.createElement("div");
-      el.className = "block-item";
-      el.draggable = true;
-      el.style.cssText = "padding:6px 14px";
-      el.innerHTML =
-        FB.panels._icon(def.icon || "\u26A1", veltroColor, 28, 22, 12) +
-        '<div><div class="block-label" style="font-size:11px">' +
-        def.label +
-        "</div>" +
-        (def.sublabel
-          ? '<div class="block-sublabel" style="font-size:9px;color:#666">' +
-            def.sublabel +
-            "</div>"
-          : "") +
-        "</div>";
-      el.addEventListener("dragstart", function (e) {
-        FB.canvas._dragLibType = type;
-        FB.canvas._dragSrcId = null;
+      var cat = def.subCategory || "Other";
+      if (!grouped[cat]) grouped[cat] = [];
+      grouped[cat].push({ type: type, def: def });
+    });
+    catOrder.forEach(function (cat) {
+      if (!grouped[cat] || !grouped[cat].length) return;
+      var header = document.createElement("div");
+      header.className = "veltro-cat-header";
+      header.textContent = catLabels[cat] || cat;
+      header.style.cssText =
+        "padding:8px 14px 4px;font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.5px;border-top:1px solid #222;margin-top:4px";
+      vlib.appendChild(header);
+      grouped[cat].forEach(function (item) {
+        var type = item.type;
+        var def = item.def;
+        var el = document.createElement("div");
+        el.className = "block-item";
+        el.draggable = true;
+        el.style.cssText = "padding:6px 14px";
+        el.innerHTML =
+          FB.panels._icon(def.icon || "\u26A1", veltroColor, 28, 22, 12) +
+          '<div><div class="block-label" style="font-size:11px">' +
+          def.label +
+          "</div>" +
+          (def.sublabel
+            ? '<div class="block-sublabel" style="font-size:9px;color:#666">' +
+              def.sublabel +
+              "</div>"
+            : "") +
+          "</div>";
+        el.addEventListener("dragstart", function (e) {
+          FB.canvas._dragLibType = type;
+          FB.canvas._dragSrcId = null;
+        });
+        el.addEventListener("click", function () {
+          FB.canvas.insertBlock(type);
+        });
+        vlib.appendChild(el);
       });
-      el.addEventListener("click", function () {
-        FB.canvas.insertBlock(type);
-      });
-      vlib.appendChild(el);
     });
   }
 
@@ -442,37 +477,72 @@ FB.panels.buildLibrary = function () {
   if (vlib) {
     vlib.innerHTML = "";
     var veltroWidgets = FB.widgets.byCategory("veltro");
+    var catOrder = [
+      "typography",
+      "physics",
+      "cursor",
+      "scroll",
+      "backgrounds",
+      "effects",
+      "spatial",
+    ];
+    var catLabels = {
+      typography: "Typography",
+      physics: "Physics",
+      cursor: "Cursor & Interaction",
+      scroll: "Scroll & Motion",
+      backgrounds: "Backgrounds & Textures",
+      effects: "Effects & Visual",
+      spatial: "Spatial & Layout",
+    };
+    var grouped = {};
     Object.keys(veltroWidgets).forEach(function (type) {
       var def = veltroWidgets[type];
-      var el = document.createElement("div");
-      el.className = "block-item";
-      el.draggable = true;
-      el.style.cssText = "padding:6px 14px";
-      el.innerHTML =
-        '<div class="block-icon" style="background:' +
-        def.iconBg +
-        ";color:" +
-        def.iconColor +
-        ';width:28px;height:22px;font-size:12px">' +
-        (def.icon || "⚡") +
-        "</div>" +
-        '<div><div class="block-label" style="font-size:11px">' +
-        def.label +
-        "</div>" +
-        (def.sublabel
-          ? '<div class="block-sublabel" style="font-size:9px;color:#666">' +
-            def.sublabel +
-            "</div>"
-          : "") +
-        "</div>";
-      el.addEventListener("dragstart", function (e) {
-        FB.canvas._dragLibType = type;
-        FB.canvas._dragSrcId = null;
+      var cat = def.subCategory || "Other";
+      if (!grouped[cat]) grouped[cat] = [];
+      grouped[cat].push({ type: type, def: def });
+    });
+    catOrder.forEach(function (cat) {
+      if (!grouped[cat] || !grouped[cat].length) return;
+      var header = document.createElement("div");
+      header.className = "veltro-cat-header";
+      header.textContent = catLabels[cat] || cat;
+      header.style.cssText =
+        "padding:8px 14px 4px;font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.5px;border-top:1px solid #222;margin-top:4px";
+      vlib.appendChild(header);
+      grouped[cat].forEach(function (item) {
+        var type = item.type;
+        var def = item.def;
+        var el = document.createElement("div");
+        el.className = "block-item";
+        el.draggable = true;
+        el.style.cssText = "padding:6px 14px";
+        el.innerHTML =
+          '<div class="block-icon" style="background:' +
+          def.iconBg +
+          ";color:" +
+          def.iconColor +
+          ';width:28px;height:22px;font-size:12px">' +
+          (def.icon || "⚡") +
+          "</div>" +
+          '<div><div class="block-label" style="font-size:11px">' +
+          def.label +
+          "</div>" +
+          (def.sublabel
+            ? '<div class="block-sublabel" style="font-size:9px;color:#666">' +
+              def.sublabel +
+              "</div>"
+            : "") +
+          "</div>";
+        el.addEventListener("dragstart", function (e) {
+          FB.canvas._dragLibType = type;
+          FB.canvas._dragSrcId = null;
+        });
+        el.addEventListener("click", function () {
+          FB.canvas.insertBlock(type);
+        });
+        vlib.appendChild(el);
       });
-      el.addEventListener("click", function () {
-        FB.canvas.insertBlock(type);
-      });
-      vlib.appendChild(el);
     });
   }
 };
@@ -1292,6 +1362,20 @@ FB.panels.renderRightPanel = function () {
       '" onchange="FB.panels.updateProp(\'' +
       block.id +
       "','declineText',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Customize Text</label><input type="text" value="' +
+      (p.customizeText || "Customize") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','customizeText',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row" style="flex-direction:column;align-items:flex-start"><label>Categories (JSON)</label><textarea rows="4" style="width:100%;font-size:11px;font-family:monospace" onchange="try{var v=JSON.parse(this.value);FB.panels.updateProp(\'' +
+      block.id +
+      "','categories',v)}catch(e){this.style.borderColor='red'}\">" +
+      JSON.stringify(p.categories || [], null, 2)
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;") +
+      '</textarea><span style="font-size:9px;opacity:0.5;margin-top:2px">Format: [{id, name, description, required}]</span></div>';
   }
   if (block.type === "liteVideo") {
     contentHtml +=

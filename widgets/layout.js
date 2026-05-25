@@ -542,7 +542,16 @@ FB.widgets.register("cta", {
       (p.bg || "#CDFE00") +
       '" onchange="FB.panels.updateWidgetProp(\'' +
       id +
-      "','bg',this.value)\"></div></div>"
+      "','bg',this.value)\"></div></div>" +
+      '<div class="rp-row"><label>Text Color</label><div class="color-row"><input type="color" value="' +
+      (p.color || "#111111") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      '\',\'color\',this.value)"><input type="text" value="' +
+      (p.color || "#111111") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','color',this.value)\"></div></div>"
     );
   },
 });

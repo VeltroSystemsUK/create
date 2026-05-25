@@ -55,13 +55,40 @@ FB.widgets.register("heading", {
         })
         .join("") +
       "</select></div>" +
+      '<div class="rp-row"><label>Align</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','align',this.value)\">" +
+      ["left", "center", "right"]
+        .map(function (a) {
+          return (
+            '<option value="' +
+            a +
+            '"' +
+            ((p.align || "left") === a ? " selected" : "") +
+            ">" +
+            a.charAt(0).toUpperCase() +
+            a.slice(1) +
+            "</option>"
+          );
+        })
+        .join("") +
+      "</select></div>" +
       '<div class="rp-row"><label>Size: ' +
       (p.size || 32) +
-      'px</label><input type="range" min="14" max="72" value="' +
+      'px</label><input type="range" min="14" max="120" value="' +
       (p.size || 32) +
       '" oninput="FB.panels.updateWidgetProp(\'' +
       id +
-      "','size',+this.value);this.previousElementSibling.textContent='Size: '+this.value+'px'\"></div>"
+      "','size',+this.value);this.previousElementSibling.textContent='Size: '+this.value+'px'\"></div>" +
+      '<div class="rp-row"><label>Color</label><div class="color-row"><input type="color" value="' +
+      (p.color || "#111111") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      '\',\'color\',this.value)"><input type="text" value="' +
+      (p.color || "#111111") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','color',this.value)\"></div></div>"
     );
   },
 });

@@ -612,12 +612,34 @@ FB.blocks.BLOCK_DEFS = {
     iconBg: "#3a3a3a",
     iconColor: "#d0d0d0",
     defaultProps: {
+      title: "🍪 Cookies",
       message: "We use cookies to enhance your experience.",
       acceptText: "Accept All",
       declineText: "Decline",
+      customizeText: "Customize",
       bg: "#1a1a1a",
       textColor: "#f7f6f2",
       accentColor: "#CDFE00",
+      categories: [
+        {
+          id: "functional",
+          name: "Functional",
+          description: "Essential for the site to function properly.",
+          required: true,
+        },
+        {
+          id: "analytics",
+          name: "Analytics",
+          description: "Help us understand how visitors use the site.",
+          required: false,
+        },
+        {
+          id: "marketing",
+          name: "Marketing",
+          description: "Used to deliver relevant ads and content.",
+          required: false,
+        },
+      ],
     },
   },
   liteVideo: {

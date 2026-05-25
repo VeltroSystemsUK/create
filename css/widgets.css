@@ -608,3 +608,226 @@
   text-transform: uppercase;
   letter-spacing: 2px;
 }
+
+/* ── Veltro Engine Keyframe Animations ── */
+
+@keyframes vtblink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes vtmorph {
+  0% { d: path("M47.5,-57.2C59.8,-47.3,67.1,-31.9,69.2,-16.1C71.3,-0.3,68.2,15.9,60.3,29.5C52.4,43.1,39.7,54.1,25.1,60.3C10.5,66.5,-6,67.9,-21.3,63.3C-36.6,58.7,-50.7,48.1,-59.9,34.1C-69.1,20.1,-73.4,2.7,-69.3,-12.5C-65.2,-27.7,-52.7,-40.7,-38.9,-50.2C-25.1,-59.7,-10,-65.7,3.6,-69.8C17.2,-73.9,35.2,-67.1,47.5,-57.2Z"); }
+  100% { d: path("M44.8,-52.3C56.9,-43.9,64.8,-29.4,67.1,-14.2C69.4,1,66.1,16.9,58.1,30.2C50.1,43.5,37.4,54.2,22.8,60.1C8.2,66,-8.3,67.1,-23.3,62.7C-38.3,58.3,-51.8,48.4,-60.1,35.1C-68.4,21.8,-71.5,5.1,-68.1,-9.9C-64.7,-24.9,-54.8,-38.2,-42.1,-46.4C-29.4,-54.6,-13.9,-57.7,0.9,-58.8C15.7,-59.9,32.7,-60.7,44.8,-52.3Z"); }
+}
+
+@keyframes vtgradflow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes vtglitch1 {
+  0%, 100% { clip-path: inset(0 0 50% 0); transform: translateX(0); }
+  20% { clip-path: inset(20% 0 60% 0); transform: translateX(-2px); }
+  40% { clip-path: inset(40% 0 30% 0); transform: translateX(2px); }
+  60% { clip-path: inset(60% 0 10% 0); transform: translateX(-1px); }
+  80% { clip-path: inset(10% 0 80% 0); transform: translateX(1px); }
+}
+
+@keyframes vtglitch2 {
+  0%, 100% { clip-path: inset(50% 0 0 0); transform: translateX(0); }
+  20% { clip-path: inset(60% 0 20% 0); transform: translateX(2px); }
+  40% { clip-path: inset(30% 0 40% 0); transform: translateX(-2px); }
+  60% { clip-path: inset(10% 0 60% 0); transform: translateX(1px); }
+  80% { clip-path: inset(80% 0 10% 0); transform: translateX(-1px); }
+}
+
+@keyframes vtsound {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.2); opacity: 0.4; }
+}
+
+@keyframes vtpulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.05); }
+}
+
+@keyframes vtfloat {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(2deg); }
+}
+
+@keyframes veltroRipple {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 0.6; }
+  100% { transform: translate(-50%, -50%) scale(4); opacity: 0; }
+}
+
+/* Scroll-triggered animations */
+.veltro-trigger-item {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.veltro-trigger-item.veltro-triggered {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Mosaic tiles */
+.veltro-mosaic-tile {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* Sticky cards */
+.veltro-sticky-card {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* Glass cards */
+.veltro-glass-card {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.veltro-glass-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+/* Spatial navigation */
+.veltro-sn-node {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0.5;
+}
+.veltro-sn-node.veltro-sn-active {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+/* Isometric items */
+.veltro-iso-item {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* Morphing grid cells */
+.veltro-mg-cell {
+  transition: transform 0.3s ease;
+}
+
+/* Kinetic layout items */
+.veltro-kl-item {
+  transition: transform 0.3s ease;
+}
+
+/* Layered parallax layers */
+.veltro-lp-layer {
+  transition: transform 0.1s ease-out;
+}
+
+/* Perspective rooms */
+.veltro-room {
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+/* Carousel 3D */
+.veltro-carousel-item {
+  position: absolute;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  backface-visibility: hidden;
+}
+
+/* Wave text characters */
+.veltro-wave-char {
+  display: inline-block;
+  transition: transform 0.1s ease;
+}
+
+/* Morphing text */
+.veltro-morph-text {
+  transition: opacity 0.3s ease;
+}
+
+/* Kinetic scramble */
+.veltro-ks-text {
+  font-family: monospace;
+}
+
+/* Color sampler */
+.veltro-sampler-ring {
+  transition: transform 0.1s ease;
+}
+
+/* Magnetic text */
+.veltro-mag-text {
+  transition: transform 0.2s ease;
+}
+
+/* Cursor distortion */
+.veltro-distort-bg {
+  transition: filter 0.1s ease;
+}
+
+/* Spotlight */
+.veltro-spotlight-mask {
+  pointer-events: none;
+}
+
+/* Gravity cursor */
+.veltro-gravity-particle {
+  transition: transform 0.05s linear;
+}
+
+/* Multi-shape trail */
+.veltro-trail-shape {
+  pointer-events: none;
+}
+
+/* Magnetic cursor targets */
+.veltro-magnetic-target {
+  transition: transform 0.2s ease;
+}
+
+/* Velocity skew targets */
+.veltro-skew-target {
+  transition: transform 0.1s ease;
+}
+
+/* Depth of field layers */
+.veltro-dof-layer {
+  transition: transform 0.1s ease;
+}
+
+/* Holographic card */
+.veltro-holo-card {
+  --holo-x: 0.5;
+  --holo-y: 0.5;
+  background: linear-gradient(135deg, rgba(0,212,255,0.1) 0%, rgba(255,0,128,0.1) 100%);
+  position: relative;
+  overflow: hidden;
+}
+.veltro-holo-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(calc(var(--holo-x) * 360deg), rgba(255,255,255,0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Light leaks */
+.veltro-light-leak {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.4;
+  animation: vtpulse 4s ease-in-out infinite;
+}

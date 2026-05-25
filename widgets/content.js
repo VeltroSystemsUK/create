@@ -130,6 +130,24 @@ FB.widgets.register("button", {
         })
         .join("") +
       "</select></div>" +
+      '<div class="rp-row"><label>Align</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','align',this.value)\">" +
+      ["left", "center", "right"]
+        .map(function (a) {
+          return (
+            '<option value="' +
+            a +
+            '"' +
+            ((p.align || "center") === a ? " selected" : "") +
+            ">" +
+            a.charAt(0).toUpperCase() +
+            a.slice(1) +
+            "</option>"
+          );
+        })
+        .join("") +
+      "</select></div>" +
       '<div class="rp-row"><label>Button BG</label><div class="color-row"><input type="color" value="' +
       (p.bg || "#CDFE00") +
       '" onchange="FB.panels.updateWidgetProp(\'' +
@@ -138,7 +156,16 @@ FB.widgets.register("button", {
       (p.bg || "#CDFE00") +
       '" onchange="FB.panels.updateWidgetProp(\'' +
       id +
-      "','bg',this.value)\"></div></div>"
+      "','bg',this.value)\"></div></div>" +
+      '<div class="rp-row"><label>Text Color</label><div class="color-row"><input type="color" value="' +
+      (p.color || "#111111") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      '\',\'color\',this.value)"><input type="text" value="' +
+      (p.color || "#111111") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','color',this.value)\"></div></div>"
     );
   },
 });
@@ -222,7 +249,16 @@ FB.widgets.register("starRating", {
       (p.size || 24) +
       '" oninput="FB.panels.updateWidgetProp(\'' +
       id +
-      "','size',+this.value);this.previousElementSibling.textContent='Size: '+this.value+'px'\"></div>"
+      "','size',+this.value);this.previousElementSibling.textContent='Size: '+this.value+'px'\"></div>" +
+      '<div class="rp-row"><label>Star Color</label><div class="color-row"><input type="color" value="' +
+      (p.color || "#f0ad4e") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      '\',\'color\',this.value)"><input type="text" value="' +
+      (p.color || "#f0ad4e") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','color',this.value)\"></div></div>"
     );
   },
 });
@@ -359,6 +395,16 @@ FB.widgets.register("iconList", {
   },
   editPanel: function (id, p) {
     var html = "";
+    html +=
+      '<div class="rp-row"><label>Icon Color</label><div class="color-row"><input type="color" value="' +
+      (p.color || "#CDFE00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      '\',\'color\',this.value)"><input type="text" value="' +
+      (p.color || "#CDFE00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','color',this.value)\"></div></div>";
     (p.items || []).forEach(function (item, i) {
       html +=
         '<div class="rp-row" style="flex-direction:row;gap:4px">' +
