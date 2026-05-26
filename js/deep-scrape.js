@@ -20,8 +20,16 @@ FB.deepScrape._SYNTH_PROMPT =
   "3. The template covers the full brand story: nav → hero → key sections from each page → footer.\n" +
   "4. Generate 8-16 blocks total. Draw the best content from across all pages.\n\n" +
   "Return ONLY valid JSON — no markdown fences, no commentary.\n\n" +
-  "## Standard block types (use these for the main sections):\n" +
-  "nav, hero, splitHero, features, services, stats, testimonial, process, work, pricing, faq, textBlock, colorBlock, footer\n\n" +
+  "## BLOCK TYPES — use EXACT prop names shown:\n" +
+  '{"type":"nav","props":{"logoText":"Brand","links":["Link1","Link2"],"ctaText":"CTA","bg":"#111","textColor":"#fff","accentColor":"#CDFE00"}}\n' +
+  '{"type":"hero","props":{"eyebrow":"Tagline","headline":"Main headline","subtext":"Description","ctaText":"Button →","bg":"#111","textColor":"#f7f6f2","accentColor":"#CDFE00","showBlob":false}}\n' +
+  '{"type":"features","props":{"label":"Section label","headline":"Section title","items":[{"icon":"✦","title":"Feature","desc":"Description"}],"bg":"#fff","textColor":"#111","accentColor":"#CDFE00"}}\n' +
+  '{"type":"textBlock","props":{"headline":"Section title","body":"Paragraph text here.","bg":"#fff","textColor":"#111","paddingV":48,"paddingH":48}}\n' +
+  '{"type":"colorBlock","props":{"headline":"Title","body":"Short callout text","bg":"#CDFE00","textColor":"#111","paddingV":60,"paddingH":48}}\n' +
+  '{"type":"stats","props":{"stats":[{"num":"99%","label":"Metric"}],"bg":"#111","accentColor":"#CDFE00"}}\n' +
+  '{"type":"testimonial","props":{"quote":"Quote text","attribution":"Name — Role","bg":"#111","accentColor":"#CDFE00"}}\n' +
+  '{"type":"cta","props":{"headline":"Call to action","btnText":"Get started →","bg":"#111","textColor":"#fff"}}\n' +
+  '{"type":"footer","props":{"logoText":"Brand","tagline":"Tagline","cols":[{"heading":"Links","links":["A","B"]}],"copyright":"© 2025","bg":"#111","accentColor":"#CDFE00","textColor":"#fff"}}\n\n' +
   "## Veltro canvas widgets (add 1-2 to enhance the design):\n" +
   "TYPOGRAPHY: kineticText, textScramble, typewriterReveal, morphingText\n" +
   "PHYSICS: bubblePop, gravityWells, fluidSimulation, pendulumWave\n" +
@@ -30,10 +38,11 @@ FB.deepScrape._SYNTH_PROMPT =
   "SPATIAL: tiltCard3d, carousel3d, holographicCard, glitchSection\n\n" +
   "## Rules:\n" +
   "- Every block MUST have: id (unique, e.g. nav_1), type, props\n" +
-  "- Infer brand accent color from the scraped content (look for CSS vars, theme-color, dominant UI colors). Use the site's actual colors — do not invent or substitute placeholder colors.\n" +
+  "- Use EXACT prop names from the schemas above — headline not title, subtext not description, ctaText not cta\n" +
+  "- COLORS: Extract real brand colors from the scraped content. Replace placeholder #111/#fff/#CDFE00 with the site's actual colors.\n" +
+  "- textColor must be dark (#111111) on light backgrounds, light (#f7f6f2) on dark backgrounds\n" +
   "- Nav and Footer are mandatory\n" +
-  "- Hero uses the main value proposition from the homepage\n" +
-  "- TextColor must be dark (#111111) on light backgrounds, light (#f7f6f2) on dark\n" +
+  "- Hero uses the main value proposition from the homepage. Max 1 hero.\n" +
   "- Veltro widgets as backgrounds: set height 500-700 and insert behind hero or between sections\n" +
   '- Return { "name": "Brand Name", "blocks": [...] } — nothing else\n\n' +
   "## SCRAPED CONTENT:\n";
@@ -318,7 +327,7 @@ FB.deepScrape._synthesise = function () {
         "\n### " +
         page.title +
         "\n\n" +
-        page.markdown.slice(0, 2000)
+        page.markdown.slice(0, 3000)
       );
     })
     .join("\n\n---\n\n");
@@ -430,6 +439,77 @@ FB.deepScrape._removeBlock = function (idx) {
   FB.deepScrape._render();
 };
 
+FB.deepScrape._normaliseBlock = function (type, props) {
+  function esc(s) {
+    return String(s || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+  var p = Object.assign({}, props);
+  if (type === "hero") {
+    p.eyebrow = esc(p.eyebrow || p.tagline || p.subtitle || "");
+    p.headline = esc(p.headline || p.title || "Welcome");
+    p.subtext = esc(p.subtext || p.description || p.body || "");
+    p.ctaText = esc(p.ctaText || p.cta || p.button || "Learn more →");
+    p.bg = p.bg || "#111111";
+    p.textColor = p.textColor || "#f7f6f2";
+    p.accentColor = p.accentColor || "#CDFE00";
+    p.showBlob = false;
+  } else if (type === "nav") {
+    p.logoText = esc(p.logoText || p.logo || p.brand || "Site");
+    p.links = (p.links || p.navLinks || []).slice(0, 6);
+    p.ctaText = esc(p.ctaText || p.cta || p.button || "Get Started");
+    p.bg = p.bg || "#111111";
+    p.textColor = p.textColor || "#ffffff";
+    p.accentColor = p.accentColor || "#CDFE00";
+  } else if (type === "footer") {
+    p.logoText = esc(p.logoText || p.logo || p.brand || "Site");
+    p.tagline = esc(p.tagline || "");
+    p.cols = p.cols || [{ heading: "Links", links: ["Edit me"] }];
+    p.copyright = esc(p.copyright || "© " + new Date().getFullYear());
+    p.bg = p.bg || "#111111";
+    p.accentColor = p.accentColor || "#CDFE00";
+    p.textColor = p.textColor || "#ffffff";
+  } else if (type === "features") {
+    p.label = esc(p.label || p.subtitle || "");
+    p.headline = esc(p.headline || p.title || "What we offer");
+    p.items = (p.items || []).slice(0, 6).map(function (it) {
+      return {
+        icon: it.icon || "✦",
+        title: esc(it.title || it.name || "Item"),
+        desc: esc(it.desc || it.description || ""),
+      };
+    });
+    p.bg = p.bg || "#ffffff";
+    p.textColor = p.textColor || "#111111";
+    p.accentColor = p.accentColor || "#CDFE00";
+  } else if (type === "textBlock" || type === "colorBlock") {
+    p.headline = esc(p.headline || p.title || "");
+    p.body = esc(p.body || p.description || p.text || p.content || "");
+    p.bg = p.bg || (type === "colorBlock" ? "#CDFE00" : "#ffffff");
+    p.textColor = p.textColor || "#111111";
+    p.paddingV = p.paddingV || 48;
+    p.paddingH = p.paddingH || 48;
+  } else if (type === "stats") {
+    p.stats = (p.stats || []).slice(0, 4);
+    p.bg = p.bg || "#111111";
+    p.accentColor = p.accentColor || "#CDFE00";
+  } else if (type === "testimonial") {
+    p.quote = esc(p.quote || p.body || p.text || "");
+    p.attribution = esc(p.attribution || p.author || p.name || "");
+    p.bg = p.bg || "#111111";
+    p.accentColor = p.accentColor || "#CDFE00";
+  } else if (type === "cta") {
+    p.headline = esc(p.headline || p.title || "Get started");
+    p.btnText = esc(p.btnText || p.cta || p.button || "Go →");
+    p.bg = p.bg || "#111111";
+    p.textColor = p.textColor || "#ffffff";
+  }
+  if (!p.textColor) p.textColor = "#111111";
+  return p;
+};
+
 FB.deepScrape._approve = function () {
   var tpl = FB.deepScrape._result && FB.deepScrape._result.template;
   if (!tpl || !tpl.blocks) return;
@@ -450,10 +530,11 @@ FB.deepScrape._approve = function () {
   FB.state.blocks = tpl.blocks.map(function (b) {
     var def = allDefs[b.type] || FB.widgets.get(b.type) || {};
     var defaults = def.defaultProps || {};
+    var normalisedProps = FB.deepScrape._normaliseBlock(b.type, b.props || {});
     var block = {
       id: b.id || FB.state.genId(),
       type: b.type,
-      props: Object.assign({}, defaults, b.props || {}),
+      props: Object.assign({}, defaults, normalisedProps),
     };
     if (b.bindings && b.bindings.length) block.bindings = b.bindings;
     return block;
