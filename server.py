@@ -348,6 +348,10 @@ class FrameworkHandler(http.server.SimpleHTTPRequestHandler):
         print(f"[DeepScrape] Crawling {len(urls)} pages...")
 
         def scrape_one(url):
+            parsed_u = urllib.parse.urlparse(url)
+            if parsed_u.scheme not in ("http", "https") or not parsed_u.netloc:
+                print(f"[DeepScrape] Skipping invalid URL: {url}")
+                return None
             try:
                 result = subprocess.run(
                     ["firecrawl", "scrape", url, "--only-main-content", "--format", "markdown"],

@@ -346,7 +346,7 @@ FB.deepScrape._synthesise = function () {
         if (!b.id || ids[b.id]) b.id = (b.type || "block") + "_" + (i + 1);
         ids[b.id] = true;
       });
-      var validation = FB.ai._validate(parsed);
+      var validation = FB.agent._validate(parsed);
       FB.deepScrape._result = { template: parsed, validation: validation };
       FB.deepScrape._state = "result";
       FB.deepScrape._error = !validation.valid
