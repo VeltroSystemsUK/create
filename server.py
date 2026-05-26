@@ -26,8 +26,8 @@ class FrameworkHandler(http.server.SimpleHTTPRequestHandler):
         super().__init__(*args, directory=STATIC_DIR, **kwargs)
 
     def end_headers(self):
-        # Prevent browser caching of JSON template files
-        if self.path.endswith('.json'):
+        p = self.path.split('?')[0]
+        if p.endswith(('.json', '.js', '.css', '.html')):
             self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
             self.send_header("Pragma", "no-cache")
             self.send_header("Expires", "0")
@@ -36,7 +36,7 @@ class FrameworkHandler(http.server.SimpleHTTPRequestHandler):
     def do_OPTIONS(self):
         self.send_response(HTTPStatus.NO_CONTENT)
         self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.end_headers()
 
@@ -85,6 +85,13 @@ class FrameworkHandler(http.server.SimpleHTTPRequestHandler):
         else:
             self.send_error(HTTPStatus.NOT_FOUND)
 
+    def do_PATCH(self):
+        parsed = urllib.parse.urlparse(self.path)
+        if parsed.path.startswith('/api/cms/media/'):
+            self._handle_cms_media_meta_update()
+        else:
+            self.send_error(HTTPStatus.NOT_FOUND)
+
     def do_PUT(self):
         parsed = urllib.parse.urlparse(self.path)
         if parsed.path == '/api/cms/content':
@@ -120,6 +127,8 @@ class FrameworkHandler(http.server.SimpleHTTPRequestHandler):
             self._handle_deep_scrape_map()
         elif parsed.path == "/api/deep-scrape/crawl":
             self._handle_deep_scrape_crawl()
+        elif parsed.path == "/api/deep-scrape/full-crawl":
+            self._handle_deep_scrape_full_crawl()
         else:
             self.send_error(HTTPStatus.NOT_FOUND)
 
@@ -346,13 +355,17 @@ class FrameworkHandler(http.server.SimpleHTTPRequestHandler):
             if isinstance(parsed_json, list):
                 all_urls = parsed_json
             elif isinstance(parsed_json, dict):
-                all_urls = parsed_json.get("links", parsed_json.get("urls", []))
+                # firecrawl map --json returns {"success":true,"data":{"links":[{"url":"...","title":"..."}]}}
+                data = parsed_json.get("data", parsed_json)
+                all_urls = data.get("links", data.get("urls", parsed_json.get("links", parsed_json.get("urls", []))))
             else:
                 all_urls = []
 
             seen = set()
             urls = []
             for u in all_urls:
+                if isinstance(u, dict):
+                    u = u.get("url", "")
                 if not isinstance(u, str):
                     continue
                 if u in seen:
@@ -453,6 +466,249 @@ class FrameworkHandler(http.server.SimpleHTTPRequestHandler):
         if not pages:
             response["warning"] = "No pages could be scraped. Check the URLs are publicly accessible."
         self._json_response(response)
+
+    def _detect_site_info(self, pages):
+        """Detect tech stack, build year, and site complexities from scraped pages."""
+        if not pages:
+            return {"tech": [], "built": None, "notes": []}
+
+        all_md = "\n".join(p.get("markdown", "") for p in pages[:5])
+        all_urls = [p.get("url", "") for p in pages]
+        all_content = all_md.lower()
+
+        tech = []
+        notes = []
+        built = None
+
+        # Framework / CMS detection via URL patterns and markdown content
+        checks = [
+            (["_next/", "__next_data__", "next.js"], "Next.js"),
+            (["nuxt", "__nuxt__"], "Nuxt.js"),
+            (["wp-content/", "wp-includes/", "wordpress"], "WordPress"),
+            (["webflow.com", "data-wf-"], "Webflow"),
+            (["squarespace.com", "sqsp.com"], "Squarespace"),
+            (["cdn.shopify.com", "myshopify.com"], "Shopify"),
+            (["wixstatic.com", "x.wix.com"], "Wix"),
+            (["ghost.io", "ghost-url"], "Ghost CMS"),
+            (["framer.com", "framerusercontent"], "Framer"),
+            (["hubspot.com", "hs-sites.com"], "HubSpot CMS"),
+            (["contentful.com"], "Contentful"),
+            (["sanity.io"], "Sanity CMS"),
+            (["strapi.io"], "Strapi"),
+        ]
+        for patterns, name in checks:
+            if any(p in all_content for p in patterns):
+                tech.append(name)
+
+        # CSS frameworks
+        if "tailwind" in all_content or "tw-" in all_content:
+            tech.append("Tailwind CSS")
+        elif "bootstrap" in all_content:
+            tech.append("Bootstrap")
+
+        # Frontend framework (only if no meta-framework detected)
+        if not any(t in tech for t in ["Next.js", "Nuxt.js", "Framer"]):
+            if "react" in all_content or "data-reactroot" in all_content:
+                tech.append("React")
+            elif "vue" in all_content or "v-bind" in all_content:
+                tech.append("Vue.js")
+            elif "angular" in all_content or "ng-version" in all_content:
+                tech.append("Angular")
+
+        # Build year from copyright
+        m = re.search(r'©\s*(\d{4})', all_md)
+        if m:
+            built = m.group(1)
+
+        # Complexity notes
+        url_str = " ".join(all_urls).lower()
+        if any(x in url_str for x in ["/blog/", "/post/", "/article/", "/news/"]):
+            notes.append("Has blog / news")
+        if any(x in url_str for x in ["/product/", "/shop/", "/cart", "/store"]):
+            notes.append("E-commerce")
+        if any(x in url_str for x in ["/login", "/signin", "/auth", "/account"]):
+            notes.append("Has auth / members area")
+        if any(x in url_str for x in ["/docs/", "/documentation/", "/guides/"]):
+            notes.append("Has docs / guides")
+        if len(pages) == 1:
+            notes.append("Single page — may be a SPA with JS rendering")
+
+        return {
+            "tech": tech if tech else ["Custom / Unknown"],
+            "built": built,
+            "notes": notes,
+        }
+
+    def _parse_crawl_output(self, raw):
+        """Parse firecrawl crawl --wait JSON output into a list of page dicts."""
+        obj = json.loads(raw)
+        # Format: {"success":true,"status":"completed","data":[{...}]}
+        if isinstance(obj, list):
+            records = obj
+        elif isinstance(obj, dict):
+            records = obj.get("data", obj.get("pages", obj.get("links", [])))
+        else:
+            return []
+
+        pages = []
+        for rec in records:
+            if not isinstance(rec, dict):
+                continue
+            md = rec.get("markdown", rec.get("content", ""))
+            meta = rec.get("metadata", {}) if isinstance(rec.get("metadata"), dict) else {}
+            # actual format: url/sourceURL are inside metadata, not top-level
+            url = (rec.get("url") or rec.get("sourceURL") or
+                   meta.get("url") or meta.get("sourceURL", ""))
+            title = meta.get("title", "")
+            if not title:
+                for line in md.splitlines():
+                    if line.startswith("# "):
+                        title = line[2:].strip()
+                        break
+            if not title and url:
+                path = urllib.parse.urlparse(url).path.strip("/")
+                title = path.split("/")[-1].replace("-", " ").replace("_", " ").title() if path else urllib.parse.urlparse(url).netloc
+            if url and md:
+                pages.append({"url": url, "title": title or url, "markdown": md})
+        return pages
+
+    def _handle_deep_scrape_full_crawl(self):
+        """Single endpoint: crawl entire site, detect tech stack, return all pages."""
+        try:
+            length = int(self.headers.get("Content-Length", 0))
+            body = json.loads(self.rfile.read(length)) if length else {}
+        except Exception as e:
+            self._json_response({"error": "Failed to parse request: " + str(e)}, 400)
+            return
+
+        url = body.get("url", "").strip()
+        if not url:
+            self._json_response({"error": "Missing 'url'"}, 400)
+            return
+
+        try:
+            parsed_url = urllib.parse.urlparse(url)
+            if parsed_url.scheme not in ("http", "https") or not parsed_url.netloc:
+                self._json_response({"error": "Invalid URL"}, 400)
+                return
+            origin = parsed_url.scheme + "://" + parsed_url.netloc
+        except Exception:
+            self._json_response({"error": "Invalid URL"}, 400)
+            return
+
+        limit = max(1, min(50, int(body.get("limit", 20))))
+        print(f"[DeepScrape] Full crawl starting: {url} (limit={limit})")
+        pages = []
+
+        # Step 1: firecrawl crawl --wait, writing to a temp file so progress
+        # text on stdout doesn't corrupt the JSON output.
+        import tempfile
+        tmp_path = None
+        try:
+            tmp_fd, tmp_path = tempfile.mkstemp(suffix=".json", prefix="fc-crawl-")
+            os.close(tmp_fd)
+            result = subprocess.run(
+                ["firecrawl", "crawl", url, "--wait", "--limit", str(limit),
+                 "--max-depth", "3", "--ignore-query-parameters", "-o", tmp_path],
+                capture_output=True, text=True, timeout=180,
+            )
+            raw_crawl = ""
+            if os.path.exists(tmp_path):
+                with open(tmp_path, "r", encoding="utf-8") as fh:
+                    raw_crawl = fh.read().strip()
+            # If file was empty, fall back to stdout (strip ANSI/progress lines)
+            if not raw_crawl and result.stdout:
+                lines = result.stdout.splitlines()
+                json_lines = [l for l in lines if l.strip().startswith("{") or l.strip().startswith("[")]
+                raw_crawl = json_lines[-1].strip() if json_lines else ""
+            if raw_crawl:
+                pages = self._parse_crawl_output(raw_crawl)
+                print(f"[DeepScrape] Crawl found {len(pages)} pages")
+        except subprocess.TimeoutExpired:
+            print("[DeepScrape] Crawl timed out — falling back to map+scrape")
+        except FileNotFoundError:
+            self._json_response({"error": "Firecrawl CLI not found. Install with: npm i -g firecrawl"}, 500)
+            return
+        except Exception as e:
+            print(f"[DeepScrape] Crawl error: {e} — falling back")
+        finally:
+            if tmp_path and os.path.exists(tmp_path):
+                try: os.unlink(tmp_path)
+                except Exception: pass
+
+        # Step 2: fallback — map then individually scrape
+        if not pages:
+            print(f"[DeepScrape] Falling back to map+scrape for {url}")
+            try:
+                map_result = subprocess.run(
+                    ["firecrawl", "map", url, "--limit", str(limit), "--json"],
+                    capture_output=True, text=True, timeout=30,
+                )
+                if map_result.returncode == 0 and map_result.stdout.strip():
+                    raw_map = json.loads(map_result.stdout.strip())
+                    if isinstance(raw_map, dict):
+                        data = raw_map.get("data", raw_map)
+                        link_list = data.get("links", data.get("urls", []))
+                    else:
+                        link_list = raw_map
+
+                    seen = set()
+                    urls_to_scrape = []
+                    for item in link_list:
+                        u = item.get("url", item) if isinstance(item, dict) else item
+                        if isinstance(u, str) and u.startswith(origin) and u not in seen:
+                            seen.add(u)
+                            urls_to_scrape.append(u)
+                            if len(urls_to_scrape) >= limit:
+                                break
+                    if not urls_to_scrape:
+                        urls_to_scrape = [url]
+                else:
+                    urls_to_scrape = [url]
+            except Exception:
+                urls_to_scrape = [url]
+
+            def scrape_one(u):
+                try:
+                    r = subprocess.run(
+                        ["firecrawl", "scrape", u, "--only-main-content", "--format", "markdown"],
+                        capture_output=True, text=True, timeout=60,
+                    )
+                    md = r.stdout.strip() if r.returncode == 0 else ""
+                    if not md:
+                        return None
+                    title = None
+                    for line in md.splitlines():
+                        if line.startswith("# "):
+                            title = line[2:].strip()
+                            break
+                    if not title:
+                        path = urllib.parse.urlparse(u).path.strip("/")
+                        title = path.split("/")[-1].replace("-", " ").title() if path else urllib.parse.urlparse(u).netloc
+                    return {"url": u, "title": title or u, "markdown": md}
+                except Exception:
+                    return None
+
+            results_map = {}
+            with ThreadPoolExecutor(max_workers=5) as executor:
+                futures = {executor.submit(scrape_one, u): i for i, u in enumerate(urls_to_scrape)}
+                try:
+                    for future in as_completed(futures, timeout=120):
+                        idx = futures[future]
+                        res = future.result()
+                        if res:
+                            results_map[idx] = res
+                except TimeoutError:
+                    pass
+            pages = [results_map[i] for i in sorted(results_map.keys())]
+
+        if not pages:
+            self._json_response({"error": "Could not scrape any pages. Check the URL and try again."}, 500)
+            return
+
+        site_info = self._detect_site_info(pages)
+        print(f"[DeepScrape] Site info: {site_info}")
+        self._json_response({"pages": pages, "siteInfo": site_info})
 
     def _build_ai_prompt(self, content):
         return '''You are a web-to-block converter. Convert the scraped content into a JSON array of Framework Builder blocks.
@@ -839,6 +1095,25 @@ SCRAPED CONTENT:
                 self.wfile.write(f.read())
         else:
             self.send_error(HTTPStatus.NOT_FOUND, 'Admin dashboard not found. Export with CMS first.')
+
+    def _read_media_meta(self):
+        meta_path = os.path.join(STATIC_DIR, 'media', 'media-meta.json')
+        if not os.path.exists(meta_path):
+            return {'folders': [], 'files': {}}
+        try:
+            with open(meta_path, 'r') as f:
+                return json.load(f)
+        except Exception:
+            return {'folders': [], 'files': {}}
+
+    def _write_media_meta(self, meta):
+        media_dir = os.path.join(STATIC_DIR, 'media')
+        os.makedirs(media_dir, exist_ok=True)
+        meta_path = os.path.join(media_dir, 'media-meta.json')
+        tmp_path = meta_path + '.tmp'
+        with open(tmp_path, 'w') as f:
+            json.dump(meta, f, indent=2)
+        os.replace(tmp_path, meta_path)
 
     def _json_response(self, data, status=200):
         self.send_response(status)
