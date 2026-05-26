@@ -13,6 +13,7 @@ import string
 import uuid
 from http import HTTPStatus
 from html.parser import HTMLParser
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 PORT = 8899
 STATIC_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -331,7 +332,72 @@ class FrameworkHandler(http.server.SimpleHTTPRequestHandler):
             self._json_response({"error": str(e)[:200]}, 500)
 
     def _handle_deep_scrape_crawl(self):
-        self._json_response({"error": "Not yet implemented"}, 501)
+        try:
+            length = int(self.headers.get("Content-Length", 0))
+            body = json.loads(self.rfile.read(length)) if length else {}
+        except Exception as e:
+            self._json_response({"error": "Failed to parse request: " + str(e)}, 400)
+            return
+
+        urls = body.get("urls", [])
+        if not urls or not isinstance(urls, list):
+            self._json_response({"error": "Missing 'urls' array"}, 400)
+            return
+
+        urls = urls[:50]  # hard cap
+        print(f"[DeepScrape] Crawling {len(urls)} pages...")
+
+        def scrape_one(url):
+            try:
+                result = subprocess.run(
+                    ["firecrawl", "scrape", url, "--only-main-content", "--format", "markdown"],
+                    capture_output=True, text=True, timeout=60,
+                )
+                md = result.stdout.strip() if result.returncode == 0 else ""
+                if not md:
+                    print(f"[DeepScrape] Skipping {url} — empty")
+                    return None
+
+                # Extract title from first H1 in markdown
+                title = None
+                for line in md.splitlines():
+                    if line.startswith("# "):
+                        title = line[2:].strip()
+                        break
+                if not title:
+                    path = urllib.parse.urlparse(url).path.strip("/")
+                    if path:
+                        title = path.split("/")[-1].replace("-", " ").replace("_", " ").title()
+                    else:
+                        title = urllib.parse.urlparse(url).netloc
+
+                return {"url": url, "title": title, "markdown": md}
+            except subprocess.TimeoutExpired:
+                print(f"[DeepScrape] Timeout on {url}")
+                return None
+            except Exception as e:
+                print(f"[DeepScrape] Error on {url}: {e}")
+                return None
+
+        results_map = {}
+        try:
+            with ThreadPoolExecutor(max_workers=5) as executor:
+                future_to_idx = {executor.submit(scrape_one, url): i for i, url in enumerate(urls)}
+                for future in as_completed(future_to_idx, timeout=120):
+                    idx = future_to_idx[future]
+                    try:
+                        result = future.result()
+                        if result:
+                            results_map[idx] = result
+                    except Exception as e:
+                        print(f"[DeepScrape] Future error: {e}")
+        except Exception as e:
+            self._json_response({"error": "Crawl failed: " + str(e)[:200]}, 500)
+            return
+
+        pages = [results_map[i] for i in sorted(results_map.keys())]
+        print(f"[DeepScrape] Crawled {len(pages)} pages successfully")
+        self._json_response({"pages": pages})
 
     def _build_ai_prompt(self, content):
         return '''You are a web-to-block converter. Convert the scraped content into a JSON array of Framework Builder blocks.
