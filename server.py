@@ -383,21 +383,24 @@ class FrameworkHandler(http.server.SimpleHTTPRequestHandler):
         try:
             with ThreadPoolExecutor(max_workers=5) as executor:
                 future_to_idx = {executor.submit(scrape_one, url): i for i, url in enumerate(urls)}
-                for future in as_completed(future_to_idx, timeout=120):
-                    idx = future_to_idx[future]
-                    try:
+                try:
+                    for future in as_completed(future_to_idx, timeout=120):
+                        idx = future_to_idx[future]
                         result = future.result()
                         if result:
                             results_map[idx] = result
-                    except Exception as e:
-                        print(f"[DeepScrape] Future error: {e}")
+                except TimeoutError:
+                    print(f"[DeepScrape] Batch timed out — returning {len(results_map)} partial results")
         except Exception as e:
             self._json_response({"error": "Crawl failed: " + str(e)[:200]}, 500)
             return
 
         pages = [results_map[i] for i in sorted(results_map.keys())]
         print(f"[DeepScrape] Crawled {len(pages)} pages successfully")
-        self._json_response({"pages": pages})
+        response = {"pages": pages}
+        if not pages:
+            response["warning"] = "No pages could be scraped. Check the URLs are publicly accessible."
+        self._json_response(response)
 
     def _build_ai_prompt(self, content):
         return '''You are a web-to-block converter. Convert the scraped content into a JSON array of Framework Builder blocks.
