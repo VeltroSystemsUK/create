@@ -1071,14 +1071,19 @@ SCRAPED CONTENT:
             filepath = os.path.join(media_dir, unique_name)
             with open(filepath, 'wb') as f:
                 f.write(file_data)
-            meta = self._read_media_meta()
-            meta.setdefault('files', {})[unique_name] = {
-                'originalName': original_filename,
-                'folder': None,
-                'tags': [],
-                'addedAt': datetime.datetime.utcnow().isoformat() + 'Z',
-            }
-            self._write_media_meta(meta)
+            try:
+                meta = self._read_media_meta()
+                meta.setdefault('files', {})[unique_name] = {
+                    'originalName': original_filename,
+                    'folder': None,
+                    'tags': [],
+                    'addedAt': datetime.datetime.utcnow().isoformat() + 'Z',
+                }
+                self._write_media_meta(meta)
+            except Exception as e:
+                os.remove(filepath)
+                self._json_response({'error': 'Upload failed (metadata): ' + str(e)[:100]}, 500)
+                return
             self._json_response({
                 'success': True,
                 'media': {'id': unique_name, 'filename': original_filename, 'url': '/media/' + unique_name}
