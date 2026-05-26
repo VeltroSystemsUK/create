@@ -270,6 +270,9 @@ class FrameworkHandler(http.server.SimpleHTTPRequestHandler):
 
         try:
             parsed_url = urllib.parse.urlparse(url)
+            if parsed_url.scheme not in ("http", "https") or not parsed_url.netloc:
+                self._json_response({"error": "Invalid URL — must be http or https"}, 400)
+                return
             origin = parsed_url.scheme + "://" + parsed_url.netloc
         except Exception:
             self._json_response({"error": "Invalid URL"}, 400)
