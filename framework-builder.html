@@ -775,6 +775,13 @@
             </button>
             <button
               class="ds-full-btn"
+              style="background: #7c3aed; color: #fff"
+              onclick="FB.deepScrape.open()"
+            >
+              🕷 Deep Scrape
+            </button>
+            <button
+              class="ds-full-btn"
               style="background: #cdfe00; color: #111"
               onclick="FB.motion.open()"
             >
@@ -902,6 +909,16 @@
           <button onclick="FB.ai.close()">✕</button>
         </div>
         <div id="ds-ai-template-main"></div>
+      </div>
+    </div>
+    <!-- DEEP SCRAPE OVERLAY -->
+    <div id="ds-deep-scrape-overlay" style="display: none">
+      <div id="ds-deep-scrape-modal">
+        <div class="ds-modal-head">
+          <span>🕷 Deep Scrape</span>
+          <button onclick="FB.deepScrape.close()">✕</button>
+        </div>
+        <div id="ds-deep-scrape-main"></div>
       </div>
     </div>
     <!-- EXPORT MODAL -->
