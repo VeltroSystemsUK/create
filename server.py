@@ -115,6 +115,10 @@ class FrameworkHandler(http.server.SimpleHTTPRequestHandler):
             self._handle_cms_content_save()
         elif parsed.path == '/api/cms/media/upload':
             self._handle_cms_media_upload()
+        elif parsed.path == "/api/deep-scrape/map":
+            self._handle_deep_scrape_map()
+        elif parsed.path == "/api/deep-scrape/crawl":
+            self._handle_deep_scrape_crawl()
         else:
             self.send_error(HTTPStatus.NOT_FOUND)
 
@@ -250,6 +254,81 @@ class FrameworkHandler(http.server.SimpleHTTPRequestHandler):
         except Exception as e:
             print(f"[AI] AI error: {e}")
             self._json_response({"error":"AI error: "+str(e)}, 500)
+
+    def _handle_deep_scrape_map(self):
+        try:
+            length = int(self.headers.get("Content-Length", 0))
+            body = json.loads(self.rfile.read(length)) if length else {}
+        except Exception as e:
+            self._json_response({"error": "Failed to parse request: " + str(e)}, 400)
+            return
+
+        url = body.get("url", "").strip()
+        if not url:
+            self._json_response({"error": "Missing 'url'"}, 400)
+            return
+
+        try:
+            parsed_url = urllib.parse.urlparse(url)
+            origin = parsed_url.scheme + "://" + parsed_url.netloc
+        except Exception:
+            self._json_response({"error": "Invalid URL"}, 400)
+            return
+
+        print(f"[DeepScrape] Mapping {url}...")
+        try:
+            result = subprocess.run(
+                ["firecrawl", "map", url, "--limit", "50", "--json"],
+                capture_output=True, text=True, timeout=30,
+            )
+            if result.returncode != 0:
+                self._json_response({"error": "Map failed: " + result.stderr.strip()[:200]}, 500)
+                return
+
+            raw = result.stdout.strip()
+            if not raw:
+                self._json_response({"error": "No URLs discovered"}, 500)
+                return
+
+            parsed_json = json.loads(raw)
+            if isinstance(parsed_json, list):
+                all_urls = parsed_json
+            elif isinstance(parsed_json, dict):
+                all_urls = parsed_json.get("links", parsed_json.get("urls", []))
+            else:
+                all_urls = []
+
+            seen = set()
+            urls = []
+            for u in all_urls:
+                if not isinstance(u, str):
+                    continue
+                if u in seen:
+                    continue
+                if not u.startswith(origin):
+                    continue
+                seen.add(u)
+                urls.append(u)
+                if len(urls) >= 50:
+                    break
+
+            if not urls:
+                urls = [url]
+
+            print(f"[DeepScrape] Found {len(urls)} URLs")
+            self._json_response({"urls": urls, "count": len(urls)})
+
+        except subprocess.TimeoutExpired:
+            self._json_response({"error": "Map timed out (30s). Check URL is valid."}, 504)
+        except FileNotFoundError:
+            self._json_response({"error": "Firecrawl CLI not found. Install with: npm i -g firecrawl"}, 500)
+        except json.JSONDecodeError:
+            self._json_response({"error": "Could not parse firecrawl map output"}, 500)
+        except Exception as e:
+            self._json_response({"error": str(e)[:200]}, 500)
+
+    def _handle_deep_scrape_crawl(self):
+        self._json_response({"error": "Not yet implemented"}, 501)
 
     def _build_ai_prompt(self, content):
         return '''You are a web-to-block converter. Convert the scraped content into a JSON array of Framework Builder blocks.
