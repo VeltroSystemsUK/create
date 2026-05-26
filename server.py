@@ -1143,10 +1143,18 @@ SCRAPED CONTENT:
 
     def _handle_cms_media_download(self):
         length = int(self.headers.get('Content-Length', 0))
-        body = json.loads(self.rfile.read(length)) if length else {}
+        try:
+            body = json.loads(self.rfile.read(length)) if length else {}
+        except (json.JSONDecodeError, ValueError):
+            self._json_response({'error': 'Invalid JSON body'}, 400)
+            return
         url = body.get('url', '').strip()
         if not url:
             self._json_response({'error': 'Missing url'}, 400)
+            return
+        parsed_url = urllib.parse.urlparse(url)
+        if parsed_url.scheme not in ('http', 'https'):
+            self._json_response({'error': 'Only http/https URLs are supported'}, 400)
             return
         try:
             req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
@@ -1211,6 +1219,9 @@ SCRAPED CONTENT:
         name = (body.get('name') or '').strip()
         if not name:
             self._json_response({'error': 'Folder name required'}, 400)
+            return
+        if '..' in name or '/' in name or '\\' in name or len(name) > 80:
+            self._json_response({'error': 'Invalid folder name'}, 400)
             return
         meta = self._read_media_meta()
         folders = meta.get('folders', [])
