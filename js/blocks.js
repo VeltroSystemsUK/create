@@ -9,6 +9,7 @@ FB.blocks.BLOCK_DEFS = {
     iconColor: "#d0d0d0",
     defaultProps: {
       logoText: "YourBrand.",
+      logoImage: "",
       links: ["Work", "Services", "About", "Contact"],
       ctaText: "Start a project",
       bg: "#111111",
@@ -385,8 +386,10 @@ FB.blocks.BLOCK_DEFS = {
       subtext:
         "We blend creativity with strategy to build websites that don't just look good — they perform.",
       ctaText: "See our work",
-      imageUrl:
+      embedUrl:
         "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800",
+      embedType: "image",
+      imageAlt: "",
       bg: "#111111",
       textColor: "#f7f6f2",
       accentColor: "#CDFE00",
@@ -415,6 +418,7 @@ FB.blocks.BLOCK_DEFS = {
     iconColor: "#d0d0d0",
     defaultProps: {
       logoText: "YourBrand.",
+      logoImage: "",
       links: [
         {
           label: "Services",
@@ -444,6 +448,7 @@ FB.blocks.BLOCK_DEFS = {
     iconColor: "#d0d0d0",
     defaultProps: {
       logoText: "YourBrand.",
+      logoImage: "",
       links: ["Work", "Services", "About", "Blog", "Contact"],
       ctaText: "Let's talk",
       bg: "#111111",
@@ -736,6 +741,7 @@ FB.blocks.BLOCK_DEFS = {
     iconColor: "#d0d0d0",
     defaultProps: {
       logoText: "YourBrand.",
+      logoImage: "",
       links: ["Home", "Work", "Services", "About", "Contact"],
       bg: "#111111",
       textColor: "#f7f6f2",

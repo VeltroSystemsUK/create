@@ -47,8 +47,16 @@ FB.canvas.renderBlockHTML = function (block) {
         '">' +
         '<div class="fw-nav-logo fw-nav-entrance fw-nav-entrance-d1" style="color:' +
         p.textColor +
-        '" contenteditable data-field="logoText">' +
-        p.logoText +
+        '">' +
+        (p.logoImage
+          ? '<img src="' +
+            p.logoImage +
+            '" alt="' +
+            (p.logoText || "") +
+            '" style="max-height:36px;width:auto;display:block">'
+          : '<span contenteditable data-field="logoText">' +
+            p.logoText +
+            "</span>") +
         "</div>" +
         '<ul class="fw-nav-links fw-nav-entrance fw-nav-entrance-d2">' +
         (p.links || [])
@@ -584,9 +592,10 @@ FB.canvas.renderBlockHTML = function (block) {
         '<video class="fw-video-bg" autoplay muted loop playsinline' +
         (p.posterUrl ? ' poster="' + p.posterUrl + '"' : "") +
         ">" +
-        '<source src="' +
-        p.videoUrl +
-        '" type="video/webm"></video>' +
+        (p.videoUrl
+          ? '<source src="' + p.videoUrl + '" type="video/webm">'
+          : "") +
+        "</video>" +
         '<div class="fw-video-overlay" style="background:' +
         p.overlayColor +
         ";opacity:" +
@@ -622,16 +631,19 @@ FB.canvas.renderBlockHTML = function (block) {
       );
 
     case "splitHero":
+      var _embedUrl = p.embedUrl || p.imageUrl || p.imageSrc || "";
       var splitMedia =
-        p.embedType === "vimeo"
+        p.embedType === "vimeo" && _embedUrl
           ? '<iframe src="https://player.vimeo.com/video/' +
-            p.embedUrl.split("/").pop() +
+            _embedUrl.split("/").pop() +
             '?background=1&autoplay=1&loop=1&muted=1" frameborder="0" allow="autoplay" style="position:absolute;inset:0;width:100%;height:100%"></iframe>'
-          : '<img src="' +
-            p.embedUrl +
-            '" alt="' +
-            p.imageAlt +
-            '" style="width:100%;height:100%;object-fit:cover">';
+          : _embedUrl
+            ? '<img src="' +
+              _embedUrl +
+              '" alt="' +
+              (p.imageAlt || "") +
+              '" style="width:100%;height:100%;object-fit:cover">'
+            : '<div style="width:100%;height:100%;background:var(--surface-1)"></div>';
       return (
         '<div class="fw-split-hero" style="background:' +
         p.bg +
@@ -755,8 +767,16 @@ FB.canvas.renderBlockHTML = function (block) {
         '">' +
         '<div class="fw-mega-logo" style="color:' +
         p.textColor +
-        '" contenteditable data-field="logoText">' +
-        p.logoText +
+        '">' +
+        (p.logoImage
+          ? '<img src="' +
+            p.logoImage +
+            '" alt="' +
+            (p.logoText || "") +
+            '" style="max-height:36px;width:auto;display:block">'
+          : '<span contenteditable data-field="logoText">' +
+            p.logoText +
+            "</span>") +
         "</div>" +
         '<ul class="fw-mega-links">' +
         megaLinks +
@@ -808,8 +828,16 @@ FB.canvas.renderBlockHTML = function (block) {
         '">' +
         '<div class="fw-mega-logo" style="color:' +
         p.textColor +
-        '" contenteditable data-field="logoText">' +
-        p.logoText +
+        '">' +
+        (p.logoImage
+          ? '<img src="' +
+            p.logoImage +
+            '" alt="' +
+            (p.logoText || "") +
+            '" style="max-height:36px;width:auto;display:block">'
+          : '<span contenteditable data-field="logoText">' +
+            p.logoText +
+            "</span>") +
         "</div>" +
         '<label class="fw-nav-cta" style="background:' +
         p.accentColor +
@@ -1465,8 +1493,16 @@ FB.canvas.renderBlockHTML = function (block) {
         '<div class="fw-fs-topbar">' +
         '<div class="fw-fs-logo" style="color:' +
         p.textColor +
-        '" contenteditable data-field="logoText">' +
-        p.logoText +
+        '">' +
+        (p.logoImage
+          ? '<img src="' +
+            p.logoImage +
+            '" alt="' +
+            (p.logoText || "") +
+            '" style="max-height:36px;width:auto;display:block">'
+          : '<span contenteditable data-field="logoText">' +
+            p.logoText +
+            "</span>") +
         "</div>" +
         '<label for="fw-fs-toggle" class="fw-fs-hamburger" style="color:' +
         p.textColor +

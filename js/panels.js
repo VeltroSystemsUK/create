@@ -631,39 +631,52 @@ FB.panels.renderRightPanel = function () {
   // Widget types — delegate to widget's edit panel
   if (FB.widgets.get(block.type)) {
     contentHtml = FB.widgets.getEditPanel(block.type, block.id, block.props);
-  } else if (block.type === "nav") {
+  } else if (
+    block.type === "nav" ||
+    block.type === "megaNav" ||
+    block.type === "slideNav" ||
+    block.type === "fullscreenMenu"
+  ) {
     contentHtml +=
-      '<div class="rp-row"><label>Logo Text</label><input type="text" value="' +
-      p.logoText +
+      '<div class="rp-row"><label>Logo Image URL</label><input type="text" value="' +
+      (p.logoImage || "") +
+      '" placeholder="Leave blank to use text" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','logoImage',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Logo Text (fallback)</label><input type="text" value="' +
+      (p.logoText || "") +
       '" onchange="FB.panels.updateProp(\'' +
       block.id +
       "','logoText',this.value)\"></div>";
-    contentHtml +=
-      '<div class="rp-row"><label>CTA Text</label><input type="text" value="' +
-      p.ctaText +
-      '" onchange="FB.panels.updateProp(\'' +
-      block.id +
-      "','ctaText',this.value)\"></div>";
-    contentHtml +=
-      '<div class="rp-row"><label>Links (one per line)</label><textarea rows="4" onchange="FB.panels.updatePropJSON(\'' +
-      block.id +
-      "','links',this.value.split('\\n').filter(function(s){return s.trim()}))\">" +
-      (p.links || []).join("\n") +
-      "</textarea></div>";
-    contentHtml +=
-      '<div class="rp-row"><label>Menu Style</label><select onchange="FB.panels.updateProp(\'' +
-      block.id +
-      "','menuStyle',this.value)\">" +
-      '<option value="simple"' +
-      (p.menuStyle === "simple" ? " selected" : "") +
-      ">Simple</option>" +
-      '<option value="mega"' +
-      (p.menuStyle === "mega" ? " selected" : "") +
-      ">Mega Dropdown</option>" +
-      '<option value="slide"' +
-      (p.menuStyle === "slide" ? " selected" : "") +
-      ">Slide-in Panel</option>" +
-      "</select></div>";
+    if (block.type === "nav") {
+      contentHtml +=
+        '<div class="rp-row"><label>CTA Text</label><input type="text" value="' +
+        p.ctaText +
+        '" onchange="FB.panels.updateProp(\'' +
+        block.id +
+        "','ctaText',this.value)\"></div>";
+      contentHtml +=
+        '<div class="rp-row"><label>Links (one per line)</label><textarea rows="4" onchange="FB.panels.updatePropJSON(\'' +
+        block.id +
+        "','links',this.value.split('\\n').filter(function(s){return s.trim()}))\">" +
+        (p.links || []).join("\n") +
+        "</textarea></div>";
+      contentHtml +=
+        '<div class="rp-row"><label>Menu Style</label><select onchange="FB.panels.updateProp(\'' +
+        block.id +
+        "','menuStyle',this.value)\">" +
+        '<option value="simple"' +
+        (p.menuStyle === "simple" ? " selected" : "") +
+        ">Simple</option>" +
+        '<option value="mega"' +
+        (p.menuStyle === "mega" ? " selected" : "") +
+        ">Mega Dropdown</option>" +
+        '<option value="slide"' +
+        (p.menuStyle === "slide" ? " selected" : "") +
+        ">Slide-in Panel</option>" +
+        "</select></div>";
+    }
   }
   if (block.type === "hero") {
     contentHtml +=
