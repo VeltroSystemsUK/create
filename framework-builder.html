@@ -222,7 +222,11 @@
             <span>Preview</span>
           </button>
           <div class="tb-sep"></div>
-          <button class="tb-btn" onclick="FB.templates.save()" title="Save">
+          <button
+            class="tb-btn"
+            onclick="FB.project.save()"
+            title="Save Project"
+          >
             <svg
               width="16"
               height="16"
@@ -241,8 +245,8 @@
           </button>
           <button
             class="tb-btn"
-            onclick="FB.panels.openTemplateManager()"
-            title="Load"
+            onclick="FB.project.open()"
+            title="Load Project"
           >
             <svg
               width="16"
@@ -318,6 +322,24 @@
               />
             </svg>
             <span>Crawl</span>
+          </button>
+          <button
+            class="tb-btn"
+            onclick="FB.rebuild.open()"
+            title="Rebuild — AI redesigns all pages"
+            style="color: #cdfe00"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            </svg>
+            <span>Rebuild</span>
           </button>
           <div class="tb-sep"></div>
           <button
@@ -505,29 +527,15 @@
         <div class="lp-accordion">
           <div
             class="lp-acc-header"
-            data-acc="templates"
+            data-acc="media"
             onclick="FB.panels.toggleLeftAccordion(this)"
           >
-            <span class="lp-acc-icon">⊞</span>
-            <span class="lp-acc-label">Templates</span>
+            <span class="lp-acc-icon">🖼</span>
+            <span class="lp-acc-label">Media</span>
             <span class="lp-acc-arrow">▶</span>
           </div>
-          <div class="lp-acc-body" id="lp-body-templates">
-            <div id="templates-panel"></div>
-          </div>
-        </div>
-        <div class="lp-accordion">
-          <div
-            class="lp-acc-header"
-            data-acc="blockthemes"
-            onclick="FB.panels.toggleLeftAccordion(this)"
-          >
-            <span class="lp-acc-icon">◈</span>
-            <span class="lp-acc-label">Block Themes</span>
-            <span class="lp-acc-arrow">▶</span>
-          </div>
-          <div class="lp-acc-body" id="lp-body-blockthemes">
-            <div id="blockthemes-panel"></div>
+          <div class="lp-acc-body" id="lp-body-media">
+            <div id="media-library"></div>
           </div>
         </div>
         <div class="lp-accordion">
@@ -542,36 +550,6 @@
           </div>
           <div class="lp-acc-body open" id="lp-body-sections">
             <div id="block-library"></div>
-          </div>
-        </div>
-        <div class="lp-accordion">
-          <div
-            class="lp-acc-header"
-            data-acc="custom"
-            onclick="FB.panels.toggleLeftAccordion(this)"
-          >
-            <span class="lp-acc-icon">■</span>
-            <span class="lp-acc-label">Custom</span>
-            <span class="lp-acc-arrow">▶</span>
-          </div>
-          <div class="lp-acc-body" id="lp-body-custom">
-            <div id="custom-block-library"></div>
-            <div style="padding: 8px 6px">
-              <button
-                class="rp-btn"
-                onclick="FB.canvas.insertBlock('textBlock')"
-                style="width: 100%"
-              >
-                + Custom Text Block
-              </button>
-              <button
-                class="rp-btn"
-                onclick="FB.canvas.insertBlock('colorBlock')"
-                style="width: 100%; margin-top: 4px"
-              >
-                + Colour Block
-              </button>
-            </div>
           </div>
         </div>
         <div class="lp-accordion">
@@ -774,16 +752,6 @@
           </div>
 
           <div id="ds-tab-assets" class="ds-tab-content">
-            <button class="ds-full-btn" onclick="FB.design.templates.open()">
-              ⊞ Browse Templates
-            </button>
-            <button
-              class="ds-full-btn"
-              style="background: #f97316; color: #fff"
-              onclick="FB.ai.open()"
-            >
-              ✨ AI Template Builder
-            </button>
             <button
               class="ds-full-btn"
               style="background: #7c3aed; color: #fff"
@@ -886,15 +854,6 @@
     </div>
 
     <!-- DESIGN STUDIO OVERLAYS -->
-    <div id="ds-template-overlay" style="display: none">
-      <div id="ds-template-modal">
-        <div class="ds-modal-head">
-          <span>Choose a Template</span>
-          <button onclick="FB.design.templates.close()">✕</button>
-        </div>
-        <div id="ds-template-grid"></div>
-      </div>
-    </div>
     <div id="ds-ai-overlay" style="display: none">
       <div id="ds-ai-modal">
         <div class="ds-modal-head">
@@ -912,16 +871,6 @@
       </div>
     </div>
 
-    <!-- AI TEMPLATE BUILDER OVERLAY -->
-    <div id="ds-ai-template-overlay" style="display: none">
-      <div id="ds-ai-template-modal">
-        <div class="ds-modal-head">
-          <span>🤖 AI Template Builder</span>
-          <button onclick="FB.ai.close()">✕</button>
-        </div>
-        <div id="ds-ai-template-main"></div>
-      </div>
-    </div>
     <!-- DEEP SCRAPE OVERLAY -->
     <div id="ds-deep-scrape-overlay" style="display: none">
       <div id="ds-deep-scrape-modal">
@@ -930,6 +879,80 @@
           <button onclick="FB.deepScrape.close()">✕</button>
         </div>
         <div id="ds-deep-scrape-main"></div>
+      </div>
+    </div>
+    <!-- PROJECT PICKER OVERLAY -->
+    <div
+      id="proj-overlay"
+      style="
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 10000;
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(4px);
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <div
+        style="
+          background: var(--surface-2);
+          border-radius: 8px;
+          width: 480px;
+          max-width: 95vw;
+          max-height: 75vh;
+          display: flex;
+          flex-direction: column;
+          border: 1px solid var(--border);
+          overflow: hidden;
+        "
+      >
+        <div class="ds-modal-head">
+          <span>📂 Load Project</span>
+          <button onclick="FB.project.close()">✕</button>
+        </div>
+        <div
+          id="proj-main"
+          style="flex: 1; min-height: 0; overflow-y: auto; padding: 16px"
+        ></div>
+      </div>
+    </div>
+    <!-- REBUILD OVERLAY -->
+    <div
+      id="rb-overlay"
+      style="
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 10000;
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(4px);
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <div
+        style="
+          background: var(--surface-2);
+          border-radius: 8px;
+          width: 580px;
+          max-width: 95vw;
+          max-height: 85vh;
+          display: flex;
+          flex-direction: column;
+          border: 1px solid var(--border);
+          overflow: hidden;
+        "
+      >
+        <div class="ds-modal-head">
+          <span>⚡ Rebuild Agent</span>
+          <button onclick="FB.rebuild.close()">✕</button>
+        </div>
+        <div
+          id="rb-main"
+          style="flex: 1; min-height: 0; overflow-y: auto; padding: 24px"
+        ></div>
       </div>
     </div>
     <!-- EXPORT MODAL -->

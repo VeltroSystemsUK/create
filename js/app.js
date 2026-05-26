@@ -42,11 +42,8 @@ FB.util.showToast = function (msg) {
 FB.init = function () {
   FB.panels.buildLibrary();
   FB.util.bindSearch();
-  var restored = FB.pages.init();
-  if (!restored) FB.templates.loadStarter();
+  FB.pages.init();
   FB.pages.render();
-  FB.templates.populateTemplates();
-  FB.templates.populateBlockThemes();
   FB.canvas.render();
   FB.canvas.initAnimations();
   FB.canvas.initWordSwap();
@@ -59,6 +56,7 @@ FB.init = function () {
   FB.canvas.initScrollIndicator();
   FB.canvas.initSvgDraw();
   FB.canvas.initCountdown();
+  if (FB.mediaGallery && FB.mediaGallery.init) FB.mediaGallery.init();
   FB.canvas.initProductTabs();
   if (FB.theme && FB.theme.apply) FB.theme.apply();
   if (FB.themeToggle && FB.themeToggle.init) FB.themeToggle.init();
