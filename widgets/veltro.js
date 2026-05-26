@@ -6622,7 +6622,7 @@ FB.widgets.register("scrollVelocitySkew", {
 // ── 15. PARALLAX IMAGE STACK ──
 FB.widgets.register("parallaxImageStack", {
   label: "Parallax Image Stack",
-  sublabel: "Layered parallax",
+  sublabel: "Hover to separate depth layers",
   icon: "▣",
   iconBg: "#0d1a0d",
   iconColor: "#34d399",
@@ -6631,35 +6631,66 @@ FB.widgets.register("parallaxImageStack", {
   defaultProps: {
     height: 500,
     bg: "#0d0d1a",
-    layerCount: 5,
+    layerCount: 3,
     images:
-      "https://picsum.photos/400/300?random=1,https://picsum.photos/400/300?random=2,https://picsum.photos/400/300?random=3,https://picsum.photos/400/300?random=4,https://picsum.photos/400/300?random=5",
+      "https://picsum.photos/400/300?random=11,https://picsum.photos/400/300?random=22,https://picsum.photos/400/300?random=33",
+    depth: 40,
+    cardWidth: 300,
+    cardHeight: 200,
   },
   render: function (p) {
     var id = "parstack-" + (p._blockId || Date.now());
-    var images = (p.images || "").split(",");
+    var images = (p.images || "").split(",").map(function (s) {
+      return s.trim();
+    });
+    var count = Math.min(p.layerCount || 3, 5);
+    var cardW = p.cardWidth || 300;
+    var cardH = p.cardHeight || 200;
+    var configs = [
+      { x: -90, y: 25, rot: -10, scale: 0.82, op: 0.5 },
+      { x: -45, y: -18, rot: -5, scale: 0.88, op: 0.68 },
+      { x: 10, y: 15, rot: 2, scale: 0.93, op: 0.82 },
+      { x: 55, y: -12, rot: 6, scale: 0.97, op: 0.92 },
+      { x: 20, y: 5, rot: 0, scale: 1.0, op: 1.0 },
+    ];
+    var used = configs.slice(5 - count);
     var layersHtml = "";
-    for (var i = 0; i < (p.layerCount || 5); i++) {
-      var img = images[i] || "https://picsum.photos/400/300?random=" + (i + 1);
+    for (var i = 0; i < count; i++) {
+      var cfg = used[i];
+      var depth = count > 1 ? (i / (count - 1)).toFixed(2) : "1";
+      var imgUrl =
+        images[i] || "https://picsum.photos/400/300?random=" + (i + 1);
       layersHtml +=
         '<div class="veltro-parstack-layer" data-depth="' +
-        (i + 1) * 0.2 +
-        '" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:' +
-        (0.3 + i * 0.15) +
-        '"><img src="' +
-        img +
-        '" style="width:300px;height:200px;object-fit:cover;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.5)" alt=""/></div>';
+        depth +
+        '" style="position:absolute;left:50%;top:50%;width:' +
+        cardW +
+        "px;height:" +
+        cardH +
+        "px;margin-left:" +
+        (-cardW / 2 + cfg.x) +
+        "px;margin-top:" +
+        (-cardH / 2 + cfg.y) +
+        'px;will-change:transform"><div style="width:100%;height:100%;transform:rotate(' +
+        cfg.rot +
+        "deg) scale(" +
+        cfg.scale +
+        ");opacity:" +
+        cfg.op +
+        ';border-radius:14px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,0.7)"><img src="' +
+        imgUrl +
+        '" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy" alt=""/></div></div>';
     }
     return (
       '<div class="veltro-parstack-wrap" id="' +
       id +
-      '" data-layer-count="' +
-      (p.layerCount || 5) +
+      '" data-depth-strength="' +
+      (p.depth || 40) +
       '" style="height:' +
-      p.height +
+      (p.height || 500) +
       "px;background:" +
-      p.bg +
-      ';position:relative;overflow:hidden;border-radius:4px">' +
+      (p.bg || "#0d0d1a") +
+      ';position:relative;overflow:hidden;border-radius:4px;cursor:none">' +
       layersHtml +
       "</div>"
     );
@@ -6678,13 +6709,31 @@ FB.widgets.register("parallaxImageStack", {
       id +
       "','bg',this.value)\"></div>";
     h +=
-      '<div class="rp-row"><label>Layer Count</label><input type="range" min="1" max="10" step="1" value="' +
-      (p.layerCount || 5) +
+      '<div class="rp-row"><label>Layer Count</label><input type="range" min="2" max="5" step="1" value="' +
+      (p.layerCount || 3) +
       '" oninput="FB.panels.updateWidgetProp(\'' +
       id +
       "','layerCount',+this.value)\"></div>";
     h +=
-      '<div class="rp-row"><label>Image URLs (comma-sep)</label><input type="text" value="' +
+      '<div class="rp-row"><label>Parallax Depth (px)</label><input type="range" min="5" max="80" step="5" value="' +
+      (p.depth || 40) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','depth',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Card Width (px)</label><input type="range" min="150" max="600" step="10" value="' +
+      (p.cardWidth || 300) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','cardWidth',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Card Height (px)</label><input type="range" min="100" max="500" step="10" value="' +
+      (p.cardHeight || 200) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','cardHeight',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Images (comma-sep URLs)</label><input type="text" value="' +
       (p.images || "") +
       '" onchange="FB.panels.updateWidgetProp(\'' +
       id +
@@ -6895,7 +6944,24 @@ FB.widgets.register("scrollProgressRing", {
       (p.ringWidth || 8) +
       '" oninput="FB.panels.updateWidgetProp(\'' +
       id +
-      "','ringWidth',+this.value)\"></div>";
+      "','elasticity',+this.value)\"></div>";
+    var contentItems = p.items || [
+      "Scroll to see skew effect",
+      "Velocity affects skew",
+      "Rubber band physics",
+      "Fast scroll = more skew",
+    ];
+    h +=
+      '<div class="rp-row" style="flex-direction:column;align-items:flex-start;border-top:1px solid #222;padding-top:8px;margin-top:8px"><label>Items (one per line)</label>';
+    h +=
+      '<textarea rows="' +
+      Math.max(3, Math.min(6, contentItems.length)) +
+      '" style="width:100%;font-size:11px;font-family:monospace;background:#1a1a1a;border:1px solid #333;border-radius:4px;color:#fff;padding:4px" onchange="try{var v=this.value.split(\'\n\').filter(function(s){return s.trim()});FB.panels.updateWidgetProp(\'' +
+      id +
+      "','items',v.length?v:['Item'])}catch(e){}" +
+      '">' +
+      contentItems.join("\n").replace(/</g, "&lt;") +
+      "</textarea></div>";
     return h;
   },
 });
@@ -16768,7 +16834,7 @@ FB.widgets.register("scrollTriggered", {
   },
   render: function (p) {
     var id = p._blockId || "scrollTrig";
-    var items = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5"];
+    var items = p.items || ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5"];
     var itemsHtml = items
       .map(function (item, i) {
         return (
@@ -16824,9 +16890,19 @@ FB.widgets.register("scrollTriggered", {
       (p.animationType === "fadeIn" ? " selected" : "") +
       '>Fade In</option><option value="slideLeft"' +
       (p.animationType === "slideLeft" ? " selected" : "") +
-      '>Slide Left</option><option value="scaleUp"' +
+      '>Slide Left</option><option value="slideRight"' +
+      (p.animationType === "slideRight" ? " selected" : "") +
+      '>Slide Right</option><option value="slideDown"' +
+      (p.animationType === "slideDown" ? " selected" : "") +
+      '>Slide Down</option><option value="scaleUp"' +
       (p.animationType === "scaleUp" ? " selected" : "") +
-      ">Scale Up</option></select></div>";
+      '>Scale Up</option><option value="rotateIn"' +
+      (p.animationType === "rotateIn" ? " selected" : "") +
+      '>Rotate In</option><option value="flipIn"' +
+      (p.animationType === "flipIn" ? " selected" : "") +
+      '>Flip In</option><option value="zoomIn"' +
+      (p.animationType === "zoomIn" ? " selected" : "") +
+      ">Zoom In</option></select></div>";
     h +=
       '<div class="rp-row"><label>Stagger (ms)</label><input type="range" min="0" max="400" step="20" value="' +
       (p.stagger || 100) +
@@ -16839,6 +16915,27 @@ FB.widgets.register("scrollTriggered", {
       '" oninput="FB.panels.updateWidgetProp(\'' +
       id +
       "','duration',+this.value)\"></div>";
+    h +=
+      '<div class="rp-section"><div class="rp-section-header" onclick="this.classList.toggle(\'collapsed\');this.nextElementSibling.style.display=this.classList.contains(\'collapsed\')?\'none\':\'block\'"><span class="rp-section-icon">▾</span><span class="rp-section-title">Content</span></div><div class="rp-section-body">';
+    var contentItems = p.items || [
+      "Item 1",
+      "Item 2",
+      "Item 3",
+      "Item 4",
+      "Item 5",
+    ];
+    h +=
+      '<div class="rp-row" style="flex-direction:column;align-items:flex-start"><label>Items (one per line)</label>';
+    h +=
+      '<textarea rows="' +
+      Math.max(3, Math.min(6, contentItems.length)) +
+      '" style="width:100%;font-size:11px;font-family:monospace;background:#1a1a1a;border:1px solid #333;border-radius:4px;color:#fff;padding:4px" onchange="try{var v=this.value.split(\'\n\').filter(function(s){return s.trim()});FB.panels.updateWidgetProp(\'' +
+      id +
+      "','items',v.length?v:['Item 1'])}catch(e){}" +
+      '">' +
+      contentItems.join("\n").replace(/</g, "&lt;") +
+      "</textarea></div>";
+    h += "</div></div>";
     return h;
   },
 });
@@ -16932,21 +17029,61 @@ FB.widgets.register("velocitySkew", {
   iconColor: "#fbbf24",
   category: "veltro",
   subCategory: "scroll",
-  defaultProps: { height: 400, bg: "#0d0d1a", maxSkew: 15, elasticity: 0.8 },
+  defaultProps: {
+    height: 400,
+    bg: "#0d0d1a",
+    maxSkew: 15,
+    elasticity: 0.8,
+    items: [
+      "Scroll to see skew effect",
+      "Velocity affects skew",
+      "Rubber band physics",
+      "Fast scroll = more skew",
+    ],
+  },
   render: function (p) {
     var id = p._blockId || "velSkew";
+    var items = p.items || [
+      "Scroll to see skew effect",
+      "Velocity affects skew",
+      "Rubber band physics",
+      "Fast scroll = more skew",
+    ];
+    var colors = [
+      "rgba(205,254,0,0.1)",
+      "rgba(60,165,250,0.1)",
+      "rgba(236,72,153,0.1)",
+      "rgba(251,191,36,0.1)",
+    ];
+    var textColors = ["#cdfe00", "#60a5fa", "#ec4899", "#fbbf24"];
+    var itemsHtml = items
+      .map(function (item, i) {
+        var ci = i % colors.length;
+        return (
+          '<div class="veltro-velskew-target" style="padding:30px;background:' +
+          colors[ci] +
+          ';border-radius:12px"><h3 style="color:' +
+          textColors[ci] +
+          ';margin:0">' +
+          item +
+          "</h3></div>"
+        );
+      })
+      .join("");
     return (
       '<div class="veltro-velskew-wrap" id="velskew-' +
       id +
       '" data-max-skew="' +
-      p.maxSkew +
+      (p.maxSkew || 15) +
       '" data-elasticity="' +
-      p.elasticity +
+      (p.elasticity || 0.8) +
       '" style="height:' +
       p.height +
       "px;background:" +
       p.bg +
-      ';position:relative;overflow:hidden;border-radius:4px;overflow-y:auto"><div class="veltro-velskew-content" style="padding:40px" data-velskew-init="1"><div style="height:800px;display:flex;flex-direction:column;gap:20px"><div style="padding:30px;background:rgba(205,254,0,0.1);border-radius:12px"><h3 style="color:#cdfe00;margin:0">Scroll to see skew effect</h3></div><div style="padding:30px;background:rgba(60,165,250,0.1);border-radius:12px"><h3 style="color:#60a5fa;margin:0">Velocity affects skew</h3></div><div style="padding:30px;background:rgba(236,72,153,0.1);border-radius:12px"><h3 style="color:#ec4899;margin:0">Rubber band physics</h3></div><div style="padding:30px;background:rgba(251,191,36,0.1);border-radius:12px"><h3 style="color:#fbbf24;margin:0">Fast scroll = more skew</h3></div></div></div></div>'
+      ';position:relative;overflow:hidden;border-radius:4px;overflow-y:auto"><div class="veltro-velskew-content" style="padding:40px" data-velskew-init="1"><div style="height:800px;display:flex;flex-direction:column;gap:20px">' +
+      itemsHtml +
+      "</div></div></div>"
     );
   },
   editPanel: function (id, p) {
@@ -18235,7 +18372,7 @@ FB.widgets.register("layeredParallax", {
 // 6. Kinetic Layout
 FB.widgets.register("kineticLayout", {
   label: "Kinetic Layout",
-  sublabel: "Layout responds to cursor",
+  sublabel: "Items repel from cursor",
   icon: "◉",
   iconBg: "#1a0d1a",
   iconColor: "#f472b6",
@@ -18245,14 +18382,26 @@ FB.widgets.register("kineticLayout", {
     height: 400,
     bg: "#0d0d1a",
     elementCount: 9,
-    responseRadius: 200,
+    responseRadius: 120,
+    repulseStrength: 50,
+    itemSize: 80,
+    accentColor: "#cdfe00",
+    mode: "repulse",
   },
   render: function (p) {
     var id = p._blockId || "kinetic";
+    var size = p.itemSize || 80;
+    var accent = p.accentColor || "#cdfe00";
     var itemsHtml = "";
     for (var i = 0; i < (p.elementCount || 9); i++) {
       itemsHtml +=
-        '<div class="veltro-kinetic-item" style="width:80px;height:80px;background:linear-gradient(135deg,rgba(205,254,0,0.15) 0%,rgba(60,165,250,0.15) 100%);border-radius:12px;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;color:#cdfe00;transition:transform 0.3s ease">' +
+        '<div class="veltro-kinetic-item" style="width:' +
+        size +
+        "px;height:" +
+        size +
+        "px;background:linear-gradient(135deg,rgba(205,254,0,0.12) 0%,rgba(60,165,250,0.12) 100%);border-radius:12px;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;color:" +
+        accent +
+        ';will-change:transform">' +
         (i + 1) +
         "</div>";
     }
@@ -18260,12 +18409,16 @@ FB.widgets.register("kineticLayout", {
       '<div class="veltro-kinetic-wrap" id="kinetic-' +
       id +
       '" data-response-radius="' +
-      p.responseRadius +
+      (p.responseRadius || 120) +
+      '" data-repulse-strength="' +
+      (p.repulseStrength || 50) +
+      '" data-mode="' +
+      (p.mode || "repulse") +
       '" style="height:' +
-      p.height +
+      (p.height || 400) +
       "px;background:" +
-      p.bg +
-      ';position:relative;overflow:hidden;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:20px;padding:20px">' +
+      (p.bg || "#0d0d1a") +
+      ';position:relative;overflow:hidden;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:16px;padding:24px">' +
       itemsHtml +
       "</div>"
     );
@@ -18284,17 +18437,43 @@ FB.widgets.register("kineticLayout", {
       id +
       "','bg',this.value)\"></div>";
     h +=
-      '<div class="rp-row"><label>Element Count</label><input type="range" min="4" max="20" step="1" value="' +
+      '<div class="rp-row"><label>Mode</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','mode',this.value)\"><option value=\"repulse\"" +
+      ((p.mode || "repulse") === "repulse" ? " selected" : "") +
+      '>Repulse</option><option value="attract"' +
+      (p.mode === "attract" ? " selected" : "") +
+      ">Attract</option></select></div>";
+    h +=
+      '<div class="rp-row"><label>Element Count</label><input type="range" min="4" max="24" step="1" value="' +
       (p.elementCount || 9) +
       '" oninput="FB.panels.updateWidgetProp(\'' +
       id +
       "','elementCount',+this.value)\"></div>";
     h +=
-      '<div class="rp-row"><label>Response Radius (px)</label><input type="range" min="50" max="500" step="10" value="' +
-      (p.responseRadius || 200) +
+      '<div class="rp-row"><label>Response Radius (px)</label><input type="range" min="40" max="300" step="10" value="' +
+      (p.responseRadius || 120) +
       '" oninput="FB.panels.updateWidgetProp(\'' +
       id +
       "','responseRadius',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Push Strength (px)</label><input type="range" min="10" max="120" step="5" value="' +
+      (p.repulseStrength || 50) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','repulseStrength',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Item Size (px)</label><input type="range" min="40" max="160" step="8" value="' +
+      (p.itemSize || 80) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','itemSize',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Accent Colour</label><input type="color" value="' +
+      (p.accentColor || "#cdfe00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','accentColor',this.value)\"></div>";
     return h;
   },
 });
@@ -18302,57 +18481,75 @@ FB.widgets.register("kineticLayout", {
 // 7. Morphing Grid
 FB.widgets.register("morphingGrid", {
   label: "Morphing Grid",
-  sublabel: "Grid transforms between layouts",
+  sublabel: "Auto-cycles between layouts",
   icon: "⊞",
   iconBg: "#0d1a2e",
   iconColor: "#60a5fa",
   category: "veltro",
   subCategory: "spatial",
   defaultProps: {
-    height: 400,
+    height: 440,
     bg: "#0d0d1a",
-    layoutType: "grid",
-    animationSpeed: 1,
+    itemCount: 6,
+    cycleSpeed: 2.5,
+    transitionDuration: 0.6,
+    accentColor: "#cdfe00",
+    itemBg: "rgba(255,255,255,0.05)",
+    gap: 10,
+    autoCycle: true,
   },
   render: function (p) {
     var id = p._blockId || "morphGrid";
+    var count = Math.min(Math.max(p.itemCount || 6, 4), 9);
+    var gap = p.gap || 10;
+    var dur = p.transitionDuration || 0.6;
+    var accent = p.accentColor || "#cdfe00";
+    var ibg = p.itemBg || "rgba(255,255,255,0.05)";
     var itemsHtml = "";
-    for (var i = 0; i < 9; i++) {
+    for (var i = 0; i < count; i++) {
       itemsHtml +=
-        '<div class="veltro-morphgrid-item" style="background:linear-gradient(135deg,rgba(205,254,0,0.15) 0%,rgba(60,165,250,0.15) 100%);border-radius:8px;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;color:#cdfe00">' +
+        '<div class="veltro-morphgrid-item" style="flex:0 0 30%;height:120px;min-height:60px;background:' +
+        ibg +
+        ";border-radius:10px;border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:800;color:" +
+        accent +
+        ";transition:flex-basis " +
+        dur +
+        "s ease,height " +
+        dur +
+        "s ease,opacity " +
+        dur +
+        's ease;overflow:hidden">' +
         (i + 1) +
         "</div>";
     }
-    var gridStyle =
-      p.layoutType === "grid"
-        ? "grid-template-columns:repeat(3,1fr)"
-        : p.layoutType === "list"
-          ? "grid-template-columns:1fr"
-          : "grid-template-columns:repeat(3,1fr)";
     return (
       '<div class="veltro-morphgrid-wrap" id="morphgrid-' +
       id +
-      '" data-layout-type="' +
-      p.layoutType +
-      '" data-animation-speed="' +
-      p.animationSpeed +
+      '" data-cycle-speed="' +
+      (p.cycleSpeed || 2.5) +
+      '" data-auto-cycle="' +
+      (p.autoCycle !== false ? "1" : "0") +
+      '" data-item-count="' +
+      count +
+      '" data-gap="' +
+      gap +
       '" style="height:' +
-      p.height +
+      (p.height || 440) +
       "px;background:" +
-      p.bg +
-      ';position:relative;overflow:hidden;border-radius:4px;padding:20px"><div class="veltro-morphgrid-container" style="display:grid;' +
-      gridStyle +
-      ";gap:10px;height:100%;transition:all " +
-      1 / p.animationSpeed +
-      's ease">' +
+      (p.bg || "#0d0d1a") +
+      ';position:relative;overflow:hidden;border-radius:4px"><div class="veltro-morphgrid-inner" style="display:flex;flex-wrap:wrap;align-content:flex-start;gap:' +
+      gap +
+      "px;padding:" +
+      gap +
+      'px;height:100%;overflow:hidden">' +
       itemsHtml +
       "</div></div>"
     );
   },
   editPanel: function (id, p) {
     var h =
-      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
-      (p.height || 400) +
+      '<div class="rp-row"><label>Height (px)</label><input type="number" min="200" max="1200" value="' +
+      (p.height || 440) +
       '" onchange="FB.panels.updateWidgetProp(\'' +
       id +
       "','height',+this.value)\"></div>";
@@ -18363,19 +18560,49 @@ FB.widgets.register("morphingGrid", {
       id +
       "','bg',this.value)\"></div>";
     h +=
-      '<div class="rp-row"><label>Layout</label><select onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','layoutType',this.value)\"><option value=\"grid\"" +
-      ((p.layoutType || "grid") === "grid" ? " selected" : "") +
-      '>Grid</option><option value="list"' +
-      (p.layoutType === "list" ? " selected" : "") +
-      ">List</option></select></div>";
-    h +=
-      '<div class="rp-row"><label>Transition Speed</label><input type="range" min="0.2" max="3" step="0.2" value="' +
-      (p.animationSpeed || 1) +
+      '<div class="rp-row"><label>Item Count</label><input type="range" min="4" max="9" step="1" value="' +
+      (p.itemCount || 6) +
       '" oninput="FB.panels.updateWidgetProp(\'' +
       id +
-      "','animationSpeed',+this.value)\"></div>";
+      "','itemCount',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Cycle Speed (s)</label><input type="range" min="1" max="8" step="0.5" value="' +
+      (p.cycleSpeed || 2.5) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','cycleSpeed',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Transition Duration (s)</label><input type="range" min="0.2" max="1.5" step="0.1" value="' +
+      (p.transitionDuration || 0.6) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','transitionDuration',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Gap (px)</label><input type="range" min="4" max="24" step="2" value="' +
+      (p.gap || 10) +
+      '" oninput="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','gap',+this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Accent Colour</label><input type="color" value="' +
+      (p.accentColor || "#cdfe00") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','accentColor',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Item Background</label><input type="text" value="' +
+      (p.itemBg || "rgba(255,255,255,0.05)") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','itemBg',this.value)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Auto Cycle</label><select onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','autoCycle',this.value==='true')\"><option value=\"true\"" +
+      (p.autoCycle !== false ? " selected" : "") +
+      '>On</option><option value="false"' +
+      (p.autoCycle === false ? " selected" : "") +
+      ">Off</option></select></div>";
     return h;
   },
 });
@@ -20606,15 +20833,58 @@ window._VeltroInitParallaxImageStack = function () {
     .querySelectorAll(".fw-widget-parallaxImageStack:not([data-parallax-init])")
     .forEach(function (el) {
       el.setAttribute("data-parallax-init", "1");
-      var layers = el.querySelectorAll(".veltro-parallax-layer");
-      window.addEventListener("scroll", function () {
-        var rect = el.getBoundingClientRect();
-        var progress = -rect.top / (rect.height + window.innerHeight);
+      var wrap = el.querySelector(".veltro-parstack-wrap");
+      if (!wrap) return;
+      var layers = wrap.querySelectorAll(".veltro-parstack-layer");
+      if (!layers.length) return;
+      var strength = +(wrap.dataset.depthStrength || 40);
+      var mx = 0;
+      var my = 0;
+      var pos = [];
+      layers.forEach(function () {
+        pos.push({ x: 0, y: 0 });
+      });
+      var rafId = 0;
+
+      function lerp(a, b, t) {
+        return a + (b - a) * t;
+      }
+
+      function tick() {
+        if (!el.isConnected) {
+          rafId = 0;
+          return;
+        }
+        var settling = false;
         layers.forEach(function (layer, i) {
-          var speed = +layer.dataset.parallaxSpeed || (i + 1) * 0.1;
+          var d = +(layer.dataset.depth || 0);
+          var tx = mx * strength * d;
+          var ty = my * strength * d;
+          pos[i].x = lerp(pos[i].x, tx, 0.08);
+          pos[i].y = lerp(pos[i].y, ty, 0.08);
+          if (Math.abs(pos[i].x - tx) > 0.05 || Math.abs(pos[i].y - ty) > 0.05)
+            settling = true;
           layer.style.transform =
-            "translateY(" + progress * speed * 200 + "px)";
+            "translateX(" +
+            pos[i].x.toFixed(2) +
+            "px) translateY(" +
+            pos[i].y.toFixed(2) +
+            "px)";
         });
+        rafId = settling ? requestAnimationFrame(tick) : 0;
+      }
+
+      el.addEventListener("mousemove", function (e) {
+        var rect = el.getBoundingClientRect();
+        mx = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
+        my = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
+        if (!rafId) rafId = requestAnimationFrame(tick);
+      });
+
+      el.addEventListener("mouseleave", function () {
+        mx = 0;
+        my = 0;
+        if (!rafId) rafId = requestAnimationFrame(tick);
       });
     });
 };
@@ -22844,16 +23114,52 @@ window._VeltroInitScrollTriggered = function () {
     .querySelectorAll(".fw-widget-scrollTriggered:not([data-st-init])")
     .forEach(function (el) {
       el.setAttribute("data-st-init", "1");
-      var items = el.querySelectorAll(".veltro-trigger-item");
+      var wrap = el.querySelector(".veltro-scroll-reveal-wrap");
+      if (!wrap) return;
+      var animType = wrap.dataset.animationType || "fadeUp";
+      var stagger = +(wrap.dataset.stagger || 100);
+      var duration = +(wrap.dataset.duration || 800);
+      var items = el.querySelectorAll(".veltro-scroll-reveal-item");
+
+      var animStyles = {
+        fadeUp: { from: "translateY(40px)", to: "translateY(0)" },
+        fadeIn: { from: "none", to: "none" },
+        slideLeft: { from: "translateX(60px)", to: "translateX(0)" },
+        slideRight: { from: "translateX(-60px)", to: "translateX(0)" },
+        slideDown: { from: "translateY(-40px)", to: "translateY(0)" },
+        scaleUp: { from: "scale(0.8)", to: "scale(1)" },
+        rotateIn: {
+          from: "rotate(-15deg) scale(0.9)",
+          to: "rotate(0) scale(1)",
+        },
+        flipIn: { from: "rotateX(90deg)", to: "rotateX(0)" },
+        zoomIn: { from: "scale(0.5)", to: "scale(1)" },
+      };
+
+      var style = animStyles[animType] || animStyles.fadeUp;
+
+      items.forEach(function (item, i) {
+        item.style.opacity = "0";
+        item.style.transform = style.from;
+        item.style.transition =
+          "opacity " + duration + "ms ease, transform " + duration + "ms ease";
+        item.style.willChange = "opacity, transform";
+      });
+
       var observer = new IntersectionObserver(
         function (entries) {
           entries.forEach(function (entry) {
             if (entry.isIntersecting) {
-              entry.target.classList.add("veltro-triggered");
+              var idx = +(entry.target.dataset.index || 0);
+              setTimeout(function () {
+                entry.target.style.opacity = "1";
+                entry.target.style.transform = style.to;
+              }, idx * stagger);
+              observer.unobserve(entry.target);
             }
           });
         },
-        { threshold: 0.2 },
+        { threshold: 0.15 },
       );
       items.forEach(function (item) {
         observer.observe(item);
@@ -22882,18 +23188,23 @@ window._VeltroInitVelocitySkew = function () {
     .querySelectorAll(".fw-widget-velocitySkew:not([data-vs-init])")
     .forEach(function (el) {
       el.setAttribute("data-vs-init", "1");
-      var targets = el.querySelectorAll(".veltro-velocity-target");
-      var lastScroll = 0,
-        velocity = 0;
+      var wrap = el.querySelector(".veltro-velskew-wrap") || el;
+      var maxSkew = +(wrap.dataset.maxSkew || 15);
+      var elasticity = +(wrap.dataset.elasticity || 0.8);
+      var targets = el.querySelectorAll(".veltro-velskew-target");
+      if (!targets.length) return;
+      var lastScroll = window.scrollY || window.pageYOffset;
+      var velocity = 0;
       var rafId = 0;
       function update() {
         if (!el.isConnected) return;
         var current = window.scrollY || window.pageYOffset;
-        velocity += (current - lastScroll - velocity) * 0.1;
+        var raw = current - lastScroll;
+        velocity += (raw - velocity) * elasticity;
         lastScroll = current;
+        var skew = Math.max(-maxSkew, Math.min(maxSkew, velocity));
         targets.forEach(function (t) {
-          t.style.transform =
-            "skewX(" + Math.max(-8, Math.min(8, velocity)) + "deg)";
+          t.style.transform = "skewX(" + skew + "deg)";
         });
         rafId = requestAnimationFrame(update);
       }
@@ -24062,34 +24373,77 @@ window._VeltroInitLayeredParallax = function () {
 
 window._VeltroInitKineticLayout = function () {
   document
-    .querySelectorAll(".fw-widget-kineticLayout:not([data-kl-init])")
-    .forEach(function (el) {
-      el.setAttribute("data-kl-init", "1");
-      var items = el.querySelectorAll(".veltro-kl-item");
-      el.addEventListener("mousemove", function (e) {
-        var rect = el.getBoundingClientRect();
-        var mx = e.clientX - rect.left,
-          my = e.clientY - rect.top;
-        items.forEach(function (item) {
-          var ir = item.getBoundingClientRect();
-          var cx = ir.left + ir.width / 2 - rect.left;
-          var cy = ir.top + ir.height / 2 - rect.top;
-          var dx = mx - cx,
-            dy = my - cy;
-          var dist = Math.sqrt(dx * dx + dy * dy);
-          var push = Math.max(0, 1 - dist / 150);
-          item.style.transform =
-            "translate(" +
-            -dx * push * 0.15 +
-            "px," +
-            -dy * push * 0.15 +
-            "px)";
-        });
+    .querySelectorAll(".veltro-kinetic-wrap:not([data-kinetic-init])")
+    .forEach(function (wrap) {
+      wrap.setAttribute("data-kinetic-init", "1");
+      var items = Array.from(wrap.querySelectorAll(".veltro-kinetic-item"));
+      if (!items.length) return;
+
+      var radius = parseFloat(wrap.dataset.responseRadius) || 120;
+      var strength = parseFloat(wrap.dataset.repulseStrength) || 50;
+      var mode = wrap.dataset.mode || "repulse";
+      var state = items.map(function () {
+        return { cx: 0, cy: 0 };
       });
-      el.addEventListener("mouseleave", function () {
-        items.forEach(function (item) {
-          item.style.transform = "";
+      var mx = -9999,
+        my = -9999,
+        raf = null;
+
+      function lerp(a, b, t) {
+        return a + (b - a) * t;
+      }
+
+      function tick() {
+        var rect = wrap.getBoundingClientRect();
+        var settled = true;
+        items.forEach(function (item, i) {
+          var s = state[i];
+          var ir = item.getBoundingClientRect();
+          var icx = ir.left + ir.width / 2 - rect.left;
+          var icy = ir.top + ir.height / 2 - rect.top;
+          var dx = mx - icx,
+            dy = my - icy;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          var targetX = 0,
+            targetY = 0;
+          if (mx !== -9999 && dist < radius && dist > 1) {
+            var factor = 1 - dist / radius;
+            var norm = 1 / dist;
+            if (mode === "repulse") {
+              targetX = -dx * norm * factor * strength;
+              targetY = -dy * norm * factor * strength;
+            } else {
+              targetX = dx * norm * factor * strength;
+              targetY = dy * norm * factor * strength;
+            }
+          }
+          s.cx = lerp(s.cx, targetX, 0.1);
+          s.cy = lerp(s.cy, targetY, 0.1);
+          item.style.transform =
+            "translate(" + s.cx.toFixed(2) + "px," + s.cy.toFixed(2) + "px)";
+          if (
+            Math.abs(s.cx - targetX) > 0.05 ||
+            Math.abs(s.cy - targetY) > 0.05
+          )
+            settled = false;
         });
+        raf = settled ? null : requestAnimationFrame(tick);
+      }
+
+      function startRaf() {
+        if (!raf) raf = requestAnimationFrame(tick);
+      }
+
+      wrap.addEventListener("mousemove", function (e) {
+        var rect = wrap.getBoundingClientRect();
+        mx = e.clientX - rect.left;
+        my = e.clientY - rect.top;
+        startRaf();
+      });
+      wrap.addEventListener("mouseleave", function () {
+        mx = -9999;
+        my = -9999;
+        startRaf();
       });
     });
 };
@@ -24099,29 +24453,144 @@ window._VeltroInitMorphingGrid = function () {
     .querySelectorAll(".fw-widget-morphingGrid:not([data-mg-init])")
     .forEach(function (el) {
       el.setAttribute("data-mg-init", "1");
-      var cells = el.querySelectorAll(".veltro-mg-cell");
-      var t = 0;
-      var rafId = 0;
-      function animate() {
-        if (!el.isConnected) return;
-        t += 0.02;
-        cells.forEach(function (cell, i) {
-          var scale = 1 + Math.sin(t + i * 0.5) * 0.1;
-          cell.style.transform = "scale(" + scale + ")";
-        });
-        rafId = requestAnimationFrame(animate);
-      }
-      new IntersectionObserver(
-        function (e) {
-          if (e[0].isIntersecting) {
-            if (!rafId) rafId = requestAnimationFrame(animate);
-          } else {
-            cancelAnimationFrame(rafId);
-            rafId = 0;
-          }
+      var wrap = el.querySelector(".veltro-morphgrid-wrap");
+      if (!wrap) return;
+      var items = wrap.querySelectorAll(".veltro-morphgrid-item");
+      if (!items.length) return;
+
+      var cycleSpeed = +(wrap.dataset.cycleSpeed || 2.5) * 1000;
+      var autoCycle = wrap.dataset.autoCycle !== "0";
+      var layoutIndex = 0;
+      var timer = null;
+
+      // Each layout is an array of {basis, height} for each item (% basis, px height)
+      // Layouts defined for up to 9 items — extra items fall back to last entry
+      var LAYOUTS = [
+        // 0: Equal grid (3 col)
+        {
+          name: "Grid",
+          items: [
+            { b: "30%", h: 120 },
+            { b: "30%", h: 120 },
+            { b: "30%", h: 120 },
+            { b: "30%", h: 120 },
+            { b: "30%", h: 120 },
+            { b: "30%", h: 120 },
+            { b: "30%", h: 120 },
+            { b: "30%", h: 120 },
+            { b: "30%", h: 120 },
+          ],
         },
-        { threshold: 0.01 },
-      ).observe(el);
+        // 1: Featured — first item is hero
+        {
+          name: "Featured",
+          items: [
+            { b: "62%", h: 260 },
+            { b: "30%", h: 125 },
+            { b: "30%", h: 125 },
+            { b: "30%", h: 110 },
+            { b: "46%", h: 110 },
+            { b: "46%", h: 110 },
+            { b: "30%", h: 110 },
+            { b: "30%", h: 110 },
+            { b: "30%", h: 110 },
+          ],
+        },
+        // 2: Duo — two equal columns, alternating tall/short
+        {
+          name: "Duo",
+          items: [
+            { b: "46%", h: 200 },
+            { b: "46%", h: 110 },
+            { b: "46%", h: 110 },
+            { b: "46%", h: 200 },
+            { b: "46%", h: 160 },
+            { b: "46%", h: 160 },
+            { b: "46%", h: 130 },
+            { b: "46%", h: 130 },
+            { b: "46%", h: 130 },
+          ],
+        },
+        // 3: List — full width stacked
+        {
+          name: "List",
+          items: [
+            { b: "96%", h: 70 },
+            { b: "96%", h: 70 },
+            { b: "96%", h: 70 },
+            { b: "96%", h: 70 },
+            { b: "96%", h: 70 },
+            { b: "96%", h: 70 },
+            { b: "96%", h: 70 },
+            { b: "96%", h: 70 },
+            { b: "96%", h: 70 },
+          ],
+        },
+        // 4: Wide — one wide item per row, alternating sides
+        {
+          name: "Wide",
+          items: [
+            { b: "62%", h: 130 },
+            { b: "30%", h: 130 },
+            { b: "30%", h: 130 },
+            { b: "62%", h: 130 },
+            { b: "62%", h: 130 },
+            { b: "30%", h: 130 },
+            { b: "30%", h: 130 },
+            { b: "62%", h: 130 },
+            { b: "30%", h: 130 },
+          ],
+        },
+      ];
+
+      function applyLayout(idx) {
+        var layout = LAYOUTS[idx % LAYOUTS.length];
+        items.forEach(function (item, i) {
+          var cfg = layout.items[Math.min(i, layout.items.length - 1)];
+          item.style.flexBasis = cfg.b;
+          item.style.height = cfg.h + "px";
+        });
+        if (wrap.querySelector(".veltro-mg-label")) {
+          wrap.querySelector(".veltro-mg-label").textContent = layout.name;
+        }
+      }
+
+      // Add layout name badge
+      var badge = document.createElement("div");
+      badge.className = "veltro-mg-label";
+      badge.style.cssText =
+        "position:absolute;bottom:12px;right:14px;font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.3);pointer-events:none;z-index:2";
+      wrap.appendChild(badge);
+
+      applyLayout(0);
+
+      function next() {
+        layoutIndex = (layoutIndex + 1) % LAYOUTS.length;
+        applyLayout(layoutIndex);
+      }
+
+      if (autoCycle) {
+        new IntersectionObserver(
+          function (e) {
+            if (e[0].isIntersecting) {
+              if (!timer) timer = setInterval(next, cycleSpeed);
+            } else {
+              clearInterval(timer);
+              timer = null;
+            }
+          },
+          { threshold: 0.1 },
+        ).observe(el);
+      }
+
+      // Click to manually advance
+      wrap.addEventListener("click", function () {
+        next();
+        if (autoCycle) {
+          clearInterval(timer);
+          timer = setInterval(next, cycleSpeed);
+        }
+      });
     });
 };
 

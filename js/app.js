@@ -1,5 +1,34 @@
 FB.util = {};
 
+FB.util._searchBound = false;
+
+FB.util.bindSearch = function () {
+  if (FB.util._searchBound) return;
+  var inp = document.getElementById("lp-search-input");
+  var inpDs = document.getElementById("ds-search-input");
+  if (!inp && !inpDs) {
+    setTimeout(FB.util.bindSearch, 200);
+    return;
+  }
+  function doFilter(el) {
+    FB.panels.filterBlocks(el);
+  }
+  function doClear() {
+    FB.panels.clearSearch();
+  }
+  if (inp)
+    inp.addEventListener("input", function () {
+      doFilter(this);
+    });
+  if (inpDs)
+    inpDs.addEventListener("input", function () {
+      doFilter(this);
+    });
+  var clear = document.getElementById("lp-search-clear");
+  if (clear) clear.addEventListener("click", doClear);
+  FB.util._searchBound = true;
+};
+
 FB.util.showToast = function (msg) {
   const t = document.getElementById("toast");
   t.innerHTML = msg + '<div class="toast-progress"></div>';
@@ -12,6 +41,7 @@ FB.util.showToast = function (msg) {
 
 FB.init = function () {
   FB.panels.buildLibrary();
+  FB.util.bindSearch();
   var restored = FB.pages.init();
   if (!restored) FB.templates.loadStarter();
   FB.pages.render();

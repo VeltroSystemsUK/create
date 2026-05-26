@@ -791,9 +791,11 @@ FB.blocks.BLOCK_DEFS = {
     iconColor: "#d0d0d0",
     defaultProps: {
       headline: "Drawn on scroll.",
+      subtext: "Scroll down to animate the stroke.",
       bg: "#111111",
       textColor: "#f7f6f2",
       accentColor: "#CDFE00",
+      animDuration: 3,
     },
   },
   dayNightSwitcher: {

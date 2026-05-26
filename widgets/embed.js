@@ -212,7 +212,7 @@ FB.widgets.register("videoPlaylist", {
 });
 
 FB.widgets.register("lottie", {
-  label: "Lottie",
+  label: "Lottie Animation",
   icon: "\u25CF",
   iconBg: "#2a1a2a",
   iconColor: "#CDFE00",
@@ -222,49 +222,182 @@ FB.widgets.register("lottie", {
     autoplay: true,
     loop: true,
     height: 300,
+    speed: 1,
+    bg: "transparent",
   },
   render: function (p) {
+    var id = p._blockId || "lt" + Date.now();
     return (
-      '<div style="padding:0.5rem 1rem;text-align:center">' +
-      '<lottie-player src="' +
+      '<div class="fw-lottie-wrap" id="lottie-' +
+      id +
+      '" data-src="' +
       (p.src || "") +
-      '" ' +
-      (p.autoplay ? "autoplay" : "") +
-      " " +
-      (p.loop ? "loop" : "") +
-      ' mode="normal" style="width:100%;height:' +
+      '" data-autoplay="' +
+      (p.autoplay ? "1" : "0") +
+      '" data-loop="' +
+      (p.loop ? "1" : "0") +
+      '" data-speed="' +
+      (p.speed || 1) +
+      '" style="width:100%;height:' +
       (p.height || 300) +
-      'px"></lottie-player>' +
-      '<div style="font-size:11px;color:#999;margin-top:4px">Lottie animation — requires lottie-player script</div></div>'
+      "px;background:" +
+      (p.bg || "transparent") +
+      ';position:relative;border-radius:4px;overflow:hidden"><div class="fw-lottie-svg" style="width:100%;height:100%"></div></div>'
     );
   },
   editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Animation JSON URL</label><input type="text" value="' +
-      p.src +
+    var h = "";
+    h +=
+      '<div class="rp-row"><label>Animation URL</label><input type="text" value="' +
+      (p.src || "") +
       '" onchange="FB.panels.updateWidgetProp(\'' +
       id +
-      "','src',this.value)\"></div>" +
+      "','src',this.value);FB.canvas.refreshBlock('" +
+      id +
+      "')\"></div>";
+    h +=
       '<div class="rp-row"><label>Height: ' +
       (p.height || 300) +
       'px</label><input type="range" min="100" max="600" value="' +
       (p.height || 300) +
       '" oninput="FB.panels.updateWidgetProp(\'' +
       id +
-      "','height',+this.value);this.previousElementSibling.textContent='Height: '+this.value+'px'\"></div>" +
+      "','height',+this.value);this.previousElementSibling.textContent='Height: '+this.value+'px'\"></div>";
+    h +=
+      '<div class="rp-row"><label>Speed</label><input type="range" min="0.1" max="3" step="0.1" value="' +
+      (p.speed || 1) +
+      '" oninput="var sp=+this.value;FB.panels.updateWidgetProp(\'' +
+      id +
+      "','speed',sp)\"></div>";
+    h +=
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#000000") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>";
+    h +=
       '<div class="rp-row"><label><input type="checkbox" ' +
       (p.autoplay ? "checked" : "") +
       " onchange=\"FB.panels.updateWidgetProp('" +
       id +
-      "','autoplay',this.checked)\"> Autoplay</label></div>" +
+      "','autoplay',this.checked)\"> Autoplay</label></div>";
+    h +=
       '<div class="rp-row"><label><input type="checkbox" ' +
       (p.loop ? "checked" : "") +
       " onchange=\"FB.panels.updateWidgetProp('" +
       id +
-      "','loop',this.checked)\"> Loop</label></div>"
+      "','loop',this.checked)\"> Loop</label></div>";
+    h +=
+      '<div class="rp-row" style="flex-direction:column;align-items:flex-start;padding-top:6px"><span style="font-size:10px;color:#666">Free Lottie animations: <a href="https://lottiefiles.com/featured" target="_blank" style="color:#cdfe00">lottiefiles.com</a></span></div>';
+    return h;
+  },
+});
+
+// ── Motion Block (created by Motion Creator) ──
+FB.widgets.register("motionBlock", {
+  label: "Motion Animation",
+  icon: "🎬",
+  iconBg: "#1a1a2a",
+  iconColor: "#cdfe00",
+  category: "embed",
+  defaultProps: { animData: "{}", height: 350, bg: "#0d0d1a", loop: true },
+  render: function (p) {
+    var id = p._blockId || "mot" + Date.now();
+    return (
+      '<div class="fw-motion-wrap" id="motion-' +
+      id +
+      '" data-anim="' +
+      (p.animData || "{}").replace(/"/g, "&quot;") +
+      '" data-loop="' +
+      (p.loop ? "1" : "0") +
+      '" style="height:' +
+      (p.height || 350) +
+      "px;background:" +
+      (p.bg || "#0d0d1a") +
+      ';position:relative;overflow:hidden;border-radius:4px"><canvas class="fw-motion-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas></div>'
+    );
+  },
+  editPanel: function (id, p) {
+    return (
+      '<div class="rp-row"><label>Height (px)</label><input type="number" value="' +
+      (p.height || 350) +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','height',+this.value)\"></div>" +
+      '<div class="rp-row"><label>Background</label><input type="color" value="' +
+      (p.bg || "#0d0d1a") +
+      '" onchange="FB.panels.updateWidgetProp(\'' +
+      id +
+      "','bg',this.value)\"></div>" +
+      '<div class="rp-row"><label><input type="checkbox" ' +
+      (p.loop ? "checked" : "") +
+      " onchange=\"FB.panels.updateWidgetProp('" +
+      id +
+      "','loop',this.checked)\"> Loop</label></div>" +
+      '<div style="padding:10px;font-size:10px;color:#666">Created with the <a href="#" onclick="FB.motion.open();return false" style="color:#cdfe00">Motion Creator</a></div>'
     );
   },
 });
+
+FB.panels._lottieLoaded = false;
+
+FB.panels.initLottie = function () {
+  document
+    .querySelectorAll(".fw-lottie-wrap:not([data-lottie-init])")
+    .forEach(function (wrap) {
+      wrap.dataset.lottieInit = "1";
+      var src = wrap.dataset.src;
+      var autoplay = wrap.dataset.autoplay === "1";
+      var loop = wrap.dataset.loop === "1";
+      var speed = +(wrap.dataset.speed || 1);
+      if (!src) return;
+      var container = wrap.querySelector(".fw-lottie-svg");
+      if (!container) return;
+
+      function loadAndPlay() {
+        if (!window.bodymovin) return;
+        var anim = window.bodymovin.loadAnimation({
+          container: container,
+          renderer: "svg",
+          loop: loop,
+          autoplay: autoplay,
+          path: src,
+        });
+        anim.setSpeed(speed);
+        anim.addEventListener("data_failed", function () {
+          container.innerHTML =
+            '<div style="padding:2rem;text-align:center;color:#666;font-size:12px">Failed to load animation</div>';
+        });
+      }
+
+      if (window.bodymovin) {
+        loadAndPlay();
+      } else {
+        var s = document.createElement("script");
+        s.src =
+          "https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js";
+        s.onload = loadAndPlay;
+        s.onerror = function () {
+          container.innerHTML =
+            '<div style="padding:2rem;text-align:center;color:#666;font-size:12px">Could not load Lottie renderer</div>';
+        };
+        document.head.appendChild(s);
+      }
+    });
+};
+
+FB.panels._initLottie = function () {
+  FB.panels.initLottie();
+  setInterval(function () {
+    FB.panels.initLottie();
+  }, 2000);
+};
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", FB.panels._initLottie);
+} else {
+  FB.panels._initLottie();
+}
 
 // HTML Embed — renders raw HTML with preserved styles via Shadow DOM
 FB.widgets.register("htmlEmbed", {

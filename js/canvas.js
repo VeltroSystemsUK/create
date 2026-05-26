@@ -1673,7 +1673,9 @@ FB.canvas.renderBlockHTML = function (block) {
 
     case "svgDraw":
       return (
-        '<div class="fw-svg-draw-block" style="background:' +
+        '<div class="fw-svg-draw-block" data-anim-duration="' +
+        (p.animDuration || 3) +
+        '" style="background:' +
         p.bg +
         ';padding:5rem 3rem;text-align:center">' +
         '<svg class="fw-svg-draw-svg" viewBox="0 0 400 80" style="max-width:600px">' +
@@ -1684,12 +1686,12 @@ FB.canvas.renderBlockHTML = function (block) {
         '" stroke-width="1.5" ' +
         'stroke-dasharray="1000" stroke-dashoffset="1000" ' +
         'class="fw-svg-draw-text">' +
-        p.headline +
+        (p.headline || "") +
         "</text></svg>" +
         '<p class="fw-svg-draw-sub" style="color:' +
         p.textColor +
         ';opacity:0.6;margin-top:1.5rem" contenteditable data-field="subtext">' +
-        p.subtext +
+        (p.subtext || "") +
         "</p></div>"
       );
 
@@ -3319,9 +3321,10 @@ FB.canvas.initSvgDraw = function () {
         if (entry.isIntersecting) {
           var text = entry.target.querySelector(".fw-svg-draw-text");
           if (text) {
+            var dur = +(entry.target.dataset.animDuration || 3);
             text.style.strokeDashoffset = "0";
             text.style.transition =
-              "stroke-dashoffset 3s cubic-bezier(0.16, 1, 0.3, 1)";
+              "stroke-dashoffset " + dur + "s cubic-bezier(0.16, 1, 0.3, 1)";
           }
           obs.unobserve(entry.target);
         }
@@ -3329,9 +3332,12 @@ FB.canvas.initSvgDraw = function () {
     },
     { threshold: 0.3 },
   );
-  document.querySelectorAll(".fw-svg-draw-block").forEach(function (el) {
-    obs.observe(el);
-  });
+  document
+    .querySelectorAll(".fw-svg-draw-block:not([data-svg-initialized])")
+    .forEach(function (el) {
+      el.setAttribute("data-svg-initialized", "1");
+      obs.observe(el);
+    });
 };
 
 FB.canvas.initCountdown = function () {
@@ -3916,6 +3922,9 @@ FB.canvas.render = function () {
     FB.canvas.initCountdown();
     FB.canvas.initProductTabs();
     if (typeof window._VeltroInitAll === "function") window._VeltroInitAll();
+    if (typeof FB.panels.initLottie === "function") FB.panels.initLottie();
+    if (typeof FB.panels.initMotionBlock === "function")
+      FB.panels.initMotionBlock();
   }, 0);
   FB.panels.renderLayers();
 };

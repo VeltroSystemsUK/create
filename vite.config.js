@@ -7,11 +7,18 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: "./framework-builder.html",
+        animator: "./animator/index.html",
       },
     },
   },
   server: {
     port: 3000,
     open: "/framework-builder.html",
+    proxy: {
+      "/api": {
+        target: "http://localhost:8899",
+        changeOrigin: true,
+      },
+    },
   },
 });

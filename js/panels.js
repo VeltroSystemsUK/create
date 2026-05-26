@@ -1247,6 +1247,34 @@ FB.panels.renderRightPanel = function () {
       p.subtitle +
       "</textarea></div>";
   }
+  if (block.type === "svgDraw") {
+    contentHtml +=
+      '<div class="rp-row"><label>Headline</label><input type="text" value="' +
+      (p.headline || "") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','headline',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Subtext</label><textarea rows="2" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','subtext',this.value)\">" +
+      (p.subtext || "") +
+      "</textarea></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Accent Color</label><input type="color" value="' +
+      (p.accentColor || "#CDFE00") +
+      '" onchange="FB.panels.updateProp(\'' +
+      block.id +
+      "','accentColor',this.value)\"></div>";
+    contentHtml +=
+      '<div class="rp-row"><label>Anim Duration (s)</label><input type="range" min="1" max="8" step="0.5" value="' +
+      (p.animDuration || 3) +
+      '" oninput="FB.panels.updateProp(\'' +
+      block.id +
+      "','animDuration',+this.value);FB.canvas.refreshBlock('" +
+      block.id +
+      "')\"></div>";
+  }
   if (block.type === "glassCards") {
     contentHtml +=
       '<div class="rp-row"><label>Section Label</label><input type="text" value="' +
@@ -3438,4 +3466,71 @@ FB.panels.insertDesignBlock = function (slug) {
         FB.util.showToast("Inserted: " + d.name);
       });
     });
+};
+
+// ── Left Panel Search ──
+FB.panels._searchTimeout = null;
+
+FB.panels.filterBlocks = function (el) {
+  var val = (el && el.value) || "";
+  var query = val.toLowerCase().trim();
+  var clearBtn = document.getElementById("lp-search-clear");
+  if (clearBtn) clearBtn.style.display = query ? "block" : "none";
+
+  var containers = ["#left-panel", "#ds-left-panel"];
+  containers.forEach(function (sel) {
+    var c = document.querySelector(sel);
+    if (!c) return;
+    var allItems = c.querySelectorAll(".block-item");
+    var allSections = c.querySelectorAll(".section-header");
+    if (!query) {
+      allItems.forEach(function (it) {
+        it.classList.remove("lp-search-hidden", "lp-search-match");
+      });
+      allSections.forEach(function (it) {
+        it.classList.remove("lp-search-hidden");
+      });
+      return;
+    }
+    allItems.forEach(function (it) {
+      var txt = it.textContent.toLowerCase();
+      var label = it.querySelector(".block-label");
+      var sub = it.querySelector(".block-sublabel");
+      var m1 = label
+        ? label.textContent.toLowerCase().indexOf(query) !== -1
+        : false;
+      var m2 = sub
+        ? sub.textContent.toLowerCase().indexOf(query) !== -1
+        : false;
+      if (m1 || m2 || txt.indexOf(query) !== -1) {
+        it.classList.remove("lp-search-hidden");
+        it.classList.add("lp-search-match");
+      } else {
+        it.classList.add("lp-search-hidden");
+        it.classList.remove("lp-search-match");
+      }
+    });
+    allSections.forEach(function (sec) {
+      var nxt = sec.nextElementSibling;
+      var ok = false;
+      while (
+        nxt &&
+        !nxt.classList.contains("section-header") &&
+        !nxt.classList.contains("lp-acc-header")
+      ) {
+        if (nxt.classList && !nxt.classList.contains("lp-search-hidden")) {
+          ok = true;
+          break;
+        }
+        nxt = nxt.nextElementSibling;
+      }
+      sec.classList.toggle("lp-search-hidden", !ok);
+    });
+  });
+};
+
+FB.panels.clearSearch = function () {
+  var inp = document.getElementById("lp-search-input");
+  if (inp) inp.value = "";
+  FB.panels.filterBlocks("");
 };
