@@ -123,6 +123,50 @@ class FrameworkHandler(http.server.SimpleHTTPRequestHandler):
         else:
             self.send_error(HTTPStatus.NOT_FOUND)
 
+    def _extract_palette(self, html, base_url):
+        """Fetch linked CSS files and extract brand accent color."""
+        css_urls = list(dict.fromkeys(re.findall(r'<link[^>]+href="([^"]+\.css[^"]*?)"', html)))
+        if not css_urls:
+            return None
+
+        # Resolve relative URLs
+        resolved = []
+        for u in css_urls[:8]:
+            if u.startswith("http"):
+                resolved.append(u)
+            elif u.startswith("//"):
+                resolved.append("https:" + u)
+            elif u.startswith("/"):
+                p = urllib.parse.urlparse(base_url)
+                resolved.append(f"{p.scheme}://{p.netloc}{u}")
+
+        brand_re = re.compile(
+            r"--(?:accent|primary|brand|highlight|color-primary|color-accent)[^:\s]*\s*:\s*(#[0-9a-fA-F]{6})",
+            re.I,
+        )
+
+        def fetch_css(u):
+            try:
+                req = urllib.request.Request(u, headers={"User-Agent": "Mozilla/5.0"})
+                css = urllib.request.urlopen(req, timeout=5).read(120000).decode("utf-8", errors="ignore")
+                return brand_re.findall(css)
+            except Exception:
+                return []
+
+        with ThreadPoolExecutor(max_workers=4) as ex:
+            futures = {ex.submit(fetch_css, u): u for u in resolved}
+            try:
+                for future in as_completed(futures, timeout=10):
+                    colors = future.result(timeout=1)
+                    for c in colors:
+                        r2, g2, b2 = int(c[1:3], 16), int(c[3:5], 16), int(c[5:7], 16)
+                        lum = (0.2126 * r2 + 0.7152 * g2 + 0.0722 * b2) / 255
+                        if 0.08 < lum < 0.92:
+                            return {"accent": c}
+            except Exception:
+                pass
+        return None
+
     def _handle_scrape(self):
         length = int(self.headers.get("Content-Length", 0))
         body = json.loads(self.rfile.read(length)) if length else {}
@@ -151,7 +195,11 @@ class FrameworkHandler(http.server.SimpleHTTPRequestHandler):
             if md_result.returncode == 0:
                 response["markdown"] = md_result.stdout.strip()
             if html_result.returncode == 0:
-                response["html"] = html_result.stdout.strip()
+                html = html_result.stdout.strip()
+                response["html"] = html
+                palette = self._extract_palette(html, url)
+                if palette:
+                    response["palette"] = palette
 
             self._json_response(response)
         except subprocess.TimeoutExpired:
@@ -410,19 +458,21 @@ class FrameworkHandler(http.server.SimpleHTTPRequestHandler):
         return '''You are a web-to-block converter. Convert the scraped content into a JSON array of Framework Builder blocks.
 
 BLOCK TYPES (use EXACT prop names):
-1. NAV: {"type":"nav","props":{"logoText":"Brand","links":["Link1","Link2"],"ctaText":"CTA","bg":"#111","textColor":"#fff","accentColor":"#CDFE00"}}
-2. HERO: {"type":"hero","props":{"eyebrow":"Tagline","headline":"Title text here","subtext":"Description","ctaText":"Button →","bg":"#fff","textColor":"#111","accentColor":"#CDFE00","showBlob":false}}
-3. FEATURES: {"type":"features","props":{"label":"Section","headline":"Title","items":[{"icon":"✦","title":"Feature","desc":"Description"}],"bg":"#fff","textColor":"#111","accentColor":"#CDFE00"}}
-4. TEXTBLOCK: {"type":"textBlock","props":{"headline":"Section title","body":"Full paragraph of text content here. Can be multiple sentences.","bg":"#fff","textColor":"#111","paddingV":48,"paddingH":48}}
-5. COLORBLOCK: {"type":"colorBlock","props":{"headline":"Title","body":"Short text","bg":"#f5f5f5","textColor":"#111","paddingV":60,"paddingH":48}}
-6. STATS: {"type":"stats","props":{"stats":[{"num":"99%","label":"Metric"}],"bg":"#1a1a2e","accentColor":"#CDFE00"}}
-7. TESTIMONIAL: {"type":"testimonial","props":{"quote":"Quote text here","attribution":"Name — Role","bg":"#1a1a2e","accentColor":"#CDFE00"}}
-8. CTA: {"type":"cta","props":{"headline":"Call to action","btnText":"Get started →","bg":"#111","textColor":"#fff"}}
-9. FOOTER: {"type":"footer","props":{"logoText":"Brand","tagline":"Tag","cols":[{"heading":"Links","links":["A","B"]}],"copyright":"© 2026","bg":"#111","accentColor":"#CDFE00","textColor":"#fff"}}
+1. NAV: {"type":"nav","props":{"logoText":"Brand","links":["Link1","Link2"],"ctaText":"CTA","bg":"<site-dark-bg>","textColor":"#fff","accentColor":"<site-accent>"}}
+2. HERO: {"type":"hero","props":{"eyebrow":"Tagline","headline":"Title text here","subtext":"Description","ctaText":"Button →","bg":"<site-bg>","textColor":"<contrast-color>","accentColor":"<site-accent>","showBlob":false}}
+3. FEATURES: {"type":"features","props":{"label":"Section","headline":"Title","items":[{"icon":"✦","title":"Feature","desc":"Description"}],"bg":"<site-bg>","textColor":"<contrast-color>","accentColor":"<site-accent>"}}
+4. TEXTBLOCK: {"type":"textBlock","props":{"headline":"Section title","body":"Full paragraph of text content here. Can be multiple sentences.","bg":"<site-bg>","textColor":"<contrast-color>","paddingV":48,"paddingH":48}}
+5. COLORBLOCK: {"type":"colorBlock","props":{"headline":"Title","body":"Short text","bg":"<site-accent>","textColor":"<contrast-color>","paddingV":60,"paddingH":48}}
+6. STATS: {"type":"stats","props":{"stats":[{"num":"99%","label":"Metric"}],"bg":"<site-dark-bg>","accentColor":"<site-accent>"}}
+7. TESTIMONIAL: {"type":"testimonial","props":{"quote":"Quote text here","attribution":"Name — Role","bg":"<site-dark-bg>","accentColor":"<site-accent>"}}
+8. CTA: {"type":"cta","props":{"headline":"Call to action","btnText":"Get started →","bg":"<site-dark-bg>","textColor":"#fff"}}
+9. FOOTER: {"type":"footer","props":{"logoText":"Brand","tagline":"Tag","cols":[{"heading":"Links","links":["A","B"]}],"copyright":"© 2026","bg":"<site-dark-bg>","accentColor":"<site-accent>","textColor":"#fff"}}
 
 RULES (critical):
 - Output ONLY a valid JSON array. No markdown, no code fences, no commentary.
 - Use EXACT field names from the examples above. Use "headline" not "title", "subtext" not "description", "ctaText" not "cta".
+- COLORS: Extract the site's actual brand colors from the scraped content. Look for dominant colors, brand accent colors, background colors. Use those real colors — do NOT invent placeholder colors. Replace <site-accent> with the real accent, <site-bg> with the real background, <site-dark-bg> with the darkest usable background color.
+- Keep textColor dark (#111) on light backgrounds, light (#fff or #f7f6f2) on dark backgrounds.
 - Create a DIVERSE mix of block types. Do NOT use hero for everything.
 - Hero: only for the FIRST major section (big heading + subtext + button). Max 1 per page.
 - TextBlock: for paragraphs, article content, descriptions, about sections.
@@ -431,7 +481,6 @@ RULES (critical):
 - Testimonial: for quotes, reviews, social proof.
 - CTA: for final call-to-action sections.
 - ColorBlock: for short highlighted callouts.
-- Always include sensible defaults for bg, textColor, accentColor. Keep textColor dark (#111) on light backgrounds, light (#fff or #f7f6f2) on dark backgrounds.
 - Include copyright and link content in FOOTER if visible in the scraped content.
 - Generate 5-12 blocks depending on page length.
 

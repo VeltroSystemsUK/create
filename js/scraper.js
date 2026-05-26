@@ -23,7 +23,12 @@ FB.scraper.importURL = function (url) {
         return;
       }
       if (data.html) {
-        FB.scraper._parseHTML(data.html, data.markdown || null, url);
+        FB.scraper._parseHTML(
+          data.html,
+          data.markdown || null,
+          url,
+          data.palette || null,
+        );
       } else if (data.markdown) {
         FB.scraper._parseMarkdown(data.markdown, url);
       } else {
@@ -46,13 +51,36 @@ FB.scraper._loading = function (show) {
 
 // ── HTML PARSER (preserves design/structure) ──
 
-FB.scraper._parseHTML = function (rawHtml, fallbackMarkdown, sourceUrl) {
+FB.scraper._parseHTML = function (
+  rawHtml,
+  fallbackMarkdown,
+  sourceUrl,
+  serverPalette,
+) {
   FB.state.saveHistory();
   var blocks = [];
   var siteName = "";
   try {
     siteName = new URL(sourceUrl).hostname.replace("www.", "");
   } catch (_) {}
+
+  // Server palette (from CSS file extraction) takes priority over local HTML regex
+  var localPalette = FB.scraper._extractSitePalette(rawHtml);
+  var palette = serverPalette
+    ? {
+        bg: localPalette.bg,
+        text: localPalette.text,
+        accent: serverPalette.accent || localPalette.accent,
+      }
+    : localPalette;
+  // Pick the darkest sensible background for dark sections (nav, footer, hero)
+  var darkBg = FB.scraper._isDark(palette.bg)
+    ? palette.bg
+    : palette.accent && FB.scraper._isDark(palette.accent)
+      ? palette.accent
+      : "#111111";
+  var siteAccent = palette.accent || "#CDFE00";
+  var darkText = FB.scraper._isDark(darkBg) ? "#f7f6f2" : "#111111";
 
   // Parse HTML into a temp DOM tree
   var parser = document.createElement("div");
@@ -67,9 +95,9 @@ FB.scraper._parseHTML = function (rawHtml, fallbackMarkdown, sourceUrl) {
         "Source: " +
         sourceUrl +
         "\nRecreated from scraped HTML. Edit and enhance with Framework blocks.",
-      bg: "#111111",
-      textColor: "#f7f6f2",
-      accentColor: "#CDFE00",
+      bg: darkBg,
+      textColor: darkText,
+      accentColor: siteAccent,
       paddingV: 48,
       paddingH: 48,
     },
@@ -96,11 +124,21 @@ FB.scraper._parseHTML = function (rawHtml, fallbackMarkdown, sourceUrl) {
     });
     if (deeper.length >= 2) children = deeper;
   }
+  var SKIP_TAGS = {
+    style: 1,
+    script: 1,
+    noscript: 1,
+    link: 1,
+    meta: 1,
+    svg: 1,
+    template: 1,
+  };
   var blockCount = 0;
   for (var ci = 0; ci < children.length && blockCount < 12; ci++) {
     var el = children[ci];
     var tag = el.tagName ? el.tagName.toLowerCase() : "";
-    var block = FB.scraper._elementToBlock(el, tag, siteName);
+    if (SKIP_TAGS[tag]) continue;
+    var block = FB.scraper._elementToBlock(el, tag, siteName, palette);
     if (block) {
       blocks.push(block);
       blockCount++;
@@ -132,14 +170,12 @@ FB.scraper._parseHTML = function (rawHtml, fallbackMarkdown, sourceUrl) {
       ],
       copyright:
         "\u00A9 " + new Date().getFullYear() + " Imported via Firecrawl",
-      bg: "#111111",
-      accentColor: "#CDFE00",
+      bg: darkBg,
+      accentColor: siteAccent,
     },
   });
 
-  blocks.forEach(function (b) {
-    FB.state.blocks.push(b);
-  });
+  FB.state.blocks = blocks;
   FB.canvas.render();
   FB.util.showToast(
     "Imported " + (blocks.length - 2) + " sections from " + siteName,
@@ -153,8 +189,92 @@ FB.scraper._getStyle = function (el, prop) {
   return "";
 };
 
+FB.scraper._isDark = function (colorStr) {
+  if (!colorStr) return false;
+  var r, g, b;
+  var hex = colorStr.match(/^#([0-9a-fA-F]{3,6})$/);
+  if (hex) {
+    var h = hex[1];
+    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    r = parseInt(h.slice(0, 2), 16);
+    g = parseInt(h.slice(2, 4), 16);
+    b = parseInt(h.slice(4, 6), 16);
+  } else {
+    var rgb = colorStr.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+    if (!rgb) return false;
+    r = parseInt(rgb[1]);
+    g = parseInt(rgb[2]);
+    b = parseInt(rgb[3]);
+  }
+  return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255 < 0.35;
+};
+
+FB.scraper._extractSitePalette = function (html) {
+  var accent = null,
+    bg = null,
+    text = null;
+
+  // theme-color meta tag — highest confidence brand color
+  var tm =
+    html.match(
+      /<meta[^>]+name=["']theme-color["'][^>]+content=["']([^"']+)["']/i,
+    ) ||
+    html.match(
+      /<meta[^>]+content=["']([^"']+)["'][^>]+name=["']theme-color["']/i,
+    );
+  if (tm) accent = tm[1].trim();
+
+  // CSS custom properties and body styles in <style> tags
+  var styleTags = html.match(/<style[^>]*>([\s\S]*?)<\/style>/gi) || [];
+  styleTags.forEach(function (s) {
+    var css = s.replace(/<\/?style[^>]*>/gi, "");
+    if (!accent) {
+      var va = css.match(
+        /--(?:primary|accent|brand|color-primary|color-accent|highlight):\s*(#[0-9a-fA-F]{3,6}|rgb[^;)]+)/i,
+      );
+      if (va) accent = va[1].trim();
+    }
+    if (!bg) {
+      var vb = css.match(
+        /body\s*\{[^}]*background(?:-color)?:\s*(#[0-9a-fA-F]{3,6}|rgb[^;)]+)/i,
+      );
+      if (vb) bg = vb[1].trim();
+    }
+    if (!text) {
+      var vc = css.match(
+        /body\s*\{[^}]*\bcolor:\s*(#[0-9a-fA-F]{3,6}|rgb[^;)]+)/i,
+      );
+      if (vc) text = vc[1].trim();
+    }
+  });
+
+  // Inline body styles
+  if (!bg || !text) {
+    var bs = html.match(/<body[^>]+style=["']([^"']+)["']/i);
+    if (bs) {
+      if (!bg) {
+        var bm = bs[1].match(/background(?:-color)?:\s*([^;]+)/i);
+        if (bm) bg = bm[1].trim();
+      }
+      if (!text) {
+        var cm = bs[1].match(/\bcolor:\s*([^;]+)/i);
+        if (cm) text = cm[1].trim();
+      }
+    }
+  }
+
+  if (!bg) bg = "#ffffff";
+  if (!text) text = FB.scraper._isDark(bg) ? "#f7f6f2" : "#111111";
+
+  return { bg: bg, text: text, accent: accent };
+};
+
 FB.scraper._extractText = function (el) {
-  var text = el.textContent || "";
+  var clone = el.cloneNode(true);
+  clone.querySelectorAll("style, script, noscript").forEach(function (s) {
+    s.remove();
+  });
+  var text = clone.textContent || "";
   return text.replace(/\s+/g, " ").trim().substring(0, 600);
 };
 
@@ -163,7 +283,15 @@ FB.scraper._findHeading = function (el) {
   return h ? h.textContent.replace(/\s+/g, " ").trim() : "";
 };
 
-FB.scraper._elementToBlock = function (el, tag, siteName) {
+FB.scraper._elementToBlock = function (el, tag, siteName, palette) {
+  palette = palette || {};
+  var darkBg = FB.scraper._isDark(palette.bg)
+    ? palette.bg
+    : palette.accent && FB.scraper._isDark(palette.accent)
+      ? palette.accent
+      : "#111111";
+  var siteAccent = palette.accent || "#CDFE00";
+
   var style = el.style || {};
   var bg = FB.scraper._getStyle(el, "backgroundColor") || "";
   var color = FB.scraper._getStyle(el, "color") || "";
@@ -212,8 +340,8 @@ FB.scraper._elementToBlock = function (el, tag, siteName) {
   )
     color = "";
 
-  // Calculate accent from existing style
-  var accent = bg ? bg : color ? color : "#CDFE00";
+  // Prefer element's own bg/color for accent; fall back to extracted site accent
+  var accent = bg ? bg : color ? color : siteAccent;
 
   // Map tag name to block type
   if (isFooter) {
@@ -233,8 +361,8 @@ FB.scraper._elementToBlock = function (el, tag, siteName) {
           { heading: "Info", links: ["Edit in Framework Builder"] },
         ],
         copyright: "\u00A9 " + new Date().getFullYear(),
-        bg: bg || "#111111",
-        accentColor: accent || "#CDFE00",
+        bg: bg || darkBg,
+        accentColor: accent,
       },
     };
   }
@@ -252,22 +380,20 @@ FB.scraper._elementToBlock = function (el, tag, siteName) {
         logoText: heading || siteName || "Site",
         links: navLinks,
         ctaText: "Get Started",
-        bg: bg || "#111111",
+        bg: bg || darkBg,
         textColor: color || "#ffffff",
-        accentColor: accent || "#CDFE00",
+        accentColor: accent,
       },
     };
   }
 
   // Hero-like sections have big text, heading, maybe image
-  // Hero: only for explicit header elements or big-font headings \u2014 not every section.
-  // Always dark bg because the hero CSS text colours are hardcoded light.
   var isHero =
     tag === "header" ||
     (heading && (fontSize.indexOf("clamp") > -1 || parseInt(fontSize) > 24));
   if (isHero) {
     var heroBg =
-      bg && bg !== "#ffffff" && bg !== "rgb(255, 255, 255)" ? bg : "#111111";
+      bg && bg !== "#ffffff" && bg !== "rgb(255, 255, 255)" ? bg : darkBg;
     return {
       id: FB.state.genId(),
       type: "hero",
@@ -277,8 +403,8 @@ FB.scraper._elementToBlock = function (el, tag, siteName) {
         subtext: body.substring(0, 300),
         ctaText: "Learn more \u2192",
         bg: heroBg,
-        textColor: "#f7f6f2",
-        accentColor: "#CDFE00",
+        textColor: FB.scraper._isDark(heroBg) ? "#f7f6f2" : "#111111",
+        accentColor: siteAccent,
         showBlob: !bg,
       },
     };
@@ -294,7 +420,7 @@ FB.scraper._elementToBlock = function (el, tag, siteName) {
         body: body.substring(0, 300),
         bg: bg || "#ffffff",
         textColor: color || "#111111",
-        accentColor: accent || "#CDFE00",
+        accentColor: accent,
         paddingV: 48,
         paddingH: 48,
       },
@@ -302,7 +428,9 @@ FB.scraper._elementToBlock = function (el, tag, siteName) {
   }
 
   // Feature-like / card grid sections
-  var childDivs = el.querySelectorAll("> div, > article, > li");
+  var childDivs = el.querySelectorAll(
+    ":scope > div, :scope > article, :scope > li",
+  );
   if (childDivs.length >= 3) {
     var items = [];
     childDivs.forEach(function (cd) {
@@ -321,7 +449,7 @@ FB.scraper._elementToBlock = function (el, tag, siteName) {
           items: items.slice(0, 6),
           bg: bg || "#ffffff",
           textColor: color || "#111111",
-          accentColor: accent || "#CDFE00",
+          accentColor: accent,
         },
       };
     }
@@ -336,7 +464,7 @@ FB.scraper._elementToBlock = function (el, tag, siteName) {
       body: body || "Edit this content",
       bg: bg || "#ffffff",
       textColor: color || "#111111",
-      accentColor: accent || "#CDFE00",
+      accentColor: accent,
       paddingV: 48,
       paddingH: 48,
     },
@@ -669,9 +797,7 @@ FB.scraper._parseMarkdown = function (markdown, sourceUrl) {
     });
   }
 
-  blocks.forEach(function (b) {
-    FB.state.blocks.push(b);
-  });
+  FB.state.blocks = blocks;
   FB.canvas.render();
   FB.util.showToast(
     "Imported " + (blocks.length - 2) + " sections from " + siteName,

@@ -30,7 +30,7 @@ FB.deepScrape._SYNTH_PROMPT =
   "SPATIAL: tiltCard3d, carousel3d, holographicCard, glitchSection\n\n" +
   "## Rules:\n" +
   "- Every block MUST have: id (unique, e.g. nav_1), type, props\n" +
-  "- Infer brand accent color from the content (or use #CDFE00 as default)\n" +
+  "- Infer brand accent color from the scraped content (look for CSS vars, theme-color, dominant UI colors). Use the site's actual colors — do not invent or substitute placeholder colors.\n" +
   "- Nav and Footer are mandatory\n" +
   "- Hero uses the main value proposition from the homepage\n" +
   "- TextColor must be dark (#111111) on light backgrounds, light (#f7f6f2) on dark\n" +
