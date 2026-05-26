@@ -208,6 +208,7 @@ FB.deepScrape._removePage = function (idx) {
 };
 
 FB.deepScrape._start = function (mode) {
+  if (FB.deepScrape._state !== "idle") return;
   var input = document.getElementById("ds-url-input");
   var url = input ? input.value.trim() : "";
   if (!url) {
