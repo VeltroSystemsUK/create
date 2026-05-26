@@ -124,6 +124,10 @@ class FrameworkHandler(http.server.SimpleHTTPRequestHandler):
             self._handle_cms_content_save()
         elif parsed.path == '/api/cms/media/upload':
             self._handle_cms_media_upload()
+        elif parsed.path == '/api/cms/media/download':
+            self._handle_cms_media_download()
+        elif parsed.path == '/api/cms/media/folders':
+            self._handle_cms_media_folders_create()
         elif parsed.path == "/api/deep-scrape/map":
             self._handle_deep_scrape_map()
         elif parsed.path == "/api/deep-scrape/crawl":
@@ -1136,6 +1140,87 @@ SCRAPED CONTENT:
         with open(tmp_path, 'w', encoding='utf-8') as f:
             json.dump(meta, f, indent=2)
         os.replace(tmp_path, meta_path)
+
+    def _handle_cms_media_download(self):
+        length = int(self.headers.get('Content-Length', 0))
+        body = json.loads(self.rfile.read(length)) if length else {}
+        url = body.get('url', '').strip()
+        if not url:
+            self._json_response({'error': 'Missing url'}, 400)
+            return
+        try:
+            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+            resp = urllib.request.urlopen(req, timeout=10)
+            content_type = resp.headers.get('Content-Type', '')
+            ct_base = content_type.split(';')[0].strip()
+            if not ct_base.startswith('image/'):
+                self._json_response({'error': 'URL did not return an image (got: ' + ct_base + ')'}, 400)
+                return
+            ct_map = {
+                'image/jpeg': '.jpg', 'image/png': '.png',
+                'image/webp': '.webp', 'image/gif': '.gif', 'image/svg+xml': '.svg',
+            }
+            ext = ct_map.get(ct_base, '.jpg')
+            unique_name = str(uuid.uuid4())[:8] + ext
+            media_dir = os.path.join(STATIC_DIR, 'media')
+            os.makedirs(media_dir, exist_ok=True)
+            filepath = os.path.join(media_dir, unique_name)
+            with open(filepath, 'wb') as f:
+                f.write(resp.read(10 * 1024 * 1024))
+            original_name = os.path.basename(urllib.parse.urlparse(url).path) or unique_name
+            try:
+                meta = self._read_media_meta()
+                meta.setdefault('files', {})[unique_name] = {
+                    'originalName': original_name,
+                    'folder': None,
+                    'tags': [],
+                    'addedAt': datetime.datetime.utcnow().isoformat() + 'Z',
+                }
+                self._write_media_meta(meta)
+            except Exception as e:
+                os.remove(filepath)
+                self._json_response({'error': 'Download failed (metadata): ' + str(e)[:100]}, 500)
+                return
+            self._json_response({
+                'success': True,
+                'media': {'id': unique_name, 'url': '/media/' + unique_name, 'originalName': original_name},
+            })
+        except Exception as e:
+            self._json_response({'error': 'Failed to download: ' + str(e)[:200]}, 400)
+
+    def _handle_cms_media_meta_update(self):
+        media_id = self.path.split('/api/cms/media/')[1]
+        if '..' in media_id or '/' in media_id:
+            self._json_response({'error': 'Invalid media ID'}, 400)
+            return
+        length = int(self.headers.get('Content-Length', 0))
+        body = json.loads(self.rfile.read(length)) if length else {}
+        meta = self._read_media_meta()
+        file_entry = meta.setdefault('files', {}).setdefault(media_id, {
+            'originalName': media_id, 'folder': None, 'tags': [], 'addedAt': '',
+        })
+        for k in ('folder', 'tags', 'originalName'):
+            if k in body:
+                file_entry[k] = body[k]
+        self._write_media_meta(meta)
+        self._json_response({'success': True})
+
+    def _handle_cms_media_folders_create(self):
+        length = int(self.headers.get('Content-Length', 0))
+        body = json.loads(self.rfile.read(length)) if length else {}
+        name = (body.get('name') or '').strip()
+        if not name:
+            self._json_response({'error': 'Folder name required'}, 400)
+            return
+        meta = self._read_media_meta()
+        folders = meta.get('folders', [])
+        if name in folders:
+            self._json_response({'error': 'Folder already exists'}, 400)
+            return
+        folders.append(name)
+        meta['folders'] = folders
+        self._write_media_meta(meta)
+        self._json_response({'success': True, 'folders': folders})
 
     def _json_response(self, data, status=200):
         self.send_response(status)
