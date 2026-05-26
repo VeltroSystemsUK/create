@@ -1101,9 +1101,10 @@ SCRAPED CONTENT:
         if not os.path.exists(meta_path):
             return {'folders': [], 'files': {}}
         try:
-            with open(meta_path, 'r') as f:
+            with open(meta_path, 'r', encoding='utf-8') as f:
                 return json.load(f)
-        except Exception:
+        except Exception as e:
+            print(f'[WARN] Failed to load media-meta.json: {e}')
             return {'folders': [], 'files': {}}
 
     def _write_media_meta(self, meta):
@@ -1111,7 +1112,7 @@ SCRAPED CONTENT:
         os.makedirs(media_dir, exist_ok=True)
         meta_path = os.path.join(media_dir, 'media-meta.json')
         tmp_path = meta_path + '.tmp'
-        with open(tmp_path, 'w') as f:
+        with open(tmp_path, 'w', encoding='utf-8') as f:
             json.dump(meta, f, indent=2)
         os.replace(tmp_path, meta_path)
 
