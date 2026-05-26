@@ -222,6 +222,7 @@ FB.mediaGallery._clickImage = function (id, url) {
     FB.panels.updateProp(mode.blockId, mode.propKey, url);
     FB.mediaGallery._pickMode = null;
     FB.mediaGallery._render();
+    if (FB.panels.renderRightPanel) FB.panels.renderRightPanel();
     FB.util.showToast("🖼 Image inserted");
   } else {
     FB.mediaGallery._copyUrl(url);
