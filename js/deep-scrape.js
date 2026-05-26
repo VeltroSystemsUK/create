@@ -55,8 +55,10 @@ FB.deepScrape.close = function () {
   FB.deepScrape._state = "idle";
   FB.deepScrape._pages = [];
   FB.deepScrape._result = null;
+  FB.deepScrape._mode = null;
   FB.deepScrape._error = null;
   FB.deepScrape._statusMsg = null;
+  FB.deepScrape._urlCount = 0;
 };
 
 FB.deepScrape._esc = function (s) {
