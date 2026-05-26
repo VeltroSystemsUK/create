@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Framework Builder — dev server with Firecrawl scrape API."""
+import datetime
 import http.server
 import json
 import os
@@ -1011,23 +1012,30 @@ SCRAPED CONTENT:
     def _handle_cms_media_list(self):
         media_dir = os.path.join(STATIC_DIR, 'media')
         if not os.path.exists(media_dir):
-            self._json_response({'media': []})
+            self._json_response({'folders': [], 'media': []})
             return
+        meta = self._read_media_meta()
         files = []
         for f in os.listdir(media_dir):
-            if f.startswith('.'): continue
+            if f.startswith('.') or f == 'media-meta.json':
+                continue
             path = os.path.join(media_dir, f)
+            if not os.path.isfile(path):
+                continue
+            file_meta = meta.get('files', {}).get(f, {})
             files.append({
-                'id': f, 'filename': f,
+                'id': f,
+                'filename': f,
+                'originalName': file_meta.get('originalName', f),
                 'size': os.path.getsize(path),
-                'url': '/media/' + f
+                'url': '/media/' + f,
+                'folder': file_meta.get('folder', None),
+                'tags': file_meta.get('tags', []),
+                'addedAt': file_meta.get('addedAt', ''),
             })
-        self._json_response({'media': files})
+        self._json_response({'folders': meta.get('folders', []), 'media': files})
 
     def _handle_cms_media_upload(self):
-        if not self._cms_require_auth():
-            self._json_response({'error': 'Unauthorized'}, 401)
-            return
         content_type = self.headers.get('Content-Type', '')
         if 'multipart/form-data' not in content_type:
             self._json_response({'error': 'Expected multipart form data'}, 400)
@@ -1063,6 +1071,14 @@ SCRAPED CONTENT:
             filepath = os.path.join(media_dir, unique_name)
             with open(filepath, 'wb') as f:
                 f.write(file_data)
+            meta = self._read_media_meta()
+            meta.setdefault('files', {})[unique_name] = {
+                'originalName': original_filename,
+                'folder': None,
+                'tags': [],
+                'addedAt': datetime.datetime.utcnow().isoformat() + 'Z',
+            }
+            self._write_media_meta(meta)
             self._json_response({
                 'success': True,
                 'media': {'id': unique_name, 'filename': original_filename, 'url': '/media/' + unique_name}
@@ -1071,9 +1087,6 @@ SCRAPED CONTENT:
         self._json_response({'error': 'No file found in upload'}, 400)
 
     def _handle_cms_media_delete(self):
-        if not self._cms_require_auth():
-            self._json_response({'error': 'Unauthorized'}, 401)
-            return
         media_id = self.path.split('/api/cms/media/')[1]
         media_path = os.path.join(STATIC_DIR, 'media', media_id)
         if '..' in media_id or '/' in media_id:
@@ -1081,6 +1094,9 @@ SCRAPED CONTENT:
             return
         if os.path.exists(media_path):
             os.remove(media_path)
+            meta = self._read_media_meta()
+            meta.get('files', {}).pop(media_id, None)
+            self._write_media_meta(meta)
             self._json_response({'success': True})
         else:
             self._json_response({'error': 'File not found'}, 404)
