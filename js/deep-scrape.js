@@ -78,10 +78,10 @@ FB.deepScrape._render = function () {
     h += '<div class="ai-section">';
     h += '<div class="ai-section-title">🔑 Gemini API Key Required</div>';
     h +=
-      '<p style="font-size:11px;color:#888;margin:0 0 8px">Deep Scrape uses Gemini to synthesise scraped pages. Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank" style="color:#CDFE00">aistudio.google.com/apikey</a></p>';
-    h += '<div style="display:flex;gap:6px">';
+      '<p style="font-size:13px;color:var(--text-muted);margin:0 0 12px;line-height:1.6">Deep Scrape uses Gemini to synthesise scraped pages. Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--accent)">aistudio.google.com/apikey</a></p>';
+    h += '<div style="display:flex;gap:8px">';
     h +=
-      '<input id="ds-api-key-input" type="password" placeholder="Paste your Gemini API key..." style="flex:1;padding:8px;background:#1a1a1a;border:1px solid #333;border-radius:6px;color:#fff;font-size:12px">';
+      '<input id="ds-api-key-input" type="password" placeholder="Paste your Gemini API key..." style="flex:1;padding:10px 14px;background:var(--surface-1);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-size:14px;font-family:inherit">';
     h +=
       '<button class="ds-save-btn" onclick="FB.deepScrape._saveKey()">Save</button>';
     h += "</div></div>";
@@ -100,19 +100,18 @@ FB.deepScrape._render = function () {
 
   if (state === "idle") {
     h += '<div class="ai-section">';
-    h += '<div class="ai-section-title">🕷 Deep Scrape</div>';
     h +=
-      '<p style="font-size:11px;color:#888;margin:0 0 10px;line-height:1.6">Enter a URL to crawl the entire site. All major pages will be scraped and synthesised into a single unified template by AI.</p>';
+      '<p style="font-size:13px;color:var(--text-muted);margin:0 0 16px;line-height:1.6">Enter a URL to crawl the entire site. All major pages will be scraped and synthesised into a single unified template by AI.</p>';
     h +=
-      '<input type="url" id="ds-url-input" placeholder="https://example.com" style="width:100%;padding:10px;background:#1a1a1a;border:1px solid #333;border-radius:6px;color:#fff;font-size:13px;font-family:inherit;box-sizing:border-box;margin-bottom:10px">';
-    h += '<div style="display:flex;gap:8px">';
+      '<input type="url" id="ds-url-input" placeholder="https://example.com" style="width:100%;padding:10px 14px;background:var(--surface-1);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-size:14px;font-family:inherit;box-sizing:border-box;margin-bottom:12px">';
+    h += '<div style="display:flex;gap:8px;margin-bottom:12px">';
     h +=
-      '<button class="ds-save-btn" onclick="FB.deepScrape._start(\'auto\')" style="flex:1">⚡ Auto</button>';
+      '<button class="tb-export" onclick="FB.deepScrape._start(\'auto\')" style="flex:1;justify-content:center">⚡ Auto Crawl</button>';
     h +=
-      '<button class="tb-btn" onclick="FB.deepScrape._start(\'review\')" style="flex:1">👁 Review</button>';
+      '<button class="tb-btn" onclick="FB.deepScrape._start(\'review\')" style="flex:1">👁 Review First</button>';
     h += "</div>";
     h +=
-      '<div style="font-size:10px;color:#555;margin-top:8px;line-height:1.5"><strong style="color:#888">Auto</strong> — crawl and synthesise in one go. <strong style="color:#888">Review</strong> — see discovered pages and remove any before synthesis.</div>';
+      '<div style="font-size:11px;color:var(--text-muted);padding:10px 12px;background:var(--surface-1);border-radius:4px;line-height:1.5"><strong>Auto</strong> — crawl and synthesise in one go. <strong>Review</strong> — see discovered pages and remove any before synthesis.</div>';
     h += "</div>";
   }
 
