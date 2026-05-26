@@ -61,235 +61,143 @@ FB.panels.buildLibrary = function () {
   var lib = document.getElementById("block-library");
   lib.innerHTML = "";
 
-  var sectionColors = {
-    Structure: "#6366f1",
-    Content: "#22c55e",
-    Media: "#f59e0b",
-    "Social Proof": "#ec4899",
-    Conversion: "#ef4444",
-    Interactive: "#3b82f6",
-    Motion: "#8b5cf6",
-  };
-
   var sections = {
-    Structure: [
-      "nav",
-      "megaNav",
-      "slideNav",
-      "fullscreenMenu",
-      "footer",
-      "carousel3d",
-      "isometricGrid",
-      "perspectiveRooms",
-      "floatingIslands",
-      "layeredParallax",
-      "kineticLayout",
-      "morphingGrid",
-      "spatialNavigation",
-      "infiniteCanvas",
-    ],
-    Content: [
-      "hero",
-      "orbsHero",
-      "splitHero",
-      "videoHero",
-      "marquee",
-      "wordSwap",
-      "services",
-      "features",
-      "process",
-      "work",
-      "stats",
-      "resultsGrid",
-      "glassCards",
-      "pricing",
-      "team",
-      "portfolioGrid",
-      "splitText",
-      "maskReveal",
-      "glitchText",
-      "svgDraw",
-      "noiseSection",
-      "cornerSection",
-      "iridescentBtn",
-      "particleButton",
-      "kineticText",
-      "textScramble",
-      "typewriterReveal",
-      "textMask",
-      "morphingCounter",
-      "liquidText",
-      "waveText",
-      "rotatingText3d",
-      "morphingText",
-      "kineticScramble",
-      "tiltCard3d",
-      "glitchSection",
-      "audioVisualizer",
-      "depthOfField",
-      "holographicCard",
-      "soundReactive",
-      "mirrorReflection",
-      "constellationLines",
-      "holographicOverlay",
-      "lightLeaks",
-    ],
-    Media: [
-      "clientCarousel",
-      "liteVideo",
-      "circularList",
-      "horizontalScroll",
-      "morphBlob",
-      "noiseGrain",
-      "gradientFlow",
-      "sectionBackground",
-      "glassmorphismStack",
-      "auroraBorealis",
-      "particleNebula",
-      "geometricPatterns",
-      "liquidGradient",
-      "shaderBg",
-    ],
-    "Social Proof": [
-      "testimonial",
-      "trustPill",
-      "metricBox",
-      "faq",
-      "timeline",
-      "counterSection",
-      "socialLinks",
-    ],
-    Conversion: [
-      "cta",
-      "chatWidget",
-      "cookieConsent",
-      "dayNightSwitcher",
-      "scrollIndicator",
-      "whatsappWidget",
-    ],
-    Interactive: [
-      "physicsSandbox",
-      "imagePhysics",
-      "bubblePop",
-      "gravityWells",
-      "fluidSimulation",
-      "clothSimulation",
-      "magneticFields",
-      "pendulumWave",
-      "collisionChaos",
-      "blackHole",
-      "magneticCursor",
-      "particleTrail",
-      "cursorRipple",
-      "multiShapeTrail",
-      "cursorSpotlight",
-      "magneticText",
-      "cursorDistortion",
-      "colorSampler",
-      "gravityCursor",
-      "cursorLens",
-    ],
-    Motion: [
-      "stickyScrollStack",
-      "scrollVelocitySkew",
-      "parallaxImageStack",
-      "mosaicAssemble",
-      "scrollProgressRing",
-      "magneticScroll",
-      "parallaxDepth",
-      "scrollTriggered",
-      "horizontalScrollGallery",
-      "velocitySkew",
-      "scrollFluid",
-    ],
+    Structure: {
+      color: "#6366f1",
+      types: ["nav", "megaNav", "slideNav", "fullscreenMenu", "footer"],
+    },
+    Content: {
+      color: "#22c55e",
+      types: [
+        "hero",
+        "orbsHero",
+        "splitHero",
+        "videoHero",
+        "marquee",
+        "services",
+        "features",
+        "process",
+        "work",
+        "stats",
+        "resultsGrid",
+        "glassCards",
+        "pricing",
+        "team",
+        "portfolioGrid",
+      ],
+    },
+    Media: {
+      color: "#f59e0b",
+      types: [
+        "clientCarousel",
+        "liteVideo",
+        "circularList",
+        "horizontalScroll",
+      ],
+    },
+    "Social Proof": {
+      color: "#ec4899",
+      types: [
+        "testimonial",
+        "trustPill",
+        "metricBox",
+        "faq",
+        "timeline",
+        "counterSection",
+        "socialLinks",
+      ],
+    },
+    Conversion: {
+      color: "#ef4444",
+      types: [
+        "cta",
+        "chatWidget",
+        "cookieConsent",
+        "dayNightSwitcher",
+        "scrollIndicator",
+        "whatsappWidget",
+      ],
+    },
   };
 
-  Object.keys(sections).forEach(function (sectionName) {
-    var color = sectionColors[sectionName] || "#6366f1";
-    var secEl = document.createElement("div");
-    secEl.className = "section-header";
-    secEl.innerHTML =
-      '<span class="section-dot" style="background:' +
-      color +
-      '"></span>' +
-      sectionName;
-    lib.appendChild(secEl);
-
-    sections[sectionName].forEach(function (type) {
-      var def = FB.blocks.BLOCK_DEFS[type] || FB.widgets._registry[type];
-      if (!def) return;
-      var el = document.createElement("div");
-      el.className = "block-item";
-      el.draggable = true;
-      el.innerHTML =
-        FB.panels._icon(def.icon, color) +
-        '<div><div class="block-label">' +
-        def.label +
-        '</div><div class="block-sublabel">' +
-        def.sublabel +
-        "</div></div>";
-      el.addEventListener("dragstart", function (e) {
-        FB.canvas._dragLibType = type;
-        FB.canvas._dragSrcId = null;
-      });
-      el.addEventListener("click", function () {
-        FB.canvas.insertBlock(type);
-      });
-      lib.appendChild(el);
-    });
-  });
-
-  // Custom block library — violet
-  var clib = document.getElementById("custom-block-library");
-  clib.innerHTML = "";
-  var customColor = "#8b5cf6";
-  Object.keys(FB.blocks.CUSTOM_BLOCK_DEFS).forEach(function (type) {
-    var def = FB.blocks.CUSTOM_BLOCK_DEFS[type];
+  function makeBlockItem(type, def, color, compact) {
     var el = document.createElement("div");
     el.className = "block-item";
     el.draggable = true;
+    if (compact) el.style.cssText = "padding:6px 14px";
+    var iconSize = compact ? 24 : 32;
+    var iconH = compact ? 20 : 24;
+    var iconFs = compact ? 8 : 9;
     el.innerHTML =
-      FB.panels._icon(def.icon, customColor) +
-      '<div><div class="block-label">' +
+      FB.panels._icon(def.icon || "□", color, iconSize, iconH, iconFs) +
+      '<div><div class="block-label"' +
+      (compact ? ' style="font-size:11px"' : "") +
+      ">" +
       def.label +
-      '</div><div class="block-sublabel">' +
-      def.sublabel +
-      "</div></div>";
-    el.addEventListener("dragstart", function (e) {
+      "</div>" +
+      (def.sublabel && !compact
+        ? '<div class="block-sublabel">' + def.sublabel + "</div>"
+        : "") +
+      "</div>";
+    el.addEventListener("dragstart", function () {
       FB.canvas._dragLibType = type;
       FB.canvas._dragSrcId = null;
     });
     el.addEventListener("click", function () {
       FB.canvas.insertBlock(type);
     });
-    clib.appendChild(el);
+    return el;
+  }
+
+  function addSectionHeader(container, label, color) {
+    var h = document.createElement("div");
+    h.className = "section-header";
+    h.innerHTML =
+      '<span class="section-dot" style="background:' +
+      color +
+      '"></span>' +
+      label;
+    container.appendChild(h);
+  }
+
+  // Sections panel — proper page-composition blocks only
+  Object.keys(sections).forEach(function (name) {
+    var s = sections[name];
+    addSectionHeader(lib, name, s.color);
+    s.types.forEach(function (type) {
+      var def = FB.blocks.BLOCK_DEFS[type] || FB.widgets._registry[type];
+      if (!def) return;
+      lib.appendChild(makeBlockItem(type, def, s.color, false));
+    });
   });
 
-  // Layout library — cyan
+  // Custom blocks merged into Sections
+  var customColor = "#8b5cf6";
+  var customKeys = Object.keys(FB.blocks.CUSTOM_BLOCK_DEFS);
+  if (customKeys.length) {
+    addSectionHeader(lib, "Custom", customColor);
+    customKeys.forEach(function (type) {
+      lib.appendChild(
+        makeBlockItem(
+          type,
+          FB.blocks.CUSTOM_BLOCK_DEFS[type],
+          customColor,
+          false,
+        ),
+      );
+    });
+  }
+
+  // Layout library
   var llib = document.getElementById("layout-library");
   if (llib) {
     llib.innerHTML = "";
     var layoutColor = "#06b6d4";
     var layoutWidgets = FB.widgets.byCategory("layout");
     Object.keys(layoutWidgets).forEach(function (type) {
-      var def = layoutWidgets[type];
-      var el = document.createElement("div");
-      el.className = "block-item";
-      el.draggable = true;
-      el.style.cssText = "padding:6px 14px";
-      el.innerHTML =
-        FB.panels._icon(def.icon || "\u2637", layoutColor, 24, 20, 8) +
-        '<div><div class="block-label" style="font-size:11px">' +
-        def.label +
-        "</div></div>";
-      el.addEventListener("dragstart", function (e) {
-        FB.canvas._dragLibType = type;
-        FB.canvas._dragSrcId = null;
-      });
-      el.addEventListener("click", function () {
-        FB.canvas.insertBlock(type);
-      });
-      llib.appendChild(el);
+      llib.appendChild(
+        makeBlockItem(type, layoutWidgets[type], layoutColor, true),
+      );
     });
   }
 
@@ -299,71 +207,157 @@ FB.panels.buildLibrary = function () {
     themePanel.innerHTML = FB.theme.renderPanel();
   }
 
-  // Widget library — per sub-category color
+  // Widget library — standard categories + specialist block groups
   var wlib = document.getElementById("widget-library");
   if (wlib) {
     wlib.innerHTML = "";
-    var widgetColors = {
-      basic: "#64748b",
-      content: "#22c55e",
-      media: "#f59e0b",
-      interactive: "#3b82f6",
-      "gallery-like": "#ec4899",
-      embed: "#ef4444",
-    };
-    var catLabels = {
-      basic: "Basic",
-      content: "Content",
-      media: "Media",
-      interactive: "Interactive",
-      "gallery-like": "Gallery",
-      embed: "Embed",
-    };
-    var catOrder = [
-      "basic",
-      "content",
-      "media",
-      "interactive",
-      "gallery-like",
-      "embed",
+    var stdCats = [
+      { key: "basic", label: "Basic", color: "#64748b" },
+      { key: "content", label: "Content", color: "#22c55e" },
+      { key: "media", label: "Media", color: "#f59e0b" },
+      { key: "interactive", label: "Interactive", color: "#3b82f6" },
+      { key: "gallery-like", label: "Gallery", color: "#ec4899" },
+      { key: "embed", label: "Embed", color: "#ef4444" },
     ];
-    catOrder.forEach(function (cat) {
-      var widgets = FB.widgets.byCategory(cat);
+    stdCats.forEach(function (cat) {
+      var widgets = FB.widgets.byCategory(cat.key);
       var keys = Object.keys(widgets);
-      if (keys.length === 0) return;
-      var wColor = widgetColors[cat] || "#64748b";
-      var catEl = document.createElement("div");
-      catEl.className = "section-header";
-      catEl.innerHTML =
-        '<span class="section-dot" style="background:' +
-        wColor +
-        '"></span>' +
-        (catLabels[cat] || cat);
-      wlib.appendChild(catEl);
+      if (!keys.length) return;
+      addSectionHeader(wlib, cat.label, cat.color);
       keys.forEach(function (type) {
-        var def = widgets[type];
-        var el = document.createElement("div");
-        el.className = "block-item";
-        el.draggable = true;
-        el.style.cssText = "padding:6px 14px";
-        el.innerHTML =
-          FB.panels._icon(def.icon || "\u25A1", wColor, 24, 20, 8) +
-          '<div><div class="block-label" style="font-size:11px">' +
-          def.label +
-          "</div></div>";
-        el.addEventListener("dragstart", function (e) {
-          FB.canvas._dragLibType = type;
-          FB.canvas._dragSrcId = null;
-        });
-        el.addEventListener("click", function () {
-          FB.canvas.insertBlock(type);
-        });
-        wlib.appendChild(el);
+        wlib.appendChild(makeBlockItem(type, widgets[type], cat.color, true));
+      });
+    });
+
+    // Specialist blocks moved from Sections
+    var specialistGroups = [
+      {
+        label: "Typography FX",
+        color: "#a855f7",
+        types: [
+          "wordSwap",
+          "kineticText",
+          "textScramble",
+          "typewriterReveal",
+          "textMask",
+          "morphingCounter",
+          "liquidText",
+          "waveText",
+          "rotatingText3d",
+          "morphingText",
+          "kineticScramble",
+          "splitText",
+          "maskReveal",
+          "glitchText",
+          "svgDraw",
+          "noiseSection",
+          "cornerSection",
+          "iridescentBtn",
+          "particleButton",
+        ],
+      },
+      {
+        label: "Backgrounds",
+        color: "#f59e0b",
+        types: [
+          "morphBlob",
+          "noiseGrain",
+          "gradientFlow",
+          "sectionBackground",
+          "glassmorphismStack",
+          "auroraBorealis",
+          "particleNebula",
+          "geometricPatterns",
+          "liquidGradient",
+          "shaderBg",
+        ],
+      },
+      {
+        label: "Physics",
+        color: "#3b82f6",
+        types: [
+          "physicsSandbox",
+          "imagePhysics",
+          "bubblePop",
+          "gravityWells",
+          "fluidSimulation",
+          "clothSimulation",
+          "magneticFields",
+          "pendulumWave",
+          "collisionChaos",
+          "blackHole",
+        ],
+      },
+      {
+        label: "Cursor FX",
+        color: "#06b6d4",
+        types: [
+          "magneticCursor",
+          "particleTrail",
+          "cursorRipple",
+          "multiShapeTrail",
+          "cursorSpotlight",
+          "magneticText",
+          "cursorDistortion",
+          "colorSampler",
+          "gravityCursor",
+          "cursorLens",
+        ],
+      },
+      {
+        label: "Scroll & Motion",
+        color: "#8b5cf6",
+        types: [
+          "stickyScrollStack",
+          "scrollVelocitySkew",
+          "parallaxImageStack",
+          "mosaicAssemble",
+          "scrollProgressRing",
+          "magneticScroll",
+          "parallaxDepth",
+          "scrollTriggered",
+          "horizontalScrollGallery",
+          "velocitySkew",
+          "scrollFluid",
+        ],
+      },
+      {
+        label: "3D & Spatial",
+        color: "#ec4899",
+        types: [
+          "carousel3d",
+          "isometricGrid",
+          "perspectiveRooms",
+          "floatingIslands",
+          "layeredParallax",
+          "kineticLayout",
+          "morphingGrid",
+          "spatialNavigation",
+          "infiniteCanvas",
+          "tiltCard3d",
+          "glitchSection",
+          "audioVisualizer",
+          "depthOfField",
+          "holographicCard",
+          "soundReactive",
+          "mirrorReflection",
+          "constellationLines",
+          "holographicOverlay",
+          "lightLeaks",
+        ],
+      },
+    ];
+    specialistGroups.forEach(function (group) {
+      addSectionHeader(wlib, group.label, group.color);
+      group.types.forEach(function (type) {
+        var def = FB.blocks.BLOCK_DEFS[type] || FB.widgets._registry[type];
+        if (!def) return;
+        wlib.appendChild(makeBlockItem(type, def, group.color, true));
       });
     });
   }
 
-  // Ecommerce blocks — green with sub-accordions
+  // Ecommerce blocks
   var elib = document.getElementById("ecommerce-library");
   if (elib && FB.blocks.ECOMMERCE_DEFS) {
     elib.innerHTML = "";
@@ -390,104 +384,22 @@ FB.panels.buildLibrary = function () {
         "ecomNewsletter",
       ],
     };
-
     Object.keys(ecomSections).forEach(function (subName) {
       var subEl = document.createElement("div");
       subEl.className = "section-header";
-      subEl.style.cssText = "padding-left:12px;font-size:10px;opacity:0.7;";
+      subEl.style.cssText = "padding-left:12px;font-size:10px;opacity:0.7";
       subEl.innerHTML =
         '<span class="section-dot" style="background:' +
         ecomColor +
         '"></span>' +
         subName;
       elib.appendChild(subEl);
-
       ecomSections[subName].forEach(function (type) {
         var def = FB.blocks.ECOMMERCE_DEFS[type];
         if (!def) return;
-        var itemEl = document.createElement("div");
-        itemEl.className = "block-item";
-        itemEl.draggable = true;
-        itemEl.style.cssText = "padding-left:24px;";
-        itemEl.innerHTML =
-          FB.panels._icon(def.icon, ecomColor) +
-          '<div><div class="block-label">' +
-          def.label +
-          '</div><div class="block-sublabel">' +
-          def.sublabel +
-          "</div></div>";
-        itemEl.addEventListener("dragstart", function (e) {
-          FB.canvas._dragLibType = type;
-          FB.canvas._dragSrcId = null;
-        });
-        itemEl.addEventListener("click", function () {
-          FB.canvas.insertBlock(type);
-        });
-        elib.appendChild(itemEl);
-      });
-    });
-  }
-
-  // Theme panel
-  var themePanel = document.getElementById("theme-panel-content");
-  if (themePanel && FB.theme && FB.theme.renderPanel) {
-    themePanel.innerHTML = FB.theme.renderPanel();
-  }
-
-  // Widget library (all non-layout widgets)
-  var wlib = document.getElementById("widget-library");
-  if (wlib) {
-    wlib.innerHTML = "";
-    var catLabels = {
-      basic: "Basic",
-      content: "Content",
-      media: "Media",
-      interactive: "Interactive",
-      "gallery-like": "Gallery",
-      embed: "Embed",
-    };
-    var catOrder = [
-      "basic",
-      "content",
-      "media",
-      "interactive",
-      "gallery-like",
-      "embed",
-    ];
-    catOrder.forEach(function (cat) {
-      var widgets = FB.widgets.byCategory(cat);
-      var keys = Object.keys(widgets);
-      if (keys.length === 0) return;
-      var catEl = document.createElement("div");
-      catEl.className = "panel-title";
-      catEl.style.cssText = "margin-top:4px;font-size:9px;";
-      catEl.textContent = catLabels[cat] || cat;
-      wlib.appendChild(catEl);
-      keys.forEach(function (type) {
-        var def = widgets[type];
-        var el = document.createElement("div");
-        el.className = "block-item";
-        el.draggable = true;
-        el.style.cssText = "padding:6px 14px";
-        el.innerHTML =
-          '<div class="block-icon" style="background:' +
-          def.iconBg +
-          ";color:" +
-          def.iconColor +
-          ';width:24px;height:20px;font-size:8px">' +
-          (def.icon || "□") +
-          "</div>" +
-          '<div><div class="block-label" style="font-size:11px">' +
-          def.label +
-          "</div></div>";
-        el.addEventListener("dragstart", function (e) {
-          FB.canvas._dragLibType = type;
-          FB.canvas._dragSrcId = null;
-        });
-        el.addEventListener("click", function () {
-          FB.canvas.insertBlock(type);
-        });
-        wlib.appendChild(el);
+        var el = makeBlockItem(type, def, ecomColor, false);
+        el.style.paddingLeft = "24px";
+        elib.appendChild(el);
       });
     });
   }
@@ -497,7 +409,7 @@ FB.panels.buildLibrary = function () {
   if (vlib) {
     vlib.innerHTML = "";
     var veltroWidgets = FB.widgets.byCategory("veltro");
-    var catOrder = [
+    var vCatOrder = [
       "typography",
       "physics",
       "cursor",
@@ -506,7 +418,7 @@ FB.panels.buildLibrary = function () {
       "effects",
       "spatial",
     ];
-    var catLabels = {
+    var vCatLabels = {
       typography: "Typography",
       physics: "Physics",
       cursor: "Cursor & Interaction",
@@ -522,16 +434,15 @@ FB.panels.buildLibrary = function () {
       if (!grouped[cat]) grouped[cat] = [];
       grouped[cat].push({ type: type, def: def });
     });
-    catOrder.forEach(function (cat) {
+    vCatOrder.forEach(function (cat) {
       if (!grouped[cat] || !grouped[cat].length) return;
       var header = document.createElement("div");
       header.className = "veltro-cat-header";
-      header.textContent = catLabels[cat] || cat;
+      header.textContent = vCatLabels[cat] || cat;
       header.style.cssText =
         "padding:8px 14px 4px;font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.5px;border-top:1px solid #222;margin-top:4px";
       vlib.appendChild(header);
       grouped[cat].forEach(function (item) {
-        var type = item.type;
         var def = item.def;
         var el = document.createElement("div");
         el.className = "block-item";
@@ -554,19 +465,18 @@ FB.panels.buildLibrary = function () {
               "</div>"
             : "") +
           "</div>";
-        el.addEventListener("dragstart", function (e) {
-          FB.canvas._dragLibType = type;
+        el.addEventListener("dragstart", function () {
+          FB.canvas._dragLibType = item.type;
           FB.canvas._dragSrcId = null;
         });
         el.addEventListener("click", function () {
-          FB.canvas.insertBlock(type);
+          FB.canvas.insertBlock(item.type);
         });
         vlib.appendChild(el);
       });
     });
   }
 };
-
 FB.panels.updateWidgetProp = function (id, key, val) {
   var block = FB.state.blocks.find(function (b) {
     return b.id === id;
@@ -2929,6 +2839,7 @@ FB.panels.renderRightPanel = function () {
     "</div>";
 
   rp.innerHTML = html;
+  if (FB.mediaGallery) FB.panels._injectMediaButtons(rp);
 };
 
 FB.panels.updateProp = function (id, key, val) {
@@ -2938,6 +2849,48 @@ FB.panels.updateProp = function (id, key, val) {
   if (!block) return;
   block.props[key] = val;
   FB.canvas.refreshBlock(id);
+};
+
+FB.panels._injectMediaButtons = function (rp) {
+  if (!rp) return;
+  var IMAGE_PATTERN = /image|img|photo|avatar|thumb|cover|background|bg/i;
+  var EXACT_KEYS = ["embedUrl", "imageSrc", "imageUrl"];
+  var EXCLUDE = /video|iframe|link|href|color/i;
+  rp.querySelectorAll("input[onchange]").forEach(function (inp) {
+    if (inp.type === "number" || inp.type === "checkbox" || inp.type === "file")
+      return;
+    var onchange = inp.getAttribute("onchange") || "";
+    var keyMatch = onchange.match(/update(?:Widget)?Prop\([^,]+,'([^']+)'/);
+    if (!keyMatch) return;
+    var propKey = keyMatch[1];
+    if (EXCLUDE.test(propKey)) return;
+    if (!IMAGE_PATTERN.test(propKey) && EXACT_KEYS.indexOf(propKey) === -1)
+      return;
+    if (
+      inp.nextElementSibling &&
+      inp.nextElementSibling.classList.contains("mg-pick-btn")
+    )
+      return;
+    var idMatch = onchange.match(/update(?:Widget)?Prop\('([^']+)'/);
+    if (!idMatch) return;
+    var blockId = idMatch[1];
+    var btn = document.createElement("button");
+    btn.className = "mg-pick-btn";
+    btn.title = "Choose from library";
+    btn.textContent = "📁";
+    btn.style.cssText =
+      "background:#222;border:1px solid #333;border-radius:3px;width:22px;height:24px;" +
+      "cursor:pointer;font-size:11px;color:#888;flex-shrink:0;margin-left:3px";
+    btn.onclick = (function (bid, pkey) {
+      return function () {
+        FB.mediaGallery.pickFor(bid, pkey);
+      };
+    })(blockId, propKey);
+    inp.parentNode.style.display = "flex";
+    inp.parentNode.style.alignItems = "center";
+    inp.style.flex = "1";
+    inp.parentNode.insertBefore(btn, inp.nextSibling);
+  });
 };
 
 // FAQ block helpers
