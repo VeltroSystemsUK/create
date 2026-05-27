@@ -5,6 +5,7 @@ import "../js/state.js";
 import "../js/events.js";
 import "../js/bindings.js";
 import "../js/pages.js";
+import "../js/pages-manager.js";
 import "../js/blocks.js";
 import "../js/theme.js";
 import "../js/canvas.js";

@@ -1,23 +1,10 @@
 FB.pages = {};
 
 FB.pages.init = function () {
-  var saved = null;
-  try {
-    var raw = localStorage.getItem("fb-pages-save");
-    if (raw) saved = JSON.parse(raw);
-  } catch (e) {}
-
-  if (saved && saved.pages && saved.pages.length) {
-    FB.state.pages = saved.pages;
-    FB.state.currentPageId = saved.currentPageId || saved.pages[0].id;
-    var cur = FB.pages.current();
-    if (cur) FB.state.blocks = JSON.parse(JSON.stringify(cur.blocks));
-    return true; // restored from save
-  }
-
   var id = "p_" + Math.random().toString(36).slice(2, 7);
   FB.state.pages = [{ id: id, name: "Home", slug: "index", blocks: [] }];
   FB.state.currentPageId = id;
+  FB.state.blocks = [];
   return false;
 };
 
@@ -139,7 +126,10 @@ FB.pages.rename = function (id, name) {
 FB.pages.render = function () {
   var bar = document.getElementById("page-tabs-bar");
   if (!bar) return;
-  var html = '<div class="page-tabs-inner">';
+
+  var html =
+    '<button class="page-tabs-scroll-btn" id="page-tabs-prev" onclick="FB.pages._scrollTabs(-1)" title="Scroll left">‹</button>';
+  html += '<div class="page-tabs-inner" id="page-tabs-inner">';
   FB.state.pages.forEach(function (page) {
     var active = page.id === FB.state.currentPageId;
     html +=
@@ -163,13 +153,40 @@ FB.pages.render = function () {
   html +=
     '<button class="page-tab-add" onclick="FB.pages.add()" title="Add page">+</button>';
   html += "</div>";
+  html +=
+    '<button class="page-tabs-scroll-btn" id="page-tabs-next" onclick="FB.pages._scrollTabs(1)" title="Scroll right">›</button>';
+  html +=
+    '<button class="page-tabs-manage-btn" onclick="FB.pagesManager.open()" title="Manage pages">Manage</button>';
   bar.innerHTML = html;
+
   bar.querySelectorAll(".page-tab").forEach(function (tab) {
     tab.addEventListener("click", function (e) {
       if (e.target.classList.contains("page-tab-del")) return;
       FB.pages.switchTo(tab.dataset.pageId);
     });
   });
+
+  FB.pages._updateScrollBtns();
+  var inner = document.getElementById("page-tabs-inner");
+  if (inner) inner.addEventListener("scroll", FB.pages._updateScrollBtns);
+};
+
+FB.pages._scrollTabs = function (dir) {
+  var inner = document.getElementById("page-tabs-inner");
+  if (inner) inner.scrollBy({ left: dir * 160, behavior: "smooth" });
+};
+
+FB.pages._updateScrollBtns = function () {
+  var inner = document.getElementById("page-tabs-inner");
+  var prev = document.getElementById("page-tabs-prev");
+  var next = document.getElementById("page-tabs-next");
+  if (!inner || !prev || !next) return;
+  var overflows = inner.scrollWidth > inner.clientWidth + 2;
+  prev.classList.toggle("visible", overflows && inner.scrollLeft > 4);
+  next.classList.toggle(
+    "visible",
+    overflows && inner.scrollLeft < inner.scrollWidth - inner.clientWidth - 4,
+  );
 };
 
 FB.pages._startRename = function (id) {
