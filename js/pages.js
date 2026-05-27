@@ -1,6 +1,20 @@
 FB.pages = {};
 
 FB.pages.init = function () {
+  var saved = null;
+  try {
+    var raw = localStorage.getItem("fb-pages-save");
+    if (raw) saved = JSON.parse(raw);
+  } catch (e) {}
+
+  if (saved && saved.pages && saved.pages.length) {
+    FB.state.pages = saved.pages;
+    FB.state.currentPageId = saved.currentPageId || saved.pages[0].id;
+    var cur = FB.pages.current();
+    if (cur) FB.state.blocks = JSON.parse(JSON.stringify(cur.blocks));
+    return true; // restored from save
+  }
+
   var id = "p_" + Math.random().toString(36).slice(2, 7);
   FB.state.pages = [{ id: id, name: "Home", slug: "index", blocks: [] }];
   FB.state.currentPageId = id;
