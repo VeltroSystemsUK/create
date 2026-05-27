@@ -43,3 +43,6 @@ import "../widgets/tabs.js";
 import "../widgets/modal.js";
 import "../widgets/image-viewer.js";
 import "../widgets/data-table.js";
+import "../widgets/ecom-products.js";
+import "../widgets/ecom-checkout.js";
+import "../widgets/ecom-others.js";
