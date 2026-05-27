@@ -38,3 +38,8 @@ import "../widgets/design-templates.js";
 import "../js/motion-creator.js";
 import "../js/deep-scrape.js";
 import "../js/rebuild.js";
+import "../widgets/icon-box.js";
+import "../widgets/tabs.js";
+import "../widgets/modal.js";
+import "../widgets/image-viewer.js";
+import "../widgets/data-table.js";

@@ -263,56 +263,7 @@ FB.widgets.register("starRating", {
   },
 });
 
-FB.widgets.register("iconBox", {
-  label: "Icon Box",
-  icon: "\u25A2",
-  iconBg: "#1a2a2a",
-  iconColor: "#CDFE00",
-  category: "content",
-  defaultProps: {
-    icon: "\u2728",
-    title: "Feature Title",
-    desc: "Description text here",
-    align: "left",
-  },
-  render: function (p) {
-    return (
-      '<div class="fw-iconbox" style="padding:1rem;text-align:' +
-      (p.align || "left") +
-      '">' +
-      '<div class="fw-iconbox-icon" style="font-size:2rem;' +
-      (p.align === "center" ? "margin:0 auto 8px" : "") +
-      '">' +
-      p.icon +
-      "</div>" +
-      '<div class="fw-iconbox-content"><h4 style="margin:0 0 4px;font-size:15px;font-weight:600" contenteditable data-field="title">' +
-      p.title +
-      "</h4>" +
-      '<p style="margin:0;font-size:13px;line-height:1.5" contenteditable data-field="desc">' +
-      p.desc +
-      "</p></div></div>"
-    );
-  },
-  editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Icon</label><input type="text" value="' +
-      p.icon +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','icon',this.value)\"></div>" +
-      '<div class="rp-row"><label>Title</label><input type="text" value="' +
-      p.title +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','title',this.value)\"></div>" +
-      '<div class="rp-row"><label>Description</label><textarea rows="2" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','desc',this.value)\">" +
-      p.desc +
-      "</textarea></div>"
-    );
-  },
-});
+// iconBox moved to widgets/icon-box.js (enhanced version with link, alignment, colors)
 
 FB.widgets.register("imageBox", {
   label: "Image Box",
