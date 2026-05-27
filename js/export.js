@@ -475,7 +475,8 @@ FB.export.generateHTML = function () {
     if (curPage.ogTitle) seo._ogTitleOverride = curPage.ogTitle;
     if (curPage.ogDesc) seo._ogDescOverride = curPage.ogDesc;
     if (curPage.ogImage) seo.ogImage = curPage.ogImage;
-    seo.canonicalUrl = "/" + (curPage.slug === "index" ? "" : curPage.slug);
+    if (!seo.canonicalUrl)
+      seo.canonicalUrl = "/" + (curPage.slug === "index" ? "" : curPage.slug);
   }
   var blockCSS = FB.export.getBlockCSS();
   var theme = FB.state.theme || {};
