@@ -235,7 +235,9 @@ FB.pagesManager._deletePage = function (id) {
   FB.pagesManager._selectedId = FB.state.currentPageId;
   var rowsEl = document.getElementById("pm-list-rows");
   if (rowsEl) {
-    rowsEl.innerHTML = FB.pagesManager._buildListRows();
+    var fresh = rowsEl.cloneNode(false);
+    fresh.innerHTML = FB.pagesManager._buildListRows();
+    rowsEl.parentNode.replaceChild(fresh, rowsEl);
     FB.pagesManager._wireDrag();
   }
   var settingsEl = document.getElementById("pm-settings");
@@ -293,7 +295,9 @@ FB.pagesManager._wireDrag = function () {
     FB.pages.render();
     var rowsEl = document.getElementById("pm-list-rows");
     if (rowsEl) {
-      rowsEl.innerHTML = FB.pagesManager._buildListRows();
+      var fresh = rowsEl.cloneNode(false);
+      fresh.innerHTML = FB.pagesManager._buildListRows();
+      rowsEl.parentNode.replaceChild(fresh, rowsEl);
       FB.pagesManager._wireDrag();
     }
   });
