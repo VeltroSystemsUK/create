@@ -1,6 +1,19 @@
 // Framework Builder — ES module entry point
 // Import order matches the original script-tag load order exactly.
 
+// CSS imports — needed for Vite dev mode (Vite transforms CSS to JS modules for HMR)
+import "../css/reset.css";
+import "../css/layout.css";
+import "../css/components.css";
+import "../css/blocks.css";
+import "../css/canvas.css";
+import "../css/pages-manager.css";
+import "../css/widgets.css";
+import "../css/grids.css";
+import "../css/help.css";
+import "../css/design.css";
+import "../css/custom-blocks.css";
+
 import "../js/state.js";
 import "../js/events.js";
 import "../js/bindings.js";
