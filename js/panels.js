@@ -357,9 +357,9 @@ FB.panels.buildLibrary = function () {
     });
   }
 
-  // Ecommerce blocks
+  // Ecommerce blocks (migrated to widget files)
   var elib = document.getElementById("ecommerce-library");
-  if (elib && FB.blocks.ECOMMERCE_DEFS) {
+  if (elib) {
     elib.innerHTML = "";
     var ecomColor = "#22c55e";
     var ecomSections = {
@@ -395,7 +395,7 @@ FB.panels.buildLibrary = function () {
         subName;
       elib.appendChild(subEl);
       ecomSections[subName].forEach(function (type) {
-        var def = FB.blocks.ECOMMERCE_DEFS[type];
+        var def = FB.widgets._registry[type] || FB.blocks.BLOCK_DEFS[type];
         if (!def) return;
         var el = makeBlockItem(type, def, ecomColor, false);
         el.style.paddingLeft = "24px";
@@ -3168,6 +3168,21 @@ FB.panels.toggleExportMenu = function (e) {
   document.getElementById("export-menu").classList.toggle("open");
 };
 
+FB.panels.toggleDropdown = function (id, e) {
+  if (e) e.stopPropagation();
+  var target = document.getElementById(id);
+  if (!target) return;
+  var wasOpen = target.classList.contains("open");
+  FB.panels.closeDropdowns();
+  if (!wasOpen) target.classList.add("open");
+};
+
+FB.panels.closeDropdowns = function () {
+  document.querySelectorAll(".tb-dropdown-menu.open").forEach(function (m) {
+    m.classList.remove("open");
+  });
+};
+
 FB.panels.toggleMobileMenu = function () {
   document.getElementById("tb-center-items").classList.toggle("open");
 };
@@ -3176,6 +3191,9 @@ document.addEventListener("click", function (e) {
   var menu = document.getElementById("export-menu");
   if (menu && !e.target.closest(".tb-export-wrap")) {
     menu.classList.remove("open");
+  }
+  if (!e.target.closest(".tb-dropdown-wrap")) {
+    FB.panels.closeDropdowns();
   }
   var items = document.getElementById("tb-center-items");
   if (

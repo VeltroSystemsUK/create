@@ -914,7 +914,8 @@ FB.export.exportWithCMS = function () {
       var def =
         FB.blocks.BLOCK_DEFS[block.type] ||
         FB.blocks.CUSTOM_BLOCK_DEFS[block.type] ||
-        FB.blocks.ECOMMERCE_DEFS[block.type];
+        FB.blocks.ECOMMERCE_DEFS[block.type] ||
+        FB.widgets._registry[block.type];
 
       if (!def) return;
 

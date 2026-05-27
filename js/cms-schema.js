@@ -110,7 +110,8 @@ FB.cms.generateSchema = function () {
       var def =
         FB.blocks.BLOCK_DEFS[block.type] ||
         FB.blocks.CUSTOM_BLOCK_DEFS[block.type] ||
-        FB.blocks.ECOMMERCE_DEFS[block.type];
+        FB.blocks.ECOMMERCE_DEFS[block.type] ||
+        FB.widgets._registry[block.type];
       if (!def) return;
       Object.keys(def.defaultProps).forEach(function (propName) {
         var isContent = FB.cms.CONTENT_PROPS.has(propName);

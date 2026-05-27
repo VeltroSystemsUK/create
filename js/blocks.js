@@ -1213,7 +1213,6 @@ FB.blocks.CUSTOM_BLOCK_DEFS = {
   },
 };
 
-// All 18 ecommerce blocks migrated to widget files:
-// widgets/ecom-products.js (ProductCard, ProductGrid, FeaturedProduct, ProductCarousel, QuickView)
-// widgets/ecom-checkout.js (CartDrawer, CartSummary, CheckoutForm, SaleBanner, Countdown, CouponInput, ShippingProgress, Newsletter)
-// widgets/ecom-others.js (Reviews, Filters, TrustBadges, RelatedProducts, ProductTabs)
+// All 18 ecommerce blocks migrated to widget files in widgets/ecom-*.js
+// Empty object kept for backward compatibility with other modules
+FB.blocks.ECOMMERCE_DEFS = {};
