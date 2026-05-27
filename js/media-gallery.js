@@ -23,6 +23,11 @@ FB.mediaGallery.pickFor = function (blockId, propKey) {
   }
 };
 
+FB.mediaGallery.pickWithCallback = function (fn) {
+  FB.mediaGallery._pickMode = { callback: fn };
+  FB.mediaGallery._render();
+};
+
 FB.mediaGallery._fetch = function () {
   fetch("/api/cms/media")
     .then(function (r) {
@@ -62,10 +67,11 @@ FB.mediaGallery._render = function () {
   var html = "";
 
   if (FB.mediaGallery._pickMode) {
+    var modeLabel = FB.mediaGallery._pickMode.propKey || "image";
     html +=
       '<div style="background:#6366f1;color:#fff;padding:5px 10px;font-size:10px;display:flex;justify-content:space-between;align-items:center">' +
-      "<span>Click image to insert · prop: " +
-      FB.mediaGallery._pickMode.propKey +
+      "<span>Click image to insert · " +
+      modeLabel +
       "</span>" +
       '<button onclick="FB.mediaGallery._cancelPick()" style="background:none;border:none;color:#fff;cursor:pointer;font-size:12px;padding:0 4px">✕</button>' +
       "</div>";
@@ -219,11 +225,15 @@ FB.mediaGallery._render = function () {
 FB.mediaGallery._clickImage = function (id, url) {
   if (FB.mediaGallery._pickMode) {
     var mode = FB.mediaGallery._pickMode;
-    FB.panels.updateProp(mode.blockId, mode.propKey, url);
     FB.mediaGallery._pickMode = null;
+    if (mode.callback) {
+      mode.callback(url);
+    } else {
+      FB.panels.updateProp(mode.blockId, mode.propKey, url);
+      if (FB.panels.renderRightPanel) FB.panels.renderRightPanel();
+    }
     FB.mediaGallery._render();
-    if (FB.panels.renderRightPanel) FB.panels.renderRightPanel();
-    FB.util.showToast("🖼 Image inserted");
+    FB.util.showToast("Image inserted");
   } else {
     FB.mediaGallery._copyUrl(url);
   }
