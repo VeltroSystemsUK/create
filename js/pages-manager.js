@@ -13,6 +13,7 @@ FB.pagesManager.open = function () {
   // Select current page by default
   FB.pagesManager._selectedId = FB.state.currentPageId;
   FB.pagesManager._highlightRow(FB.pagesManager._selectedId);
+  FB.pagesManager._wireDrag();
   // Close on backdrop click
   overlay.addEventListener("click", function (e) {
     if (e.target === overlay) FB.pagesManager.close();
@@ -233,12 +234,69 @@ FB.pagesManager._deletePage = function (id) {
   // If the deleted page was selected, select the new current page
   FB.pagesManager._selectedId = FB.state.currentPageId;
   var rowsEl = document.getElementById("pm-list-rows");
-  if (rowsEl) rowsEl.innerHTML = FB.pagesManager._buildListRows();
+  if (rowsEl) {
+    rowsEl.innerHTML = FB.pagesManager._buildListRows();
+    FB.pagesManager._wireDrag();
+  }
   var settingsEl = document.getElementById("pm-settings");
   if (settingsEl)
     settingsEl.innerHTML = FB.pagesManager._buildSettings(
       FB.state.currentPageId,
     );
+};
+
+FB.pagesManager._wireDrag = function () {
+  var rows = document.getElementById("pm-list-rows");
+  if (!rows) return;
+  var draggingId = null;
+
+  rows.addEventListener("dragstart", function (e) {
+    var row = e.target.closest(".pm-list-row");
+    if (!row) return;
+    draggingId = row.dataset.pageId;
+    row.classList.add("dragging");
+    e.dataTransfer.effectAllowed = "move";
+  });
+
+  rows.addEventListener("dragend", function () {
+    draggingId = null;
+    rows.querySelectorAll(".pm-list-row").forEach(function (r) {
+      r.classList.remove("dragging", "drag-over");
+    });
+  });
+
+  rows.addEventListener("dragover", function (e) {
+    e.preventDefault();
+    var row = e.target.closest(".pm-list-row");
+    rows.querySelectorAll(".pm-list-row").forEach(function (r) {
+      r.classList.remove("drag-over");
+    });
+    if (row && row.dataset.pageId !== draggingId) {
+      row.classList.add("drag-over");
+    }
+  });
+
+  rows.addEventListener("drop", function (e) {
+    e.preventDefault();
+    var row = e.target.closest(".pm-list-row");
+    if (!row || !draggingId || row.dataset.pageId === draggingId) return;
+    var fromIdx = FB.state.pages.findIndex(function (p) {
+      return p.id === draggingId;
+    });
+    var toIdx = FB.state.pages.findIndex(function (p) {
+      return p.id === row.dataset.pageId;
+    });
+    if (fromIdx < 0 || toIdx < 0) return;
+    var moved = FB.state.pages.splice(fromIdx, 1)[0];
+    FB.state.pages.splice(toIdx, 0, moved);
+    FB.pages._save();
+    FB.pages.render();
+    var rowsEl = document.getElementById("pm-list-rows");
+    if (rowsEl) {
+      rowsEl.innerHTML = FB.pagesManager._buildListRows();
+      FB.pagesManager._wireDrag();
+    }
+  });
 };
 
 FB.pagesManager._pickOgImage = function (pageId) {
