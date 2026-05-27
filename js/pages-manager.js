@@ -445,10 +445,10 @@ FB.pagesManager.open = function () {
     overlay.id = "pages-manager-overlay";
     document.body.appendChild(overlay);
   }
+  // Select current page before building HTML so active class renders correctly
+  FB.pagesManager._selectedId = FB.state.currentPageId;
   overlay.innerHTML = FB.pagesManager._buildHTML();
   overlay.classList.add("open");
-  // Select current page by default
-  FB.pagesManager._selectedId = FB.state.currentPageId;
   FB.pagesManager._highlightRow(FB.pagesManager._selectedId);
   FB.pagesManager._wireDrag();
   // Close on backdrop click
