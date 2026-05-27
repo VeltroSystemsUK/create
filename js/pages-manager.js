@@ -754,9 +754,94 @@ FB.pagesManager._pickOgImage = function (pageId) {
   if (mediaBtn) mediaBtn.click();
 };
 
-// Placeholder — implemented in Task 8
+FB.pagesManager._extractContent = function (pageId) {
+  var page = FB.state.pages.find(function (p) {
+    return p.id === pageId;
+  });
+  if (!page || !page.blocks) return "";
+  var parts = [];
+  page.blocks.forEach(function (b) {
+    var p = b.props || {};
+    var strip = function (s) {
+      return (s || "").replace(/<[^>]*>/g, "").trim();
+    };
+    if (p.headline) parts.push(strip(p.headline));
+    if (p.subtext) parts.push(strip(p.subtext));
+    if (p.eyebrow) parts.push(strip(p.eyebrow));
+    if (p.body) parts.push(strip(p.body));
+    if (p.ctaText) parts.push(strip(p.ctaText));
+    if (p.btnText) parts.push(strip(p.btnText));
+    if (p.tagline) parts.push(strip(p.tagline));
+    if (Array.isArray(p.items)) {
+      p.items.forEach(function (item) {
+        if (item.title) parts.push(strip(item.title));
+        if (item.desc) parts.push(strip(item.desc));
+      });
+    }
+    if (Array.isArray(p.links)) {
+      p.links.forEach(function (link) {
+        if (link.label) parts.push(strip(link.label));
+      });
+    }
+  });
+  return parts.filter(Boolean).join("\n").substring(0, 2000);
+};
+
 FB.pagesManager._runAiSeo = function (pageId) {
-  FB.util.showToast("AI SEO coming soon");
+  var apiKey = localStorage.getItem("fb-ai-key") || "";
+  var provider = localStorage.getItem("fb-ai-provider") || "gemini";
+  if (!apiKey) {
+    FB.util.showToast("No AI key set — configure it in the AI panel first");
+    return;
+  }
+  var page = FB.state.pages.find(function (p) {
+    return p.id === pageId;
+  });
+  if (!page) return;
+  var btn = document.getElementById("pm-ai-btn");
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "Generating…";
+  }
+  var content = FB.pagesManager._extractContent(pageId);
+  fetch("/api/ai-seo", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      pageName: page.name,
+      content: content,
+      provider: provider,
+      apiKey: apiKey,
+    }),
+  })
+    .then(function (r) {
+      return r.json();
+    })
+    .then(function (data) {
+      if (data.error) {
+        FB.util.showToast("SEO error: " + data.error);
+        return;
+      }
+      if (data.title) page.title = data.title;
+      if (data.metaDesc) page.metaDesc = data.metaDesc;
+      if (data.ogTitle) page.ogTitle = data.ogTitle;
+      if (data.ogDesc) page.ogDesc = data.ogDesc;
+      FB.pages._save();
+      var settingsEl = document.getElementById("pm-settings");
+      if (settingsEl)
+        settingsEl.innerHTML = FB.pagesManager._buildSettings(pageId);
+      FB.util.showToast("SEO generated");
+    })
+    .catch(function (e) {
+      FB.util.showToast("SEO request failed: " + e.message);
+    })
+    .finally(function () {
+      var b = document.getElementById("pm-ai-btn");
+      if (b) {
+        b.disabled = false;
+        b.textContent = "✦ Auto-generate SEO";
+      }
+    });
 };
 
 FB.pagesManager.openAddModal = function () {

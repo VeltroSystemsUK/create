@@ -23,6 +23,8 @@ STATIC_DIR = os.path.dirname(os.path.abspath(__file__))
 class FrameworkHandler(http.server.SimpleHTTPRequestHandler):
     """Extends the static server with API endpoints."""
 
+    protocol_version = "HTTP/1.1"
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=STATIC_DIR, **kwargs)
 
@@ -134,6 +136,8 @@ class FrameworkHandler(http.server.SimpleHTTPRequestHandler):
             self._handle_deep_scrape_crawl()
         elif parsed.path == "/api/deep-scrape/full-crawl":
             self._handle_deep_scrape_full_crawl()
+        elif parsed.path == "/api/ai-seo":
+            self._handle_ai_seo()
         else:
             self.send_error(HTTPStatus.NOT_FOUND)
 
@@ -908,6 +912,62 @@ SCRAPED CONTENT:
         except Exception as e:
             self._json_response({'error': str(e)[:200]}, 500)
 
+    def _handle_ai_seo(self):
+        try:
+            length = int(self.headers.get("Content-Length", 0))
+            body = json.loads(self.rfile.read(length)) if length else {}
+        except Exception as e:
+            self._json_response({"error": "Failed to parse request: " + str(e)}, 400)
+            return
+
+        page_name = body.get("pageName", "").strip()
+        content = body.get("content", "").strip()
+        api_key = body.get("apiKey", "").strip()
+        provider = body.get("provider", "gemini")
+
+        if not api_key:
+            self._json_response({"error": "Missing apiKey"}, 400)
+            return
+        if not content and not page_name:
+            self._json_response({"error": "Missing pageName or content"}, 400)
+            return
+
+        prompt = (
+            'You are an SEO copywriter. Write SEO metadata for a webpage.\n\n'
+            'Page name: ' + page_name + '\n\n'
+            'Page content:\n' + content[:2000] + '\n\n'
+            'Return ONLY a JSON object with these exact keys. No markdown, no explanation.\n'
+            'Constraints: title ≤60 chars, metaDesc ≤155 chars, ogTitle ≤60 chars, ogDesc ≤200 chars.\n'
+            '{"title":"...","metaDesc":"...","ogTitle":"...","ogDesc":"..."}'
+        )
+
+        print(f"[AI SEO] Generating for page: {page_name} using {provider}")
+        try:
+            if provider == "openai":
+                raw = self._call_openai(api_key, prompt)
+            else:
+                raw = self._call_gemini(api_key, prompt)
+            raw = raw.strip()
+            if raw.startswith("```"):
+                raw = re.sub(r'^```[a-zA-Z]*\n?', '', raw)
+                raw = re.sub(r'\n?```\s*$', '', raw)
+                raw = raw.strip()
+            result = json.loads(raw)
+            if not isinstance(result, dict):
+                raise ValueError("Not a dict")
+            self._json_response({
+                "title": str(result.get("title", ""))[:60],
+                "metaDesc": str(result.get("metaDesc", ""))[:155],
+                "ogTitle": str(result.get("ogTitle", ""))[:60],
+                "ogDesc": str(result.get("ogDesc", ""))[:200],
+            })
+        except json.JSONDecodeError:
+            print("[AI SEO] AI returned invalid JSON")
+            self._json_response({"error": "AI returned invalid JSON"}, 500)
+        except Exception as e:
+            print(f"[AI SEO] Error: {e}")
+            self._json_response({"error": "AI SEO error: " + str(e)[:200]}, 500)
+
     def _cms_data_path(self, filename):
         data_dir = os.path.join(STATIC_DIR, '.cms')
         os.makedirs(data_dir, exist_ok=True)
@@ -1256,7 +1316,7 @@ if __name__ == "__main__":
 
     print(f"Framework Builder running at http://localhost:{PORT}")
     print(f"API: POST /api/scrape and POST /api/fetch")
-    server = http.server.HTTPServer(("0.0.0.0", PORT), FrameworkHandler)
+    server = http.server.ThreadingHTTPServer(("0.0.0.0", PORT), FrameworkHandler)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
