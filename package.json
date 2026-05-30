@@ -1,0 +1,66 @@
+{
+  "name": "framework",
+  "version": "1.0.0",
+  "description": "Framework Builder — visual creative web builder",
+  "main": "electron-main.cjs",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev-electron": "cross-env NODE_ENV=development electron .",
+    "build": "vite build",
+    "build-electron": "vite build && electron-builder --publish never",
+    "build-electron-win": "vite build && electron-builder --win",
+    "dist": "npm run build && electron-builder",
+    "pack": "electron-builder --dir",
+    "prestart": "npm run build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "playwright": "^1.60.0",
+    "superpowers": "github:obra/superpowers"
+  },
+  "devDependencies": {
+    "vite": "^8.0.14",
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.4",
+    "cross-env": "^7.0.3"
+  },
+  "build": {
+    "appId": "com.framework.builder",
+    "productName": "Framework Builder",
+    "files": [
+      "dist/**/*",
+      "server/**/*",
+      "node_modules/**/*",
+      "electron-main.cjs",
+      "preload.js",
+      "package.json"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        "portable"
+      ],
+      "icon": "assets/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "installerIcon": "assets/icon.png",
+      "uninstallerIcon": "assets/icon.png",
+      "installerHeaderIcon": "assets/icon.png"
+    }
+  }
+}

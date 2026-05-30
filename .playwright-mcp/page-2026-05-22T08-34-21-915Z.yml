@@ -1,0 +1,914 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]: Framework Builder
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - button "Desktop" [ref=e6] [cursor=pointer]:
+          - img [ref=e7]
+        - button "Tablet" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]
+        - button "Mobile" [ref=e12] [cursor=pointer]:
+          - img [ref=e13]
+      - generic [ref=e15]:
+        - button "Toggle sidebar" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]
+        - button "Toggle inspector" [ref=e19] [cursor=pointer]:
+          - img [ref=e20]
+        - button "Undo (Ctrl+Z)" [ref=e24] [cursor=pointer]:
+          - img [ref=e25]
+        - button "Redo (Ctrl+Y)" [ref=e28] [cursor=pointer]:
+          - img [ref=e29]
+        - button "Preview" [ref=e33] [cursor=pointer]:
+          - img [ref=e34]
+          - generic [ref=e37]: Preview
+        - button "Save" [ref=e39] [cursor=pointer]:
+          - img [ref=e40]
+          - generic [ref=e44]: Save
+        - button "Load" [ref=e45] [cursor=pointer]:
+          - img [ref=e46]
+          - generic [ref=e48]: Load
+        - button "Import" [ref=e50] [cursor=pointer]:
+          - img [ref=e51]
+          - generic [ref=e54]: Import
+        - button "AI" [ref=e55] [cursor=pointer]:
+          - img [ref=e56]
+          - generic [ref=e59]: AI
+        - button "Clear" [ref=e61] [cursor=pointer]:
+          - img [ref=e62]
+          - generic [ref=e64]: Clear
+        - button "Settings" [ref=e66] [cursor=pointer]:
+          - img [ref=e67]
+    - generic [ref=e70]:
+      - button "☀" [ref=e71] [cursor=pointer]:
+        - generic [ref=e72]: ☀
+      - button "🇬🇧 EN" [ref=e74] [cursor=pointer]:
+        - generic [ref=e75]: 🇬🇧
+        - generic [ref=e76]: EN
+        - img [ref=e77]
+      - button "Export" [ref=e80] [cursor=pointer]:
+        - img [ref=e81]
+        - text: Export
+  - generic [ref=e84]:
+    - generic [ref=e85]:
+      - generic [ref=e87] [cursor=pointer]:
+        - generic [ref=e88]: ≋
+        - generic [ref=e89]: Layers
+        - generic [ref=e90]: ▶
+      - generic [ref=e91]:
+        - generic [ref=e92] [cursor=pointer]:
+          - generic [ref=e93]: ⊞
+          - generic [ref=e94]: Templates
+          - generic [ref=e95]: ▶
+        - generic [ref=e96]:
+          - generic [ref=e97] [cursor=pointer]:
+            - generic [ref=e98]: 🏢
+            - generic [ref=e100]: Agency
+          - generic [ref=e101] [cursor=pointer]:
+            - generic [ref=e102]: 🖼
+            - generic [ref=e104]: Portfolio
+          - generic [ref=e105] [cursor=pointer]:
+            - generic [ref=e106]: ☁
+            - generic [ref=e108]: SaaS
+          - generic [ref=e109] [cursor=pointer]:
+            - generic [ref=e110]: 🚀
+            - generic [ref=e112]: Landing
+          - generic [ref=e113] [cursor=pointer]:
+            - generic [ref=e114]: ⏳
+            - generic [ref=e116]: Coming Soon
+          - generic [ref=e117] [cursor=pointer]:
+            - generic [ref=e118]: F
+            - generic [ref=e120]: F-Shape
+          - generic [ref=e121] [cursor=pointer]:
+            - generic [ref=e122]: ✨
+            - generic [ref=e124]: Holy Grail
+          - generic [ref=e125] [cursor=pointer]:
+            - generic [ref=e126]: ◰
+            - generic [ref=e128]: Asymmetric
+          - generic [ref=e129] [cursor=pointer]:
+            - generic [ref=e130]: ▤
+            - generic [ref=e132]: Bento Grid
+          - generic [ref=e133] [cursor=pointer]:
+            - generic [ref=e134]: ◻
+            - generic [ref=e136]: Minimal
+          - generic [ref=e137] [cursor=pointer]:
+            - generic [ref=e138]: 🎨
+            - generic [ref=e140]: Bold Creative
+          - generic [ref=e141] [cursor=pointer]:
+            - generic [ref=e142]: 🖥
+            - generic [ref=e144]: Dark SaaS
+          - generic [ref=e145] [cursor=pointer]:
+            - generic [ref=e146]: 🌱
+            - generic [ref=e148]: Eco Brand
+          - generic [ref=e149] [cursor=pointer]:
+            - generic [ref=e150]: 💎
+            - generic [ref=e152]: Luxury
+          - generic [ref=e153] [cursor=pointer]:
+            - generic [ref=e154]: 💡
+            - generic [ref=e156]: Startup
+          - generic [ref=e157] [cursor=pointer]:
+            - generic [ref=e158]: 🍽
+            - generic [ref=e160]: Restaurant
+          - generic [ref=e161] [cursor=pointer]:
+            - generic [ref=e162]: 💪
+            - generic [ref=e164]: Fitness
+          - generic [ref=e165] [cursor=pointer]:
+            - generic [ref=e166]: 📸
+            - generic [ref=e168]: Photography
+          - generic [ref=e169] [cursor=pointer]:
+            - generic [ref=e170]: 📊
+            - generic [ref=e172]: Consulting
+          - generic [ref=e173] [cursor=pointer]:
+            - generic [ref=e174]: 🤝
+            - generic [ref=e176]: Nonprofit
+      - generic [ref=e177]:
+        - generic [ref=e178] [cursor=pointer]:
+          - generic [ref=e179]: ◈
+          - generic [ref=e180]: Block Themes
+          - generic [ref=e181]: ▶
+        - generic [ref=e182]:
+          - generic [ref=e183]: Headers
+          - generic [ref=e185] [cursor=pointer]:
+            - generic [ref=e186]: —
+            - generic [ref=e188]: Minimal Header
+          - generic [ref=e189] [cursor=pointer]:
+            - generic [ref=e190]: ◇
+            - generic [ref=e192]: Glass Header
+          - generic [ref=e193] [cursor=pointer]:
+            - generic [ref=e194]: █
+            - generic [ref=e196]: Gradient Header
+          - generic [ref=e197] [cursor=pointer]:
+            - generic [ref=e198]: ■
+            - generic [ref=e200]: Dark Bold Header
+          - generic [ref=e201]: Heroes
+          - generic [ref=e203] [cursor=pointer]:
+            - generic [ref=e204]: H
+            - generic [ref=e206]: Minimal Hero
+          - generic [ref=e207] [cursor=pointer]:
+            - generic [ref=e208]: H
+            - generic [ref=e210]: Dark Gradient Hero
+          - generic [ref=e211] [cursor=pointer]:
+            - generic [ref=e212]: H
+            - generic [ref=e214]: Warm Hero
+          - generic [ref=e215] [cursor=pointer]:
+            - generic [ref=e216]: H
+            - generic [ref=e218]: Earth Tone Hero
+          - generic [ref=e219] [cursor=pointer]:
+            - generic [ref=e220]: H
+            - generic [ref=e222]: Neon Hero
+          - generic [ref=e223]: CTAs
+          - generic [ref=e225] [cursor=pointer]:
+            - generic [ref=e226]: →
+            - generic [ref=e228]: Minimal CTA
+          - generic [ref=e229] [cursor=pointer]:
+            - generic [ref=e230]: →
+            - generic [ref=e232]: Gradient CTA
+          - generic [ref=e233] [cursor=pointer]:
+            - generic [ref=e234]: "!"
+            - generic [ref=e236]: Urgent CTA
+          - generic [ref=e237]: Footers
+          - generic [ref=e239] [cursor=pointer]:
+            - generic [ref=e240]: ⊥
+            - generic [ref=e242]: Minimal Footer
+          - generic [ref=e243] [cursor=pointer]:
+            - generic [ref=e244]: ⊥
+            - generic [ref=e246]: Dark Mega Footer
+          - generic [ref=e247] [cursor=pointer]:
+            - generic [ref=e248]: ⊥
+            - generic [ref=e250]: Warm Footer
+          - generic [ref=e251]: Features
+          - generic [ref=e253] [cursor=pointer]:
+            - generic [ref=e254]: ✦
+            - generic [ref=e256]: Clean Features
+          - generic [ref=e257] [cursor=pointer]:
+            - generic [ref=e258]: ✦
+            - generic [ref=e260]: Dark Features
+          - generic [ref=e261]: Testimonials
+          - generic [ref=e263] [cursor=pointer]:
+            - generic [ref=e264]: “
+            - generic [ref=e266]: Clean Testimonial
+          - generic [ref=e267] [cursor=pointer]:
+            - generic [ref=e268]: “
+            - generic [ref=e270]: Dark Testimonial
+          - generic [ref=e271]: Stats
+          - generic [ref=e273] [cursor=pointer]:
+            - generic [ref=e274]: "##"
+            - generic [ref=e276]: Light Stats
+          - generic [ref=e277] [cursor=pointer]:
+            - generic [ref=e278]: "##"
+            - generic [ref=e280]: Dark Stats
+      - generic [ref=e281]:
+        - generic [ref=e282] [cursor=pointer]:
+          - generic [ref=e283]: ◆
+          - generic [ref=e284]: Sections
+          - generic [ref=e285]: ▶
+        - generic [ref=e287]:
+          - generic [ref=e288]: Structure
+          - generic [ref=e290]:
+            - generic [ref=e291]: ≡
+            - generic [ref=e292]:
+              - generic [ref=e293]: Navigation
+              - generic [ref=e294]: Logo + links + CTA
+          - generic [ref=e295]:
+            - generic [ref=e296]: ☰
+            - generic [ref=e297]:
+              - generic [ref=e298]: Mega Navigation
+              - generic [ref=e299]: Dropdown with columns
+          - generic [ref=e300]:
+            - generic [ref=e301]: ⊳
+            - generic [ref=e302]:
+              - generic [ref=e303]: Slide Navigation
+              - generic [ref=e304]: Animated slide-in nav
+          - generic [ref=e305]:
+            - generic [ref=e306]: ⛶
+            - generic [ref=e307]:
+              - generic [ref=e308]: Fullscreen Menu
+              - generic [ref=e309]: Full-screen navigation overlay
+          - generic [ref=e310]:
+            - generic [ref=e311]: ▁
+            - generic [ref=e312]:
+              - generic [ref=e313]: Footer
+              - generic [ref=e314]: Links + social + copyright
+          - generic [ref=e315]: Content
+          - generic [ref=e317]:
+            - generic [ref=e318]: H
+            - generic [ref=e319]:
+              - generic [ref=e320]: Hero
+              - generic [ref=e321]: Full-screen opener
+          - generic [ref=e322]:
+            - generic [ref=e323]: ◉
+            - generic [ref=e324]:
+              - generic [ref=e325]: Orbs Hero
+              - generic [ref=e326]: Animated gradient orbs
+          - generic [ref=e327]:
+            - generic [ref=e328]: ◫
+            - generic [ref=e329]:
+              - generic [ref=e330]: Split Hero
+              - generic [ref=e331]: Text left, image right
+          - generic [ref=e332]:
+            - generic [ref=e333]: ▶
+            - generic [ref=e334]:
+              - generic [ref=e335]: Video Hero
+              - generic [ref=e336]: Background video opener
+          - generic [ref=e337]:
+            - generic [ref=e338]: »»
+            - generic [ref=e339]:
+              - generic [ref=e340]: Marquee Strip
+              - generic [ref=e341]: Scrolling keyword band
+          - generic [ref=e342]:
+            - generic [ref=e343]: ⟳
+            - generic [ref=e344]:
+              - generic [ref=e345]: Word Swap
+              - generic [ref=e346]: Animated text rotation
+          - generic [ref=e347]:
+            - generic [ref=e348]: ≫
+            - generic [ref=e349]:
+              - generic [ref=e350]: Services List
+              - generic [ref=e351]: Large text row layout
+          - generic [ref=e352]:
+            - generic [ref=e353]: ⚡
+            - generic [ref=e354]:
+              - generic [ref=e355]: Features Grid
+              - generic [ref=e356]: Icon + title + description cards
+          - generic [ref=e357]:
+            - generic [ref=e358]: ①
+            - generic [ref=e359]:
+              - generic [ref=e360]: Process Steps
+              - generic [ref=e361]: Numbered workflow stages
+          - generic [ref=e362]:
+            - generic [ref=e363]: ⊞
+            - generic [ref=e364]:
+              - generic [ref=e365]: Work Grid
+              - generic [ref=e366]: 5-card project showcase
+          - generic [ref=e367]:
+            - generic [ref=e368]: "#"
+            - generic [ref=e369]:
+              - generic [ref=e370]: Stats Counter
+              - generic [ref=e371]: Animated number counters
+          - generic [ref=e372]:
+            - generic [ref=e373]: ▦
+            - generic [ref=e374]:
+              - generic [ref=e375]: Results Grid
+              - generic [ref=e376]: Data-driven showcase
+          - generic [ref=e377]:
+            - generic [ref=e378]: ◇
+            - generic [ref=e379]:
+              - generic [ref=e380]: Glass Cards
+              - generic [ref=e381]: Frosted glass effect cards
+          - generic [ref=e382]:
+            - generic [ref=e383]: $
+            - generic [ref=e384]:
+              - generic [ref=e385]: Pricing Table
+              - generic [ref=e386]: 3-tier pricing cards
+          - generic [ref=e387]:
+            - generic [ref=e388]: 👥
+            - generic [ref=e389]:
+              - generic [ref=e390]: Team Grid
+              - generic [ref=e391]: Member photos + roles
+          - generic [ref=e392]:
+            - generic [ref=e393]: ▣
+            - generic [ref=e394]:
+              - generic [ref=e395]: Portfolio Grid
+              - generic [ref=e396]: Masonry-style project gallery
+          - generic [ref=e397]:
+            - generic [ref=e398]: Aa
+            - generic [ref=e399]:
+              - generic [ref=e400]: Split Text
+              - generic [ref=e401]: Character-by-character animation
+          - generic [ref=e402]:
+            - generic [ref=e403]: ▨
+            - generic [ref=e404]:
+              - generic [ref=e405]: Mask Reveal
+              - generic [ref=e406]: Clip-path reveal animation
+          - generic [ref=e407]:
+            - generic [ref=e408]: G
+            - generic [ref=e409]:
+              - generic [ref=e410]: Glitch Text
+              - generic [ref=e411]: RGB glitch effect
+          - generic [ref=e412]:
+            - generic [ref=e413]: ✎
+            - generic [ref=e414]:
+              - generic [ref=e415]: SVG Draw
+              - generic [ref=e416]: Animated stroke drawing
+          - generic [ref=e417]:
+            - generic [ref=e418]: ▒
+            - generic [ref=e419]:
+              - generic [ref=e420]: Noise Section
+              - generic [ref=e421]: Film grain texture overlay
+          - generic [ref=e422]:
+            - generic [ref=e423]: ┌
+            - generic [ref=e424]:
+              - generic [ref=e425]: Corner Section
+              - generic [ref=e426]: Decorative corner borders
+          - generic [ref=e427]:
+            - generic [ref=e428]: ◈
+            - generic [ref=e429]:
+              - generic [ref=e430]: Iridescent Button
+              - generic [ref=e431]: Holographic gradient CTA
+          - generic [ref=e432]:
+            - generic [ref=e433]: ✦
+            - generic [ref=e434]:
+              - generic [ref=e435]: Particle Button
+              - generic [ref=e436]: Hover particle effect CTA
+          - generic [ref=e437]: Media
+          - generic [ref=e439]:
+            - generic [ref=e440]: ◎
+            - generic [ref=e441]:
+              - generic [ref=e442]: Client Carousel
+              - generic [ref=e443]: Scrolling logo strip
+          - generic [ref=e444]:
+            - generic [ref=e445]: 🎬
+            - generic [ref=e446]:
+              - generic [ref=e447]: Lite Video
+              - generic [ref=e448]: Lazy-loaded video embed
+          - generic [ref=e449]:
+            - generic [ref=e450]: ◉
+            - generic [ref=e451]:
+              - generic [ref=e452]: Circular List
+              - generic [ref=e453]: Rotating circular items
+          - generic [ref=e454]:
+            - generic [ref=e455]: ⇉
+            - generic [ref=e456]:
+              - generic [ref=e457]: Horizontal Scroll
+              - generic [ref=e458]: Side-scrolling card track
+          - generic [ref=e459]: Social Proof
+          - generic [ref=e461]:
+            - generic [ref=e462]: "\""
+            - generic [ref=e463]:
+              - generic [ref=e464]: Testimonial
+              - generic [ref=e465]: Client quote + avatar
+          - generic [ref=e466]:
+            - generic [ref=e467]: ✓
+            - generic [ref=e468]:
+              - generic [ref=e469]: Trust Pill
+              - generic [ref=e470]: Rating + verified badge
+          - generic [ref=e471]:
+            - generic [ref=e472]: ▣
+            - generic [ref=e473]:
+              - generic [ref=e474]: Metric Box
+              - generic [ref=e475]: Single stat highlight
+          - generic [ref=e476]:
+            - generic [ref=e477]: "?"
+            - generic [ref=e478]:
+              - generic [ref=e479]: FAQ Accordion
+              - generic [ref=e480]: Expandable Q&A section
+          - generic [ref=e481]:
+            - generic [ref=e482]: │
+            - generic [ref=e483]:
+              - generic [ref=e484]: Timeline
+              - generic [ref=e485]: Vertical milestone layout
+          - generic [ref=e486]:
+            - generic [ref=e487]: 0→
+            - generic [ref=e488]:
+              - generic [ref=e489]: Counter Section
+              - generic [ref=e490]: Animated counting numbers
+          - generic [ref=e491]: Conversion
+          - generic [ref=e493]:
+            - generic [ref=e494]: →
+            - generic [ref=e495]:
+              - generic [ref=e496]: Call to Action
+              - generic [ref=e497]: Bold conversion section
+          - generic [ref=e498]:
+            - generic [ref=e499]: 💬
+            - generic [ref=e500]:
+              - generic [ref=e501]: Chat Widget
+              - generic [ref=e502]: Floating chat bubble
+          - generic [ref=e503]:
+            - generic [ref=e504]: 🍪
+            - generic [ref=e505]:
+              - generic [ref=e506]: Cookie Consent
+              - generic [ref=e507]: GDPR cookie banner
+          - generic [ref=e508]:
+            - generic [ref=e509]: ☀
+            - generic [ref=e510]:
+              - generic [ref=e511]: Day/Night Switch
+              - generic [ref=e512]: Theme toggle section
+          - generic [ref=e513]:
+            - generic [ref=e514]: ↓
+            - generic [ref=e515]:
+              - generic [ref=e516]: Scroll Indicator
+              - generic [ref=e517]: Animated scroll prompt
+      - generic [ref=e518]:
+        - generic [ref=e519] [cursor=pointer]:
+          - generic [ref=e520]: ■
+          - generic [ref=e521]: Custom
+          - generic [ref=e522]: ▶
+        - generic:
+          - generic [ref=e523]:
+            - generic [ref=e524]:
+              - generic [ref=e525]: T
+              - generic [ref=e526]:
+                - generic [ref=e527]: Custom Text
+                - generic [ref=e528]: Heading + paragraph
+            - generic [ref=e529]:
+              - generic [ref=e530]: ■
+              - generic [ref=e531]:
+                - generic [ref=e532]: Colour Block
+                - generic [ref=e533]: Full-width colour section
+            - generic [ref=e534]:
+              - generic [ref=e535]: ◰
+              - generic [ref=e536]:
+                - generic [ref=e537]: Image + Text (Top)
+                - generic [ref=e538]: Image above text
+            - generic [ref=e539]:
+              - generic [ref=e540]: ◳
+              - generic [ref=e541]:
+                - generic [ref=e542]: Image + Text (Bottom)
+                - generic [ref=e543]: Text above image
+            - generic [ref=e544]:
+              - generic [ref=e545]: ◧
+              - generic [ref=e546]:
+                - generic [ref=e547]: Image + Text (Left)
+                - generic [ref=e548]: Image left, text right
+            - generic [ref=e549]:
+              - generic [ref=e550]: ◨
+              - generic [ref=e551]:
+                - generic [ref=e552]: Image + Text (Right)
+                - generic [ref=e553]: Text left, image right
+          - generic [ref=e554]:
+            - button "+ Custom Text Block" [ref=e555] [cursor=pointer]
+            - button "+ Colour Block" [ref=e556] [cursor=pointer]
+      - generic [ref=e557]:
+        - generic [ref=e558] [cursor=pointer]:
+          - generic [ref=e559]: ☷
+          - generic [ref=e560]: Layouts
+          - generic [ref=e561]: ▶
+        - generic [ref=e562]:
+          - generic [ref=e563]:
+            - generic [ref=e564]: ▦
+            - generic [ref=e566]: Row / Columns
+          - generic [ref=e567]:
+            - generic [ref=e568]: ≡
+            - generic [ref=e570]: Tabs
+          - generic [ref=e571]:
+            - generic [ref=e572]: ☷
+            - generic [ref=e574]: Accordion
+          - generic [ref=e575]:
+            - generic [ref=e576]: ☰
+            - generic [ref=e578]: Toggle
+          - generic [ref=e579]:
+            - generic [ref=e580]: $
+            - generic [ref=e582]: Price Table
+          - generic [ref=e583]:
+            - generic [ref=e584]: ☷
+            - generic [ref=e586]: Price List
+          - generic [ref=e587]:
+            - generic [ref=e588]: ⇄
+            - generic [ref=e590]: Flip Box
+          - generic [ref=e591]:
+            - generic [ref=e592]: →
+            - generic [ref=e594]: CTA
+          - generic [ref=e595]:
+            - generic [ref=e596]: ⊥
+            - generic [ref=e598]: Footer
+          - generic [ref=e599]:
+            - generic [ref=e600]: □
+            - generic [ref=e602]: Section / Container
+          - generic [ref=e603]:
+            - generic [ref=e604]: ▨
+            - generic [ref=e606]: TWM Workspace
+      - generic [ref=e607]:
+        - generic [ref=e608] [cursor=pointer]:
+          - generic [ref=e609]: ▦
+          - generic [ref=e610]: Widgets
+          - generic [ref=e611]: ▶
+        - generic [ref=e612]:
+          - generic [ref=e613]: Basic
+          - generic [ref=e614]:
+            - generic [ref=e615]: H
+            - generic [ref=e617]: Heading
+          - generic [ref=e618]:
+            - generic [ref=e619]: —
+            - generic [ref=e621]: Divider
+          - generic [ref=e622]:
+            - generic [ref=e623]: ⒢
+            - generic [ref=e625]: Spacer
+          - generic [ref=e626]:
+            - generic [ref=e627]: ✦
+            - generic [ref=e629]: Icon
+          - generic [ref=e633]: HTML
+          - generic [ref=e634]:
+            - generic [ref=e635]: "[]"
+            - generic [ref=e637]: Shortcode
+          - generic [ref=e638]:
+            - generic [ref=e639]: “
+            - generic [ref=e641]: Blockquote
+          - generic [ref=e642]:
+            - generic [ref=e643]: ~
+            - generic [ref=e645]: Text Path
+          - generic [ref=e646]: Content
+          - generic [ref=e647]:
+            - generic [ref=e648]: 🖼
+            - generic [ref=e650]: Image
+          - generic [ref=e651]:
+            - generic [ref=e652]: ▦
+            - generic [ref=e654]: Button
+          - generic [ref=e655]:
+            - generic [ref=e656]: ▶
+            - generic [ref=e658]: Video
+          - generic [ref=e659]:
+            - generic [ref=e660]: ★
+            - generic [ref=e662]: Star Rating
+          - generic [ref=e663]:
+            - generic [ref=e664]: ▢
+            - generic [ref=e666]: Icon Box
+          - generic [ref=e667]:
+            - generic [ref=e668]: ◱
+            - generic [ref=e670]: Image Box
+          - generic [ref=e671]:
+            - generic [ref=e672]: ☰
+            - generic [ref=e674]: Icon List
+          - generic [ref=e675]:
+            - generic [ref=e676]: 🔗
+            - generic [ref=e678]: Social Icons
+          - generic [ref=e679]: Media
+          - generic [ref=e680]:
+            - generic [ref=e681]: ▦
+            - generic [ref=e683]: Image Gallery
+          - generic [ref=e684]:
+            - generic [ref=e685]: ▶
+            - generic [ref=e687]: Image Carousel
+          - generic [ref=e688]:
+            - generic [ref=e689]: ♪
+            - generic [ref=e691]: SoundCloud
+          - generic [ref=e692]: Interactive
+          - generic [ref=e693]:
+            - generic [ref=e694]: "#"
+            - generic [ref=e696]: Counter
+          - generic [ref=e697]:
+            - generic [ref=e698]: ▣
+            - generic [ref=e700]: Progress Bar
+          - generic [ref=e701]:
+            - generic [ref=e702]: ⏱
+            - generic [ref=e704]: Countdown
+          - generic [ref=e705]:
+            - generic [ref=e706]: 🖥
+            - generic [ref=e708]: Animated Headline
+          - generic [ref=e709]:
+            - generic [ref=e710]: 📍
+            - generic [ref=e712]: Hotspot
+          - generic [ref=e713]:
+            - generic [ref=e714]: ▣
+            - generic [ref=e716]: Progress Tracker
+          - generic [ref=e717]:
+            - generic [ref=e718]: ⚠
+            - generic [ref=e720]: Alert
+          - generic [ref=e721]: Gallery
+          - generic [ref=e722]:
+            - generic [ref=e723]: ▨
+            - generic [ref=e725]: Gallery
+          - generic [ref=e726]:
+            - generic [ref=e727]: ▩
+            - generic [ref=e729]: Portfolio
+          - generic [ref=e730]:
+            - generic [ref=e731]: ■
+            - generic [ref=e733]: Slides
+          - generic [ref=e734]: Embed
+          - generic [ref=e735]:
+            - generic [ref=e736]: 🗺
+            - generic [ref=e738]: Google Maps
+          - generic [ref=e742]: Code Highlight
+          - generic [ref=e743]:
+            - generic [ref=e744]: 🔗
+            - generic [ref=e746]: Share Buttons
+          - generic [ref=e747]:
+            - generic [ref=e748]: ▶
+            - generic [ref=e750]: Video Playlist
+          - generic [ref=e751]:
+            - generic [ref=e752]: ●
+            - generic [ref=e754]: Lottie
+          - generic [ref=e758]: HTML Embed
+      - generic [ref=e759]:
+        - generic [ref=e760] [cursor=pointer]:
+          - generic [ref=e761]: 🛒
+          - generic [ref=e762]: Ecommerce
+          - generic [ref=e763]: ▶
+        - generic [ref=e764]:
+          - generic [ref=e765]: Product Display
+          - generic [ref=e767]:
+            - generic [ref=e768]: 🛒
+            - generic [ref=e769]:
+              - generic [ref=e770]: Product Card
+              - generic [ref=e771]: Image + price + cart button
+          - generic [ref=e772]:
+            - generic [ref=e773]: ⊞
+            - generic [ref=e774]:
+              - generic [ref=e775]: Product Grid
+              - generic [ref=e776]: Multi-column product layout
+          - generic [ref=e777]:
+            - generic [ref=e778]: ★
+            - generic [ref=e779]:
+              - generic [ref=e780]: Featured Product
+              - generic [ref=e781]: Split layout with details
+          - generic [ref=e782]:
+            - generic [ref=e783]: ⟳
+            - generic [ref=e784]:
+              - generic [ref=e785]: Product Carousel
+              - generic [ref=e786]: Scrollable product strip
+          - generic [ref=e787]:
+            - generic [ref=e788]: 👁
+            - generic [ref=e789]:
+              - generic [ref=e790]: Quick View
+              - generic [ref=e791]: Modal product preview
+          - generic [ref=e792]:
+            - generic [ref=e793]: ⚙
+            - generic [ref=e794]:
+              - generic [ref=e795]: Filters & Sort
+              - generic [ref=e796]: Category, price, sort controls
+          - generic [ref=e797]:
+            - generic [ref=e798]: 🔗
+            - generic [ref=e799]:
+              - generic [ref=e800]: Related Products
+              - generic [ref=e801]: You might also like section
+          - generic [ref=e802]:
+            - generic [ref=e803]: 📑
+            - generic [ref=e804]:
+              - generic [ref=e805]: Product Tabs
+              - generic [ref=e806]: Description / Specs / Reviews tabs
+          - generic [ref=e807]: Shopping
+          - generic [ref=e809]:
+            - generic [ref=e810]: 🛍
+            - generic [ref=e811]:
+              - generic [ref=e812]: Cart Drawer
+              - generic [ref=e813]: Slide-in cart panel
+          - generic [ref=e814]:
+            - generic [ref=e815]: Σ
+            - generic [ref=e816]:
+              - generic [ref=e817]: Cart Summary
+              - generic [ref=e818]: Subtotal + tax + total
+          - generic [ref=e819]:
+            - generic [ref=e820]: 📋
+            - generic [ref=e821]:
+              - generic [ref=e822]: Checkout Form
+              - generic [ref=e823]: Billing + order summary
+          - generic [ref=e824]: Marketing
+          - generic [ref=e826]:
+            - generic [ref=e827]: 🔥
+            - generic [ref=e828]:
+              - generic [ref=e829]: Sale Banner
+              - generic [ref=e830]: Discount announcement strip
+          - generic [ref=e831]:
+            - generic [ref=e832]: ⏱
+            - generic [ref=e833]:
+              - generic [ref=e834]: Countdown Timer
+              - generic [ref=e835]: Days / hours / mins / secs
+          - generic [ref=e836]:
+            - generic [ref=e837]: 🏷
+            - generic [ref=e838]:
+              - generic [ref=e839]: Coupon Input
+              - generic [ref=e840]: Promo code field
+          - generic [ref=e841]:
+            - generic [ref=e842]: 📦
+            - generic [ref=e843]:
+              - generic [ref=e844]: Shipping Progress
+              - generic [ref=e845]: Free shipping threshold bar
+          - generic [ref=e846]:
+            - generic [ref=e847]: ⭐
+            - generic [ref=e848]:
+              - generic [ref=e849]: Product Reviews
+              - generic [ref=e850]: Star ratings + review cards
+          - generic [ref=e851]:
+            - generic [ref=e852]: 🛡
+            - generic [ref=e853]:
+              - generic [ref=e854]: Trust Badges
+              - generic [ref=e855]: Secure checkout, returns, warranty icons
+          - generic [ref=e856]:
+            - generic [ref=e857]: ✉
+            - generic [ref=e858]:
+              - generic [ref=e859]: Newsletter Signup
+              - generic [ref=e860]: Email capture with discount offer
+      - generic [ref=e861]:
+        - generic [ref=e862] [cursor=pointer]:
+          - generic [ref=e863]: ⚡
+          - generic [ref=e864]: Veltro Engine
+          - generic [ref=e865]: ▶
+        - generic [ref=e866]:
+          - generic [ref=e867]:
+            - generic [ref=e868]: K
+            - generic [ref=e869]:
+              - generic [ref=e870]: Kinetic Text
+              - generic [ref=e871]: Variable font
+          - generic [ref=e872]:
+            - generic [ref=e873]: ⊛
+            - generic [ref=e874]:
+              - generic [ref=e875]: Physics Sandbox
+              - generic [ref=e876]: Matter.js
+          - generic [ref=e877]:
+            - generic [ref=e878]: ≋
+            - generic [ref=e879]:
+              - generic [ref=e880]: Fluid Shader
+              - generic [ref=e881]: WebGL background
+          - generic [ref=e882]:
+            - generic [ref=e883]: ◎
+            - generic [ref=e884]:
+              - generic [ref=e885]: Cursor Lens
+              - generic [ref=e886]: Reveal effect
+          - generic [ref=e887]:
+            - generic [ref=e888]: ∞
+            - generic [ref=e889]:
+              - generic [ref=e890]: Infinite Canvas
+              - generic [ref=e891]: Pan · Zoom · Depth
+      - generic [ref=e892]:
+        - generic [ref=e893] [cursor=pointer]:
+          - generic [ref=e894]: ◉
+          - generic [ref=e895]: Theme & Page
+          - generic [ref=e896]: ▶
+        - generic [ref=e897]:
+          - generic [ref=e898]: Brand Colours
+          - generic [ref=e899]:
+            - generic [ref=e900]: Accent
+            - generic [ref=e901]:
+              - textbox [ref=e902] [cursor=pointer]: "#cdfe00"
+              - textbox [ref=e903]: "#CDFE00"
+          - generic [ref=e904]:
+            - generic [ref=e905]: Background
+            - generic [ref=e906]:
+              - textbox [ref=e907] [cursor=pointer]: "#111111"
+              - textbox [ref=e908]: "#111111"
+          - generic [ref=e909]:
+            - generic [ref=e910]: Text
+            - generic [ref=e911]:
+              - textbox [ref=e912] [cursor=pointer]: "#f7f6f2"
+              - textbox [ref=e913]: "#f7f6f2"
+          - generic [ref=e914]:
+            - generic [ref=e915]: Surface
+            - generic [ref=e916]:
+              - textbox [ref=e917] [cursor=pointer]: "#1a1a2a"
+              - textbox [ref=e918]: "#1a1a2a"
+          - generic [ref=e919]: Typography
+          - generic [ref=e920]:
+            - generic [ref=e921]: Heading Font
+            - combobox [ref=e922]:
+              - option "Lexend" [selected]
+              - option "Inter"
+              - option "Roboto"
+              - option "Open Sans"
+              - option "Montserrat"
+              - option "Raleway"
+              - option "Poppins"
+              - option "Space Grotesk"
+              - option "DM Sans"
+              - option "Plus Jakarta Sans"
+              - option "Syne"
+              - option "Figtree"
+              - option "Playfair Display"
+              - option "Merriweather"
+              - option "Lora"
+              - option "Fraunces"
+              - option "Oswald"
+              - option "Bebas Neue"
+              - option "Barlow Condensed"
+              - option "IBM Plex Mono"
+              - option "JetBrains Mono"
+              - option "Space Mono"
+          - generic [ref=e923]:
+            - generic [ref=e924]: Body Font
+            - combobox [ref=e925]:
+              - option "Lexend" [selected]
+              - option "Inter"
+              - option "Roboto"
+              - option "Open Sans"
+              - option "Montserrat"
+              - option "Raleway"
+              - option "Poppins"
+              - option "Space Grotesk"
+              - option "DM Sans"
+              - option "Plus Jakarta Sans"
+              - option "Syne"
+              - option "Figtree"
+              - option "Playfair Display"
+              - option "Merriweather"
+              - option "Lora"
+              - option "Fraunces"
+              - option "Oswald"
+              - option "Bebas Neue"
+              - option "Barlow Condensed"
+              - option "IBM Plex Mono"
+              - option "JetBrains Mono"
+              - option "Space Mono"
+          - generic [ref=e926]: Changes preview in exported page. Blocks using hardcoded colours unaffected.
+          - generic [ref=e927]: Page Settings
+          - generic [ref=e928]:
+            - generic [ref=e929]: Page Title
+            - textbox "My Awesome Site" [ref=e930]
+          - generic [ref=e931]:
+            - generic [ref=e932]: Meta Description
+            - textbox "Brief page description (160 chars)" [ref=e933]
+          - generic [ref=e934]:
+            - generic [ref=e935]: Favicon URL
+            - textbox "https://...png" [ref=e936]
+          - generic [ref=e937]: Custom CSS
+          - 'textbox ":root { --my-var: red; } .my-class { color: var(--my-var); }" [ref=e939]':
+            - /placeholder: ":root { --my-var: red; }\n\n.my-class {\n  color: var(--my-var);\n}"
+    - generic [ref=e940]:
+      - generic [ref=e942]:
+        - generic "Double-click to rename" [ref=e944] [cursor=pointer]: Home
+        - button "+" [ref=e945] [cursor=pointer]
+      - generic [ref=e947]:
+        - navigation [ref=e950]:
+          - generic [ref=e951]: YourBrand.
+          - list [ref=e952]:
+            - listitem [ref=e953]:
+              - link "Work" [ref=e954] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e955]:
+              - link "Services" [ref=e956] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e957]:
+              - link "About" [ref=e958] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e959]:
+              - link "Contact" [ref=e960] [cursor=pointer]:
+                - /url: "#"
+          - button "Start a project" [ref=e961] [cursor=pointer]
+        - generic [ref=e963]:
+          - generic [ref=e964]:
+            - paragraph [ref=e965]: Nottingham · Est. 2026
+            - heading "We build things that matter." [level=1] [ref=e966]:
+              - generic [ref=e967]: We
+              - generic [ref=e968]: build
+              - generic [ref=e969]: things
+              - generic [ref=e970]: that
+              - emphasis [ref=e972]: matter.
+            - paragraph [ref=e973]: Bold brand and web design for businesses that refuse to be ordinary.
+            - button "See our work →" [ref=e974] [cursor=pointer]
+            - generic [ref=e976]: Scroll
+          - generic [ref=e983]:
+            - button "🔒" [ref=e984] [cursor=pointer]
+            - button "↑" [ref=e985] [cursor=pointer]
+            - button "↓" [ref=e986] [cursor=pointer]
+            - button "⧉" [ref=e987] [cursor=pointer]
+            - button "✕" [ref=e988] [cursor=pointer]
+        - generic [ref=e995]:
+          - generic [ref=e996]: Award Winning ✦
+          - generic [ref=e997]: Creative ✦
+          - generic [ref=e998]: Results Driven ✦
+          - generic [ref=e999]: Human Centred ✦
+          - generic [ref=e1000]: Boldly Different ✦
+          - generic [ref=e1001]: Award Winning ✦
+          - generic [ref=e1002]: Creative ✦
+          - generic [ref=e1003]: Results Driven ✦
+          - generic [ref=e1004]: Human Centred ✦
+          - generic [ref=e1005]: Boldly Different ✦
+        - generic [ref=e1008]:
+          - generic [ref=e1009]: Our work.
+          - heading "Selected projects." [level=2] [ref=e1010]
+          - generic [ref=e1011]:
+            - generic [ref=e1014] [cursor=pointer]:
+              - generic [ref=e1015]: Fintech · Platform
+              - generic [ref=e1016]: Project One
+            - generic [ref=e1019] [cursor=pointer]:
+              - generic [ref=e1020]: SaaS · Brand
+              - generic [ref=e1021]: Project Two
+            - generic [ref=e1024] [cursor=pointer]:
+              - generic [ref=e1025]: E-commerce · UI
+              - generic [ref=e1026]: Project Three
+            - generic [ref=e1029] [cursor=pointer]:
+              - generic [ref=e1030]: Mobile · App
+              - generic [ref=e1031]: Project Four
+            - generic [ref=e1034] [cursor=pointer]:
+              - generic [ref=e1035]: Web · Strategy
+              - generic [ref=e1036]: Project Five
+    - generic [ref=e1040]:
+      - generic [ref=e1041]: ←
+      - generic [ref=e1042]: Click a block to edit its styles
+  - img [ref=e1045]

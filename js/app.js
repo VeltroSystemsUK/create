@@ -1,0 +1,143 @@
+FB.util = {};
+
+FB.util._searchBound = false;
+
+FB.util.bindSearch = function () {
+  if (FB.util._searchBound) return;
+  var inp = document.getElementById("lp-search-input");
+  var inpDs = document.getElementById("ds-search-input");
+  if (!inp && !inpDs) {
+    setTimeout(FB.util.bindSearch, 200);
+    return;
+  }
+  function doFilter(el) {
+    FB.panels.filterBlocks(el);
+  }
+  function doClear() {
+    FB.panels.clearSearch();
+  }
+  if (inp)
+    inp.addEventListener("input", function () {
+      doFilter(this);
+    });
+  if (inpDs)
+    inpDs.addEventListener("input", function () {
+      doFilter(this);
+    });
+  var clear = document.getElementById("lp-search-clear");
+  if (clear) clear.addEventListener("click", doClear);
+  FB.util._searchBound = true;
+};
+
+FB.util.showToast = function (msg) {
+  const t = document.getElementById("toast");
+  if (!t) return;
+  // Use textContent for the message to prevent XSS, then append the
+  // progress bar element separately rather than via innerHTML.
+  t.textContent = msg;
+  var progress = document.createElement("div");
+  progress.className = "toast-progress";
+  t.appendChild(progress);
+  t.classList.add("show");
+  clearTimeout(t._timer);
+  t._timer = setTimeout(function () {
+    t.classList.remove("show");
+  }, 2200);
+};
+
+FB.init = function () {
+  FB.blocks.normalizeAllBlocks();
+  FB.panels.buildLibrary();
+  FB.panels.buildWidgetLibrary();
+  FB.panels.buildEcommerceLibrary();
+  FB.util.bindSearch();
+  // Always start fresh - no auto-restore from localStorage
+  FB.pages.init();
+  // Never load starter template - blank canvas only
+  FB.pages.render();
+  FB.canvas.render();
+  FB.canvas.initAnimations();
+  FB.canvas.initWordSwap();
+  FB.canvas.initSplitText();
+  FB.canvas.initMaskReveal();
+  FB.canvas.initCounters();
+  FB.canvas.initGlitch();
+  FB.canvas.initParticles();
+  FB.canvas.initDayNight();
+  FB.canvas.initScrollIndicator();
+  FB.canvas.initSvgDraw();
+  FB.canvas.initCountdown();
+  FB.canvas.initProductTabs();
+  if (FB.theme && FB.theme.apply) FB.theme.apply();
+  if (FB.themeToggle && FB.themeToggle.init) FB.themeToggle.init();
+  if (FB.language && FB.language.init) FB.language.init();
+
+  if (localStorage.getItem("fb-left-collapsed") === "true") {
+    document.getElementById("left-panel").classList.add("collapsed");
+  }
+  // Right panel starts collapsed by default
+  if (localStorage.getItem("fb-right-collapsed") !== "false") {
+    document.getElementById("right-panel").classList.add("collapsed");
+  }
+  FB.panels.updatePanelsCollapsed();
+
+  // Cmd+C / Cmd+V for block copy-paste (not handled in canvas.initKeyboard)
+  document.addEventListener("keydown", function (e) {
+    if (FB.design && FB.design._mode) {
+      if (e.key === "Escape") {
+        FB.panels.setMode("builder");
+      }
+      return;
+    }
+    var tag = document.activeElement ? document.activeElement.tagName : "";
+    var isEditing =
+      tag === "INPUT" ||
+      tag === "TEXTAREA" ||
+      tag === "SELECT" ||
+      (document.activeElement &&
+        document.activeElement.contentEditable === "true");
+    if (isEditing) return;
+    var meta = e.metaKey || e.ctrlKey;
+    if (meta && e.key === "c" && FB.state.selectedId) {
+      var _block = FB.state.blocks.find(function (b) {
+        return b.id === FB.state.selectedId;
+      });
+      if (_block) {
+        navigator.clipboard.writeText(
+          JSON.stringify({ type: _block.type, props: _block.props }),
+        );
+        FB.util.showToast("\uD83D\uDCCB Block copied");
+      }
+    }
+    if (meta && e.key === "v") {
+      e.preventDefault();
+      navigator.clipboard.readText().then(function (text) {
+        try {
+          var _data = JSON.parse(text);
+          if (_data.type && _data.props) {
+            FB.canvas.insertBlock(_data.type, FB.state.selectedId);
+            FB.util.showToast("\uD83D\uDCCB Block pasted");
+          }
+        } catch (_) {}
+      }).catch(function (err) {
+        // Clipboard access was denied or unavailable \u2014 fail silently
+        console.debug("Clipboard read unavailable:", err);
+      });
+    }
+  });
+
+  document
+    .getElementById("modal-overlay")
+    .addEventListener("click", function (e) {
+      if (e.target === document.getElementById("modal-overlay"))
+        FB.export.close();
+    });
+
+  setInterval(function () {
+    FB.pages._save();
+  }, 30000);
+
+  if (FB.help && FB.help._checkFirstVisit) FB.help._checkFirstVisit();
+};
+
+document.addEventListener("DOMContentLoaded", FB.init);

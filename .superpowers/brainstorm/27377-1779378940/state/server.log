@@ -1,0 +1,7 @@
+{"type":"server-started","port":52147,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:52147","screen_dir":"/home/shauntuhey/Framework/.superpowers/brainstorm/27377-1779378940/content","state_dir":"/home/shauntuhey/Framework/.superpowers/brainstorm/27377-1779378940/state"}
+{"type":"screen-added","file":"/home/shauntuhey/Framework/.superpowers/brainstorm/27377-1779378940/content/improvement-map.html"}
+{"type":"screen-updated","file":"/home/shauntuhey/Framework/.superpowers/brainstorm/27377-1779378940/content/improvement-map.html"}
+{"source":"user-event","type":"click","text":"E\n    \n      All of the above\n      \n        Systematic integration of everything — layouts, components, animations,\n        and SEO into the Framework Builder block system","choice":"all","id":null,"timestamp":1779379067453}
+{"type":"screen-added","file":"/home/shauntuhey/Framework/.superpowers/brainstorm/27377-1779378940/content/hybrid-plan.html"}
+{"type":"screen-updated","file":"/home/shauntuhey/Framework/.superpowers/brainstorm/27377-1779378940/content/hybrid-plan.html"}
+{"type":"server-stopped","reason":"idle timeout"}

@@ -1,0 +1,906 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Framework Builder</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/layout.css?v=4" />
+    <link rel="stylesheet" href="css/components.css?v=2" />
+    <link rel="stylesheet" href="css/blocks.css?v=99" />
+    <link rel="stylesheet" href="css/canvas.css?v=2" />
+    <link rel="stylesheet" href="css/widgets.css?v=3" />
+    <link rel="stylesheet" href="css/grids.css?v=2" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css"
+    />
+    <link rel="stylesheet" href="css/help.css" />
+    <link rel="stylesheet" href="css/design.css?v=2" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23CDFE00'><rect width='8' height='8' x='2' y='2'/><rect width='8' height='8' x='14' y='2'/><rect width='8' height='8' x='2' y='14'/><rect width='8' height='8' x='14' y='14'/></svg>"
+    />
+  </head>
+  <body>
+    <!-- TOP BAR -->
+    <div id="topbar">
+      <div class="logo">Framework <span>Builder</span></div>
+      <div class="tb-center">
+        <div class="device-btns">
+          <button
+            class="dev-btn active"
+            onclick="FB.canvas.setDevice('desktop', this)"
+            title="Desktop"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="2" y="3" width="20" height="14" rx="2" />
+              <line x1="8" y1="21" x2="16" y2="21" />
+              <line x1="12" y1="17" x2="12" y2="21" />
+            </svg>
+          </button>
+          <button
+            class="dev-btn"
+            onclick="FB.canvas.setDevice('tablet', this)"
+            title="Tablet"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="4" y="2" width="16" height="20" rx="2" />
+              <line x1="12" y1="18" x2="12" y2="18" />
+            </svg>
+          </button>
+          <button
+            class="dev-btn"
+            onclick="FB.canvas.setDevice('mobile', this)"
+            title="Mobile"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="5" y="2" width="14" height="20" rx="2" />
+              <line x1="12" y1="18" x2="12" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <button
+          class="tb-hamburger"
+          id="tb-hamburger"
+          onclick="FB.panels.toggleMobileMenu()"
+          title="Menu"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
+        <div class="tb-center-items" id="tb-center-items">
+          <div class="tb-sep"></div>
+
+          <!-- ── VIEW GROUP: sidebar / design studio / inspector ── -->
+          <div class="tb-group" id="tb-group-view">
+            <button class="tb-group-trigger tb-btn" onclick="FB.panels.toggleGroup('view')" title="View options">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+              </svg>
+              <span class="tb-group-label">View</span>
+              <svg class="tb-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="tb-group-btns">
+              <button class="tb-btn" onclick="FB.panels.toggleLeftPanel()" title="Toggle sidebar">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+                </svg>
+                <span class="tb-group-lbl">Sidebar</span>
+              </button>
+              <button class="tb-btn" id="ds-mode-btn" onclick="FB.panels.setMode('design')" title="Design Studio">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
+                </svg>
+                <span class="tb-group-lbl">Design Studio</span>
+              </button>
+              <button class="tb-btn" onclick="FB.panels.toggleRightPanel()" title="Toggle inspector">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+                <span class="tb-group-lbl">Inspector</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="tb-sep"></div>
+
+          <!-- ── UNDO / REDO — always accessible ── -->
+          <button class="tb-btn" onclick="FB.state.undo()" title="Undo (Ctrl+Z)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+            </svg>
+          </button>
+          <button class="tb-btn" onclick="FB.state.redo()" title="Redo (Ctrl+Y)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+            </svg>
+          </button>
+
+          <div class="tb-sep"></div>
+
+          <!-- ── PREVIEW — always accessible ── -->
+          <button class="tb-btn" id="preview-btn" onclick="FB.canvas.togglePreview()" title="Preview">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+            <span class="tb-label-sm">Preview</span>
+          </button>
+
+          <div class="tb-sep"></div>
+
+          <!-- ── FILE GROUP: save + load ── -->
+          <div class="tb-group" id="tb-group-file">
+            <button class="tb-group-trigger tb-btn" onclick="FB.panels.toggleGroup('file')" title="File">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                <polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+              </svg>
+              <span class="tb-group-label">File</span>
+              <svg class="tb-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="tb-group-btns">
+              <button class="tb-btn" onclick="FB.project.showSaveDialog()" title="Save Project">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                  <polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+                </svg>
+                <span>Save Project</span>
+              </button>
+              <button class="tb-btn" onclick="FB.project.showLoadDialog()" title="Load Project">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                </svg>
+                <span>Load Project</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="tb-sep"></div>
+
+          <!-- ── IMPORT GROUP: import + AI + crawl ── -->
+          <div class="tb-group" id="tb-group-import">
+            <button class="tb-group-trigger tb-btn" onclick="FB.panels.toggleGroup('import')" title="Import tools">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              <span class="tb-group-label">Import</span>
+              <svg class="tb-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="tb-group-btns">
+              <button class="tb-btn" onclick="FB.scraper.openImportDialog()" title="Import Website">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                <span>Import</span>
+              </button>
+              <button class="tb-btn" onclick="FB.scraper.openAiImport()" title="AI Import">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2a5 5 0 0 1 5 5c0 2.5-1.5 4.5-3 6l-2 3-2-3c-1.5-1.5-3-3.5-3-6a5 5 0 0 1 5-5z"/>
+                  <circle cx="12" cy="6" r="1"/>
+                </svg>
+                <span>AI</span>
+              </button>
+              <button class="tb-btn" onclick="FB.deepScrape.open()" title="Deep Scrape — full-site crawl">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="3"/>
+                  <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+                </svg>
+                <span>Crawl</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="tb-sep"></div>
+
+          <!-- ── CLEAR — standalone danger button ── -->
+          <button class="tb-btn" onclick="FB.canvas.clearCanvas()" title="Clear canvas" style="color: #e88">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+              <line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/>
+            </svg>
+            <span class="tb-label-sm">Clear</span>
+          </button>
+
+          <div class="tb-sep"></div>
+
+          <!-- ── SETTINGS + HELP — icon-only utilities ── -->
+          <button class="tb-btn" onclick="FB.panels.openSettings()" title="Settings">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+          </button>
+          <button class="tb-btn" onclick="FB.help.open()" title="Help">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="tb-right">
+        <button
+          class="theme-toggle"
+          id="theme-toggle-btn"
+          onclick="FB.themeToggle.toggle()"
+          title="Toggle dark/light mode"
+        >
+          <span id="theme-icon">☀</span>
+        </button>
+        <div class="lang-dropdown">
+          <button
+            class="lang-btn"
+            id="lang-btn"
+            onclick="FB.language.toggleMenu()"
+          >
+            <span id="lang-current-flag">🇬🇧</span>
+            <span id="lang-current-code">EN</span>
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+          <div class="lang-menu" id="lang-menu"></div>
+        </div>
+        <div class="tb-export-wrap">
+          <button class="tb-export" onclick="FB.panels.toggleExportMenu(event)">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              style="margin-right: 4px"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Export
+          </button>
+          <div class="tb-export-menu" id="export-menu">
+            <button
+              onclick="
+                FB.export.open('html');
+                FB.panels.toggleExportMenu();
+              "
+            >
+              Export HTML
+            </button>
+            <button
+              onclick="
+                FB.export.open('react');
+                FB.panels.toggleExportMenu();
+              "
+            >
+              Export React
+            </button>
+            <button
+              onclick="
+                FB.export.open('tsx');
+                FB.panels.toggleExportMenu();
+              "
+            >
+              Export TSX
+            </button>
+            <button
+              class="export-menu-item"
+              onclick="
+                FB.export.exportWithCMS();
+                FB.panels.toggleExportMenu();
+              "
+            >
+              <span class="emi-icon">📝</span>
+              <div>
+                <div class="emi-label">Export with CMS</div>
+                <div class="emi-sublabel">
+                  Live site with inline editing + admin panel
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="app">
+      <!-- LEFT PANEL -->
+      <div id="left-panel">
+        <div class="lp-search-wrap">
+          <input
+            type="text"
+            class="lp-search-input"
+            id="lp-search-input"
+            name="lp-search"
+            placeholder="Search blocks, widgets, elements..."
+          />
+          <span class="lp-search-icon">🔍</span>
+          <button
+            class="lp-search-clear"
+            id="lp-search-clear"
+            onclick="FB.panels.clearSearch()"
+            style="display: none"
+          >
+            ✕
+          </button>
+        </div>
+        <div class="lp-accordion">
+          <div
+            class="lp-acc-header"
+            data-acc="layers"
+            onclick="FB.panels.toggleLeftAccordion(this)"
+          >
+            <span class="lp-acc-icon">≋</span>
+            <span class="lp-acc-label">Layers</span>
+            <span class="lp-acc-arrow">▶</span>
+          </div>
+          <div class="lp-acc-body" id="lp-body-layers">
+            <div id="layers-list"></div>
+          </div>
+        </div>
+        <div class="lp-accordion">
+          <div
+            class="lp-acc-header open"
+            data-acc="sections"
+            onclick="FB.panels.toggleLeftAccordion(this)"
+          >
+            <span class="lp-acc-icon">◆</span>
+            <span class="lp-acc-label">Sections</span>
+            <span class="lp-acc-arrow">▶</span>
+          </div>
+          <div class="lp-acc-body open" id="lp-body-sections">
+            <div id="block-library"></div>
+          </div>
+        </div>
+        <div class="lp-accordion">
+          <div
+            class="lp-acc-header"
+            data-acc="custom"
+            onclick="FB.panels.toggleLeftAccordion(this)"
+          >
+            <span class="lp-acc-icon">■</span>
+            <span class="lp-acc-label">Custom</span>
+            <span class="lp-acc-arrow">▶</span>
+          </div>
+          <div class="lp-acc-body" id="lp-body-custom">
+            <div id="custom-block-library"></div>
+            <div style="padding: 8px 6px">
+              <button
+                class="rp-btn"
+                onclick="FB.canvas.insertBlock('textBlock')"
+                style="width: 100%"
+              >
+                + Custom Text Block
+              </button>
+              <button
+                class="rp-btn"
+                onclick="FB.canvas.insertBlock('colorBlock')"
+                style="width: 100%; margin-top: 4px"
+              >
+                + Colour Block
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="lp-accordion">
+          <div
+            class="lp-acc-header"
+            data-acc="layouts"
+            onclick="FB.panels.toggleLeftAccordion(this)"
+          >
+            <span class="lp-acc-icon">☷</span>
+            <span class="lp-acc-label">Layouts</span>
+            <span class="lp-acc-arrow">▶</span>
+          </div>
+          <div class="lp-acc-body" id="lp-body-layouts">
+            <div id="layout-library"></div>
+          </div>
+        </div>
+        <div class="lp-accordion">
+          <div
+            class="lp-acc-header"
+            data-acc="widgets"
+            onclick="FB.panels.toggleLeftAccordion(this)"
+          >
+            <span class="lp-acc-icon">▦</span>
+            <span class="lp-acc-label">Widgets</span>
+            <span class="lp-acc-arrow">▶</span>
+          </div>
+          <div class="lp-acc-body" id="lp-body-widgets">
+            <div id="widget-library"></div>
+          </div>
+        </div>
+
+        <div class="lp-accordion">
+          <div
+            class="lp-acc-header"
+            data-acc="ecommerce"
+            onclick="FB.panels.toggleLeftAccordion(this)"
+          >
+            <span class="lp-acc-icon">🛒</span>
+            <span class="lp-acc-label">Ecommerce</span>
+            <span class="lp-acc-arrow">▶</span>
+          </div>
+          <div class="lp-acc-body" id="lp-body-ecommerce">
+            <div id="ecommerce-library"></div>
+          </div>
+        </div>
+
+        <div class="lp-accordion">
+          <div
+            class="lp-acc-header"
+            data-acc="education"
+            onclick="FB.panels.toggleLeftAccordion(this)"
+          >
+            <span class="lp-acc-icon">🎓</span>
+            <span class="lp-acc-label">Education</span>
+            <span class="lp-acc-arrow">▶</span>
+          </div>
+          <div class="lp-acc-body" id="lp-body-education">
+            <div id="education-library"></div>
+          </div>
+        </div>
+
+        <div class="lp-accordion">
+          <div
+            class="lp-acc-header"
+            data-acc="mydesigns"
+            onclick="FB.panels.toggleLeftAccordion(this)"
+          >
+            <span class="lp-acc-icon">✏</span>
+            <span class="lp-acc-label">My Designs</span>
+            <span class="lp-acc-arrow">▶</span>
+          </div>
+          <div class="lp-acc-body" id="lp-body-mydesigns">
+            <div id="builder-designs-grid" class="ds-builder-thumb-grid"></div>
+            <div style="padding: 0 8px 8px">
+              <button
+                class="rp-btn"
+                onclick="FB.panels.loadBuilderDesigns()"
+                style="width: 100%"
+              >
+                Refresh
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="lp-accordion">
+          <div
+            class="lp-acc-header"
+            data-acc="theme"
+            onclick="FB.panels.toggleLeftAccordion(this)"
+          >
+            <span class="lp-acc-icon">◉</span>
+            <span class="lp-acc-label">Theme &amp; Page</span>
+            <span class="lp-acc-arrow">▶</span>
+          </div>
+          <div class="lp-acc-body" id="lp-body-theme">
+            <div id="theme-panel-content"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CANVAS -->
+      <div id="canvas-column">
+        <div id="page-tabs-bar"></div>
+        <div id="canvas-wrap">
+          <div id="canvas">
+            <div id="drop-zones"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT PANEL -->
+      <div id="right-panel">
+        <div id="rp-content">
+          <div class="rp-empty">
+            <div class="rp-empty-icon">←</div>
+            <div>Click a block to edit its styles</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DESIGN STUDIO -->
+    <div id="design-studio" style="display: none">
+      <!-- TOP BAR -->
+      <div id="ds-topbar">
+        <button class="ds-back-btn" onclick="FB.panels.setMode('builder')">
+          ← Builder
+        </button>
+        <div class="ds-divider"></div>
+        <input id="ds-title" name="ds-title" class="ds-title-input" value="Untitled Design" />
+        <div class="ds-divider"></div>
+        <button
+          class="ds-icon-btn"
+          title="Undo (Ctrl+Z)"
+          onclick="FB.design.history.undo()"
+        >
+          ↩
+        </button>
+        <button
+          class="ds-icon-btn"
+          title="Redo (Ctrl+Y)"
+          onclick="FB.design.history.redo()"
+        >
+          ↪
+        </button>
+        <div
+          style="
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          "
+        >
+          <select
+            id="ds-preset-select"
+            name="ds-preset"
+            onchange="FB.design.canvas.applyPreset(this.value)"
+          >
+            <option value="hero">Hero Banner (1920×600)</option>
+            <option value="og">OG Image (1200×630)</option>
+            <option value="card">Feature Card (800×600)</option>
+            <option value="square">Square (1080×1080)</option>
+            <option value="wide">Wide (1920×1080)</option>
+            <option value="custom">Custom…</option>
+          </select>
+          <div id="ds-zoom-controls">
+            <button onclick="FB.design.canvas.zoomOut()">−</button>
+            <span id="ds-zoom-label">100%</span>
+            <button onclick="FB.design.canvas.zoomIn()">+</button>
+            <button onclick="FB.design.canvas.zoomFit()">Fit</button>
+          </div>
+          <div class="ds-divider"></div>
+          <span id="ds-size-label"></span>
+          <button class="ds-save-btn" onclick="FB.design.library.save()">
+            Save
+          </button>
+        </div>
+      </div>
+
+      <!-- MAIN AREA -->
+      <div id="ds-main">
+        <!-- LEFT PANEL -->
+        <div id="ds-left-panel">
+          <div class="ds-tab-row" id="ds-left-tabs">
+            <button
+              class="ds-tab active"
+              data-tab="elements"
+              onclick="FB.design.switchLeftTab('elements')"
+            >
+              <span class="ds-tab-icon">◈</span> Elements
+            </button>
+            <button
+              class="ds-tab"
+              data-tab="layers"
+              onclick="FB.design.switchLeftTab('layers')"
+            >
+              <span class="ds-tab-icon">☰</span> Layers
+            </button>
+            <button
+              class="ds-tab"
+              data-tab="assets"
+              onclick="FB.design.switchLeftTab('assets')"
+            >
+              <span class="ds-tab-icon">◇</span> Assets
+            </button>
+          </div>
+
+          <div id="ds-tab-elements" class="ds-tab-content active">
+            <div id="ds-tool-row"></div>
+            <div id="ds-elements-body"></div>
+          </div>
+
+          <div id="ds-tab-layers" class="ds-tab-content">
+            <div id="ds-layers-list"></div>
+          </div>
+
+          <div id="ds-tab-assets" class="ds-tab-content">
+            <button class="ds-full-btn" onclick="FB.design.templates.open()">
+              ⊞ Browse Templates
+            </button>
+            <button
+              class="ds-full-btn"
+              style="background: #f97316; color: #fff"
+              onclick="FB.ai.open()"
+            >
+              ✨ AI Template Builder
+            </button>
+            <button
+              class="ds-full-btn"
+              style="background: #7c3aed; color: #fff"
+              onclick="FB.deepScrape.open()"
+            >
+              🕷 Deep Scrape
+            </button>
+            <button
+              class="ds-full-btn"
+              style="background: #cdfe00; color: #111"
+              onclick="FB.motion.open()"
+            >
+              🎬 Motion Creator
+            </button>
+            <div class="ds-section-label" style="padding: 8px 8px 4px">
+              My Designs
+            </div>
+            <div id="ds-assets-designs"></div>
+            <button
+              class="ds-full-btn"
+              style="margin: 6px 8px"
+              onclick="FB.design._loadAssets()"
+            >
+              ↻ Refresh
+            </button>
+          </div>
+        </div>
+
+        <!-- CANVAS -->
+        <div id="ds-canvas-column">
+          <div id="ds-canvas-wrap">
+            <canvas id="ds-canvas"></canvas>
+          </div>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div id="ds-right-panel">
+          <div class="ds-tab-row" id="ds-right-tabs">
+            <button
+              class="ds-tab active"
+              data-tab="design"
+              onclick="FB.design.switchRightTab('design')"
+            >
+              Design
+            </button>
+            <button
+              class="ds-tab"
+              data-tab="align"
+              onclick="FB.design.switchRightTab('align')"
+            >
+              Align
+            </button>
+            <button
+              class="ds-tab"
+              data-tab="export"
+              onclick="FB.design.switchRightTab('export')"
+            >
+              Export
+            </button>
+          </div>
+
+          <div id="ds-tab-design" class="ds-tab-content active">
+            <div id="ds-props"></div>
+          </div>
+
+          <div id="ds-tab-align" class="ds-tab-content">
+            <div id="ds-align-panel"></div>
+          </div>
+
+          <div id="ds-tab-export" class="ds-tab-content">
+            <div id="ds-export-panel">
+              <button
+                class="ds-insert-btn"
+                onclick="FB.design.library.insertIntoPage()"
+              >
+                Insert into Page →
+              </button>
+              <div class="ds-export-row">
+                <button
+                  class="ds-export-btn"
+                  onclick="FB.design.library.exportPNG()"
+                >
+                  Export PNG
+                </button>
+                <button
+                  class="ds-export-btn"
+                  onclick="FB.design.library.exportSVG()"
+                >
+                  Export SVG
+                </button>
+              </div>
+              <div class="ds-section-label" style="padding: 12px 0 4px">
+                Canvas Background
+              </div>
+              <div id="ds-canvas-bg-picker"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DESIGN STUDIO OVERLAYS -->
+    <div id="ds-template-overlay" style="display: none">
+      <div id="ds-template-modal">
+        <div class="ds-modal-head">
+          <span>Choose a Template</span>
+          <button onclick="FB.design.templates.close()">✕</button>
+        </div>
+        <div id="ds-template-grid"></div>
+      </div>
+    </div>
+    <div id="ds-ai-overlay" style="display: none">
+      <div id="ds-ai-modal">
+        <div class="ds-modal-head">
+          <span>✦ AI Image Generation</span>
+          <button onclick="FB.design.ai.close()">✕</button>
+        </div>
+        <textarea
+          id="ds-ai-prompt"
+          name="ds-ai-prompt"
+          placeholder="Describe the image you want to generate…"
+        ></textarea>
+        <button class="ds-save-btn" onclick="FB.design.ai.generate()">
+          Generate
+        </button>
+        <div id="ds-ai-status"></div>
+      </div>
+    </div>
+
+    <!-- AI TEMPLATE BUILDER OVERLAY -->
+    <div id="ds-ai-template-overlay" style="display: none">
+      <div id="ds-ai-template-modal">
+        <div class="ds-modal-head">
+          <span>🤖 AI Template Builder</span>
+          <button onclick="FB.ai.close()">✕</button>
+        </div>
+        <div id="ds-ai-template-main"></div>
+      </div>
+    </div>
+    <!-- DEEP SCRAPE OVERLAY -->
+    <div id="ds-deep-scrape-overlay" style="display: none">
+      <div id="ds-deep-scrape-modal">
+        <div class="ds-modal-head">
+          <span>🕷 Deep Scrape</span>
+          <button onclick="FB.deepScrape.close()">✕</button>
+        </div>
+        <div id="ds-deep-scrape-main"></div>
+      </div>
+    </div>
+    <!-- EXPORT MODAL -->
+    <div id="modal-overlay">
+      <div id="modal">
+        <div class="modal-head">
+          <h3 id="modal-title">Export Code</h3>
+          <button class="modal-close" onclick="FB.export.close()">✕</button>
+        </div>
+        <div class="modal-tabs">
+          <button
+            class="modal-tab active"
+            data-mode="html"
+            onclick="FB.export.switchTab('html')"
+          >
+            HTML / CSS
+          </button>
+          <button
+            class="modal-tab"
+            data-mode="react"
+            onclick="FB.export.switchTab('react')"
+          >
+            React JSX
+          </button>
+          <button
+            class="modal-tab"
+            data-mode="tsx"
+            onclick="FB.export.switchTab('tsx')"
+          >
+            React TSX
+          </button>
+        </div>
+        <div class="modal-body">
+          <pre class="code-output" id="code-output"></pre>
+        </div>
+        <div class="modal-foot">
+          <button class="tb-btn" onclick="FB.export.copyCode()">
+            📋 Copy to Clipboard
+          </button>
+          <button class="tb-export" onclick="FB.export.downloadCode()">
+            ⬇ Download
+          </button>
+          <button class="tb-btn" onclick="FB.export.close()">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast"></div>
+    <div id="fw-page-enter"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
+    <script src="/js/widgets.js"></script>
+    <script src="/widgets/basic.js"></script>
+    <script src="/widgets/content.js"></script>
+    <script src="/widgets/embed.js"></script>
+    <script src="/widgets/gallery-like.js"></script>
+    <script src="/widgets/interactive.js"></script>
+    <script src="/widgets/layout.js"></script>
+    <script src="/widgets/media.js"></script>
+    <script src="/widgets/veltro.js"></script>
+    <script src="/widgets/veltro/batch-ambient.js"></script>
+    <script src="/widgets/veltro/batch-cursor.js"></script>
+    <script src="/widgets/veltro/batch-physics.js"></script>
+    <script src="/widgets/veltro/batch-scroll.js"></script>
+    <script src="/widgets/veltro/batch-spatial.js"></script>
+    <script src="/widgets/veltro/batch-text.js"></script>
+    <script src="/widgets/veltro/orig-fx.js"></script>
+    <script src="/widgets/veltro/orig-text.js"></script>
+    <script type="module" src="/src/main.js"></script>
+    <div id="google-translate-root" style="display: none"></div>
+
+    <!-- MOTION CREATOR OVERLAY -->
+    <div id="ds-motion-overlay" style="display: none">
+      <div id="ds-motion-modal">
+        <div class="ds-modal-head">
+          <span>🎬 Motion Creator</span>
+          <button onclick="FB.motion.close()">✕</button>
+        </div>
+        <div id="ds-motion-main"></div>
+      </div>
+    </div>
+    <script>
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+          {
+            pageLanguage: "en",
+            autoDisplay: false,
+            includedLanguages:
+              "af,sq,ar,hy,az,eu,be,bg,ca,zh-CN,zh-TW,hr,cs,da,nl,en,et,fi,fr,gl,ka,de,el,gu,ht,hi,hu,is,id,it,ja,kn,ko,lv,lt,mk,ms,ml,mr,ne,no,fa,pl,pt,ro,ru,sr,sk,sl,es,sw,sv,ta,te,th,tr,uk,ur,vi,cy",
+          },
+          "google-translate-root",
+        );
+      }
+    </script>
+    <script
+      src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+      async
+    ></script>
+  </body>
+</html>

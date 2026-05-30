@@ -1,0 +1,390 @@
+<h2>Guided Tour — proposed steps</h2>
+<p class="subtitle">
+  An 8-step walkthrough of the key UI areas. Click any step to deselect if it
+  shouldn't be in the tour, or leave them all selected.
+</p>
+
+<div style="margin-bottom: 24px">
+  <div
+    style="
+      background: #1a1a1a;
+      border-radius: 8px;
+      padding: 16px;
+      font-size: 11px;
+      font-family: monospace;
+    "
+  >
+    <!-- Top bar representation -->
+    <div
+      style="
+        background: #111;
+        border-radius: 5px;
+        padding: 8px 12px;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        position: relative;
+      "
+    >
+      <span style="color: #cdfe00; font-weight: 700">Framework Builder</span>
+      <div
+        style="
+          flex: 1;
+          display: flex;
+          gap: 5px;
+          justify-content: center;
+          color: #555;
+        "
+      >
+        <span style="background: #222; padding: 2px 5px; border-radius: 2px"
+          >🖥 📱</span
+        >
+        <span>|</span>
+        <span style="background: #222; padding: 2px 5px; border-radius: 2px"
+          >↩ ↪</span
+        >
+        <span>|</span>
+        <span style="background: #222; padding: 2px 5px; border-radius: 2px"
+          >Preview</span
+        >
+        <span>|</span>
+        <span style="background: #222; padding: 2px 5px; border-radius: 2px"
+          >Save Load</span
+        >
+        <span>|</span>
+        <span style="background: #222; padding: 2px 5px; border-radius: 2px"
+          >Import AI</span
+        >
+        <span>|</span>
+        <span style="background: #222; padding: 2px 5px; border-radius: 2px"
+          >⚙</span
+        >
+      </div>
+      <span
+        style="
+          background: #222;
+          padding: 2px 6px;
+          border-radius: 2px;
+          color: #555;
+        "
+        >Export</span
+      >
+      <!-- Step badges -->
+      <div
+        style="
+          position: absolute;
+          top: -8px;
+          left: 4px;
+          background: #cdfe00;
+          color: #111;
+          font-size: 8px;
+          font-weight: 700;
+          border-radius: 10px;
+          padding: 1px 5px;
+        "
+      >
+        STEP 1
+      </div>
+      <div
+        style="
+          position: absolute;
+          top: -8px;
+          left: 48%;
+          background: #3a6fff;
+          color: #fff;
+          font-size: 8px;
+          font-weight: 700;
+          border-radius: 10px;
+          padding: 1px 5px;
+        "
+      >
+        STEP 2
+      </div>
+      <div
+        style="
+          position: absolute;
+          top: -8px;
+          right: 4px;
+          background: #ff6b35;
+          color: #fff;
+          font-size: 8px;
+          font-weight: 700;
+          border-radius: 10px;
+          padding: 1px 5px;
+        "
+      >
+        STEP 3
+      </div>
+    </div>
+
+    <!-- App body -->
+    <div style="display: flex; gap: 6px; height: 100px">
+      <!-- Left panel -->
+      <div
+        style="
+          width: 100px;
+          background: #111;
+          border-radius: 5px;
+          padding: 6px;
+          position: relative;
+        "
+      >
+        <div style="color: #555; font-size: 9px; margin-bottom: 4px">
+          Layers
+        </div>
+        <div style="color: #555; font-size: 9px; margin-bottom: 4px">
+          Templates
+        </div>
+        <div
+          style="
+            color: #cdfe00;
+            font-size: 9px;
+            font-weight: 700;
+            margin-bottom: 4px;
+          "
+        >
+          Sections ◄
+        </div>
+        <div style="color: #555; font-size: 9px; margin-bottom: 4px">
+          Widgets
+        </div>
+        <div
+          style="
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #a855f7;
+            color: #fff;
+            font-size: 8px;
+            font-weight: 700;
+            border-radius: 10px;
+            padding: 1px 5px;
+            white-space: nowrap;
+          "
+        >
+          STEP 4
+        </div>
+      </div>
+
+      <!-- Canvas -->
+      <div
+        style="
+          flex: 1;
+          background: #1e1e1e;
+          border-radius: 5px;
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          padding: 6px;
+        "
+      >
+        <div
+          style="
+            background: #222;
+            border-radius: 3px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            padding: 0 6px;
+            color: #555;
+            font-size: 8px;
+          "
+        >
+          Nav block
+        </div>
+        <div
+          style="
+            background: #222;
+            border-radius: 3px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            padding: 0 6px;
+            color: #cdfe00;
+            font-size: 8px;
+            border: 1px solid #cdfe00;
+          "
+        >
+          Hero block ← selected
+        </div>
+        <div
+          style="
+            background: #222;
+            border-radius: 3px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            padding: 0 6px;
+            color: #555;
+            font-size: 8px;
+          "
+        >
+          Services block
+        </div>
+        <div
+          style="
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #22c55e;
+            color: #fff;
+            font-size: 8px;
+            font-weight: 700;
+            border-radius: 10px;
+            padding: 1px 5px;
+            white-space: nowrap;
+          "
+        >
+          STEP 5
+        </div>
+      </div>
+
+      <!-- Right panel -->
+      <div
+        style="
+          width: 100px;
+          background: #111;
+          border-radius: 5px;
+          padding: 6px;
+          position: relative;
+        "
+      >
+        <div
+          style="
+            color: #cdfe00;
+            font-size: 9px;
+            font-weight: 700;
+            margin-bottom: 3px;
+          "
+        >
+          Content
+        </div>
+        <div style="color: #555; font-size: 9px; margin-bottom: 3px">Style</div>
+        <div style="color: #555; font-size: 9px; margin-bottom: 3px">
+          Typography
+        </div>
+        <div style="color: #555; font-size: 9px; margin-bottom: 3px">
+          Spacing
+        </div>
+        <div style="color: #555; font-size: 9px; margin-bottom: 3px">
+          Animation
+        </div>
+        <div
+          style="
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #f59e0b;
+            color: #fff;
+            font-size: 8px;
+            font-weight: 700;
+            border-radius: 10px;
+            padding: 1px 5px;
+            white-space: nowrap;
+          "
+        >
+          STEP 6+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="options" data-multiselect>
+  <div class="option selected" data-choice="step1" onclick="toggleSelect(this)">
+    <div class="letter" style="background: #cdfe00; color: #111">1</div>
+    <div class="content">
+      <h3>Welcome + Overview</h3>
+      <p>
+        A brief intro modal: "Framework Builder lets you visually compose web
+        pages by stacking sections." Sets context before the tour begins.
+      </p>
+    </div>
+  </div>
+
+  <div class="option selected" data-choice="step2" onclick="toggleSelect(this)">
+    <div class="letter" style="background: #3a6fff; color: #fff">2</div>
+    <div class="content">
+      <h3>The Toolbar</h3>
+      <p>
+        Highlights the top bar — device preview, undo/redo, preview mode,
+        save/load, import, and export.
+      </p>
+    </div>
+  </div>
+
+  <div class="option selected" data-choice="step3" onclick="toggleSelect(this)">
+    <div class="letter" style="background: #ff6b35; color: #fff">3</div>
+    <div class="content">
+      <h3>Left Panel — Sections Library</h3>
+      <p>
+        Shows the block library and explains: "Drag or click any section to add
+        it to your canvas."
+      </p>
+    </div>
+  </div>
+
+  <div class="option selected" data-choice="step4" onclick="toggleSelect(this)">
+    <div class="letter" style="background: #a855f7; color: #fff">4</div>
+    <div class="content">
+      <h3>The Canvas</h3>
+      <p>
+        Explains click-to-select, drag-to-reorder, and the up/down arrows. The
+        heart of the builder.
+      </p>
+    </div>
+  </div>
+
+  <div class="option selected" data-choice="step5" onclick="toggleSelect(this)">
+    <div class="letter" style="background: #22c55e; color: #fff">5</div>
+    <div class="content">
+      <h3>Right Panel — Block Inspector</h3>
+      <p>
+        Walks through Content, Style, Typography, Spacing — the controls that
+        appear when a block is selected.
+      </p>
+    </div>
+  </div>
+
+  <div class="option selected" data-choice="step6" onclick="toggleSelect(this)">
+    <div class="letter" style="background: #f59e0b; color: #111">6</div>
+    <div class="content">
+      <h3>Animations & Hover States</h3>
+      <p>
+        Points out the Animation and Hover sections in the right panel — a key
+        differentiator of the app.
+      </p>
+    </div>
+  </div>
+
+  <div class="option selected" data-choice="step7" onclick="toggleSelect(this)">
+    <div class="letter" style="background: #06b6d4; color: #111">7</div>
+    <div class="content">
+      <h3>AI Import</h3>
+      <p>
+        Highlights the AI button — "Describe a page or paste a URL and AI will
+        build it for you."
+      </p>
+    </div>
+  </div>
+
+  <div class="option selected" data-choice="step8" onclick="toggleSelect(this)">
+    <div class="letter" style="background: #ec4899; color: #fff">8</div>
+    <div class="content">
+      <h3>Export</h3>
+      <p>
+        Final step — shows the Export button and explains HTML / React / TSX
+        output options.
+      </p>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top: 16px">
+  All 8 are pre-selected. Deselect any you want to skip.
+</p>

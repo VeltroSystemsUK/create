@@ -1,0 +1,10 @@
+
+> framework-builder-api@1.0.0 start
+> node server.js
+
+[dotenv@17.2.3] injecting env (2) from .env -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  override existing env vars with { override: true }
+Thu, 28 May 2026 06:56:45 GMT body-parser deprecated undefined extended: provide extended option at file:\C:\Users\Shaun\OneDrive\Desktop\Framework-master\Framework-master\server\server.js:14:17
+🚀 Framework Builder API running on port 3001
+📍 Health check: http://localhost:3001/api/health
+✓ SQLite database initialized at: C:\Users\Shaun\OneDrive\Desktop\Framework-master\Framework-master\server\framework_builder.db
