@@ -1,0 +1,508 @@
+<h2>Manage Pages modal — layout approaches</h2>
+<p class="subtitle">How the page list and per-page settings coexist</p>
+
+<div class="cards">
+  <div class="card" data-choice="two-col" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div
+        style="
+          background: #111;
+          border-radius: 6px;
+          padding: 10px;
+          height: 170px;
+          font-family: monospace;
+          font-size: 9px;
+        "
+      >
+        <div style="display: flex; height: 100%; gap: 8px">
+          <!-- Left: page list -->
+          <div
+            style="
+              width: 140px;
+              flex-shrink: 0;
+              display: flex;
+              flex-direction: column;
+              gap: 4px;
+            "
+          >
+            <div
+              style="
+                color: #666;
+                font-size: 8px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-bottom: 2px;
+              "
+            >
+              Pages
+            </div>
+            <div
+              style="
+                background: #2a2a2a;
+                border-radius: 3px;
+                padding: 5px 7px;
+                border-left: 2px solid #cdfe00;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+              "
+            >
+              <span style="color: #555">⠿</span>
+              <div style="flex: 1">
+                <div style="color: #fff; font-size: 9px">Home</div>
+                <div style="color: #555; font-size: 7px">/ · 6 blocks</div>
+              </div>
+            </div>
+            <div
+              style="
+                background: #1e1e1e;
+                border-radius: 3px;
+                padding: 5px 7px;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+              "
+            >
+              <span style="color: #333">⠿</span>
+              <div style="flex: 1">
+                <div style="color: #888; font-size: 9px">About</div>
+                <div style="color: #444; font-size: 7px">/about · 3 blocks</div>
+              </div>
+            </div>
+            <div
+              style="
+                background: #1e1e1e;
+                border-radius: 3px;
+                padding: 5px 7px;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+              "
+            >
+              <span style="color: #333">⠿</span>
+              <div style="flex: 1">
+                <div style="color: #888; font-size: 9px">Services</div>
+                <div style="color: #444; font-size: 7px">
+                  /services · 4 blocks
+                </div>
+              </div>
+            </div>
+            <div
+              style="
+                border-radius: 3px;
+                padding: 5px 7px;
+                border: 1px dashed #2a2a2a;
+                color: #444;
+                text-align: center;
+              "
+            >
+              + Add page
+            </div>
+          </div>
+          <!-- Right: settings panel -->
+          <div
+            style="
+              flex: 1;
+              background: #1a1a1a;
+              border-radius: 4px;
+              padding: 8px;
+            "
+          >
+            <div
+              style="
+                color: #aaa;
+                font-size: 9px;
+                margin-bottom: 6px;
+                font-weight: 600;
+              "
+            >
+              Home — Settings
+            </div>
+            <div style="margin-bottom: 5px">
+              <div style="color: #555; font-size: 7px; margin-bottom: 2px">
+                TITLE
+              </div>
+              <div
+                style="
+                  background: #222;
+                  border-radius: 2px;
+                  padding: 3px 5px;
+                  color: #888;
+                  font-size: 8px;
+                "
+              >
+                Home | Veltro
+              </div>
+            </div>
+            <div style="margin-bottom: 5px">
+              <div style="color: #555; font-size: 7px; margin-bottom: 2px">
+                SLUG
+              </div>
+              <div
+                style="
+                  background: #222;
+                  border-radius: 2px;
+                  padding: 3px 5px;
+                  color: #888;
+                  font-size: 8px;
+                "
+              >
+                /
+              </div>
+            </div>
+            <div style="margin-bottom: 5px">
+              <div style="color: #555; font-size: 7px; margin-bottom: 2px">
+                META DESCRIPTION
+              </div>
+              <div
+                style="
+                  background: #222;
+                  border-radius: 2px;
+                  padding: 3px 5px;
+                  color: #888;
+                  font-size: 8px;
+                  line-height: 1.4;
+                "
+              >
+                Award-winning web design...
+              </div>
+            </div>
+            <div>
+              <div style="color: #555; font-size: 7px; margin-bottom: 2px">
+                OG IMAGE
+              </div>
+              <div
+                style="
+                  background: #222;
+                  border-radius: 2px;
+                  padding: 3px 5px;
+                  color: #555;
+                  font-size: 8px;
+                "
+              >
+                📁 Pick from media
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Two-column modal (recommended)</h3>
+      <p>
+        Left = page list with drag handles. Click a page to edit its settings on
+        the right. Everything visible at once. Clean, no navigation needed.
+      </p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="inline-expand" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div
+        style="
+          background: #111;
+          border-radius: 6px;
+          padding: 10px;
+          height: 170px;
+          font-family: monospace;
+          font-size: 9px;
+          overflow: hidden;
+        "
+      >
+        <div
+          style="
+            color: #666;
+            font-size: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+          "
+        >
+          Pages
+        </div>
+        <!-- Home row expanded -->
+        <div
+          style="
+            background: #1e1e1e;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            overflow: hidden;
+            border: 1px solid #cdfe00;
+          "
+        >
+          <div
+            style="
+              padding: 6px 8px;
+              display: flex;
+              align-items: center;
+              gap: 4px;
+            "
+          >
+            <span style="color: #555">⠿</span>
+            <div style="flex: 1; color: #fff; font-size: 9px">
+              Home <span style="color: #555">· / · 6 blocks</span>
+            </div>
+            <span style="color: #cdfe00; font-size: 8px">▲</span>
+          </div>
+          <div
+            style="
+              padding: 6px 8px;
+              border-top: 1px solid #2a2a2a;
+              background: #171717;
+            "
+          >
+            <div
+              style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px"
+            >
+              <div>
+                <div style="color: #444; font-size: 7px">TITLE</div>
+                <div
+                  style="
+                    background: #222;
+                    padding: 2px 4px;
+                    border-radius: 2px;
+                    color: #666;
+                    font-size: 7px;
+                  "
+                >
+                  Home | Veltro
+                </div>
+              </div>
+              <div>
+                <div style="color: #444; font-size: 7px">SLUG</div>
+                <div
+                  style="
+                    background: #222;
+                    padding: 2px 4px;
+                    border-radius: 2px;
+                    color: #666;
+                    font-size: 7px;
+                  "
+                >
+                  /
+                </div>
+              </div>
+              <div style="grid-column: span 2">
+                <div style="color: #444; font-size: 7px">META DESC</div>
+                <div
+                  style="
+                    background: #222;
+                    padding: 2px 4px;
+                    border-radius: 2px;
+                    color: #666;
+                    font-size: 7px;
+                  "
+                >
+                  Award-winning...
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- About row collapsed -->
+        <div
+          style="
+            background: #1a1a1a;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            padding: 6px 8px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+          "
+        >
+          <span style="color: #333">⠿</span>
+          <div style="flex: 1; color: #777; font-size: 9px">
+            About <span style="color: #444">· /about · 3 blocks</span>
+          </div>
+          <span style="color: #444; font-size: 8px">▼</span>
+        </div>
+        <div
+          style="
+            background: #1a1a1a;
+            border-radius: 4px;
+            padding: 6px 8px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+          "
+        >
+          <span style="color: #333">⠿</span>
+          <div style="flex: 1; color: #777; font-size: 9px">
+            Services <span style="color: #444">· /services · 4 blocks</span>
+          </div>
+          <span style="color: #444; font-size: 8px">▼</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Inline expand</h3>
+      <p>
+        Each page row expands to reveal its settings below it (accordion). No
+        split pane — everything in a single scrollable list. More compact, works
+        with many pages.
+      </p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="list-drawer" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div
+        style="
+          background: #111;
+          border-radius: 6px;
+          padding: 10px;
+          height: 170px;
+          font-family: monospace;
+          font-size: 9px;
+          position: relative;
+          overflow: hidden;
+        "
+      >
+        <div
+          style="
+            color: #666;
+            font-size: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+          "
+        >
+          Pages
+        </div>
+        <div
+          style="display: flex; flex-direction: column; gap: 4px; opacity: 0.4"
+        >
+          <div
+            style="
+              background: #2a2a2a;
+              border-radius: 3px;
+              padding: 5px 7px;
+              color: #aaa;
+            "
+          >
+            Home · 6 blocks
+          </div>
+          <div
+            style="
+              background: #1e1e1e;
+              border-radius: 3px;
+              padding: 5px 7px;
+              color: #777;
+            "
+          >
+            About · 3 blocks
+          </div>
+          <div
+            style="
+              background: #1e1e1e;
+              border-radius: 3px;
+              padding: 5px 7px;
+              color: #777;
+            "
+          >
+            Services · 4 blocks
+          </div>
+        </div>
+        <!-- Settings drawer sliding in from right -->
+        <div
+          style="
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 55%;
+            background: #1e1e1e;
+            border-left: 1px solid #333;
+            padding: 8px;
+          "
+        >
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 4px;
+              margin-bottom: 8px;
+            "
+          >
+            <span style="color: #555; font-size: 8px">← Back</span>
+            <span
+              style="
+                color: #aaa;
+                font-size: 9px;
+                margin-left: 4px;
+                font-weight: 600;
+              "
+              >Home</span
+            >
+          </div>
+          <div style="margin-bottom: 4px">
+            <div style="color: #444; font-size: 7px">TITLE</div>
+            <div
+              style="
+                background: #222;
+                border-radius: 2px;
+                padding: 3px 4px;
+                color: #666;
+                font-size: 8px;
+              "
+            >
+              Home | Veltro
+            </div>
+          </div>
+          <div style="margin-bottom: 4px">
+            <div style="color: #444; font-size: 7px">SLUG</div>
+            <div
+              style="
+                background: #222;
+                border-radius: 2px;
+                padding: 3px 4px;
+                color: #666;
+                font-size: 8px;
+              "
+            >
+              /
+            </div>
+          </div>
+          <div style="margin-bottom: 4px">
+            <div style="color: #444; font-size: 7px">META DESC</div>
+            <div
+              style="
+                background: #222;
+                border-radius: 2px;
+                padding: 3px 4px;
+                color: #555;
+                font-size: 7px;
+                line-height: 1.4;
+              "
+            >
+              Award-winning web design...
+            </div>
+          </div>
+          <div>
+            <div style="color: #444; font-size: 7px">OG IMAGE</div>
+            <div
+              style="
+                background: #222;
+                border-radius: 2px;
+                padding: 3px 4px;
+                color: #444;
+                font-size: 7px;
+              "
+            >
+              📁 Pick
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — List + slide-in settings</h3>
+      <p>
+        Modal shows the list. Clicking a page settings icon slides in a settings
+        panel over the list. Two clear modes: overview and edit. More
+        mobile-app-like.
+      </p>
+    </div>
+  </div>
+</div>

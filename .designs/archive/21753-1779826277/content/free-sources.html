@@ -1,0 +1,474 @@
+<h2>How should free image sources work?</h2>
+<p class="subtitle">
+  The library panel needs a way to pull in free images. How deep should the
+  integration go?
+</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div
+      class="card-image"
+      style="background: #111; padding: 12px; min-height: 160px"
+    >
+      <div
+        style="
+          background: #1e1e1e;
+          border-radius: 6px;
+          padding: 10px;
+          height: 100%;
+        "
+      >
+        <div
+          style="
+            font-size: 8px;
+            color: #888;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+          "
+        >
+          FREE IMAGE SOURCES
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 5px">
+          <div
+            style="
+              background: #1e3a5f;
+              border-radius: 4px;
+              padding: 6px 10px;
+              display: flex;
+              align-items: center;
+              gap: 6px;
+            "
+          >
+            <div
+              style="
+                width: 16px;
+                height: 16px;
+                background: #60a5fa22;
+                border-radius: 3px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 9px;
+              "
+            >
+              U
+            </div>
+            <div>
+              <div style="font-size: 8px; color: #93c5fd; font-weight: 600">
+                Unsplash
+              </div>
+              <div style="font-size: 7px; color: #60a5fa66">
+                unsplash.com — opens in new tab ↗
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              background: #2d1b4e;
+              border-radius: 4px;
+              padding: 6px 10px;
+              display: flex;
+              align-items: center;
+              gap: 6px;
+            "
+          >
+            <div
+              style="
+                width: 16px;
+                height: 16px;
+                background: #c084fc22;
+                border-radius: 3px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 9px;
+              "
+            >
+              P
+            </div>
+            <div>
+              <div style="font-size: 8px; color: #d8b4fe; font-weight: 600">
+                Pexels
+              </div>
+              <div style="font-size: 7px; color: #c084fc66">
+                pexels.com — opens in new tab ↗
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              background: #1a2e1a;
+              border-radius: 4px;
+              padding: 6px 10px;
+              display: flex;
+              align-items: center;
+              gap: 6px;
+            "
+          >
+            <div
+              style="
+                width: 16px;
+                height: 16px;
+                background: #4ade8022;
+                border-radius: 3px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 9px;
+              "
+            >
+              X
+            </div>
+            <div>
+              <div style="font-size: 8px; color: #86efac; font-weight: 600">
+                Pixabay
+              </div>
+              <div style="font-size: 7px; color: #4ade8066">
+                pixabay.com — opens in new tab ↗
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              background: #2a1a1a;
+              border-radius: 4px;
+              padding: 6px 10px;
+              display: flex;
+              align-items: center;
+              gap: 6px;
+            "
+          >
+            <div
+              style="
+                width: 16px;
+                height: 16px;
+                background: #f87171;
+                border-radius: 3px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 9px;
+              "
+            >
+              🔗
+            </div>
+            <div>
+              <div style="font-size: 8px; color: #fca5a5; font-weight: 600">
+                Paste image URL
+              </div>
+              <div style="font-size: 7px; color: #f8717166">
+                Find externally, paste URL to import
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Curated links + URL import</h3>
+      <p>
+        Buttons that open Unsplash/Pexels/Pixabay in a new tab. You find the
+        image there, copy the URL, and paste it into the library. Zero API keys,
+        zero maintenance.
+      </p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div
+      class="card-image"
+      style="background: #111; padding: 12px; min-height: 160px"
+    >
+      <div
+        style="
+          background: #1e1e1e;
+          border-radius: 6px;
+          padding: 10px;
+          height: 100%;
+        "
+      >
+        <div
+          style="
+            font-size: 8px;
+            color: #888;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+          "
+        >
+          SEARCH FREE IMAGES
+        </div>
+        <div style="display: flex; gap: 3px; margin-bottom: 6px">
+          <div
+            style="
+              flex: 1;
+              background: #111;
+              border: 1px solid #333;
+              border-radius: 3px;
+              height: 16px;
+              display: flex;
+              align-items: center;
+              padding: 0 6px;
+            "
+          >
+            <div style="font-size: 7px; color: #555">
+              nature, city, abstract…
+            </div>
+          </div>
+          <div
+            style="
+              background: #6366f1;
+              border-radius: 3px;
+              width: 22px;
+              height: 16px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 8px;
+              color: #fff;
+            "
+          >
+            ⌕
+          </div>
+        </div>
+        <div style="display: flex; gap: 3px; margin-bottom: 6px">
+          <div
+            style="
+              background: #1e3a5f;
+              border-radius: 2px;
+              padding: 2px 5px;
+              font-size: 7px;
+              color: #60a5fa;
+            "
+          >
+            Unsplash
+          </div>
+          <div
+            style="
+              background: #222;
+              border-radius: 2px;
+              padding: 2px 5px;
+              font-size: 7px;
+              color: #555;
+            "
+          >
+            Pexels
+          </div>
+          <div
+            style="
+              background: #222;
+              border-radius: 2px;
+              padding: 2px 5px;
+              font-size: 7px;
+              color: #555;
+            "
+          >
+            Pixabay
+          </div>
+        </div>
+        <div
+          style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px"
+        >
+          <div
+            style="
+              background: #2a3a4a;
+              border-radius: 2px;
+              aspect-ratio: 1;
+              position: relative;
+            "
+          >
+            <div
+              style="
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                background: #6366f1;
+                width: 8px;
+                height: 8px;
+                border-radius: 1px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 5px;
+                color: #fff;
+              "
+            >
+              ↓
+            </div>
+          </div>
+          <div
+            style="background: #3a2a4a; border-radius: 2px; aspect-ratio: 1"
+          ></div>
+          <div
+            style="background: #2a4a3a; border-radius: 2px; aspect-ratio: 1"
+          ></div>
+          <div
+            style="background: #4a3a2a; border-radius: 2px; aspect-ratio: 1"
+          ></div>
+          <div
+            style="background: #3a4a2a; border-radius: 2px; aspect-ratio: 1"
+          ></div>
+          <div
+            style="background: #2a2a4a; border-radius: 2px; aspect-ratio: 1"
+          ></div>
+          <div
+            style="background: #4a2a3a; border-radius: 2px; aspect-ratio: 1"
+          ></div>
+          <div
+            style="background: #3a3a4a; border-radius: 2px; aspect-ratio: 1"
+          ></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Inline search (API-powered)</h3>
+      <p>
+        Search bar inside the panel fetches results directly from
+        Unsplash/Pexels APIs. Click to save to your library or insert straight
+        to canvas. Requires API keys in config.
+      </p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div
+      class="card-image"
+      style="background: #111; padding: 12px; min-height: 160px"
+    >
+      <div
+        style="
+          background: #1e1e1e;
+          border-radius: 6px;
+          padding: 10px;
+          height: 100%;
+        "
+      >
+        <div
+          style="
+            font-size: 8px;
+            color: #888;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+          "
+        >
+          ADD FROM URL
+        </div>
+        <div
+          style="
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 6px;
+            margin-bottom: 6px;
+          "
+        >
+          <div style="font-size: 7px; color: #555; margin-bottom: 3px">
+            Paste any image URL
+          </div>
+          <div
+            style="
+              background: #1a1a1a;
+              border: 1px solid #6366f1;
+              border-radius: 2px;
+              height: 14px;
+              display: flex;
+              align-items: center;
+              padding: 0 4px;
+            "
+          >
+            <div style="font-size: 7px; color: #818cf8">
+              https://images.unsplash.com/…
+            </div>
+          </div>
+          <div
+            style="
+              background: #6366f1;
+              border-radius: 2px;
+              height: 12px;
+              margin-top: 4px;
+              font-size: 7px;
+              color: #fff;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            "
+          >
+            Add to Library
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 3px">
+          <div style="font-size: 7px; color: #555; margin-bottom: 2px">
+            Quick-access sources:
+          </div>
+          <div style="display: flex; gap: 3px; flex-wrap: wrap">
+            <div
+              style="
+                background: #1e3a5f;
+                border-radius: 2px;
+                padding: 2px 5px;
+                font-size: 7px;
+                color: #60a5fa;
+              "
+            >
+              ↗ Unsplash
+            </div>
+            <div
+              style="
+                background: #2d1b4e;
+                border-radius: 2px;
+                padding: 2px 5px;
+                font-size: 7px;
+                color: #c084fc;
+              "
+            >
+              ↗ Pexels
+            </div>
+            <div
+              style="
+                background: #1a2e1a;
+                border-radius: 2px;
+                padding: 2px 5px;
+                font-size: 7px;
+                color: #4ade80;
+              "
+            >
+              ↗ Pixabay
+            </div>
+            <div
+              style="
+                background: #1a1a2e;
+                border-radius: 2px;
+                padding: 2px 5px;
+                font-size: 7px;
+                color: #818cf8;
+              "
+            >
+              ↗ Freepik
+            </div>
+            <div
+              style="
+                background: #2a1a1a;
+                border-radius: 2px;
+                padding: 2px 5px;
+                font-size: 7px;
+                color: #f87171;
+              "
+            >
+              ↗ StockSnap
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — URL import + more source links</h3>
+      <p>
+        Paste any image URL to save it to your library (server downloads and
+        stores it locally). Plus a wider set of source links. More flexible but
+        adds a server-side download step.
+      </p>
+    </div>
+  </div>
+</div>

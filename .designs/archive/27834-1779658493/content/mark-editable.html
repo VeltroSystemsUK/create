@@ -1,0 +1,175 @@
+<h2>🏷️ How to mark content as editable?</h2>
+<p class="subtitle">
+  When building a page, how does the developer specify "this part can be edited
+  by the client"?
+</p>
+
+<div class="options">
+  <div class="option" data-choice="props" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Per-Prop Toggle in the Builder</h3>
+      <p>
+        When you select a block on the canvas, each prop in the right panel gets
+        a small lock/toggle icon. Click to mark it as "client-editable." The
+        Hero headline? Editable. The background color? Locked.
+      </p>
+      <div
+        style="
+          margin-top: 12px;
+          background: #1a1a2e;
+          padding: 12px;
+          border-radius: 8px;
+          font-size: 13px;
+          color: #aaa;
+        "
+      >
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 8px;
+            background: #2a2a3e;
+            border-radius: 4px;
+            margin-bottom: 4px;
+          "
+        >
+          <span>Headline</span>
+          <span style="color: #cdfe00; font-size: 11px">🔓 Editable ✓</span>
+        </div>
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 8px;
+            background: #2a2a3e;
+            border-radius: 4px;
+            margin-bottom: 4px;
+          "
+        >
+          <span>Subtext</span>
+          <span style="color: #cdfe00; font-size: 11px">🔓 Editable ✓</span>
+        </div>
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 8px;
+            background: #2a2a3e;
+            border-radius: 4px;
+            margin-bottom: 4px;
+          "
+        >
+          <span>Image URL</span>
+          <span style="color: #cdfe00; font-size: 11px">🔓 Editable ✓</span>
+        </div>
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 8px;
+            background: #2a2a3e;
+            border-radius: 4px;
+          "
+        >
+          <span>Background Color</span>
+          <span style="color: #888; font-size: 11px">🔒 Locked</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="option" data-choice="region" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Editable Regions (Block-Level)</h3>
+      <p>
+        Instead of per-prop, mark entire blocks as "Content Block" vs "Design
+        Block." A Hero block marked as "content" exposes all its text props as
+        editable. A Footer block marked as "design" is locked entirely. Simpler
+        but less granular.
+      </p>
+      <div
+        style="
+          margin-top: 12px;
+          background: #1a1a2e;
+          padding: 12px;
+          border-radius: 8px;
+          font-size: 13px;
+          color: #aaa;
+        "
+      >
+        <div style="display: flex; gap: 8px; margin-bottom: 6px">
+          <span
+            style="
+              background: #2a5a2a;
+              padding: 2px 8px;
+              border-radius: 4px;
+              font-size: 11px;
+              color: #8f8;
+            "
+            >📝 Hero — Content Block</span
+          >
+          <span
+            style="
+              background: #3a2a2a;
+              padding: 2px 8px;
+              border-radius: 4px;
+              font-size: 11px;
+              color: #f88;
+            "
+            >🔧 Services — Design Block</span
+          >
+        </div>
+        <div style="font-size: 12px; color: #888">
+          Quick toggle per block in the left panel
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="option" data-choice="auto" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Auto-Detect + Manual Override</h3>
+      <p>
+        By default, text and image props are editable; color, spacing, and
+        layout props are locked. The developer can override per-prop. Smart
+        defaults minimize setup — most blocks work out of the box.
+      </p>
+      <div
+        style="
+          margin-top: 12px;
+          background: #1a1a2e;
+          padding: 12px;
+          border-radius: 8px;
+          font-size: 13px;
+          color: #aaa;
+        "
+      >
+        <div style="font-size: 12px; color: #8f8">
+          ✓ Headline → auto-editable (it's text)
+        </div>
+        <div style="font-size: 12px; color: #8f8">
+          ✓ Image URL → auto-editable (it's media)
+        </div>
+        <div style="font-size: 12px; color: #f88">
+          ✗ Padding → auto-locked (it's layout)
+        </div>
+        <div style="font-size: 12px; color: #f88">
+          ✗ Accent Color → auto-locked (it's design)
+        </div>
+        <div style="margin-top: 6px; font-size: 11px; color: #888">
+          Override any prop with one click
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p style="margin-top: 24px">
+  I recommend <strong>C (Auto-Detect + Override)</strong> — minimal setup,
+  maximum control when needed. What do you think?
+</p>

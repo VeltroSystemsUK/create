@@ -1,0 +1,75 @@
+<h2>🧠 CMS Design — First up: what content do you need to manage?</h2>
+<p class="subtitle">
+  This shapes the entire architecture. Pick the option that best describes your
+  needs.
+</p>
+
+<div class="options">
+  <div class="option" data-choice="blog" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Blog / Articles</h3>
+      <p>
+        Rich text posts with categories, tags, author profiles, publish dates.
+        Images in body content. Think blog, news, case studies.
+      </p>
+      <div style="margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap">
+        <span class="label">Posts</span>
+        <span class="label">Categories</span>
+        <span class="label">WYSIWYG</span>
+      </div>
+    </div>
+  </div>
+  <div class="option" data-choice="page-content" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Page Content Blocks</h3>
+      <p>
+        Editable text, images, and sections on each page of the site.
+        Non-technical users can update hero headlines, about copy, team bios,
+        etc. without touching the builder.
+      </p>
+      <div style="margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap">
+        <span class="label">Editable Regions</span>
+        <span class="label">Inline Editing</span>
+        <span class="label">Drag & Drop</span>
+      </div>
+    </div>
+  </div>
+  <div class="option" data-choice="products" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>E-commerce Products</h3>
+      <p>
+        Product catalogs with images, pricing, variants, descriptions. Manage
+        inventory and product data through the CMS.
+      </p>
+      <div style="margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap">
+        <span class="label">Products</span>
+        <span class="label">Variants</span>
+        <span class="label">Pricing</span>
+      </div>
+    </div>
+  </div>
+  <div class="option" data-choice="custom" onclick="toggleSelect(this)">
+    <div class="letter">D</div>
+    <div class="content">
+      <h3>Custom Content Types</h3>
+      <p>
+        A flexible type builder — define your own content models. Create a
+        "Portfolio" type with image + description fields, a "Team Member" type,
+        a "FAQ" type, or anything else. Each type gets its own API + editor UI.
+      </p>
+      <div style="margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap">
+        <span class="label">Type Builder</span>
+        <span class="label">Custom Fields</span>
+        <span class="label">Full Flexibility</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p style="margin-top: 24px">
+  Click an option above to select it, then let me know in chat. If none fit,
+  tell me more about what you need!
+</p>

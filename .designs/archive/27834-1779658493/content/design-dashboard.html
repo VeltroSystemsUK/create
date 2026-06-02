@@ -1,0 +1,281 @@
+<h2>📊 Design Section 3/5: CMS Admin Dashboard</h2>
+<p class="subtitle">
+  The /admin panel — what the client logs into to manage content.
+</p>
+
+<div class="section">
+  <h3>Dashboard Layout</h3>
+  <div style="display: flex; gap: 12px; flex-wrap: wrap">
+    <div
+      style="
+        flex: 1;
+        min-width: 200px;
+        background: #1a1a2e;
+        padding: 16px;
+        border-radius: 8px;
+      "
+    >
+      <div style="font-weight: 600; font-size: 14px">📄 Pages Tab</div>
+      <div style="font-size: 12px; color: #888; margin-top: 4px">
+        Lists all pages from the site. Click a page to see its editable fields
+        in a clean form layout. Fields are grouped per block with the block
+        label as heading.
+      </div>
+      <div
+        style="
+          background: #2a2a3e;
+          padding: 8px;
+          border-radius: 4px;
+          margin-top: 8px;
+          font-size: 11px;
+          color: #aaa;
+        "
+      >
+        <b>Home</b><br />
+        └─ Hero Section<br />
+        &nbsp;&nbsp;&nbsp;├─ Headline: [ "We build things..." ]<br />
+        &nbsp;&nbsp;&nbsp;├─ Subtext: [ "Bold brand..." ]<br />
+        &nbsp;&nbsp;&nbsp;└─ CTA Text: [ "See our work →" ]<br />
+        └─ Services Section<br />
+        &nbsp;&nbsp;&nbsp;└─ Items: [ "Brand Strategy" "Web Design" ... ]
+      </div>
+    </div>
+    <div
+      style="
+        flex: 1;
+        min-width: 200px;
+        background: #1a1a2e;
+        padding: 16px;
+        border-radius: 8px;
+      "
+    >
+      <div style="font-weight: 600; font-size: 14px">🖼️ Media Tab</div>
+      <div style="font-size: 12px; color: #888; margin-top: 4px">
+        Uploaded images library. Thumbnail grid. Upload new images, replace
+        existing ones. Images are stored in a <code>/media</code> folder
+        alongside the site.
+      </div>
+    </div>
+    <div
+      style="
+        flex: 1;
+        min-width: 200px;
+        background: #1a1a2e;
+        padding: 16px;
+        border-radius: 8px;
+      "
+    >
+      <div style="font-weight: 600; font-size: 14px">⚙️ Settings Tab</div>
+      <div style="font-size: 12px; color: #888; margin-top: 4px">
+        Change admin password, site title, favicon. Simple form, no clutter.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Page Edit Form Example</h3>
+  <div
+    style="
+      background: #1a1a2e;
+      padding: 16px;
+      border-radius: 8px;
+      max-width: 500px;
+      font-size: 13px;
+    "
+  >
+    <div style="font-weight: 600; font-size: 16px; margin-bottom: 12px">
+      Editing: Home Page
+    </div>
+
+    <div
+      style="
+        background: #2a2a3e;
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 12px;
+      "
+    >
+      <div
+        style="
+          font-weight: 600;
+          font-size: 12px;
+          color: #cdfe00;
+          margin-bottom: 8px;
+        "
+      >
+        Hero Section
+      </div>
+      <div style="margin-bottom: 8px">
+        <label
+          style="
+            font-size: 11px;
+            color: #888;
+            display: block;
+            margin-bottom: 2px;
+          "
+          >Headline</label
+        >
+        <div
+          style="
+            background: #1a1a2e;
+            border: 1px solid #444;
+            border-radius: 4px;
+            padding: 6px 8px;
+            color: #fff;
+          "
+        >
+          We build things that matter.
+        </div>
+      </div>
+      <div style="margin-bottom: 8px">
+        <label
+          style="
+            font-size: 11px;
+            color: #888;
+            display: block;
+            margin-bottom: 2px;
+          "
+          >Subtext</label
+        >
+        <div
+          style="
+            background: #1a1a2e;
+            border: 1px solid #444;
+            border-radius: 4px;
+            padding: 6px 8px;
+            color: #fff;
+            min-height: 40px;
+          "
+        >
+          Bold brand and web design for businesses that refuse to be ordinary.
+        </div>
+      </div>
+      <div>
+        <label
+          style="
+            font-size: 11px;
+            color: #888;
+            display: block;
+            margin-bottom: 2px;
+          "
+          >Button Text</label
+        >
+        <div
+          style="
+            background: #1a1a2e;
+            border: 1px solid #444;
+            border-radius: 4px;
+            padding: 6px 8px;
+            color: #fff;
+          "
+        >
+          See our work →
+        </div>
+      </div>
+    </div>
+
+    <div
+      style="
+        background: #2a2a3e;
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 12px;
+      "
+    >
+      <div
+        style="
+          font-weight: 600;
+          font-size: 12px;
+          color: #cdfe00;
+          margin-bottom: 8px;
+        "
+      >
+        Services Section
+      </div>
+      <div>
+        <label
+          style="
+            font-size: 11px;
+            color: #888;
+            display: block;
+            margin-bottom: 2px;
+          "
+          >Services</label
+        >
+        <div style="display: flex; flex-wrap: wrap; gap: 4px">
+          <span
+            style="
+              background: #1a1a2e;
+              border: 1px solid #444;
+              border-radius: 4px;
+              padding: 4px 8px;
+              font-size: 12px;
+            "
+            >Brand Strategy</span
+          >
+          <span
+            style="
+              background: #1a1a2e;
+              border: 1px solid #444;
+              border-radius: 4px;
+              padding: 4px 8px;
+              font-size: 12px;
+            "
+            >Web Design</span
+          >
+          <span
+            style="
+              background: #1a1a2e;
+              border: 1px solid #444;
+              border-radius: 4px;
+              padding: 4px 8px;
+              font-size: 12px;
+            "
+            >Development</span
+          >
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 8px">
+      <div
+        style="
+          background: #2a5a2a;
+          padding: 8px 16px;
+          border-radius: 6px;
+          font-weight: 600;
+          font-size: 13px;
+          color: #fff;
+        "
+      >
+        💾 Save Changes
+      </div>
+      <div
+        style="
+          background: #333;
+          padding: 8px 16px;
+          border-radius: 6px;
+          font-size: 13px;
+          color: #aaa;
+        "
+      >
+        Cancel
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Auth Flow</h3>
+  <p style="font-size: 14px">
+    First visit to /admin → set a password → login screen on subsequent visits.
+    Simple session-based auth (no user database needed). The password is stored
+    in a config file alongside the site.
+  </p>
+</div>
+
+<p style="margin-top: 24px">
+  Does this admin dashboard design feel right? Clean form-based editing grouped
+  by blocks, media library, simple auth.
+</p>

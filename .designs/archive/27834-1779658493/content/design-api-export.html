@@ -1,0 +1,166 @@
+<h2>🔌 Design Section 5/5: API Layer & Export</h2>
+<p class="subtitle">
+  The backend endpoints and how the CMS gets wired into exported sites.
+</p>
+
+<div class="section">
+  <h3>CMS API Endpoints (in server.py)</h3>
+  <div
+    style="
+      background: #1a1a2e;
+      padding: 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: monospace;
+      white-space: pre;
+      overflow-x: auto;
+      color: #ccc;
+      line-height: 1.8;
+    "
+  >
+    <span style="color: #cdfe00">GET</span> /api/cms/schema → Return the content
+    schema for this site<br />
+    <span style="color: #cdfe00">GET</span> /api/cms/content → Return all
+    current content values<br />
+    <span style="color: #cdfe00">PUT</span> /api/cms/content → Update a single
+    field value<br />
+    <span style="color: #cdfe00">PUT</span> /api/cms/content/bulk → Update
+    multiple fields at once (form save)<br />
+    <span style="color: #cdfe00">POST</span> /api/cms/media/upload → Upload a
+    new image to /media<br />
+    <span style="color: #cdfe00">GET</span> /api/cms/media → List all uploaded
+    media<br />
+    <span style="color: #cdfe00">DELETE</span> /api/cms/media/{id} → Delete an
+    uploaded image<br />
+    <span style="color: #cdfe00">POST</span> /api/cms/auth/login → Authenticate
+    (password → session token)<br />
+    <span style="color: #cdfe00">POST</span> /api/cms/auth/check → Verify
+    session is still valid<br />
+  </div>
+</div>
+
+<div class="section">
+  <h3>Data Storage</h3>
+  <div style="display: flex; gap: 12px; flex-wrap: wrap">
+    <div
+      style="
+        flex: 1;
+        min-width: 200px;
+        background: #1a1a2e;
+        padding: 16px;
+        border-radius: 8px;
+      "
+    >
+      <div style="font-weight: 600; font-size: 14px">📄 cms-schema.json</div>
+      <div style="font-size: 12px; color: #888; margin-top: 4px">
+        Auto-generated on export. Maps every editable field across all pages.
+        Read-only for the CMS (used to render forms and validate edits).
+      </div>
+    </div>
+    <div
+      style="
+        flex: 1;
+        min-width: 200px;
+        background: #1a1a2e;
+        padding: 16px;
+        border-radius: 8px;
+      "
+    >
+      <div style="font-weight: 600; font-size: 14px">📄 cms-content.json</div>
+      <div style="font-size: 12px; color: #888; margin-top: 4px">
+        Stores the actual content values. The CMS reads from this to serve
+        content, and writes to it when the client saves edits. Lives alongside
+        the exported site.
+      </div>
+    </div>
+    <div
+      style="
+        flex: 1;
+        min-width: 200px;
+        background: #1a1a2e;
+        padding: 16px;
+        border-radius: 8px;
+      "
+    >
+      <div style="font-weight: 600; font-size: 14px">📄 cms-config.json</div>
+      <div style="font-size: 12px; color: #888; margin-top: 4px">
+        Admin password hash, site title, and other settings. Created on first
+        login.
+      </div>
+    </div>
+    <div
+      style="
+        flex: 1;
+        min-width: 200px;
+        background: #1a1a2e;
+        padding: 16px;
+        border-radius: 8px;
+      "
+    >
+      <div style="font-weight: 600; font-size: 14px">📁 /media/</div>
+      <div style="font-size: 12px; color: #888; margin-top: 4px">
+        Uploaded images stored here. Referenced by filename in cms-content.json.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Export Structure</h3>
+  <p style="font-size: 14px">
+    When you click "Export with CMS", the generated site folder looks like:
+  </p>
+  <div
+    style="
+      background: #1a1a2e;
+      padding: 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: monospace;
+      white-space: pre;
+      overflow-x: auto;
+      color: #ccc;
+    "
+  >
+    my-site/<br />
+    ├── index.html ← Home page (static HTML)<br />
+    ├── about.html ← Other pages<br />
+    ├── services.html<br />
+    ├── css/ ← Site styles (copied from builder)<br />
+    ├── js/ ← Site scripts + cms-edit.js<br />
+    ├── cms-schema.json ← Auto-generated content map<br />
+    ├── cms-content.json ← Current content values<br />
+    ├── cms-config.json ← Password hash, settings<br />
+    ├── media/ ← Uploaded images<br />
+    ├── admin.html ← Admin dashboard (SPA)<br />
+    └── cms-server.py ← Lightweight CMS server (or served by main server)<br />
+  </div>
+</div>
+
+<div class="section">
+  <h3>How Content Flows</h3>
+  <div
+    style="
+      background: #1a1a2e;
+      padding: 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #ccc;
+    "
+  >
+    1. Site loads → HTML has placeholder content from export<br />
+    2. cms-edit.js runs → fetches content from <code>/api/cms/content</code
+    ><br />
+    3. JavaScript replaces placeholder text with actual CMS content<br />
+    4. Client edits → inline or via /admin → API writes to cms-content.json<br />
+    5. Next page load → updated content is served immediately<br />
+  </div>
+  <p style="margin-top: 8px; font-size: 12px; color: #888">
+    For static hosting (no Python server), an alternative: rebuild the HTML
+    files with baked-in content on each save ("static mode").
+  </p>
+</div>
+
+<p style="margin-top: 24px">
+  This wraps up the design. Does the API and export structure look right?
+</p>

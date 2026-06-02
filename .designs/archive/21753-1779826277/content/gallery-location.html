@@ -1,0 +1,423 @@
+<h2>Where should the Media Gallery live?</h2>
+<p class="subtitle">
+  This affects how you access it while building — pick the option that fits your
+  workflow best.
+</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div
+      class="card-image"
+      style="
+        background: #111;
+        padding: 12px;
+        min-height: 180px;
+        display: flex;
+        gap: 8px;
+      "
+    >
+      <!-- left panel mockup -->
+      <div
+        style="
+          width: 52px;
+          background: #1a1a1a;
+          border-radius: 4px;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          padding: 6px;
+        "
+      >
+        <div
+          style="
+            height: 8px;
+            background: #6366f1;
+            border-radius: 2px;
+            opacity: 0.9;
+          "
+        ></div>
+        <div style="height: 8px; background: #333; border-radius: 2px"></div>
+        <div
+          style="
+            height: 8px;
+            background: #f59e0b;
+            border-radius: 2px;
+            opacity: 0.9;
+          "
+        ></div>
+        <div style="height: 8px; background: #333; border-radius: 2px"></div>
+        <div
+          style="
+            height: 8px;
+            background: #ec4899;
+            border-radius: 2px;
+            opacity: 0.9;
+          "
+        ></div>
+        <div style="height: 2px; background: #333; margin: 2px 0"></div>
+        <div
+          style="
+            height: 8px;
+            background: #3b82f6;
+            border-radius: 2px;
+            opacity: 0.9;
+            font-size: 6px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
+        >
+          🖼
+        </div>
+        <div style="height: 8px; background: #333; border-radius: 2px"></div>
+      </div>
+      <div
+        style="flex: 1; background: #1e1e1e; border-radius: 4px; padding: 6px"
+      >
+        <div
+          style="
+            font-size: 9px;
+            color: #aaa;
+            margin-bottom: 6px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+          "
+        >
+          MEDIA LIBRARY
+        </div>
+        <div
+          style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3px"
+        >
+          <div
+            style="background: #333; border-radius: 2px; aspect-ratio: 1"
+          ></div>
+          <div
+            style="background: #444; border-radius: 2px; aspect-ratio: 1"
+          ></div>
+          <div
+            style="
+              background: #2a2a2a;
+              border-radius: 2px;
+              aspect-ratio: 1;
+              border: 1px dashed #555;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 10px;
+              color: #555;
+            "
+          >
+            +
+          </div>
+          <div
+            style="background: #3a3a3a; border-radius: 2px; aspect-ratio: 1"
+          ></div>
+          <div
+            style="background: #333; border-radius: 2px; aspect-ratio: 1"
+          ></div>
+          <div
+            style="background: #444; border-radius: 2px; aspect-ratio: 1"
+          ></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Left Panel Accordion</h3>
+      <p>
+        Media library lives in the left nav alongside Sections, Widgets, etc.
+        Always accessible, images drag straight onto the canvas.
+      </p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div
+      class="card-image"
+      style="
+        background: #111;
+        padding: 12px;
+        min-height: 180px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      "
+    >
+      <!-- toolbar + modal mockup -->
+      <div
+        style="
+          background: #1a1a1a;
+          border-radius: 4px;
+          padding: 4px 8px;
+          display: flex;
+          gap: 6px;
+          align-items: center;
+        "
+      >
+        <div
+          style="
+            width: 32px;
+            height: 14px;
+            background: #333;
+            border-radius: 2px;
+          "
+        ></div>
+        <div
+          style="
+            width: 32px;
+            height: 14px;
+            background: #333;
+            border-radius: 2px;
+          "
+        ></div>
+        <div
+          style="
+            width: 48px;
+            height: 14px;
+            background: #3b82f6;
+            border-radius: 2px;
+            font-size: 7px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
+        >
+          🖼 Media
+        </div>
+        <div style="flex: 1"></div>
+        <div
+          style="
+            width: 32px;
+            height: 14px;
+            background: #333;
+            border-radius: 2px;
+          "
+        ></div>
+      </div>
+      <div
+        style="
+          flex: 1;
+          background: #1e1e1e;
+          border-radius: 4px;
+          padding: 8px;
+          position: relative;
+        "
+      >
+        <div
+          style="
+            position: absolute;
+            inset: 8px;
+            background: #222;
+            border-radius: 6px;
+            border: 1px solid #333;
+            padding: 8px;
+          "
+        >
+          <div
+            style="
+              font-size: 8px;
+              color: #aaa;
+              font-weight: 600;
+              margin-bottom: 6px;
+            "
+          >
+            MEDIA LIBRARY — Upload & Browse
+          </div>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(5, 1fr);
+              gap: 3px;
+              margin-bottom: 6px;
+            "
+          >
+            <div
+              style="background: #333; border-radius: 2px; aspect-ratio: 1"
+            ></div>
+            <div
+              style="background: #444; border-radius: 2px; aspect-ratio: 1"
+            ></div>
+            <div
+              style="background: #3a3a3a; border-radius: 2px; aspect-ratio: 1"
+            ></div>
+            <div
+              style="background: #333; border-radius: 2px; aspect-ratio: 1"
+            ></div>
+            <div
+              style="
+                background: #2a2a2a;
+                border-radius: 2px;
+                aspect-ratio: 1;
+                border: 1px dashed #555;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 9px;
+                color: #555;
+              "
+            >
+              +
+            </div>
+          </div>
+          <div style="height: 1px; background: #333; margin-bottom: 6px"></div>
+          <div style="font-size: 7px; color: #888; margin-bottom: 4px">
+            FREE IMAGE SOURCES
+          </div>
+          <div style="display: flex; gap: 3px">
+            <div
+              style="
+                background: #1e3a5f;
+                border-radius: 2px;
+                padding: 2px 4px;
+                font-size: 7px;
+                color: #60a5fa;
+              "
+            >
+              Unsplash
+            </div>
+            <div
+              style="
+                background: #2d1b4e;
+                border-radius: 2px;
+                padding: 2px 4px;
+                font-size: 7px;
+                color: #c084fc;
+              "
+            >
+              Pexels
+            </div>
+            <div
+              style="
+                background: #1a2e1a;
+                border-radius: 2px;
+                padding: 2px 4px;
+                font-size: 7px;
+                color: #4ade80;
+              "
+            >
+              Pixabay
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Toolbar Button → Full Modal</h3>
+      <p>
+        A "Media" button in the top toolbar opens a large overlay with upload +
+        free image sources side by side. More space for browsing.
+      </p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div
+      class="card-image"
+      style="
+        background: #111;
+        padding: 12px;
+        min-height: 180px;
+        display: flex;
+        gap: 8px;
+      "
+    >
+      <!-- right panel media picker mockup -->
+      <div
+        style="
+          flex: 1;
+          background: #1a1a1a;
+          border-radius: 4px;
+          padding: 6px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        "
+      >
+        <div style="text-align: center; color: #444; font-size: 8px">
+          Canvas
+        </div>
+      </div>
+      <div
+        style="
+          width: 72px;
+          background: #1e1e1e;
+          border-radius: 4px;
+          padding: 6px;
+        "
+      >
+        <div
+          style="
+            font-size: 7px;
+            color: #aaa;
+            margin-bottom: 4px;
+            font-weight: 600;
+          "
+        >
+          IMAGE
+        </div>
+        <div
+          style="
+            background: #2a2a2a;
+            border-radius: 2px;
+            height: 36px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            color: #555;
+          "
+        >
+          current
+        </div>
+        <div
+          style="
+            background: #3b82f6;
+            border-radius: 2px;
+            height: 14px;
+            font-size: 7px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 3px;
+          "
+        >
+          Browse Library
+        </div>
+        <div
+          style="
+            font-size: 7px;
+            color: #888;
+            margin-top: 6px;
+            margin-bottom: 2px;
+          "
+        >
+          RECENT
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px">
+          <div
+            style="background: #333; border-radius: 1px; aspect-ratio: 1"
+          ></div>
+          <div
+            style="background: #444; border-radius: 1px; aspect-ratio: 1"
+          ></div>
+          <div
+            style="background: #3a3a3a; border-radius: 1px; aspect-ratio: 1"
+          ></div>
+          <div
+            style="background: #333; border-radius: 1px; aspect-ratio: 1"
+          ></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Right Panel Inline Picker</h3>
+      <p>
+        When editing a block with an image prop, the right panel shows a mini
+        picker with "Browse Library" to open a focused image picker modal.
+      </p>
+    </div>
+  </div>
+</div>

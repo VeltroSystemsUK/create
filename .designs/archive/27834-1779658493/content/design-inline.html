@@ -1,0 +1,162 @@
+<h2>✏️ Design Section 4/5: Inline Editing</h2>
+<p class="subtitle">
+  Click-to-edit on the live site — the quickest way for clients to make changes.
+</p>
+
+<div class="section">
+  <h3>How It Works</h3>
+  <div style="display: flex; gap: 12px; flex-wrap: wrap">
+    <div
+      style="
+        flex: 1;
+        min-width: 200px;
+        background: #1a1a2e;
+        padding: 16px;
+        border-radius: 8px;
+      "
+    >
+      <div style="font-size: 24px; margin-bottom: 4px">🔐</div>
+      <div style="font-weight: 600; font-size: 14px">Enter Edit Mode</div>
+      <div style="font-size: 12px; color: #888; margin-top: 4px">
+        Client visits their site and appends <code>?edit</code> to the URL (or
+        clicks a small pencil icon in the corner). Enters their password. Site
+        enters edit mode.
+      </div>
+    </div>
+    <div
+      style="
+        flex: 1;
+        min-width: 200px;
+        background: #1a1a2e;
+        padding: 16px;
+        border-radius: 8px;
+      "
+    >
+      <div style="font-size: 24px; margin-bottom: 4px">👆</div>
+      <div style="font-weight: 600; font-size: 14px">Click to Edit</div>
+      <div style="font-size: 12px; color: #888; margin-top: 4px">
+        Editable elements get a subtle dashed border on hover. Click any text or
+        image to edit it inline. Text becomes an input/textarea. Images open a
+        picker or upload dialog.
+      </div>
+    </div>
+    <div
+      style="
+        flex: 1;
+        min-width: 200px;
+        background: #1a1a2e;
+        padding: 16px;
+        border-radius: 8px;
+      "
+    >
+      <div style="font-size: 24px; margin-bottom: 4px">💾</div>
+      <div style="font-weight: 600; font-size: 14px">Auto-Save</div>
+      <div style="font-size: 12px; color: #888; margin-top: 4px">
+        Changes save as the client works (debounced). A small "Saved" indicator
+        appears. No manual save button needed for inline edits.
+      </div>
+    </div>
+    <div
+      style="
+        flex: 1;
+        min-width: 200px;
+        background: #1a1a2e;
+        padding: 16px;
+        border-radius: 8px;
+      "
+    >
+      <div style="font-size: 24px; margin-bottom: 4px">🚪</div>
+      <div style="font-weight: 600; font-size: 14px">Exit Edit Mode</div>
+      <div style="font-size: 12px; color: #888; margin-top: 4px">
+        Click "Done Editing" to exit. The site returns to visitor mode. Changes
+        are live.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Technical Approach</h3>
+  <p style="font-size: 14px">
+    A small JavaScript file (<code>cms-edit.js</code>) is included in the
+    exported site. When <code>?edit</code> is detected and the client is
+    authenticated:
+  </p>
+  <ul style="font-size: 14px; color: #ccc">
+    <li>Loads the content schema to know which elements are editable</li>
+    <li>
+      Adds <code>contenteditable</code> to text elements and click handlers to
+      images
+    </li>
+    <li>
+      On change, sends the updated value to the CMS API
+      (<code>/api/cms/content</code>)
+    </li>
+    <li>The server stores the new value in the content JSON file</li>
+    <li>Subsequent page loads serve the updated content</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>What Gets Highlighted</h3>
+  <div style="display: flex; gap: 12px; flex-wrap: wrap">
+    <div
+      style="
+        flex: 1;
+        min-width: 180px;
+        background: #1a2a1a;
+        padding: 12px;
+        border-radius: 8px;
+        border-left: 3px solid #4a4;
+      "
+    >
+      <div style="font-weight: 600; font-size: 13px">✅ Editable on click</div>
+      <ul
+        style="
+          margin: 6px 0 0;
+          padding-left: 16px;
+          font-size: 12px;
+          color: #aaa;
+        "
+      >
+        <li>Headlines, titles, text blocks</li>
+        <li>Button labels, CTA text</li>
+        <li>Images (click to replace)</li>
+        <li>List items (add/remove/reorder)</li>
+        <li>Rich text areas</li>
+      </ul>
+    </div>
+    <div
+      style="
+        flex: 1;
+        min-width: 180px;
+        background: #2a1a1a;
+        padding: 12px;
+        border-radius: 8px;
+        border-left: 3px solid #a44;
+      "
+    >
+      <div style="font-weight: 600; font-size: 13px">
+        🔒 Not editable inline
+      </div>
+      <ul
+        style="
+          margin: 6px 0 0;
+          padding-left: 16px;
+          font-size: 12px;
+          color: #aaa;
+        "
+      >
+        <li>Background colors, spacings</li>
+        <li>Layout structure, columns</li>
+        <li>Block order, page structure</li>
+        <li>Font styles, sizes</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<p style="margin-top: 24px">
+  Does this inline editing design feel right? The key idea: client appends
+  <code>?edit</code> to their URL → clicks to edit → auto-saves → exits.
+</p>

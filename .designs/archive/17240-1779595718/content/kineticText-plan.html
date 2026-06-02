@@ -1,0 +1,96 @@
+<h2>Widget #1: kineticText — Enhancement Plan</h2>
+<p class="subtitle">
+  Variable font typography with mouse-proximity weight animation
+</p>
+
+<div class="section">
+  <div class="label">Current State</div>
+  <div
+    style="
+      padding: 12px;
+      background: rgba(244, 114, 182, 0.05);
+      border-radius: 8px;
+      border: 1px solid rgba(244, 114, 182, 0.15);
+    "
+  >
+    <p style="font-size: 13px; color: #f472b6">
+      ⚠ editPanel is BROKEN — only shows "Height" control (which isn't even a
+      prop)
+    </p>
+    <p style="font-size: 13px; color: #aaa; margin-top: 8px">
+      12 props defined but ZERO are editable in the panel
+    </p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="label">New editPanel Controls</div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px">
+    <div
+      style="
+        padding: 12px;
+        background: rgba(205, 254, 0, 0.05);
+        border-radius: 8px;
+        border: 1px solid rgba(205, 254, 0, 0.15);
+      "
+    >
+      <h3 style="color: #cdfe00; font-size: 14px">
+        Existing Props (now editable)
+      </h3>
+      <ul style="font-size: 13px; color: #aaa; line-height: 1.8">
+        <li>Text content (textarea)</li>
+        <li>HTML tag (h1–h6, p, div)</li>
+        <li>Mode: proximity / scroll / path</li>
+        <li>Text colour (picker + hex)</li>
+        <li>Font size (range: 24–120px)</li>
+        <li>Font weight (range: 100–900)</li>
+        <li>Min/Max weight ranges</li>
+        <li>Proximity radius (range)</li>
+        <li>Font family select</li>
+        <li>Letter spacing (range)</li>
+        <li>Text alignment</li>
+      </ul>
+    </div>
+    <div
+      style="
+        padding: 12px;
+        background: rgba(60, 165, 250, 0.05);
+        border-radius: 8px;
+        border: 1px solid rgba(60, 165, 250, 0.15);
+      "
+    >
+      <h3 style="color: #60a5fa; font-size: 14px">New Enhanced Options</h3>
+      <ul style="font-size: 13px; color: #aaa; line-height: 1.8">
+        <li>Background colour</li>
+        <li>Gradient text toggle</li>
+        <li>Gradient colours (2 stops)</li>
+        <li>Text transform (upper/lower/cap)</li>
+        <li>Text shadow toggle + colour</li>
+        <li>Glow effect toggle + colour</li>
+        <li>Padding controls (V/H)</li>
+        <li>Container border radius</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="label">Visual Upgrades to Render</div>
+  <ul style="font-size: 13px; color: #aaa; line-height: 1.8">
+    <li>Gradient text support (background-clip: text)</li>
+    <li>Optional text-shadow for depth</li>
+    <li>Glow effect via box-shadow + filter</li>
+    <li>Container with configurable bg + border-radius</li>
+    <li>Text-transform support</li>
+    <li>Subtle hover transition on proximity mode</li>
+  </ul>
+</div>
+
+<div class="section">
+  <div class="label">Code Changes</div>
+  <p style="font-size: 13px; color: #aaa">
+    File: <code style="color: #cdfe00">widgets/veltro.js</code> — kineticText
+    registration (lines ~68-191). Adding new props to defaultProps, enhancing
+    render function, completely replacing editPanel. No other files touched.
+  </p>
+</div>

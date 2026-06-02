@@ -1,0 +1,190 @@
+<h2>🔧 Design Section 2/5: Builder Integration</h2>
+<p class="subtitle">
+  What the developer sees in Framework Builder to set up the CMS.
+</p>
+
+<div class="section">
+  <h3>CMS Panel in the Builder</h3>
+  <p>
+    A new "CMS" tab in the left panel (alongside Blocks, Pages, Design, etc.)
+    with these sub-sections:
+  </p>
+  <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px">
+    <div
+      style="
+        flex: 1;
+        min-width: 200px;
+        background: #1a1a2e;
+        padding: 16px;
+        border-radius: 8px;
+      "
+    >
+      <div style="font-size: 20px; margin-bottom: 4px">🔑</div>
+      <div style="font-weight: 600; font-size: 14px">Access Control</div>
+      <div style="font-size: 12px; color: #888; margin-top: 4px">
+        Set a client password (or magic link) for the admin dashboard. Client
+        email for notifications.
+      </div>
+    </div>
+    <div
+      style="
+        flex: 1;
+        min-width: 200px;
+        background: #1a1a2e;
+        padding: 16px;
+        border-radius: 8px;
+      "
+    >
+      <div style="font-size: 20px; margin-bottom: 4px">🏷️</div>
+      <div style="font-weight: 600; font-size: 14px">Content Map</div>
+      <div style="font-size: 12px; color: #888; margin-top: 4px">
+        Shows all pages with their editable fields. Toggle fields on/off. Rename
+        field labels for clients ("Hero Headline" → "Main Title").
+      </div>
+    </div>
+    <div
+      style="
+        flex: 1;
+        min-width: 200px;
+        background: #1a1a2e;
+        padding: 16px;
+        border-radius: 8px;
+      "
+    >
+      <div style="font-size: 20px; margin-bottom: 4px">🖼️</div>
+      <div style="font-weight: 600; font-size: 14px">Media Library</div>
+      <div style="font-size: 12px; color: #888; margin-top: 4px">
+        Manage uploaded images. Clients can browse and select from their media
+        library when editing.
+      </div>
+    </div>
+    <div
+      style="
+        flex: 1;
+        min-width: 200px;
+        background: #1a1a2e;
+        padding: 16px;
+        border-radius: 8px;
+      "
+    >
+      <div style="font-size: 20px; margin-bottom: 4px">📤</div>
+      <div style="font-weight: 600; font-size: 14px">Export with CMS</div>
+      <div style="font-size: 12px; color: #888; margin-top: 4px">
+        Export button generates the site with CMS wiring — schema, API
+        endpoints, admin panel, inline editing script all included.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Per-Prop Override UI</h3>
+  <p>
+    In the right panel when a block is selected, each prop shows a small CMS
+    toggle. It blends right into the existing property editor.
+  </p>
+  <div
+    style="
+      background: #1a1a2e;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      max-width: 400px;
+    "
+  >
+    <div
+      style="
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 8px;
+        background: #2a2a3e;
+        border-radius: 4px;
+        margin-bottom: 4px;
+      "
+    >
+      <div>
+        <div style="font-size: 13px; color: #fff">Headline</div>
+        <div style="font-size: 11px; color: #888">
+          "We build things that matter."
+        </div>
+      </div>
+      <label
+        style="
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          cursor: pointer;
+          font-size: 11px;
+        "
+      >
+        <input type="checkbox" checked style="accent-color: #cdfe00" /> CMS
+      </label>
+    </div>
+    <div
+      style="
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 8px;
+        background: #2a2a3e;
+        border-radius: 4px;
+        margin-bottom: 4px;
+      "
+    >
+      <div>
+        <div style="font-size: 13px; color: #fff">Subtext</div>
+        <div style="font-size: 11px; color: #888">
+          "Bold brand and web design..."
+        </div>
+      </div>
+      <label
+        style="
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          cursor: pointer;
+          font-size: 11px;
+        "
+      >
+        <input type="checkbox" checked style="accent-color: #cdfe00" /> CMS
+      </label>
+    </div>
+    <div
+      style="
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 8px;
+        background: #2a2a3e;
+        border-radius: 4px;
+      "
+    >
+      <div>
+        <div style="font-size: 13px; color: #fff">Background</div>
+        <div style="font-size: 11px; color: #888">#111111</div>
+      </div>
+      <label
+        style="
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          cursor: pointer;
+          font-size: 11px;
+        "
+      >
+        <input type="checkbox" style="accent-color: #cdfe00" /> CMS
+      </label>
+    </div>
+  </div>
+  <p style="margin-top: 8px; font-size: 12px; color: #888">
+    Default state follows auto-detection. Developer unchecks to lock, checks to
+    expose. Field labels can be customised for the client's admin panel.
+  </p>
+</div>
+
+<p style="margin-top: 24px">
+  Does this builder integration design look right? The key idea: CMS setup is a
+  new tab in the left panel, plus per-prop toggles in the right panel that feel
+  native to the existing UI.
+</p>

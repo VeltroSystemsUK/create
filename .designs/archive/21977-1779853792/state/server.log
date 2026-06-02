@@ -1,0 +1,4 @@
+{"type":"server-started","port":65195,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:65195","screen_dir":"/home/shauntuhey/Framework/.superpowers/brainstorm/21977-1779853792/content","state_dir":"/home/shauntuhey/Framework/.superpowers/brainstorm/21977-1779853792/state"}
+{"type":"screen-added","file":"/home/shauntuhey/Framework/.superpowers/brainstorm/21977-1779853792/content/pages-ux-approach.html"}
+{"type":"screen-updated","file":"/home/shauntuhey/Framework/.superpowers/brainstorm/21977-1779853792/content/pages-ux-approach.html"}
+{"type":"server-stopped","reason":"idle timeout"}

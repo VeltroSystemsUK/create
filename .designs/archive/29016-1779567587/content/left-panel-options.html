@@ -1,0 +1,739 @@
+<h2>Left panel layout options</h2>
+<p class="subtitle">How should tools, layers, and library be organised?</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div
+      class="card-image"
+      style="
+        background: #0d0d1a;
+        padding: 10px;
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+      "
+    >
+      <!-- Icon rail -->
+      <div
+        style="
+          width: 32px;
+          background: #0d0d1a;
+          border: 1px solid #222;
+          border-radius: 6px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 6px 0;
+          gap: 5px;
+          font-size: 9px;
+        "
+      >
+        <div
+          style="
+            width: 20px;
+            height: 20px;
+            background: #cdfe0022;
+            border: 1px solid #cdfe00;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #cdfe00;
+          "
+        >
+          ▶
+        </div>
+        <div
+          style="
+            width: 20px;
+            height: 20px;
+            background: #1a1a2a;
+            border: 1px solid #333;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+          "
+        >
+          ⬛
+        </div>
+        <div
+          style="
+            width: 20px;
+            height: 20px;
+            background: #1a1a2a;
+            border: 1px solid #333;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+          "
+        >
+          ⬤
+        </div>
+        <div
+          style="
+            width: 20px;
+            height: 20px;
+            background: #1a1a2a;
+            border: 1px solid #333;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+          "
+        >
+          ▲
+        </div>
+        <div
+          style="
+            width: 20px;
+            height: 20px;
+            background: #1a1a2a;
+            border: 1px solid #333;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+          "
+        >
+          —
+        </div>
+        <div
+          style="
+            width: 20px;
+            height: 20px;
+            background: #1a1a2a;
+            border: 1px solid #333;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+          "
+        >
+          T
+        </div>
+        <div
+          style="
+            width: 20px;
+            height: 20px;
+            background: #1a1a2a;
+            border: 1px solid #333;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+          "
+        >
+          🖼
+        </div>
+        <div
+          style="border-top: 1px solid #333; width: 16px; margin: 2px 0"
+        ></div>
+        <div
+          style="
+            width: 20px;
+            height: 20px;
+            background: #1a1a2a;
+            border: 1px solid #333;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+          "
+        >
+          ⊞
+        </div>
+        <div
+          style="
+            width: 20px;
+            height: 20px;
+            background: #1a1a2a;
+            border: 1px solid #333;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+          "
+        >
+          ✦
+        </div>
+        <div
+          style="
+            width: 20px;
+            height: 20px;
+            background: #1a1a2a;
+            border: 1px solid #333;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+          "
+        >
+          📁
+        </div>
+      </div>
+
+      <!-- Layers panel -->
+      <div
+        style="
+          width: 120px;
+          background: #111;
+          border: 1px solid #222;
+          border-radius: 6px;
+          padding: 8px;
+          font-family: monospace;
+        "
+      >
+        <div
+          style="
+            color: #555;
+            font-size: 7px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+          "
+        >
+          Layers
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 2px">
+          <div
+            style="
+              background: #cdfe0015;
+              border: 1px solid #cdfe0044;
+              border-radius: 3px;
+              padding: 3px 6px;
+              font-size: 8px;
+              color: #cdfe00;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            <span>T Headline</span><span style="color: #555">👁</span>
+          </div>
+          <div
+            style="
+              background: #1a1a2a;
+              border: 1px solid #333;
+              border-radius: 3px;
+              padding: 3px 6px;
+              font-size: 8px;
+              color: #888;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            <span>⬛ Shape</span><span style="color: #555">👁</span>
+          </div>
+          <div
+            style="
+              background: #1a1a2a;
+              border: 1px solid #333;
+              border-radius: 3px;
+              padding: 3px 6px;
+              font-size: 8px;
+              color: #888;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            <span>🖼 Photo</span><span style="color: #555">👁</span>
+          </div>
+          <div
+            style="
+              background: #1a1a2a;
+              border: 1px solid #333;
+              border-radius: 3px;
+              padding: 3px 6px;
+              font-size: 8px;
+              color: #888;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            <span>⬛ BG</span><span style="color: #555">👁</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Narrow icon rail + dedicated layers panel</h3>
+      <p>
+        Tools are icon-only in a slim vertical rail (like Figma). Hovering shows
+        a tooltip. A separate wider panel to the right of the rail is always the
+        layers list. Maximises canvas space.
+      </p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div
+      class="card-image"
+      style="
+        background: #0d0d1a;
+        padding: 10px;
+        display: flex;
+        justify-content: center;
+      "
+    >
+      <div
+        style="
+          width: 150px;
+          background: #111;
+          border: 1px solid #222;
+          border-radius: 6px;
+          font-family: monospace;
+          overflow: hidden;
+        "
+      >
+        <!-- Tab bar -->
+        <div style="display: flex; border-bottom: 1px solid #222">
+          <div
+            style="
+              flex: 1;
+              padding: 5px;
+              text-align: center;
+              font-size: 8px;
+              color: #cdfe00;
+              border-bottom: 2px solid #cdfe00;
+            "
+          >
+            Tools
+          </div>
+          <div
+            style="
+              flex: 1;
+              padding: 5px;
+              text-align: center;
+              font-size: 8px;
+              color: #555;
+            "
+          >
+            Layers
+          </div>
+          <div
+            style="
+              flex: 1;
+              padding: 5px;
+              text-align: center;
+              font-size: 8px;
+              color: #555;
+            "
+          >
+            Library
+          </div>
+        </div>
+        <!-- Tools grid -->
+        <div style="padding: 8px">
+          <div
+            style="
+              display: grid;
+              grid-template-columns: 1fr 1fr 1fr;
+              gap: 3px;
+              margin-bottom: 6px;
+            "
+          >
+            <div
+              style="
+                background: #cdfe0022;
+                border: 1px solid #cdfe00;
+                border-radius: 3px;
+                padding: 5px 0;
+                text-align: center;
+                font-size: 9px;
+                color: #cdfe00;
+              "
+            >
+              ▶
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 3px;
+                padding: 5px 0;
+                text-align: center;
+                font-size: 9px;
+                color: #666;
+              "
+            >
+              ⬛
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 3px;
+                padding: 5px 0;
+                text-align: center;
+                font-size: 9px;
+                color: #666;
+              "
+            >
+              ⬤
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 3px;
+                padding: 5px 0;
+                text-align: center;
+                font-size: 9px;
+                color: #666;
+              "
+            >
+              ▲
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 3px;
+                padding: 5px 0;
+                text-align: center;
+                font-size: 9px;
+                color: #666;
+              "
+            >
+              ⬡
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 3px;
+                padding: 5px 0;
+                text-align: center;
+                font-size: 9px;
+                color: #666;
+              "
+            >
+              —
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 3px;
+                padding: 5px 0;
+                text-align: center;
+                font-size: 9px;
+                color: #666;
+              "
+            >
+              →
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 3px;
+                padding: 5px 0;
+                text-align: center;
+                font-size: 9px;
+                color: #666;
+              "
+            >
+              T
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 3px;
+                padding: 5px 0;
+                text-align: center;
+                font-size: 9px;
+                color: #666;
+              "
+            >
+              🖼
+            </div>
+          </div>
+          <div
+            style="
+              border-top: 1px solid #222;
+              padding-top: 6px;
+              display: flex;
+              flex-direction: column;
+              gap: 2px;
+            "
+          >
+            <div
+              style="
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 3px;
+                padding: 3px 6px;
+                font-size: 8px;
+                color: #888;
+              "
+            >
+              ⊞ Templates
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 3px;
+                padding: 3px 6px;
+                font-size: 8px;
+                color: #888;
+              "
+            >
+              ✦ AI Generate
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Single panel, 3 tabs: Tools / Layers / Library</h3>
+      <p>
+        One wider panel with tabs. Tools tab = 3×3 shape grid + Templates + AI
+        buttons. Layers tab = full layer stack. Library tab = saved designs
+        grid. Familiar pattern, clean context switching.
+      </p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div
+      class="card-image"
+      style="
+        background: #0d0d1a;
+        padding: 10px;
+        display: flex;
+        justify-content: center;
+      "
+    >
+      <div
+        style="
+          width: 150px;
+          background: #111;
+          border: 1px solid #222;
+          border-radius: 6px;
+          font-family: monospace;
+          overflow: hidden;
+        "
+      >
+        <!-- Tools always visible at top -->
+        <div style="padding: 8px; border-bottom: 1px solid #333">
+          <div
+            style="
+              color: #555;
+              font-size: 7px;
+              text-transform: uppercase;
+              letter-spacing: 1px;
+              margin-bottom: 5px;
+            "
+          >
+            Tools
+          </div>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(5, 1fr);
+              gap: 2px;
+            "
+          >
+            <div
+              style="
+                background: #cdfe0022;
+                border: 1px solid #cdfe00;
+                border-radius: 3px;
+                padding: 4px 0;
+                text-align: center;
+                font-size: 9px;
+                color: #cdfe00;
+              "
+            >
+              ▶
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 3px;
+                padding: 4px 0;
+                text-align: center;
+                font-size: 9px;
+                color: #666;
+              "
+            >
+              ⬛
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 3px;
+                padding: 4px 0;
+                text-align: center;
+                font-size: 9px;
+                color: #666;
+              "
+            >
+              ⬤
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 3px;
+                padding: 4px 0;
+                text-align: center;
+                font-size: 9px;
+                color: #666;
+              "
+            >
+              T
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 3px;
+                padding: 4px 0;
+                text-align: center;
+                font-size: 9px;
+                color: #666;
+              "
+            >
+              🖼
+            </div>
+          </div>
+        </div>
+        <!-- Layers always visible below -->
+        <div style="padding: 8px; flex: 1">
+          <div
+            style="
+              color: #555;
+              font-size: 7px;
+              text-transform: uppercase;
+              letter-spacing: 1px;
+              margin-bottom: 5px;
+            "
+          >
+            Layers
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 2px">
+            <div
+              style="
+                background: #cdfe0015;
+                border: 1px solid #cdfe0044;
+                border-radius: 3px;
+                padding: 3px 6px;
+                font-size: 8px;
+                color: #cdfe00;
+                display: flex;
+                justify-content: space-between;
+              "
+            >
+              <span>T Headline</span><span style="color: #555">👁</span>
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 3px;
+                padding: 3px 6px;
+                font-size: 8px;
+                color: #888;
+                display: flex;
+                justify-content: space-between;
+              "
+            >
+              <span>⬛ Shape</span><span style="color: #555">👁</span>
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 3px;
+                padding: 3px 6px;
+                font-size: 8px;
+                color: #888;
+                display: flex;
+                justify-content: space-between;
+              "
+            >
+              <span>🖼 Photo</span><span style="color: #555">👁</span>
+            </div>
+          </div>
+          <div
+            style="
+              border-top: 1px solid #222;
+              margin-top: 6px;
+              padding-top: 6px;
+              display: flex;
+              flex-direction: column;
+              gap: 2px;
+            "
+          >
+            <div
+              style="
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 3px;
+                padding: 3px 6px;
+                font-size: 8px;
+                color: #888;
+              "
+            >
+              ⊞ Templates
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 3px;
+                padding: 3px 6px;
+                font-size: 8px;
+                color: #888;
+              "
+            >
+              ✦ AI Generate
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 3px;
+                padding: 3px 6px;
+                font-size: 8px;
+                color: #888;
+              "
+            >
+              📁 My Designs
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>
+        C — Stacked: compact tools row at top, layers below always visible
+      </h3>
+      <p>
+        Tools collapse to a compact single row at the top of the panel. Layers
+        list always visible below — no tab switching needed. Templates, AI, and
+        Library as slim buttons at the bottom.
+      </p>
+    </div>
+  </div>
+</div>

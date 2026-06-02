@@ -1,0 +1,311 @@
+<h2>Page thumbnails in the Manage modal</h2>
+<p class="subtitle">How should pages be represented visually?</p>
+
+<div class="cards">
+  <div class="card" data-choice="screenshot" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div
+        style="
+          background: #1a1a1a;
+          border-radius: 6px;
+          padding: 12px;
+          height: 150px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        "
+      >
+        <div
+          style="
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            width: 100%;
+          "
+        >
+          <div
+            style="
+              background: #111;
+              border-radius: 4px;
+              overflow: hidden;
+              border: 1px solid #cdfe00;
+            "
+          >
+            <div
+              style="
+                height: 60px;
+                background: linear-gradient(180deg, #111 0, #1a1a1a 100%);
+                position: relative;
+              "
+            >
+              <div
+                style="height: 6px; background: #222; margin: 6px 4px 3px"
+              ></div>
+              <div
+                style="height: 3px; background: #1a1a1a; margin: 0 4px 2px"
+              ></div>
+              <div
+                style="
+                  height: 3px;
+                  background: #1a1a1a;
+                  margin: 0 4px 2px;
+                  width: 60%;
+                "
+              ></div>
+              <div
+                style="
+                  height: 8px;
+                  background: #cdfe00;
+                  margin: 4px 4px 0;
+                  width: 30%;
+                "
+              ></div>
+            </div>
+            <div style="padding: 4px; background: #0d0d0d">
+              <div style="color: #fff; font-size: 8px">Home</div>
+            </div>
+          </div>
+          <div style="background: #111; border-radius: 4px; overflow: hidden">
+            <div
+              style="
+                height: 60px;
+                background: linear-gradient(180deg, #0a0a0a 0, #222 100%);
+              "
+            >
+              <div
+                style="height: 6px; background: #1a1a1a; margin: 6px 4px 3px"
+              ></div>
+              <div
+                style="height: 3px; background: #111; margin: 0 4px 2px"
+              ></div>
+              <div
+                style="
+                  height: 3px;
+                  background: #111;
+                  margin: 0 4px 2px;
+                  width: 70%;
+                "
+              ></div>
+            </div>
+            <div style="padding: 4px; background: #0d0d0d">
+              <div style="color: #888; font-size: 8px">About</div>
+            </div>
+          </div>
+          <div
+            style="
+              background: #111;
+              border-radius: 4px;
+              overflow: hidden;
+              border: 1px dashed #333;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              height: 76px;
+            "
+          >
+            <div style="color: #333; font-size: 20px">+</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Live canvas previews</h3>
+      <p>
+        Scale down each page's actual blocks into a miniature preview. Accurate,
+        but requires rendering each page's canvas off-screen. Heavier to
+        implement.
+      </p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="colorblock" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div
+        style="
+          background: #1a1a1a;
+          border-radius: 6px;
+          padding: 12px;
+          height: 150px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        "
+      >
+        <div
+          style="
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            width: 100%;
+          "
+        >
+          <div
+            style="
+              background: #111;
+              border-radius: 4px;
+              overflow: hidden;
+              border: 1px solid #cdfe00;
+            "
+          >
+            <div
+              style="
+                height: 60px;
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+                padding: 4px;
+              "
+            >
+              <div
+                style="
+                  flex: 2;
+                  background: #cdfe00;
+                  border-radius: 2px;
+                  opacity: 0.8;
+                "
+              ></div>
+              <div style="flex: 1; background: #333; border-radius: 2px"></div>
+              <div style="flex: 1; background: #222; border-radius: 2px"></div>
+            </div>
+            <div style="padding: 4px; background: #0d0d0d">
+              <div style="color: #fff; font-size: 8px">Home · 6 blocks</div>
+            </div>
+          </div>
+          <div style="background: #111; border-radius: 4px; overflow: hidden">
+            <div
+              style="
+                height: 60px;
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+                padding: 4px;
+              "
+            >
+              <div style="flex: 2; background: #444; border-radius: 2px"></div>
+              <div style="flex: 1; background: #333; border-radius: 2px"></div>
+              <div
+                style="flex: 1; background: #2a2a2a; border-radius: 2px"
+              ></div>
+            </div>
+            <div style="padding: 4px; background: #0d0d0d">
+              <div style="color: #888; font-size: 8px">About · 3 blocks</div>
+            </div>
+          </div>
+          <div
+            style="
+              background: #111;
+              border-radius: 4px;
+              overflow: hidden;
+              border: 1px dashed #333;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              height: 76px;
+            "
+          >
+            <div style="color: #333; font-size: 20px">+</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Abstract block stack</h3>
+      <p>
+        Show a simplified colour-strip stack representing each block's
+        background colour, plus a block count. Fast, zero rendering cost, still
+        visually distinct per page.
+      </p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="list" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div
+        style="
+          background: #1a1a1a;
+          border-radius: 6px;
+          padding: 12px;
+          height: 150px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        "
+      >
+        <div style="width: 100%">
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              padding: 6px 8px;
+              background: #2a2a2a;
+              border-radius: 4px;
+              margin-bottom: 4px;
+              border-left: 2px solid #cdfe00;
+            "
+          >
+            <div style="color: #cdfe00; font-size: 10px; margin-right: 6px">
+              ⊞
+            </div>
+            <div>
+              <div style="color: #fff; font-size: 10px">Home</div>
+              <div style="color: #555; font-size: 8px">/ · 6 blocks</div>
+            </div>
+            <div style="margin-left: auto; display: flex; gap: 4px">
+              <div style="color: #444; font-size: 9px">✎</div>
+              <div style="color: #444; font-size: 9px">⋮⋮</div>
+            </div>
+          </div>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              padding: 6px 8px;
+              background: #1e1e1e;
+              border-radius: 4px;
+              margin-bottom: 4px;
+            "
+          >
+            <div style="color: #555; font-size: 10px; margin-right: 6px">⊞</div>
+            <div>
+              <div style="color: #aaa; font-size: 10px">About</div>
+              <div style="color: #444; font-size: 8px">/about · 3 blocks</div>
+            </div>
+            <div style="margin-left: auto; display: flex; gap: 4px">
+              <div style="color: #333; font-size: 9px">✎</div>
+              <div style="color: #333; font-size: 9px">⋮⋮</div>
+            </div>
+          </div>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              padding: 6px 8px;
+              background: #1e1e1e;
+              border-radius: 4px;
+            "
+          >
+            <div style="color: #555; font-size: 10px; margin-right: 6px">⊞</div>
+            <div>
+              <div style="color: #aaa; font-size: 10px">Services</div>
+              <div style="color: #444; font-size: 8px">
+                /services · 5 blocks
+              </div>
+            </div>
+            <div style="margin-left: auto; display: flex; gap: 4px">
+              <div style="color: #333; font-size: 9px">✎</div>
+              <div style="color: #333; font-size: 9px">⋮⋮</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — List view (no thumbnails)</h3>
+      <p>
+        Clean sortable list showing page name, slug, and block count. Inline
+        rename, drag handle to reorder. Simpler, faster, works well with many
+        pages.
+      </p>
+    </div>
+  </div>
+</div>

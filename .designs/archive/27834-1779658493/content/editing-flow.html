@@ -1,0 +1,102 @@
+<h2>✏️ How should clients edit content?</h2>
+<p class="subtitle">
+  Two fundamentally different approaches. The architecture depends on this
+  choice.
+</p>
+
+<div class="options">
+  <div class="option" data-choice="inline" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Inline Editing (on the live site)</h3>
+      <p>
+        Client visits their live site URL, clicks an "Edit" button, and content
+        becomes editable in-place. Click text to type. Click image to replace.
+        Changes save immediately. No separate admin panel needed.
+      </p>
+      <div style="margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap">
+        <span class="label">WYSIWYG</span>
+        <span class="label">Instant</span>
+        <span class="label">No learning curve</span>
+      </div>
+      <div
+        style="
+          margin-top: 12px;
+          background: #1a1a2e;
+          padding: 12px;
+          border-radius: 8px;
+          font-size: 13px;
+          color: #aaa;
+        "
+      >
+        ⚡ Pro: Clients edit in context — they see exactly what the visitor
+        sees<br />
+        ⚡ Con: Harder for bulk updates / managing lists of items
+      </div>
+    </div>
+  </div>
+  <div class="option" data-choice="dashboard" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Admin Dashboard (separate panel)</h3>
+      <p>
+        Client logs into a CMS admin panel (e.g. /admin on their site). Sees
+        forms for each page: edit hero headline, swap hero image, update team
+        bios. Changes go live after saving. Like WordPress admin but simpler.
+      </p>
+      <div style="margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap">
+        <span class="label">Form-based</span>
+        <span class="label">Bulk editing</span>
+        <span class="label">Structured</span>
+      </div>
+      <div
+        style="
+          margin-top: 12px;
+          background: #1a1a2e;
+          padding: 12px;
+          border-radius: 8px;
+          font-size: 13px;
+          color: #aaa;
+        "
+      >
+        ⚡ Pro: Great for managing many items (team, blog, products)<br />
+        ⚡ Con: Less intuitive — client edits in a form, previews on site
+      </div>
+    </div>
+  </div>
+  <div class="option" data-choice="both" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Both — Inline + Dashboard</h3>
+      <p>
+        Inline editing on the live site for quick text/image changes. Dashboard
+        for managing structured content (blog posts, team members, products).
+        Best of both worlds — simple edits stay in context, complex CMS work
+        gets a proper UI.
+      </p>
+      <div style="margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap">
+        <span class="label">Best of both</span>
+        <span class="label">Context + Power</span>
+      </div>
+      <div
+        style="
+          margin-top: 12px;
+          background: #1a1a2e;
+          padding: 12px;
+          border-radius: 8px;
+          font-size: 13px;
+          color: #aaa;
+        "
+      >
+        ⚡ Pro: Right tool for each job<br />
+        ⚡ Con: More to build (but worth it)
+      </div>
+    </div>
+  </div>
+</div>
+
+<p style="margin-top: 24px">
+  Take a look at the options — click one, then let me know in chat. I recommend
+  <strong>C (Both)</strong> for the best client experience, but keen to hear
+  your thoughts!
+</p>

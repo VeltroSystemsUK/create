@@ -1,0 +1,375 @@
+<h2>Media Library panel — proposed layout</h2>
+<p class="subtitle">
+  This is what the left-panel accordion will contain. Does the structure feel
+  right?
+</p>
+
+<div class="mockup">
+  <div class="mockup-header">Left Panel → Media accordion (expanded)</div>
+  <div
+    class="mockup-body"
+    style="
+      background: #161616;
+      padding: 0;
+      font-size: 11px;
+      width: 220px;
+      margin: 0 auto;
+    "
+  >
+    <!-- Search bar -->
+    <div style="padding: 8px 8px 4px">
+      <div style="display: flex; gap: 4px">
+        <div
+          style="
+            flex: 1;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 4px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            padding: 0 7px;
+            gap: 4px;
+          "
+        >
+          <span style="color: #555; font-size: 9px">⌕</span>
+          <span style="color: #444; font-size: 9px">Search images…</span>
+        </div>
+        <div
+          style="
+            background: #222;
+            border: 1px solid #333;
+            border-radius: 4px;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #888;
+          "
+          title="Upload"
+        >
+          ↑
+        </div>
+      </div>
+    </div>
+
+    <!-- Folder tabs -->
+    <div style="padding: 4px 8px; display: flex; gap: 3px; flex-wrap: wrap">
+      <div
+        style="
+          background: #6366f1;
+          border-radius: 10px;
+          padding: 2px 8px;
+          font-size: 9px;
+          color: #fff;
+          font-weight: 600;
+        "
+      >
+        All
+      </div>
+      <div
+        style="
+          background: #222;
+          border-radius: 10px;
+          padding: 2px 8px;
+          font-size: 9px;
+          color: #666;
+        "
+      >
+        Backgrounds
+      </div>
+      <div
+        style="
+          background: #222;
+          border-radius: 10px;
+          padding: 2px 8px;
+          font-size: 9px;
+          color: #666;
+        "
+      >
+        Heroes
+      </div>
+      <div
+        style="
+          background: #222;
+          border-radius: 10px;
+          padding: 2px 8px;
+          font-size: 9px;
+          color: #666;
+        "
+      >
+        Logos
+      </div>
+      <div
+        style="
+          background: #1a1a1a;
+          border: 1px dashed #333;
+          border-radius: 10px;
+          padding: 2px 7px;
+          font-size: 9px;
+          color: #444;
+        "
+      >
+        + folder
+      </div>
+    </div>
+
+    <!-- Image grid -->
+    <div style="padding: 4px 8px">
+      <div
+        style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px"
+      >
+        <!-- Images with hover state hint -->
+        <div
+          style="
+            background: #2a3a4a;
+            border-radius: 3px;
+            aspect-ratio: 1;
+            position: relative;
+            overflow: hidden;
+          "
+        >
+          <div
+            style="
+              position: absolute;
+              inset: 0;
+              background: linear-gradient(135deg, #2a3a4a, #1a2a3a);
+            "
+          ></div>
+          <div
+            style="
+              position: absolute;
+              bottom: 0;
+              left: 0;
+              right: 0;
+              background: rgba(0, 0, 0, 0.7);
+              padding: 2px;
+              font-size: 6px;
+              color: #7dd3fc;
+              text-align: center;
+            "
+          >
+            📋
+          </div>
+        </div>
+        <div
+          style="
+            background: #3a2a4a;
+            border-radius: 3px;
+            aspect-ratio: 1;
+            position: relative;
+          "
+        >
+          <div
+            style="
+              position: absolute;
+              inset: 0;
+              background: linear-gradient(135deg, #3a2a4a, #2a1a3a);
+            "
+          ></div>
+        </div>
+        <div
+          style="
+            background: #2a4a3a;
+            border-radius: 3px;
+            aspect-ratio: 1;
+            position: relative;
+          "
+        >
+          <div
+            style="
+              position: absolute;
+              inset: 0;
+              background: linear-gradient(135deg, #2a4a2a, #1a3a2a);
+            "
+          ></div>
+        </div>
+        <div
+          style="
+            background: #4a3a2a;
+            border-radius: 3px;
+            aspect-ratio: 1;
+            position: relative;
+          "
+        >
+          <div
+            style="
+              position: absolute;
+              inset: 0;
+              background: linear-gradient(135deg, #4a3a2a, #3a2a1a);
+            "
+          ></div>
+        </div>
+        <div
+          style="background: #3a4a2a; border-radius: 3px; aspect-ratio: 1"
+        ></div>
+        <div
+          style="background: #2a2a4a; border-radius: 3px; aspect-ratio: 1"
+        ></div>
+        <div
+          style="background: #4a2a3a; border-radius: 3px; aspect-ratio: 1"
+        ></div>
+        <div
+          style="background: #3a3a4a; border-radius: 3px; aspect-ratio: 1"
+        ></div>
+      </div>
+      <div
+        style="color: #555; font-size: 8px; margin-top: 4px; text-align: right"
+      >
+        8 images · click = copy URL
+      </div>
+    </div>
+
+    <div style="height: 1px; background: #222; margin: 4px 0"></div>
+
+    <!-- URL Import -->
+    <div style="padding: 4px 8px 6px">
+      <div
+        style="
+          font-size: 8px;
+          color: #666;
+          font-weight: 600;
+          letter-spacing: 0.4px;
+          margin-bottom: 4px;
+          text-transform: uppercase;
+        "
+      >
+        Import from URL
+      </div>
+      <div style="display: flex; gap: 3px">
+        <div
+          style="
+            flex: 1;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 3px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            padding: 0 6px;
+          "
+        >
+          <span style="color: #444; font-size: 8px">https://…</span>
+        </div>
+        <div
+          style="
+            background: #6366f1;
+            border-radius: 3px;
+            width: 28px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            color: #fff;
+          "
+        >
+          ↓
+        </div>
+      </div>
+    </div>
+
+    <div style="height: 1px; background: #222; margin: 4px 0"></div>
+
+    <!-- Source links -->
+    <div style="padding: 4px 8px 8px">
+      <div
+        style="
+          font-size: 8px;
+          color: #666;
+          font-weight: 600;
+          letter-spacing: 0.4px;
+          margin-bottom: 5px;
+          text-transform: uppercase;
+        "
+      >
+        Free Image Sources
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 3px">
+        <a
+          style="
+            background: #1e3a5f;
+            border-radius: 3px;
+            padding: 4px 8px;
+            font-size: 9px;
+            color: #60a5fa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+          "
+        >
+          <span>Unsplash</span><span style="opacity: 0.5">↗</span>
+        </a>
+        <a
+          style="
+            background: #2d1b4e;
+            border-radius: 3px;
+            padding: 4px 8px;
+            font-size: 9px;
+            color: #c084fc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+          "
+        >
+          <span>Pexels</span><span style="opacity: 0.5">↗</span>
+        </a>
+        <a
+          style="
+            background: #1a2e1a;
+            border-radius: 3px;
+            padding: 4px 8px;
+            font-size: 9px;
+            color: #86efac;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+          "
+        >
+          <span>Pixabay</span><span style="opacity: 0.5">↗</span>
+        </a>
+        <a
+          style="
+            background: #2a1e1a;
+            border-radius: 3px;
+            padding: 4px 8px;
+            font-size: 9px;
+            color: #fb923c;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+          "
+        >
+          <span>Freepik</span><span style="opacity: 0.5">↗</span>
+        </a>
+        <a
+          style="
+            background: #1a2a2a;
+            border-radius: 3px;
+            padding: 4px 8px;
+            font-size: 9px;
+            color: #2dd4bf;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+          "
+        >
+          <span>StockSnap</span><span style="opacity: 0.5">↗</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top: 16px">
+  The first image in the grid shows a 📋 hover action — clicking any image
+  copies its <code>/media/filename</code> URL to clipboard. The right panel will
+  also get a "Choose from Library" button when editing image props.
+</p>

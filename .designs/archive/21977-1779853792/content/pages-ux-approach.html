@@ -1,0 +1,324 @@
+<h2>How should Pages be accessed?</h2>
+<p class="subtitle">
+  This is the foundational UX decision — pick the primary interaction model
+</p>
+
+<div class="cards">
+  <div class="card" data-choice="sidebar" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div
+        style="
+          background: #1a1a1a;
+          border-radius: 6px;
+          overflow: hidden;
+          display: flex;
+          height: 160px;
+          font-family: monospace;
+          font-size: 11px;
+        "
+      >
+        <div
+          style="
+            width: 180px;
+            background: #111;
+            border-right: 1px solid #333;
+            padding: 10px;
+            flex-shrink: 0;
+          "
+        >
+          <div
+            style="
+              color: #888;
+              font-size: 9px;
+              text-transform: uppercase;
+              letter-spacing: 1px;
+              margin-bottom: 8px;
+            "
+          >
+            Pages
+          </div>
+          <div
+            style="
+              background: #2a2a2a;
+              border-radius: 4px;
+              padding: 5px 8px;
+              color: #fff;
+              margin-bottom: 4px;
+              font-size: 10px;
+              border-left: 2px solid #cdfe00;
+            "
+          >
+            ⊞ Home
+          </div>
+          <div
+            style="
+              padding: 5px 8px;
+              color: #666;
+              margin-bottom: 4px;
+              font-size: 10px;
+            "
+          >
+            ⊞ About
+          </div>
+          <div
+            style="
+              padding: 5px 8px;
+              color: #666;
+              margin-bottom: 4px;
+              font-size: 10px;
+            "
+          >
+            ⊞ Services
+          </div>
+          <div
+            style="
+              padding: 5px 8px;
+              color: #666;
+              margin-bottom: 4px;
+              font-size: 10px;
+            "
+          >
+            ⊞ Contact
+          </div>
+          <div style="padding: 5px 8px; color: #444; font-size: 10px">
+            + Add page
+          </div>
+        </div>
+        <div
+          style="
+            flex: 1;
+            background: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
+        >
+          <div style="color: #444; font-size: 10px; text-align: center">
+            Canvas ↗
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Persistent Sidebar</h3>
+      <p>
+        Pages panel lives on the left, always visible (or toggle-able). Quick
+        switching, always-on context. Used by Webflow, Framer.
+      </p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="modal" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div
+        style="
+          background: #1a1a1a;
+          border-radius: 6px;
+          overflow: hidden;
+          height: 160px;
+          font-family: monospace;
+          font-size: 11px;
+          position: relative;
+        "
+      >
+        <div
+          style="
+            background: #111;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            border-bottom: 1px solid #2a2a2a;
+          "
+        >
+          <span style="color: #666; font-size: 10px">Framework Builder</span>
+          <span style="color: #cdfe00; font-size: 10px; margin-left: 12px"
+            >Pages ↗</span
+          >
+        </div>
+        <div
+          style="
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+          "
+        >
+          <div
+            style="
+              background: #1e1e1e;
+              border: 1px solid #333;
+              border-radius: 8px;
+              padding: 14px;
+              width: 240px;
+            "
+          >
+            <div
+              style="
+                color: #fff;
+                font-size: 11px;
+                font-weight: 600;
+                margin-bottom: 8px;
+              "
+            >
+              Pages
+            </div>
+            <div
+              style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px"
+            >
+              <div
+                style="
+                  background: #2a2a2a;
+                  border-radius: 4px;
+                  padding: 6px;
+                  border: 1px solid #cdfe00;
+                "
+              >
+                <div
+                  style="
+                    background: #333;
+                    height: 36px;
+                    border-radius: 2px;
+                    margin-bottom: 4px;
+                  "
+                ></div>
+                <div style="color: #fff; font-size: 9px">Home</div>
+              </div>
+              <div
+                style="background: #2a2a2a; border-radius: 4px; padding: 6px"
+              >
+                <div
+                  style="
+                    background: #333;
+                    height: 36px;
+                    border-radius: 2px;
+                    margin-bottom: 4px;
+                  "
+                ></div>
+                <div style="color: #888; font-size: 9px">About</div>
+              </div>
+              <div
+                style="background: #2a2a2a; border-radius: 4px; padding: 6px"
+              >
+                <div
+                  style="
+                    background: #333;
+                    height: 36px;
+                    border-radius: 2px;
+                    margin-bottom: 4px;
+                  "
+                ></div>
+                <div style="color: #888; font-size: 9px">Services</div>
+              </div>
+              <div
+                style="
+                  background: #1a1a1a;
+                  border-radius: 4px;
+                  padding: 6px;
+                  border: 1px dashed #333;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                <div style="color: #444; font-size: 18px">+</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Pages Modal / Overlay</h3>
+      <p>
+        A "Pages" button opens a full-screen modal with a thumbnail grid. Canvas
+        stays clean. Used by Squarespace, Notion-style.
+      </p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="hybrid" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div
+        style="
+          background: #1a1a1a;
+          border-radius: 6px;
+          overflow: hidden;
+          height: 160px;
+          font-family: monospace;
+          font-size: 11px;
+        "
+      >
+        <div
+          style="
+            background: #111;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            border-bottom: 1px solid #2a2a2a;
+            gap: 8px;
+          "
+        >
+          <div
+            style="
+              background: #2a2a2a;
+              border-radius: 3px;
+              padding: 2px 8px;
+              color: #cdfe00;
+              font-size: 10px;
+              border: 1px solid #cdfe00;
+            "
+          >
+            Home ▾
+          </div>
+          <div style="padding: 2px 8px; color: #555; font-size: 10px">
+            About
+          </div>
+          <div style="padding: 2px 8px; color: #555; font-size: 10px">
+            Services
+          </div>
+          <div style="padding: 2px 8px; color: #555; font-size: 10px">
+            Contact
+          </div>
+          <div style="padding: 2px 8px; color: #444; font-size: 10px">+</div>
+          <div
+            style="
+              margin-left: auto;
+              padding: 2px 8px;
+              color: #666;
+              font-size: 10px;
+              border: 1px solid #333;
+              border-radius: 3px;
+            "
+          >
+            ⊞ Manage
+          </div>
+        </div>
+        <div
+          style="
+            padding: 10px;
+            color: #444;
+            font-size: 10px;
+            text-align: center;
+            padding-top: 50px;
+          "
+        >
+          Canvas — full width
+        </div>
+        <div style="position: absolute; bottom: 0; right: 0"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Enhanced Tab Bar + Manage Modal</h3>
+      <p>
+        Keep the existing bottom/top tab bar for quick switching, but add a
+        "Manage" button that opens the full thumbnail grid + settings. Best of
+        both.
+      </p>
+    </div>
+  </div>
+</div>

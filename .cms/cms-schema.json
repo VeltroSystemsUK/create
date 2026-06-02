@@ -1,0 +1,66 @@
+{
+  "blockTypes": {
+    "nav": {
+      "editable": [
+        "logoText",
+        "links",
+        "ctaText"
+      ]
+    },
+    "hero": {
+      "editable": [
+        "eyebrow",
+        "headline",
+        "subtext",
+        "ctaText"
+      ]
+    },
+    "marquee": {
+      "editable": [
+        "items"
+      ]
+    },
+    "work": {
+      "editable": [
+        "label",
+        "headline",
+        "cards"
+      ]
+    },
+    "services": {
+      "editable": [
+        "items"
+      ]
+    },
+    "stats": {
+      "editable": [
+        "stats"
+      ]
+    },
+    "testimonial": {
+      "editable": [
+        "quote",
+        "author",
+        "role"
+      ]
+    },
+    "process": {
+      "editable": [
+        "steps"
+      ]
+    },
+    "cta": {
+      "editable": [
+        "headline",
+        "subtext",
+        "ctaText"
+      ]
+    },
+    "footer": {
+      "editable": [
+        "tagline",
+        "legalText"
+      ]
+    }
+  }
+}

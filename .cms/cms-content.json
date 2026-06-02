@@ -1,0 +1,243 @@
+{
+  "name": "My Project",
+  "pages": [
+    {
+      "id": "p_9bc31",
+      "name": "Home",
+      "slug": "index",
+      "blocks": [
+        {
+          "id": "b_8pto1ua",
+          "type": "nav",
+          "props": {
+            "logoText": "NewBrand.",
+            "links": [
+              "Work",
+              "Services",
+              "About",
+              "Contact"
+            ],
+            "ctaText": "Start a project",
+            "bg": "#111111",
+            "textColor": "#f7f6f2",
+            "accentColor": "#CDFE00",
+            "menuStyle": "simple"
+          }
+        },
+        {
+          "id": "b_0j9751g",
+          "type": "hero",
+          "props": {
+            "eyebrow": "Nottingham \u00b7 Est. 2026",
+            "headline": "We build things that <em>matter.</em>",
+            "subtext": "Bold brand and web design for businesses that refuse to be ordinary.",
+            "ctaText": "See our work \u2192",
+            "bg": "#111111",
+            "accentColor": "#CDFE00",
+            "showBlob": true,
+            "blobStyle": "blob"
+          }
+        },
+        {
+          "id": "b_unnjeob",
+          "type": "marquee",
+          "props": {
+            "items": [
+              "Award Winning",
+              "Creative",
+              "Results Driven",
+              "Human Centred",
+              "Boldly Different"
+            ],
+            "bg": "#CDFE00",
+            "textColor": "#111111",
+            "speed": 16
+          }
+        },
+        {
+          "id": "b_7dh0pzn",
+          "type": "work",
+          "props": {
+            "label": "Our work.",
+            "headline": "Selected projects.",
+            "cards": [
+              {
+                "tag": "Fintech \u00b7 Platform",
+                "title": "Project One",
+                "bg": "linear-gradient(135deg,#0d2137,#1a4a6e)"
+              },
+              {
+                "tag": "SaaS \u00b7 Brand",
+                "title": "Project Two",
+                "bg": "linear-gradient(135deg,#1a1a3e,#3a1a5e)"
+              },
+              {
+                "tag": "E-commerce \u00b7 UI",
+                "title": "Project Three",
+                "bg": "linear-gradient(135deg,#1a3a1a,#2e6e2e)"
+              },
+              {
+                "tag": "Mobile \u00b7 App",
+                "title": "Project Four",
+                "bg": "linear-gradient(135deg,#3a1a0d,#7e3a1a)"
+              },
+              {
+                "tag": "Web \u00b7 Strategy",
+                "title": "Project Five",
+                "bg": "linear-gradient(135deg,#1a1a1a,#3a3a3a)"
+              }
+            ],
+            "bg": "#f7f6f2",
+            "accentColor": "#CDFE00"
+          }
+        },
+        {
+          "id": "b_psugxx3",
+          "type": "services",
+          "props": {
+            "items": [
+              "Brand Strategy",
+              "Web Design",
+              "Development",
+              "SEO & Growth",
+              "Content Creation"
+            ],
+            "bg": "#111111",
+            "textColor": "#f7f6f2",
+            "accentColor": "#CDFE00"
+          }
+        },
+        {
+          "id": "b_grfn8p8",
+          "type": "stats",
+          "props": {
+            "stats": [
+              {
+                "value": 150,
+                "suffix": "+",
+                "label": "Projects Delivered"
+              },
+              {
+                "value": 98,
+                "suffix": "%",
+                "label": "Client Retention"
+              },
+              {
+                "value": 12,
+                "suffix": "",
+                "label": "Industry Awards"
+              },
+              {
+                "value": 5,
+                "suffix": "M+",
+                "label": "Revenue Generated"
+              }
+            ],
+            "bg": "#111111",
+            "textColor": "#f7f6f2",
+            "accentColor": "#CDFE00"
+          }
+        },
+        {
+          "id": "b_mgddg03",
+          "type": "testimonial",
+          "props": {
+            "quote": "They transformed our brand completely. The results speak for themselves \u2014 3x more leads in just 60 days.",
+            "name": "Sarah Mitchell",
+            "role": "CEO, TechForward",
+            "avatarUrl": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100",
+            "bg": "#111111",
+            "textColor": "#f7f6f2",
+            "accentColor": "#CDFE00"
+          }
+        },
+        {
+          "id": "b_b8bbm8y",
+          "type": "process",
+          "props": {
+            "steps": [
+              {
+                "num": "01",
+                "title": "Discovery",
+                "desc": "We learn about your brand, goals, and audience."
+              },
+              {
+                "num": "02",
+                "title": "Design",
+                "desc": "Bold concepts that stand out from the noise."
+              },
+              {
+                "num": "03",
+                "title": "Build",
+                "desc": "Pixel-perfect development with clean code."
+              },
+              {
+                "num": "04",
+                "title": "Launch",
+                "desc": "Go live with confidence and ongoing support."
+              }
+            ],
+            "bg": "#111111",
+            "textColor": "#f7f6f2",
+            "accentColor": "#CDFE00"
+          }
+        },
+        {
+          "id": "b_7b6xm2u",
+          "type": "cta",
+          "props": {
+            "headline": "Ready to stand out?",
+            "subtext": "Let's build something extraordinary together.",
+            "btnText": "Start a project",
+            "bg": "#CDFE00",
+            "textColor": "#111111",
+            "accentColor": "#111111"
+          }
+        },
+        {
+          "id": "b_27ioday",
+          "type": "footer",
+          "props": {
+            "brandName": "YourBrand.",
+            "tagline": "Bold design for bold businesses.",
+            "columns": [
+              {
+                "heading": "Services",
+                "links": [
+                  "Web Design",
+                  "Branding",
+                  "Development",
+                  "SEO"
+                ]
+              },
+              {
+                "heading": "Company",
+                "links": [
+                  "About",
+                  "Careers",
+                  "Blog",
+                  "Contact"
+                ]
+              },
+              {
+                "heading": "Legal",
+                "links": [
+                  "Privacy",
+                  "Terms",
+                  "Cookies"
+                ]
+              }
+            ],
+            "bg": "#111111",
+            "textColor": "#f7f6f2",
+            "accentColor": "#CDFE00"
+          }
+        }
+      ]
+    }
+  ],
+  "currentPageId": "p_9bc31",
+  "pageCount": 1,
+  "slug": "my-project",
+  "modified": "2026-05-26T19:32:34.948706Z"
+}

@@ -1,0 +1,103 @@
+<h2>Veltro Engine — Widget Enhancement Plan</h2>
+<p class="subtitle">
+  ~86 widgets across 2 groups. Full editPanel + visual upgrades. One at a time
+  with approval gates.
+</p>
+
+<div class="section">
+  <div class="label">Widget Groups</div>
+  <div class="options" data-multiselect>
+    <div class="option" data-choice="veltro" onclick="toggleSelect(this)">
+      <div class="letter">V</div>
+      <div class="content">
+        <h3>Veltro Engine (~50+)</h3>
+        <p>
+          kineticText, physicsSandbox, textScramble, typewriterReveal, textMask,
+          morphingCounter, liquidText, imagePhysics, bubblePop, magneticCursor,
+          particleTrail, cursorRipple, stickyScrollStack, scrollVelocitySkew,
+          parallaxImageStack, mosaicAssemble, scrollProgressRing,
+          magneticScroll, morphBlob, noiseGrain, gradientFlow,
+          sectionBackground, glassmorphismStack, tiltCard3d, glitchSection,
+          audioVisualizer, depthOfField, holographicCard, soundReactive,
+          mirrorReflection, constellationLines, geometryDraw + 20 more
+          cursor/physics/typography/scroll/backgrounds/effects/spatial widgets
+        </p>
+        <p style="color: #f472b6; margin-top: 8px">
+          ⚠ ALL have broken editPanels — only "Height" control
+        </p>
+      </div>
+    </div>
+    <div class="option" data-choice="standard" onclick="toggleSelect(this)">
+      <div class="letter">S</div>
+      <div class="content">
+        <h3>Standard Widgets (~36)</h3>
+        <p>
+          heading, divider, spacer, icon, html, shortcode, blockquote, textPath,
+          image, button, video, starRating, iconBox, imageBox, iconList,
+          socialIcons, imageGallery, imageCarousel, soundCloud, row, tabs,
+          accordion, toggle, priceTable, priceList, flipBox, cta, footerWidget,
+          container, twmWorkspace, counter, progressBar, countdown,
+          animatedHeadline, hotspot, progressTracker, alert, gallery, portfolio,
+          slides, googleMaps, codeHighlight, shareButtons, videoPlaylist,
+          lottie, htmlEmbed
+        </p>
+        <p style="color: #fbbf24; margin-top: 8px">
+          ⚡ Varying quality — some decent, some minimal
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="label">Enhancement Pattern (per widget)</div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px">
+    <div
+      style="
+        padding: 12px;
+        background: rgba(205, 254, 0, 0.05);
+        border-radius: 8px;
+        border: 1px solid rgba(205, 254, 0, 0.15);
+      "
+    >
+      <h3 style="color: #cdfe00">editPanel Controls</h3>
+      <ul style="font-size: 13px; color: #aaa; line-height: 1.8">
+        <li>Colour pickers (primary, secondary, accent, background)</li>
+        <li>Shape selectors (circle, square, rounded, pill)</li>
+        <li>Animation toggles & speed controls</li>
+        <li>Size/spacing sliders</li>
+        <li>Typography controls (font, weight, size)</li>
+        <li>Layout/orientation options</li>
+        <li>Content management (add/remove items)</li>
+      </ul>
+    </div>
+    <div
+      style="
+        padding: 12px;
+        background: rgba(60, 165, 250, 0.05);
+        border-radius: 8px;
+        border: 1px solid rgba(60, 165, 250, 0.15);
+      "
+    >
+      <h3 style="color: #60a5fa">Visual Upgrades</h3>
+      <ul style="font-size: 13px; color: #aaa; line-height: 1.8">
+        <li>Modern gradient backgrounds</li>
+        <li>Smooth transitions & micro-animations</li>
+        <li>Hover states & interactive feedback</li>
+        <li>Glass/blur effects where appropriate</li>
+        <li>Shadow & depth layers</li>
+        <li>Border radius consistency</li>
+        <li>Avant-garde design touches</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="label">Approach</div>
+  <p style="font-size: 14px; color: #aaa">
+    Each widget gets enhanced one at a time. I'll show you what I'm changing,
+    you approve or request adjustments. I will NOT overwrite existing working
+    code — I'll add to and enhance what's there.
+  </p>
+</div>

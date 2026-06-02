@@ -1,0 +1,134 @@
+<h2>📐 Design Section 1/5: Content Schema System</h2>
+<p class="subtitle">
+  How the CMS knows what content exists and how it's structured.
+</p>
+
+<div class="section">
+  <h3>The Core Idea</h3>
+  <p>
+    Every block in Framework Builder has props — <code>headline</code>,
+    <code>subtext</code>, <code>imageUrl</code>, <code>bg</code>, etc. The CMS
+    generates a <strong>content schema</strong> by scanning all blocks across
+    all pages and identifying which props are "content" vs "design."
+  </p>
+</div>
+
+<div class="section">
+  <h3>Auto-Detection Rules</h3>
+  <div style="display: flex; gap: 12px; flex-wrap: wrap">
+    <div
+      style="
+        flex: 1;
+        min-width: 180px;
+        background: #1a2a1a;
+        padding: 12px;
+        border-radius: 8px;
+        border-left: 3px solid #4a4;
+      "
+    >
+      <div style="font-weight: 600; font-size: 13px">✅ Editable (content)</div>
+      <ul
+        style="
+          margin: 6px 0 0;
+          padding-left: 16px;
+          font-size: 12px;
+          color: #aaa;
+        "
+      >
+        <li>
+          Props named: headline, title, text, subtext, body, description,
+          caption, quote
+        </li>
+        <li>Props named: imageUrl, videoUrl, avatarUrl, logoUrl</li>
+        <li>Props named: name, label, btnText, ctaText</li>
+        <li>Props that are strings/arrays of strings (heuristic)</li>
+      </ul>
+    </div>
+    <div
+      style="
+        flex: 1;
+        min-width: 180px;
+        background: #2a1a1a;
+        padding: 12px;
+        border-radius: 8px;
+        border-left: 3px solid #a44;
+      "
+    >
+      <div style="font-weight: 600; font-size: 13px">🔒 Locked (design)</div>
+      <ul
+        style="
+          margin: 6px 0 0;
+          padding-left: 16px;
+          font-size: 12px;
+          color: #aaa;
+        "
+      >
+        <li>Props named: bg, textColor, accentColor, saleColor</li>
+        <li>Props named: paddingV, paddingH, gap, columns, imageHeight</li>
+        <li>Boolean/color/number props (heuristic)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Schema Format (JSON)</h3>
+  <div
+    style="
+      background: #1a1a2e;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: monospace;
+      white-space: pre;
+      overflow-x: auto;
+      color: #ccc;
+    "
+  >
+    {<br />
+    "pages": [<br />
+    &nbsp;&nbsp;{<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;"pageId": "p_abc12",<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;"name": "Home",<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;"slug": "index",<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;"blocks": [<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"blockId": "b_xyz99",<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"type": "hero",<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"fields": {<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"headline": {
+    "editable": true, "type": "string" },<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"subtext": {
+    "editable": true, "type": "richtext" },<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"ctaText": {
+    "editable": true, "type": "string" },<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"bg": {
+    "editable": false, "type": "color" }<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;]<br />
+    &nbsp;&nbsp;}<br />
+    ]<br />
+    }
+  </div>
+</div>
+
+<div class="section">
+  <h3>Manual Override</h3>
+  <p>
+    In the builder's right panel, each auto-detected prop shows a small
+    lock/unlock icon. Click to toggle. Developer can also mark array fields
+    (like team members, FAQ items, pricing plans) as editable content
+    collections.
+  </p>
+</div>
+
+<p style="margin-top: 24px">
+  This generates a <code>cms-schema.json</code> that maps every editable field
+  on every page. The schema is what drives both the admin dashboard forms and
+  the inline editing.
+</p>
+
+<p>
+  Does this design for the Content Schema System look right? Any adjustments?
+</p>

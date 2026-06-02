@@ -1,0 +1,103 @@
+<h2>Three approaches to the Design Studio</h2>
+<p class="subtitle">
+  Pick the one that feels right — I've marked my recommendation.
+</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Fabric.js — Recommended ★</h3>
+      <p>
+        Fabric is the library most Canva-like tools are built on. One CDN script
+        gives you: object selection &amp; transforms, rich text editing, image
+        placement, JSON save/load, PNG and SVG export, and a canvas object model
+        that maps directly to your feature list. The UI around it (layers panel,
+        align toolbar, template picker, AI panel) is custom-built to match your
+        existing dark theme.
+      </p>
+      <div class="pros-cons" style="margin-top: 10px">
+        <div class="pros">
+          <h4>Pros</h4>
+          <ul>
+            <li>Ships 90% of the hard canvas math already solved</li>
+            <li>JSON serialization = free save/load</li>
+            <li>toDataURL → PNG, toSVG → SVG — one line each</li>
+            <li>380KB CDN, no build step</li>
+            <li>Massive community, tons of patterns for Canva-clones</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>Cons</h4>
+          <ul>
+            <li>
+              Layers panel, align UI, template picker all need custom code
+            </li>
+            <li>~380KB added to page weight</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Konva.js</h3>
+      <p>
+        Stage/Layer/Shape model — excellent performance with many objects on
+        screen. Similar CDN story to Fabric. More suited to interactive apps
+        than design tools, so more boilerplate is needed to replicate
+        Canva-style selection handles and text editing.
+      </p>
+      <div class="pros-cons" style="margin-top: 10px">
+        <div class="pros">
+          <h4>Pros</h4>
+          <ul>
+            <li>Better raw performance at high object counts</li>
+            <li>Clean, predictable API</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>Cons</h4>
+          <ul>
+            <li>
+              Less "design-tool-native" — selection handles, text editing, image
+              filters all need more manual work than Fabric
+            </li>
+            <li>Smaller ecosystem for this specific use case</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Custom SVG editor (no library)</h3>
+      <p>
+        Build the editor from scratch using SVG DOM APIs. Full control, zero
+        weight. But selection handles, transforms, text editing, image
+        embedding, and undo/redo all have to be written manually — this is
+        months of work, not weeks.
+      </p>
+      <div class="pros-cons" style="margin-top: 10px">
+        <div class="pros">
+          <h4>Pros</h4>
+          <ul>
+            <li>Zero dependencies, complete control</li>
+            <li>Pure SVG output (most scalable format)</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>Cons</h4>
+          <ul>
+            <li>Enormous implementation effort</li>
+            <li>Reinventing solved problems</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,153 @@
+<h2>Universal Advanced Options — For ALL 86 Widgets</h2>
+<p class="subtitle">
+  Consistent advanced controls added to every widget's editPanel + render
+</p>
+
+<div class="section">
+  <div class="label">Container Controls (all widgets)</div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px">
+    <div
+      style="
+        padding: 12px;
+        background: rgba(205, 254, 0, 0.05);
+        border-radius: 8px;
+        border: 1px solid rgba(205, 254, 0, 0.15);
+      "
+    >
+      <h3 style="color: #cdfe00; font-size: 14px">Background</h3>
+      <ul style="font-size: 13px; color: #aaa; line-height: 1.8">
+        <li>Background colour (picker)</li>
+        <li>Background type: solid / gradient</li>
+        <li>Gradient direction</li>
+        <li>Gradient colour 1 & 2</li>
+        <li>Background image URL</li>
+        <li>Background size/position</li>
+      </ul>
+    </div>
+    <div
+      style="
+        padding: 12px;
+        background: rgba(60, 165, 250, 0.05);
+        border-radius: 8px;
+        border: 1px solid rgba(60, 165, 250, 0.15);
+      "
+    >
+      <h3 style="color: #60a5fa; font-size: 14px">Border & Shape</h3>
+      <ul style="font-size: 13px; color: #aaa; line-height: 1.8">
+        <li>Border radius (range: 0–50px)</li>
+        <li>Border width (range: 0–8px)</li>
+        <li>Border colour (picker)</li>
+        <li>Border style: solid / dashed / dotted</li>
+        <li>Shape preset: sharp / rounded / pill / circle</li>
+      </ul>
+    </div>
+    <div
+      style="
+        padding: 12px;
+        background: rgba(168, 85, 247, 0.05);
+        border-radius: 8px;
+        border: 1px solid rgba(168, 85, 247, 0.15);
+      "
+    >
+      <h3 style="color: #a78bfa; font-size: 14px">Spacing & Depth</h3>
+      <ul style="font-size: 13px; color: #aaa; line-height: 1.8">
+        <li>Padding V / H (range)</li>
+        <li>Margin V / H (range)</li>
+        <li>Box shadow toggle</li>
+        <li>Shadow colour / blur / spread</li>
+        <li>Opacity (range: 0–100%)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="label">Animation & Interaction (all widgets)</div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px">
+    <div
+      style="
+        padding: 12px;
+        background: rgba(236, 72, 153, 0.05);
+        border-radius: 8px;
+        border: 1px solid rgba(236, 72, 153, 0.15);
+      "
+    >
+      <h3 style="color: #f472b6; font-size: 14px">Entrance Animation</h3>
+      <ul style="font-size: 13px; color: #aaa; line-height: 1.8">
+        <li>
+          Animation type: none / fade / slide-up / slide-left / zoom / flip
+        </li>
+        <li>Animation duration</li>
+        <li>Animation delay</li>
+        <li>Animation easing</li>
+      </ul>
+    </div>
+    <div
+      style="
+        padding: 12px;
+        background: rgba(251, 191, 36, 0.05);
+        border-radius: 8px;
+        border: 1px solid rgba(251, 191, 36, 0.15);
+      "
+    >
+      <h3 style="color: #fbbf24; font-size: 14px">Hover Effects</h3>
+      <ul style="font-size: 13px; color: #aaa; line-height: 1.8">
+        <li>Hover effect: none / scale / lift / glow / rotate / shake</li>
+        <li>Hover scale amount</li>
+        <li>Hover transition speed</li>
+        <li>Hover shadow intensity</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="label">Implementation Strategy</div>
+  <p style="font-size: 14px; color: #aaa">
+    Each widget gets these ~25 new advanced props added to its defaultProps, its
+    render function wraps content in a configurable container, and its editPanel
+    gets a collapsible "Advanced Options" section. The advanced options are
+    CONSISTENT across all widgets — same prop names, same control types.
+  </p>
+</div>
+
+<div class="section">
+  <div class="label">New Default Props (added to every widget)</div>
+  <div
+    style="
+      font-family: monospace;
+      font-size: 12px;
+      color: #cdfe00;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+    "
+  >
+    bgType: "solid",<br />
+    bgColor: "transparent",<br />
+    bgGradientDir: "135deg",<br />
+    bgGradientColor1: "#cdfe00",<br />
+    bgGradientColor2: "#3b82f6",<br />
+    bgImage: "",<br />
+    borderRadius: 8,<br />
+    borderWidth: 0,<br />
+    borderColor: "#cdfe00",<br />
+    borderStyle: "solid",<br />
+    paddingV: 16,<br />
+    paddingH: 16,<br />
+    marginV: 0,<br />
+    marginH: 0,<br />
+    boxShadow: false,<br />
+    shadowColor: "rgba(0,0,0,0.3)",<br />
+    shadowBlur: 10,<br />
+    shadowSpread: 0,<br />
+    opacity: 100,<br />
+    entranceAnim: "none",<br />
+    animDuration: 600,<br />
+    animDelay: 0,<br />
+    hoverEffect: "none",<br />
+    hoverScale: 1.02,<br />
+    hoverTransition: 300
+  </div>
+</div>

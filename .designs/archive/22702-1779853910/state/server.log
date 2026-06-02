@@ -1,0 +1,9 @@
+{"type":"server-started","port":64992,"host":"0.0.0.0","url_host":"localhost","url":"http://localhost:64992","screen_dir":"/home/shauntuhey/Framework/.superpowers/brainstorm/22702-1779853910/content","state_dir":"/home/shauntuhey/Framework/.superpowers/brainstorm/22702-1779853910/state"}
+{"type":"screen-added","file":"/home/shauntuhey/Framework/.superpowers/brainstorm/22702-1779853910/content/pages-ux-approach.html"}
+{"type":"screen-added","file":"/home/shauntuhey/Framework/.superpowers/brainstorm/22702-1779853910/content/thumbnail-approach.html"}
+{"type":"screen-updated","file":"/home/shauntuhey/Framework/.superpowers/brainstorm/22702-1779853910/content/thumbnail-approach.html"}
+{"type":"screen-added","file":"/home/shauntuhey/Framework/.superpowers/brainstorm/22702-1779853910/content/waiting-1.html"}
+{"type":"screen-updated","file":"/home/shauntuhey/Framework/.superpowers/brainstorm/22702-1779853910/content/waiting-1.html"}
+{"type":"screen-added","file":"/home/shauntuhey/Framework/.superpowers/brainstorm/22702-1779853910/content/modal-layout-approaches.html"}
+{"type":"screen-updated","file":"/home/shauntuhey/Framework/.superpowers/brainstorm/22702-1779853910/content/modal-layout-approaches.html"}
+{"type":"server-stopped","reason":"idle timeout"}

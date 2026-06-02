@@ -1,0 +1,1323 @@
+<h2>Design Studio — Layout Approach</h2>
+<p class="subtitle">
+  Three directions for moving from "Microsoft Paint" to Canva. Pick the one that
+  feels right and we'll design from there.
+</p>
+
+<div class="cards">
+  <div class="card" data-choice="canva" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div
+        style="
+          display: flex;
+          height: 220px;
+          background: #0d0d1a;
+          border-radius: 4px;
+          overflow: hidden;
+          font-family: monospace;
+          font-size: 10px;
+        "
+      >
+        <!-- Narrow icon nav -->
+        <div
+          style="
+            width: 48px;
+            background: #111;
+            border-right: 1px solid #222;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 0;
+            gap: 6px;
+          "
+        >
+          <div
+            style="
+              width: 32px;
+              height: 32px;
+              background: #cdfe00;
+              border-radius: 6px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 14px;
+            "
+          >
+            ▶
+          </div>
+          <div
+            style="
+              width: 32px;
+              height: 32px;
+              background: #1a1a2a;
+              border-radius: 6px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 12px;
+              color: #666;
+            "
+          >
+            T
+          </div>
+          <div
+            style="
+              width: 32px;
+              height: 32px;
+              background: #1a1a2a;
+              border-radius: 6px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 12px;
+              color: #666;
+            "
+          >
+            ⬛
+          </div>
+          <div
+            style="
+              width: 32px;
+              height: 32px;
+              background: #1a1a2a;
+              border-radius: 6px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 12px;
+              color: #666;
+            "
+          >
+            🖼
+          </div>
+          <div
+            style="
+              width: 32px;
+              height: 32px;
+              background: #1a1a2a;
+              border-radius: 6px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 12px;
+              color: #666;
+            "
+          >
+            ⊞
+          </div>
+          <div
+            style="
+              width: 32px;
+              height: 32px;
+              background: #1a1a2a;
+              border-radius: 6px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 12px;
+              color: #666;
+            "
+          >
+            ≋
+          </div>
+        </div>
+        <!-- Sliding content panel -->
+        <div
+          style="
+            width: 180px;
+            background: #161622;
+            border-right: 1px solid #222;
+            padding: 8px;
+          "
+        >
+          <div
+            style="
+              font-size: 9px;
+              color: #666;
+              text-transform: uppercase;
+              letter-spacing: 1px;
+              margin-bottom: 6px;
+            "
+          >
+            Shapes
+          </div>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(4, 1fr);
+              gap: 4px;
+            "
+          >
+            <div
+              style="
+                background: #1a1a2a;
+                border-radius: 4px;
+                height: 28px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 11px;
+                color: #888;
+              "
+            >
+              ⬛
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border-radius: 4px;
+                height: 28px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 11px;
+                color: #888;
+              "
+            >
+              ⬤
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border-radius: 4px;
+                height: 28px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 11px;
+                color: #888;
+              "
+            >
+              ▲
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border-radius: 4px;
+                height: 28px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 11px;
+                color: #888;
+              "
+            >
+              ⬡
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border-radius: 4px;
+                height: 28px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 11px;
+                color: #888;
+              "
+            >
+              ★
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border-radius: 4px;
+                height: 28px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 11px;
+                color: #888;
+              "
+            >
+              —
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border-radius: 4px;
+                height: 28px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 11px;
+                color: #888;
+              "
+            >
+              →
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border-radius: 4px;
+                height: 28px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 11px;
+                color: #888;
+              "
+            >
+              ▭
+            </div>
+          </div>
+          <div
+            style="
+              font-size: 9px;
+              color: #666;
+              text-transform: uppercase;
+              letter-spacing: 1px;
+              margin: 10px 0 6px;
+            "
+          >
+            Lines
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 3px">
+            <div
+              style="
+                background: #1a1a2a;
+                border-radius: 3px;
+                height: 20px;
+                display: flex;
+                align-items: center;
+                padding: 0 6px;
+                color: #888;
+                font-size: 10px;
+              "
+            >
+              ──── Straight
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border-radius: 3px;
+                height: 20px;
+                display: flex;
+                align-items: center;
+                padding: 0 6px;
+                color: #888;
+                font-size: 10px;
+              "
+            >
+              - - - Dashed
+            </div>
+          </div>
+        </div>
+        <!-- Canvas -->
+        <div
+          style="
+            flex: 1;
+            background: #1a1a2a;
+            display: flex;
+            flex-direction: column;
+          "
+        >
+          <div
+            style="
+              height: 28px;
+              background: #0d0d1a;
+              border-bottom: 1px solid #222;
+              display: flex;
+              align-items: center;
+              padding: 0 8px;
+              gap: 6px;
+            "
+          >
+            <span style="color: #aaa; font-size: 9px">← Builder</span>
+            <span style="color: #555; font-size: 9px; margin-left: 4px"
+              >Untitled</span
+            >
+            <div style="margin-left: auto; display: flex; gap: 4px">
+              <span
+                style="
+                  background: #1a1a2a;
+                  border: 1px solid #333;
+                  border-radius: 2px;
+                  color: #888;
+                  font-size: 8px;
+                  padding: 2px 5px;
+                "
+                >PNG</span
+              >
+              <span
+                style="
+                  background: #cdfe00;
+                  border-radius: 2px;
+                  color: #000;
+                  font-size: 8px;
+                  font-weight: 700;
+                  padding: 2px 6px;
+                "
+                >Save</span
+              >
+            </div>
+          </div>
+          <div
+            style="
+              flex: 1;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            "
+          >
+            <div
+              style="
+                width: 80px;
+                height: 50px;
+                background: #fff;
+                box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+              "
+            ></div>
+          </div>
+        </div>
+        <!-- Right panel -->
+        <div
+          style="
+            width: 120px;
+            background: #111;
+            border-left: 1px solid #222;
+            padding: 8px;
+          "
+        >
+          <div
+            style="
+              font-size: 9px;
+              color: #666;
+              text-transform: uppercase;
+              letter-spacing: 1px;
+              margin-bottom: 8px;
+            "
+          >
+            Properties
+          </div>
+          <div
+            style="
+              background: #1a1a2a;
+              border-radius: 3px;
+              height: 16px;
+              margin-bottom: 4px;
+            "
+          ></div>
+          <div
+            style="
+              background: #1a1a2a;
+              border-radius: 3px;
+              height: 16px;
+              margin-bottom: 4px;
+            "
+          ></div>
+          <div style="display: flex; gap: 3px; margin-bottom: 4px">
+            <div
+              style="
+                background: #1a1a2a;
+                border-radius: 3px;
+                height: 16px;
+                flex: 1;
+              "
+            ></div>
+            <div
+              style="
+                background: #1a1a2a;
+                border-radius: 3px;
+                height: 16px;
+                flex: 1;
+              "
+            ></div>
+          </div>
+          <div
+            style="
+              background: #cdfe00;
+              border-radius: 3px;
+              height: 22px;
+              margin-top: 12px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 8px;
+              font-weight: 700;
+              color: #000;
+            "
+          >
+            Insert → Page
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Canva Style</h3>
+      <p>
+        Narrow icon nav (48px) selects a full content panel — Shapes, Text,
+        Images, Templates, Layers. The panel shows clickable tiles you add by
+        clicking, not just tool icons. Top bar is minimal; properties live in
+        the right panel.
+      </p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="figma" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div
+        style="
+          display: flex;
+          height: 220px;
+          background: #0d0d1a;
+          border-radius: 4px;
+          overflow: hidden;
+          font-family: monospace;
+          font-size: 10px;
+        "
+      >
+        <!-- Left sidebar with sections -->
+        <div
+          style="
+            width: 200px;
+            background: #111;
+            border-right: 1px solid #222;
+            display: flex;
+            flex-direction: column;
+          "
+        >
+          <!-- Tabs -->
+          <div style="display: flex; border-bottom: 1px solid #222">
+            <div
+              style="
+                flex: 1;
+                padding: 6px;
+                text-align: center;
+                font-size: 9px;
+                color: #cdfe00;
+                border-bottom: 2px solid #cdfe00;
+              "
+            >
+              Elements
+            </div>
+            <div
+              style="
+                flex: 1;
+                padding: 6px;
+                text-align: center;
+                font-size: 9px;
+                color: #555;
+              "
+            >
+              Layers
+            </div>
+            <div
+              style="
+                flex: 1;
+                padding: 6px;
+                text-align: center;
+                font-size: 9px;
+                color: #555;
+              "
+            >
+              Assets
+            </div>
+          </div>
+          <!-- Tool row -->
+          <div
+            style="
+              display: flex;
+              gap: 3px;
+              padding: 6px;
+              border-bottom: 1px solid #222;
+            "
+          >
+            <div
+              style="
+                width: 20px;
+                height: 20px;
+                background: #cdfe0020;
+                border: 1px solid #cdfe00;
+                border-radius: 3px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 9px;
+                color: #cdfe00;
+              "
+            >
+              ▶
+            </div>
+            <div
+              style="
+                width: 20px;
+                height: 20px;
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 3px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 9px;
+                color: #666;
+              "
+            >
+              T
+            </div>
+            <div
+              style="
+                width: 20px;
+                height: 20px;
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 3px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 9px;
+                color: #666;
+              "
+            >
+              ⬛
+            </div>
+            <div
+              style="
+                width: 20px;
+                height: 20px;
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 3px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 9px;
+                color: #666;
+              "
+            >
+              ⬤
+            </div>
+            <div
+              style="
+                width: 20px;
+                height: 20px;
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 3px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 9px;
+                color: #666;
+              "
+            >
+              ✏
+            </div>
+            <div
+              style="
+                width: 20px;
+                height: 20px;
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 3px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 9px;
+                color: #666;
+              "
+            >
+              🖼
+            </div>
+          </div>
+          <!-- Shape tiles -->
+          <div style="padding: 6px">
+            <div
+              style="
+                font-size: 8px;
+                color: #555;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-bottom: 4px;
+              "
+            >
+              Basic Shapes
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: repeat(5, 1fr);
+                gap: 3px;
+                margin-bottom: 8px;
+              "
+            >
+              <div
+                style="background: #1a1a2a; border-radius: 3px; height: 24px"
+              ></div>
+              <div
+                style="background: #1a1a2a; border-radius: 3px; height: 24px"
+              ></div>
+              <div
+                style="background: #1a1a2a; border-radius: 3px; height: 24px"
+              ></div>
+              <div
+                style="background: #1a1a2a; border-radius: 3px; height: 24px"
+              ></div>
+              <div
+                style="background: #1a1a2a; border-radius: 3px; height: 24px"
+              ></div>
+            </div>
+            <div
+              style="
+                font-size: 8px;
+                color: #555;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-bottom: 4px;
+              "
+            >
+              Text Styles
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px">
+              <div
+                style="
+                  background: #1a1a2a;
+                  border-radius: 3px;
+                  height: 18px;
+                  padding: 0 5px;
+                  display: flex;
+                  align-items: center;
+                  color: #888;
+                  font-size: 9px;
+                "
+              >
+                Heading
+              </div>
+              <div
+                style="
+                  background: #1a1a2a;
+                  border-radius: 3px;
+                  height: 18px;
+                  padding: 0 5px;
+                  display: flex;
+                  align-items: center;
+                  color: #666;
+                  font-size: 9px;
+                "
+              >
+                Subheading
+              </div>
+              <div
+                style="
+                  background: #1a1a2a;
+                  border-radius: 3px;
+                  height: 18px;
+                  padding: 0 5px;
+                  display: flex;
+                  align-items: center;
+                  color: #555;
+                  font-size: 9px;
+                "
+              >
+                Body text
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Canvas -->
+        <div
+          style="
+            flex: 1;
+            background: #1a1a2a;
+            display: flex;
+            flex-direction: column;
+          "
+        >
+          <div
+            style="
+              height: 28px;
+              background: #0d0d1a;
+              border-bottom: 1px solid #222;
+              display: flex;
+              align-items: center;
+              padding: 0 8px;
+              gap: 6px;
+            "
+          >
+            <span style="color: #aaa; font-size: 9px">← Builder</span>
+            <span
+              style="color: #555; font-size: 9px; flex: 1; text-align: center"
+              >Untitled Design</span
+            >
+            <span
+              style="
+                background: #cdfe00;
+                border-radius: 2px;
+                color: #000;
+                font-size: 8px;
+                font-weight: 700;
+                padding: 2px 6px;
+              "
+              >Save</span
+            >
+          </div>
+          <div
+            style="
+              flex: 1;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            "
+          >
+            <div
+              style="
+                width: 80px;
+                height: 50px;
+                background: #fff;
+                box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+              "
+            ></div>
+          </div>
+        </div>
+        <!-- Right panel -->
+        <div
+          style="
+            width: 140px;
+            background: #111;
+            border-left: 1px solid #222;
+            padding: 8px;
+          "
+        >
+          <div
+            style="
+              display: flex;
+              gap: 0;
+              border-bottom: 1px solid #222;
+              margin-bottom: 8px;
+            "
+          >
+            <div
+              style="
+                flex: 1;
+                padding: 4px;
+                font-size: 8px;
+                color: #cdfe00;
+                text-align: center;
+                border-bottom: 2px solid #cdfe00;
+              "
+            >
+              Design
+            </div>
+            <div
+              style="
+                flex: 1;
+                padding: 4px;
+                font-size: 8px;
+                color: #555;
+                text-align: center;
+              "
+            >
+              Align
+            </div>
+          </div>
+          <div
+            style="
+              background: #1a1a2a;
+              border-radius: 3px;
+              height: 14px;
+              margin-bottom: 4px;
+            "
+          ></div>
+          <div
+            style="
+              background: #1a1a2a;
+              border-radius: 3px;
+              height: 14px;
+              margin-bottom: 4px;
+            "
+          ></div>
+          <div style="display: flex; gap: 3px">
+            <div
+              style="
+                background: #1a1a2a;
+                border-radius: 3px;
+                height: 14px;
+                flex: 1;
+              "
+            ></div>
+            <div
+              style="
+                background: #1a1a2a;
+                border-radius: 3px;
+                height: 14px;
+                flex: 1;
+              "
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Figma Style</h3>
+      <p>
+        Single wider left sidebar with tabs (Elements, Layers, Assets). Tools
+        live as a compact row inside the sidebar. More panel real-estate than
+        Canva-style, less chrome. Right panel has tabbed Design/Align sections.
+      </p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="toolbar" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          height: 220px;
+          background: #0d0d1a;
+          border-radius: 4px;
+          overflow: hidden;
+          font-family: monospace;
+          font-size: 10px;
+        "
+      >
+        <!-- Top toolbar - prominent -->
+        <div
+          style="
+            height: 44px;
+            background: #111;
+            border-bottom: 1px solid #222;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            gap: 6px;
+            flex-shrink: 0;
+          "
+        >
+          <span style="color: #aaa; font-size: 9px; margin-right: 6px"
+            >← Builder</span
+          >
+          <div style="display: flex; gap: 3px">
+            <div
+              style="
+                width: 28px;
+                height: 28px;
+                background: #cdfe0020;
+                border: 1px solid #cdfe00;
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 12px;
+                color: #cdfe00;
+              "
+            >
+              ▶
+            </div>
+            <div
+              style="
+                width: 28px;
+                height: 28px;
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 11px;
+                color: #666;
+              "
+            >
+              T
+            </div>
+            <div
+              style="
+                width: 28px;
+                height: 28px;
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 11px;
+                color: #666;
+              "
+            >
+              ⬛
+            </div>
+            <div
+              style="
+                width: 28px;
+                height: 28px;
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 11px;
+                color: #666;
+              "
+            >
+              ⬤
+            </div>
+            <div
+              style="
+                width: 28px;
+                height: 28px;
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 11px;
+                color: #666;
+              "
+            >
+              ▲
+            </div>
+            <div
+              style="
+                width: 28px;
+                height: 28px;
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 11px;
+                color: #666;
+              "
+            >
+              🖼
+            </div>
+          </div>
+          <div
+            style="width: 1px; height: 20px; background: #333; margin: 0 4px"
+          ></div>
+          <!-- Context props inline -->
+          <div style="display: flex; align-items: center; gap: 4px">
+            <div
+              style="
+                width: 18px;
+                height: 18px;
+                background: #4a90e2;
+                border-radius: 3px;
+                border: 1px solid #555;
+              "
+            ></div>
+            <div
+              style="
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 3px;
+                width: 50px;
+                height: 18px;
+                font-size: 8px;
+                color: #888;
+                display: flex;
+                align-items: center;
+                padding: 0 4px;
+              "
+            >
+              Lexend
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 3px;
+                width: 28px;
+                height: 18px;
+                font-size: 8px;
+                color: #888;
+                display: flex;
+                align-items: center;
+                padding: 0 4px;
+              "
+            >
+              32
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border: 1px solid #333;
+                border-radius: 3px;
+                width: 20px;
+                height: 18px;
+                font-size: 8px;
+                color: #888;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+            >
+              B
+            </div>
+          </div>
+          <div
+            style="
+              margin-left: auto;
+              display: flex;
+              gap: 4px;
+              align-items: center;
+            "
+          >
+            <span style="color: #666; font-size: 8px">75%</span>
+            <span
+              style="
+                background: #cdfe00;
+                border-radius: 2px;
+                color: #000;
+                font-size: 8px;
+                font-weight: 700;
+                padding: 2px 8px;
+              "
+              >Save</span
+            >
+          </div>
+        </div>
+        <!-- Main area -->
+        <div style="flex: 1; display: flex">
+          <!-- Slim left panel -->
+          <div
+            style="
+              width: 160px;
+              background: #111;
+              border-right: 1px solid #222;
+              display: flex;
+              flex-direction: column;
+            "
+          >
+            <div style="display: flex; border-bottom: 1px solid #222">
+              <div
+                style="
+                  flex: 1;
+                  padding: 4px;
+                  text-align: center;
+                  font-size: 8px;
+                  color: #cdfe00;
+                  border-bottom: 2px solid #cdfe00;
+                "
+              >
+                Elements
+              </div>
+              <div
+                style="
+                  flex: 1;
+                  padding: 4px;
+                  text-align: center;
+                  font-size: 8px;
+                  color: #555;
+                "
+              >
+                Layers
+              </div>
+            </div>
+            <div
+              style="
+                padding: 6px;
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 3px;
+              "
+            >
+              <div
+                style="
+                  background: #1a1a2a;
+                  border-radius: 3px;
+                  height: 24px;
+                  font-size: 10px;
+                  color: #666;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                ⬛
+              </div>
+              <div
+                style="
+                  background: #1a1a2a;
+                  border-radius: 3px;
+                  height: 24px;
+                  font-size: 10px;
+                  color: #666;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                ⬤
+              </div>
+              <div
+                style="
+                  background: #1a1a2a;
+                  border-radius: 3px;
+                  height: 24px;
+                  font-size: 10px;
+                  color: #666;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                ▲
+              </div>
+              <div
+                style="
+                  background: #1a1a2a;
+                  border-radius: 3px;
+                  height: 24px;
+                  font-size: 10px;
+                  color: #666;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                ★
+              </div>
+              <div
+                style="
+                  background: #1a1a2a;
+                  border-radius: 3px;
+                  height: 24px;
+                  font-size: 10px;
+                  color: #666;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                —
+              </div>
+              <div
+                style="
+                  background: #1a1a2a;
+                  border-radius: 3px;
+                  height: 24px;
+                  font-size: 10px;
+                  color: #666;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                →
+              </div>
+              <div
+                style="
+                  background: #1a1a2a;
+                  border-radius: 3px;
+                  height: 24px;
+                  font-size: 10px;
+                  color: #666;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                T
+              </div>
+              <div
+                style="
+                  background: #1a1a2a;
+                  border-radius: 3px;
+                  height: 24px;
+                  font-size: 10px;
+                  color: #666;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                🖼
+              </div>
+            </div>
+          </div>
+          <!-- Canvas -->
+          <div
+            style="
+              flex: 1;
+              background: #1a1a2a;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            "
+          >
+            <div
+              style="
+                width: 90px;
+                height: 55px;
+                background: #fff;
+                box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+              "
+            ></div>
+          </div>
+          <!-- Right panel -->
+          <div
+            style="
+              width: 130px;
+              background: #111;
+              border-left: 1px solid #222;
+              padding: 8px;
+            "
+          >
+            <div
+              style="
+                font-size: 8px;
+                color: #555;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-bottom: 6px;
+              "
+            >
+              Properties
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border-radius: 3px;
+                height: 14px;
+                margin-bottom: 3px;
+              "
+            ></div>
+            <div
+              style="
+                background: #1a1a2a;
+                border-radius: 3px;
+                height: 14px;
+                margin-bottom: 3px;
+              "
+            ></div>
+            <div
+              style="
+                background: #cdfe00;
+                border-radius: 3px;
+                height: 20px;
+                margin-top: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 8px;
+                font-weight: 700;
+                color: #000;
+              "
+            >
+              Insert → Page
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Toolbar First</h3>
+      <p>
+        Prominent horizontal toolbar at top holds all drawing tools +
+        context-sensitive properties inline (fill color, font, size). Slimmer
+        side panels for elements and properties. Most canvas space, most
+        Illustrator-like feel.
+      </p>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top: 16px">
+  Click to select your preferred layout direction. All three will have proper
+  element tiles, text presets, and a polished dark theme — the difference is
+  where things live.
+</p>

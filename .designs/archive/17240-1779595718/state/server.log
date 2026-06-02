@@ -1,0 +1,13 @@
+{"type":"server-started","port":54444,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:54444","screen_dir":"/home/shauntuhey/Framework/.superpowers/brainstorm/17240-1779595718/content","state_dir":"/home/shauntuhey/Framework/.superpowers/brainstorm/17240-1779595718/state"}
+{"type":"screen-added","file":"/home/shauntuhey/Framework/.superpowers/brainstorm/17240-1779595718/content/widget-overview.html"}
+{"type":"screen-updated","file":"/home/shauntuhey/Framework/.superpowers/brainstorm/17240-1779595718/content/widget-overview.html"}
+{"source":"user-event","type":"click","text":"V\n      \n        Veltro Engine (~50+)\n        \n          kineticText, physicsSandbox, textScramble, typewriterReveal, textMask,\n          morphingCounter, liquidText, imagePhysics, bubblePop, magneticCursor,\n          particleTrail, cursorRipple, stickyScrollStack, scrollVelocitySkew,\n          parallaxImageStack, mosaicAssemble, scrollProgressRing,\n          magneticScroll, morphBlob, noiseGrain, gradientFlow,\n          sectionBackground, glassmorphismStack, tiltCard3d, glitchSection,\n          audioVisualizer, depthOfField, holographicCard, soundReactive,\n          mirrorReflection, constellationLines, geometryDraw + 20 more\n          cursor/physics/typography/scroll/backgrounds/effects/spatial widgets\n        \n        \n          ⚠ ALL have broken editPanels — only \"Height\" control","choice":"veltro","id":null,"timestamp":1779595926165}
+{"type":"screen-added","file":"/home/shauntuhey/Framework/.superpowers/brainstorm/17240-1779595718/content/kineticText-plan.html"}
+{"type":"screen-updated","file":"/home/shauntuhey/Framework/.superpowers/brainstorm/17240-1779595718/content/kineticText-plan.html"}
+{"type":"screen-added","file":"/home/shauntuhey/Framework/.superpowers/brainstorm/17240-1779595718/content/universal-advanced-options.html"}
+{"type":"screen-updated","file":"/home/shauntuhey/Framework/.superpowers/brainstorm/17240-1779595718/content/universal-advanced-options.html"}
+{"type":"screen-added","file":"/home/shauntuhey/Framework/.superpowers/brainstorm/17240-1779595718/content/two-tier-enhancements.html"}
+{"type":"screen-updated","file":"/home/shauntuhey/Framework/.superpowers/brainstorm/17240-1779595718/content/two-tier-enhancements.html"}
+{"type":"screen-added","file":"/home/shauntuhey/Framework/.superpowers/brainstorm/17240-1779595718/content/kineticText-done.html"}
+{"type":"screen-updated","file":"/home/shauntuhey/Framework/.superpowers/brainstorm/17240-1779595718/content/kineticText-done.html"}
+{"type":"server-stopped","reason":"idle timeout"}

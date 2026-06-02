@@ -1,0 +1,313 @@
+<h2>Three approaches to the Media Gallery</h2>
+<p class="subtitle">
+  The main architectural decision is how folders/tags are stored and whether we
+  add new server routes.
+</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div
+      class="card-image"
+      style="
+        background: #111;
+        padding: 12px;
+        min-height: 140px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      "
+    >
+      <div
+        style="
+          font-size: 7px;
+          color: #888;
+          font-weight: 600;
+          letter-spacing: 0.5px;
+        "
+      >
+        ARCHITECTURE
+      </div>
+      <div style="display: flex; gap: 4px; font-size: 7px">
+        <div
+          style="
+            background: #1e1e3a;
+            border: 1px solid #4444aa;
+            border-radius: 3px;
+            padding: 4px 7px;
+            color: #818cf8;
+            flex: 1;
+            text-align: center;
+          "
+        >
+          Builder JS<br /><span style="color: #555">media-gallery.js</span>
+        </div>
+        <div style="color: #555; display: flex; align-items: center">→</div>
+        <div
+          style="
+            background: #1a2e1a;
+            border: 1px solid #2a6a2a;
+            border-radius: 3px;
+            padding: 4px 7px;
+            color: #86efac;
+            flex: 1;
+            text-align: center;
+          "
+        >
+          Existing CMS<br /><span style="color: #555">/api/cms/media/*</span>
+        </div>
+      </div>
+      <div
+        style="
+          background: #2a1a1a;
+          border: 1px solid #6a2a2a;
+          border-radius: 3px;
+          padding: 4px 7px;
+          font-size: 7px;
+          color: #fca5a5;
+        "
+      >
+        ⚠ Auth stripped from CMS endpoints<br />+ 1 new route:
+        /api/cms/media/download
+      </div>
+      <div
+        style="
+          background: #1a1a1a;
+          border: 1px solid #333;
+          border-radius: 3px;
+          padding: 4px 7px;
+          font-size: 7px;
+          color: #666;
+        "
+      >
+        Folder/tag metadata: media-meta.json on server
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Patch the CMS endpoints</h3>
+      <p>
+        Strip auth from existing <code>/api/cms/media/*</code> routes (builder
+        doesn't use CMS auth), add one new URL-download route, store folder
+        metadata in a sidecar JSON. Minimal server work but ties builder to CMS
+        internals.
+      </p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div
+      class="card-image"
+      style="
+        background: #111;
+        padding: 12px;
+        min-height: 140px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      "
+    >
+      <div
+        style="
+          font-size: 7px;
+          color: #888;
+          font-weight: 600;
+          letter-spacing: 0.5px;
+        "
+      >
+        ARCHITECTURE — RECOMMENDED
+      </div>
+      <div style="display: flex; gap: 4px; font-size: 7px">
+        <div
+          style="
+            background: #1e1e3a;
+            border: 1px solid #4444aa;
+            border-radius: 3px;
+            padding: 4px 7px;
+            color: #818cf8;
+            flex: 1;
+            text-align: center;
+          "
+        >
+          Builder JS<br /><span style="color: #555">media-gallery.js</span>
+        </div>
+        <div style="color: #555; display: flex; align-items: center">→</div>
+        <div
+          style="
+            background: #1e2e3a;
+            border: 1px solid #2a6a8a;
+            border-radius: 3px;
+            padding: 4px 7px;
+            color: #7dd3fc;
+            flex: 1;
+            text-align: center;
+          "
+        >
+          New routes<br /><span style="color: #555">/api/media/*</span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 3px; flex-wrap: wrap; font-size: 6px">
+        <div
+          style="
+            background: #162030;
+            border-radius: 2px;
+            padding: 3px 5px;
+            color: #7dd3fc;
+          "
+        >
+          GET /api/media
+        </div>
+        <div
+          style="
+            background: #162030;
+            border-radius: 2px;
+            padding: 3px 5px;
+            color: #7dd3fc;
+          "
+        >
+          POST /api/media/upload
+        </div>
+        <div
+          style="
+            background: #162030;
+            border-radius: 2px;
+            padding: 3px 5px;
+            color: #7dd3fc;
+          "
+        >
+          POST /api/media/download
+        </div>
+        <div
+          style="
+            background: #162030;
+            border-radius: 2px;
+            padding: 3px 5px;
+            color: #7dd3fc;
+          "
+        >
+          PATCH /api/media/:id
+        </div>
+        <div
+          style="
+            background: #162030;
+            border-radius: 2px;
+            padding: 3px 5px;
+            color: #7dd3fc;
+          "
+        >
+          DELETE /api/media/:id
+        </div>
+      </div>
+      <div
+        style="
+          background: #1a1a1a;
+          border: 1px solid #333;
+          border-radius: 3px;
+          padding: 4px 7px;
+          font-size: 7px;
+          color: #666;
+        "
+      >
+        Folder/tag metadata: media-meta.json · shared media/ folder with CMS
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>
+        B — New /api/media/* routes
+        <span style="color: #6366f1; font-size: 11px">(recommended)</span>
+      </h3>
+      <p>
+        Clean dedicated endpoints, no auth, include folder/tag metadata from day
+        one. Shares the same <code>media/</code> storage folder with CMS so
+        files are compatible. More server code but no coupling to CMS internals.
+      </p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div
+      class="card-image"
+      style="
+        background: #111;
+        padding: 12px;
+        min-height: 140px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      "
+    >
+      <div
+        style="
+          font-size: 7px;
+          color: #888;
+          font-weight: 600;
+          letter-spacing: 0.5px;
+        "
+      >
+        ARCHITECTURE
+      </div>
+      <div style="display: flex; gap: 4px; font-size: 7px">
+        <div
+          style="
+            background: #1e1e3a;
+            border: 1px solid #4444aa;
+            border-radius: 3px;
+            padding: 4px 7px;
+            color: #818cf8;
+            flex: 1;
+            text-align: center;
+          "
+        >
+          Builder JS<br /><span style="color: #555">media-gallery.js</span>
+        </div>
+        <div style="color: #555; display: flex; align-items: center">→</div>
+        <div
+          style="
+            background: #2a2a1a;
+            border: 1px solid #6a6a2a;
+            border-radius: 3px;
+            padding: 4px 7px;
+            color: #fde68a;
+            flex: 1;
+            text-align: center;
+          "
+        >
+          Existing CMS upload<br /><span style="color: #555"
+            >+ localStorage meta</span
+          >
+        </div>
+      </div>
+      <div
+        style="
+          background: #1a1a1a;
+          border: 1px solid #444;
+          border-radius: 3px;
+          padding: 4px 7px;
+          font-size: 7px;
+          color: #aaa;
+        "
+      >
+        Upload: POST /api/cms/media/upload (no auth change)<br />
+        Folder/tag metadata: localStorage only
+      </div>
+      <div
+        style="
+          background: #2a1a1a;
+          border: 1px solid #6a2a2a;
+          border-radius: 3px;
+          padding: 4px 7px;
+          font-size: 7px;
+          color: #fca5a5;
+        "
+      >
+        ⚠ Metadata lost on browser clear or new device
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Upload to CMS, metadata in localStorage</h3>
+      <p>
+        No new server routes at all — upload uses the existing CMS endpoint
+        (already no-auth for the POST), folder/tag data lives in localStorage.
+        Fastest to build but organisation data isn't durable.
+      </p>
+    </div>
+  </div>
+</div>

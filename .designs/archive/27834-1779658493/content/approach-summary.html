@@ -1,0 +1,150 @@
+<h2>✅ Approach Summary — CMS for Framework Builder</h2>
+
+<div class="section">
+  <h3>Core Design</h3>
+  <table style="width: 100%; border-collapse: collapse; font-size: 14px">
+    <tr>
+      <td
+        style="
+          padding: 8px 12px;
+          border-bottom: 1px solid #333;
+          color: #888;
+          width: 140px;
+        "
+      >
+        Content Scope
+      </td>
+      <td style="padding: 8px 12px; border-bottom: 1px solid #333">
+        All content except structural design — text, images, copy on every block
+      </td>
+    </tr>
+    <tr>
+      <td style="padding: 8px 12px; border-bottom: 1px solid #333; color: #888">
+        Editing Interface
+      </td>
+      <td style="padding: 8px 12px; border-bottom: 1px solid #333">
+        Both — inline editing on live site + admin dashboard
+      </td>
+    </tr>
+    <tr>
+      <td style="padding: 8px 12px; border-bottom: 1px solid #333; color: #888">
+        Editable Marking
+      </td>
+      <td style="padding: 8px 12px; border-bottom: 1px solid #333">
+        Auto-detect (text/image = editable, design = locked) + manual override
+        per-prop
+      </td>
+    </tr>
+    <tr>
+      <td style="padding: 8px 12px; border-bottom: 1px solid #333; color: #888">
+        Backend
+      </td>
+      <td style="padding: 8px 12px; border-bottom: 1px solid #333">
+        Extend server.py with CMS API endpoints
+      </td>
+    </tr>
+    <tr>
+      <td style="padding: 8px 12px; color: #888">Data Storage</td>
+      <td style="padding: 8px 12px">
+        JSON files alongside the project (matches existing pattern)
+      </td>
+    </tr>
+  </table>
+</div>
+
+<div class="section" style="margin-top: 24px">
+  <h3>How It Works End-to-End</h3>
+  <div style="display: flex; gap: 12px; flex-wrap: wrap">
+    <div
+      style="
+        flex: 1;
+        min-width: 200px;
+        background: #1a1a2e;
+        padding: 16px;
+        border-radius: 8px;
+      "
+    >
+      <div style="font-size: 24px; margin-bottom: 4px">1️⃣</div>
+      <div style="font-weight: 600; font-size: 14px">Build Site</div>
+      <div style="font-size: 12px; color: #888; margin-top: 4px">
+        Developer builds site in Framework Builder. CMS auto-detects editable
+        props.
+      </div>
+    </div>
+    <div
+      style="
+        flex: 1;
+        min-width: 200px;
+        background: #1a1a2e;
+        padding: 16px;
+        border-radius: 8px;
+      "
+    >
+      <div style="font-size: 24px; margin-bottom: 4px">2️⃣</div>
+      <div style="font-weight: 600; font-size: 14px">Configure CMS</div>
+      <div style="font-size: 12px; color: #888; margin-top: 4px">
+        Override auto-detection if needed. Set client password. Export.
+      </div>
+    </div>
+    <div
+      style="
+        flex: 1;
+        min-width: 200px;
+        background: #1a1a2e;
+        padding: 16px;
+        border-radius: 8px;
+      "
+    >
+      <div style="font-size: 24px; margin-bottom: 4px">3️⃣</div>
+      <div style="font-weight: 600; font-size: 14px">Client Edits</div>
+      <div style="font-size: 12px; color: #888; margin-top: 4px">
+        Client visits live site. Inline edit or /admin dashboard. Saves changes.
+      </div>
+    </div>
+    <div
+      style="
+        flex: 1;
+        min-width: 200px;
+        background: #1a1a2e;
+        padding: 16px;
+        border-radius: 8px;
+      "
+    >
+      <div style="font-size: 24px; margin-bottom: 4px">4️⃣</div>
+      <div style="font-weight: 600; font-size: 14px">Live Updates</div>
+      <div style="font-size: 12px; color: #888; margin-top: 4px">
+        Content served via CMS API. Changes are immediate. Design stays intact.
+      </div>
+    </div>
+  </div>
+</div>
+
+<p style="margin-top: 24px">
+  Click ✅ below if this summary looks right, or tell me what to adjust before I
+  dive into the detailed design.
+</p>
+
+<div class="options" style="max-width: 400px; margin-top: 12px">
+  <div
+    class="option"
+    data-choice="approve"
+    onclick="toggleSelect(this)"
+    style="border-color: #2a5a2a"
+  >
+    <div class="letter" style="background: #2a5a2a">✅</div>
+    <div class="content">
+      <h3>Looks good — proceed to detailed design</h3>
+    </div>
+  </div>
+  <div
+    class="option"
+    data-choice="adjust"
+    onclick="toggleSelect(this)"
+    style="border-color: #5a3a2a"
+  >
+    <div class="letter" style="background: #5a3a2a">🔄</div>
+    <div class="content">
+      <h3>Need to adjust something</h3>
+    </div>
+  </div>
+</div>

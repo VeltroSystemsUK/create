@@ -1,0 +1,59 @@
+<h2>🏗️ CMS Architecture — Where does the backend live?</h2>
+<p class="subtitle">The CMS needs a server for APIs. Three approaches:</p>
+
+<div class="options">
+  <div class="option" data-choice="extend" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Extend server.py</h3>
+      <p>
+        Add CMS API routes to the existing Python dev server. When you export a
+        site, it includes a lightweight CMS server. Single codebase, one port,
+        one deployment.
+      </p>
+      <div style="margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap">
+        <span class="label">Simple deployment</span>
+        <span class="label">One codebase</span>
+        <span class="label">Matches existing pattern</span>
+      </div>
+    </div>
+  </div>
+  <div class="option" data-choice="standalone" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Standalone CMS Server</h3>
+      <p>
+        A separate <code>cms.py</code> on its own port. Clean separation from
+        the builder. Can serve content to multiple live sites from one instance.
+        More complex but more scalable.
+      </p>
+      <div style="margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap">
+        <span class="label">Multi-site</span>
+        <span class="label">Clean separation</span>
+        <span class="label">Scalable</span>
+      </div>
+    </div>
+  </div>
+  <div class="option" data-choice="file-based" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>File-Based + Admin Panel</h3>
+      <p>
+        Content stored as JSON files alongside the exported site. The admin
+        panel edits files directly via the browser — no separate server needed
+        for the live site. Simplest possible deployment: just static files.
+      </p>
+      <div style="margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap">
+        <span class="label">No server needed</span>
+        <span class="label">Static deploy</span>
+        <span class="label">Dead simple</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p style="margin-top: 24px">
+  I recommend <strong>A (Extend server.py)</strong> — keeps things simple,
+  matches your existing architecture, and the Python server is already handling
+  API endpoints.
+</p>

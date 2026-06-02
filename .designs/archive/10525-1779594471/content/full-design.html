@@ -1,0 +1,1585 @@
+<h2>Design Studio — Full Redesign Preview</h2>
+<p class="subtitle">
+  This is the complete layout. Review everything and tell me what you'd change.
+</p>
+
+<div class="mockup" style="margin-bottom: 24px">
+  <div class="mockup-header">
+    Design Studio — Full Layout (Figma-style, ~1200px wide)
+  </div>
+  <div class="mockup-body" style="padding: 0; overflow: hidden">
+    <div
+      style="
+        display: flex;
+        flex-direction: column;
+        height: 520px;
+        background: #0a0a14;
+        font-family: system-ui, sans-serif;
+        font-size: 11px;
+        color: #ccc;
+      "
+    >
+      <!-- TOP BAR -->
+      <div
+        style="
+          height: 44px;
+          background: #111;
+          border-bottom: 1px solid #1e1e2e;
+          display: flex;
+          align-items: center;
+          padding: 0 12px;
+          gap: 10px;
+          flex-shrink: 0;
+          z-index: 10;
+        "
+      >
+        <button
+          style="
+            background: #1a1a2a;
+            border: 1px solid #333;
+            border-radius: 4px;
+            color: #aaa;
+            padding: 4px 10px;
+            font-size: 10px;
+            cursor: pointer;
+          "
+        >
+          ← Builder
+        </button>
+        <div style="width: 1px; height: 20px; background: #2a2a3a"></div>
+        <input
+          style="
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+            width: 140px;
+            outline: none;
+          "
+          value="Untitled Design"
+        />
+        <div style="width: 1px; height: 20px; background: #2a2a3a"></div>
+        <!-- Undo/Redo -->
+        <button
+          style="
+            background: #1a1a2a;
+            border: 1px solid #2a2a3a;
+            border-radius: 4px;
+            color: #888;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-size: 12px;
+          "
+        >
+          ↩
+        </button>
+        <button
+          style="
+            background: #1a1a2a;
+            border: 1px solid #2a2a3a;
+            border-radius: 4px;
+            color: #888;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-size: 12px;
+          "
+        >
+          ↪
+        </button>
+        <div
+          style="
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          "
+        >
+          <select
+            style="
+              background: #1a1a2a;
+              border: 1px solid #2a2a3a;
+              border-radius: 4px;
+              color: #aaa;
+              font-size: 10px;
+              padding: 3px 6px;
+            "
+          >
+            <option>OG Image (1200×630)</option>
+          </select>
+          <div style="display: flex; align-items: center; gap: 4px">
+            <button
+              style="
+                background: #1a1a2a;
+                border: 1px solid #2a2a3a;
+                border-radius: 3px;
+                color: #888;
+                width: 24px;
+                height: 24px;
+                font-size: 13px;
+                cursor: pointer;
+              "
+            >
+              −
+            </button>
+            <span
+              style="
+                font-size: 10px;
+                color: #666;
+                min-width: 32px;
+                text-align: center;
+              "
+              >75%</span
+            >
+            <button
+              style="
+                background: #1a1a2a;
+                border: 1px solid #2a2a3a;
+                border-radius: 3px;
+                color: #888;
+                width: 24px;
+                height: 24px;
+                font-size: 13px;
+                cursor: pointer;
+              "
+            >
+              +
+            </button>
+          </div>
+          <div style="width: 1px; height: 20px; background: #2a2a3a"></div>
+          <button
+            style="
+              background: #cdfe00;
+              border: none;
+              border-radius: 5px;
+              color: #000;
+              font-weight: 700;
+              padding: 5px 16px;
+              font-size: 11px;
+              cursor: pointer;
+            "
+          >
+            Save
+          </button>
+        </div>
+      </div>
+
+      <!-- MAIN AREA -->
+      <div style="flex: 1; display: flex; overflow: hidden">
+        <!-- LEFT SIDEBAR -->
+        <div
+          style="
+            width: 240px;
+            min-width: 240px;
+            background: #111;
+            border-right: 1px solid #1e1e2e;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+          "
+        >
+          <!-- Tabs -->
+          <div
+            style="
+              display: flex;
+              border-bottom: 1px solid #1e1e2e;
+              flex-shrink: 0;
+            "
+          >
+            <div
+              style="
+                flex: 1;
+                padding: 8px 4px;
+                text-align: center;
+                font-size: 10px;
+                color: #cdfe00;
+                border-bottom: 2px solid #cdfe00;
+                cursor: pointer;
+              "
+            >
+              Elements
+            </div>
+            <div
+              style="
+                flex: 1;
+                padding: 8px 4px;
+                text-align: center;
+                font-size: 10px;
+                color: #555;
+                cursor: pointer;
+              "
+            >
+              Layers
+            </div>
+            <div
+              style="
+                flex: 1;
+                padding: 8px 4px;
+                text-align: center;
+                font-size: 10px;
+                color: #555;
+                cursor: pointer;
+              "
+            >
+              Assets
+            </div>
+          </div>
+
+          <!-- Tool row -->
+          <div
+            style="
+              display: flex;
+              gap: 4px;
+              padding: 8px;
+              border-bottom: 1px solid #1e1e2e;
+              flex-shrink: 0;
+            "
+          >
+            <button
+              style="
+                flex: 1;
+                background: #cdfe0015;
+                border: 1px solid #cdfe00;
+                border-radius: 5px;
+                color: #cdfe00;
+                padding: 5px 0;
+                font-size: 11px;
+                cursor: pointer;
+              "
+              title="Select (V)"
+            >
+              ▶
+            </button>
+            <button
+              style="
+                flex: 1;
+                background: #1a1a2a;
+                border: 1px solid #2a2a3a;
+                border-radius: 5px;
+                color: #888;
+                padding: 5px 0;
+                font-size: 11px;
+                cursor: pointer;
+              "
+              title="Text (T)"
+            >
+              T
+            </button>
+            <button
+              style="
+                flex: 1;
+                background: #1a1a2a;
+                border: 1px solid #2a2a3a;
+                border-radius: 5px;
+                color: #888;
+                padding: 5px 0;
+                font-size: 11px;
+                cursor: pointer;
+              "
+              title="Image (I)"
+            >
+              🖼
+            </button>
+            <button
+              style="
+                flex: 1;
+                background: #1a1a2a;
+                border: 1px solid #2a2a3a;
+                border-radius: 5px;
+                color: #888;
+                padding: 5px 0;
+                font-size: 11px;
+                cursor: pointer;
+              "
+              title="AI Generate"
+            >
+              ✦
+            </button>
+          </div>
+
+          <!-- Scrollable element content -->
+          <div style="flex: 1; overflow-y: auto; padding: 10px">
+            <!-- Frames -->
+            <div style="margin-bottom: 14px">
+              <div
+                style="
+                  font-size: 9px;
+                  color: #555;
+                  text-transform: uppercase;
+                  letter-spacing: 1.5px;
+                  margin-bottom: 6px;
+                "
+              >
+                Frames
+              </div>
+              <div
+                style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px"
+              >
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 4px;
+                    padding: 5px 6px;
+                    cursor: pointer;
+                    transition: all 0.15s;
+                  "
+                  onmouseover="this.style.borderColor = '#cdfe00'"
+                  onmouseout="this.style.borderColor = '#2a2a3a'"
+                >
+                  <div style="font-size: 9px; color: #888">OG Image</div>
+                  <div style="font-size: 8px; color: #444">1200×630</div>
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 4px;
+                    padding: 5px 6px;
+                    cursor: pointer;
+                  "
+                  onmouseover="this.style.borderColor = '#cdfe00'"
+                  onmouseout="this.style.borderColor = '#2a2a3a'"
+                >
+                  <div style="font-size: 9px; color: #888">Hero Banner</div>
+                  <div style="font-size: 8px; color: #444">1920×600</div>
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 4px;
+                    padding: 5px 6px;
+                    cursor: pointer;
+                  "
+                  onmouseover="this.style.borderColor = '#cdfe00'"
+                  onmouseout="this.style.borderColor = '#2a2a3a'"
+                >
+                  <div style="font-size: 9px; color: #888">Square Post</div>
+                  <div style="font-size: 8px; color: #444">1080×1080</div>
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 4px;
+                    padding: 5px 6px;
+                    cursor: pointer;
+                  "
+                  onmouseover="this.style.borderColor = '#cdfe00'"
+                  onmouseout="this.style.borderColor = '#2a2a3a'"
+                >
+                  <div style="font-size: 9px; color: #888">Wide 16:9</div>
+                  <div style="font-size: 8px; color: #444">1920×1080</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Shapes -->
+            <div style="margin-bottom: 14px">
+              <div
+                style="
+                  font-size: 9px;
+                  color: #555;
+                  text-transform: uppercase;
+                  letter-spacing: 1.5px;
+                  margin-bottom: 6px;
+                "
+              >
+                Shapes
+              </div>
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: repeat(5, 1fr);
+                  gap: 4px;
+                "
+              >
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 4px;
+                    height: 32px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: 14px;
+                    color: #777;
+                  "
+                  onmouseover="
+                    this.style.borderColor = '#cdfe00';
+                    this.style.color = '#cdfe00';
+                  "
+                  onmouseout="
+                    this.style.borderColor = '#2a2a3a';
+                    this.style.color = '#777';
+                  "
+                >
+                  ▬
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 4px;
+                    height: 32px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: 12px;
+                    color: #777;
+                  "
+                  onmouseover="
+                    this.style.borderColor = '#cdfe00';
+                    this.style.color = '#cdfe00';
+                  "
+                  onmouseout="
+                    this.style.borderColor = '#2a2a3a';
+                    this.style.color = '#777';
+                  "
+                >
+                  ▭
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 4px;
+                    height: 32px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: 14px;
+                    color: #777;
+                  "
+                  onmouseover="
+                    this.style.borderColor = '#cdfe00';
+                    this.style.color = '#cdfe00';
+                  "
+                  onmouseout="
+                    this.style.borderColor = '#2a2a3a';
+                    this.style.color = '#777';
+                  "
+                >
+                  ⬤
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 4px;
+                    height: 32px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: 14px;
+                    color: #777;
+                  "
+                  onmouseover="
+                    this.style.borderColor = '#cdfe00';
+                    this.style.color = '#cdfe00';
+                  "
+                  onmouseout="
+                    this.style.borderColor = '#2a2a3a';
+                    this.style.color = '#777';
+                  "
+                >
+                  ▲
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 4px;
+                    height: 32px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: 14px;
+                    color: #777;
+                  "
+                  onmouseover="
+                    this.style.borderColor = '#cdfe00';
+                    this.style.color = '#cdfe00';
+                  "
+                  onmouseout="
+                    this.style.borderColor = '#2a2a3a';
+                    this.style.color = '#777';
+                  "
+                >
+                  ⬡
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 4px;
+                    height: 32px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: 14px;
+                    color: #777;
+                  "
+                  onmouseover="
+                    this.style.borderColor = '#cdfe00';
+                    this.style.color = '#cdfe00';
+                  "
+                  onmouseout="
+                    this.style.borderColor = '#2a2a3a';
+                    this.style.color = '#777';
+                  "
+                >
+                  ★
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 4px;
+                    height: 32px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: 14px;
+                    color: #777;
+                  "
+                  onmouseover="
+                    this.style.borderColor = '#cdfe00';
+                    this.style.color = '#cdfe00';
+                  "
+                  onmouseout="
+                    this.style.borderColor = '#2a2a3a';
+                    this.style.color = '#777';
+                  "
+                >
+                  —
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 4px;
+                    height: 32px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: 14px;
+                    color: #777;
+                  "
+                  onmouseover="
+                    this.style.borderColor = '#cdfe00';
+                    this.style.color = '#cdfe00';
+                  "
+                  onmouseout="
+                    this.style.borderColor = '#2a2a3a';
+                    this.style.color = '#777';
+                  "
+                >
+                  →
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 4px;
+                    height: 32px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: 11px;
+                    color: #777;
+                  "
+                  onmouseover="
+                    this.style.borderColor = '#cdfe00';
+                    this.style.color = '#cdfe00';
+                  "
+                  onmouseout="
+                    this.style.borderColor = '#2a2a3a';
+                    this.style.color = '#777';
+                  "
+                >
+                  - -
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 4px;
+                    height: 32px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: 14px;
+                    color: #777;
+                  "
+                  onmouseover="
+                    this.style.borderColor = '#cdfe00';
+                    this.style.color = '#cdfe00';
+                  "
+                  onmouseout="
+                    this.style.borderColor = '#2a2a3a';
+                    this.style.color = '#777';
+                  "
+                >
+                  ♡
+                </div>
+              </div>
+            </div>
+
+            <!-- Text presets -->
+            <div style="margin-bottom: 14px">
+              <div
+                style="
+                  font-size: 9px;
+                  color: #555;
+                  text-transform: uppercase;
+                  letter-spacing: 1.5px;
+                  margin-bottom: 6px;
+                "
+              >
+                Text Styles
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 3px">
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 4px;
+                    padding: 7px 10px;
+                    cursor: pointer;
+                  "
+                  onmouseover="this.style.borderColor = '#cdfe00'"
+                  onmouseout="this.style.borderColor = '#2a2a3a'"
+                >
+                  <span style="font-size: 15px; font-weight: 700; color: #fff"
+                    >Add a Heading</span
+                  >
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 4px;
+                    padding: 7px 10px;
+                    cursor: pointer;
+                  "
+                  onmouseover="this.style.borderColor = '#cdfe00'"
+                  onmouseout="this.style.borderColor = '#2a2a3a'"
+                >
+                  <span style="font-size: 12px; font-weight: 600; color: #bbb"
+                    >Add a Subheading</span
+                  >
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 4px;
+                    padding: 7px 10px;
+                    cursor: pointer;
+                  "
+                  onmouseover="this.style.borderColor = '#cdfe00'"
+                  onmouseout="this.style.borderColor = '#2a2a3a'"
+                >
+                  <span style="font-size: 10px; color: #888"
+                    >Add body text</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Icons -->
+            <div style="margin-bottom: 14px">
+              <div
+                style="
+                  font-size: 9px;
+                  color: #555;
+                  text-transform: uppercase;
+                  letter-spacing: 1.5px;
+                  margin-bottom: 6px;
+                "
+              >
+                Icons
+              </div>
+              <input
+                style="
+                  background: #1a1a2a;
+                  border: 1px solid #2a2a3a;
+                  border-radius: 4px;
+                  color: #888;
+                  font-size: 10px;
+                  padding: 5px 8px;
+                  width: 100%;
+                  box-sizing: border-box;
+                  margin-bottom: 6px;
+                "
+                placeholder="Search icons…"
+              />
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: repeat(7, 1fr);
+                  gap: 3px;
+                "
+              >
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 3px;
+                    height: 26px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: 11px;
+                    color: #666;
+                  "
+                  onmouseover="
+                    this.style.borderColor = '#cdfe00';
+                    this.style.color = '#cdfe00';
+                  "
+                  onmouseout="
+                    this.style.borderColor = '#2a2a3a';
+                    this.style.color = '#666';
+                  "
+                >
+                  ☰
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 3px;
+                    height: 26px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: 11px;
+                    color: #666;
+                  "
+                  onmouseover="
+                    this.style.borderColor = '#cdfe00';
+                    this.style.color = '#cdfe00';
+                  "
+                  onmouseout="
+                    this.style.borderColor = '#2a2a3a';
+                    this.style.color = '#666';
+                  "
+                >
+                  ✓
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 3px;
+                    height: 26px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: 11px;
+                    color: #666;
+                  "
+                  onmouseover="
+                    this.style.borderColor = '#cdfe00';
+                    this.style.color = '#cdfe00';
+                  "
+                  onmouseout="
+                    this.style.borderColor = '#2a2a3a';
+                    this.style.color = '#666';
+                  "
+                >
+                  ⚙
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 3px;
+                    height: 26px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: 11px;
+                    color: #666;
+                  "
+                  onmouseover="
+                    this.style.borderColor = '#cdfe00';
+                    this.style.color = '#cdfe00';
+                  "
+                  onmouseout="
+                    this.style.borderColor = '#2a2a3a';
+                    this.style.color = '#666';
+                  "
+                >
+                  ♡
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 3px;
+                    height: 26px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: 11px;
+                    color: #666;
+                  "
+                  onmouseover="
+                    this.style.borderColor = '#cdfe00';
+                    this.style.color = '#cdfe00';
+                  "
+                  onmouseout="
+                    this.style.borderColor = '#2a2a3a';
+                    this.style.color = '#666';
+                  "
+                >
+                  ★
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 3px;
+                    height: 26px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: 11px;
+                    color: #666;
+                  "
+                  onmouseover="
+                    this.style.borderColor = '#cdfe00';
+                    this.style.color = '#cdfe00';
+                  "
+                  onmouseout="
+                    this.style.borderColor = '#2a2a3a';
+                    this.style.color = '#666';
+                  "
+                >
+                  ✉
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 3px;
+                    height: 26px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: 11px;
+                    color: #666;
+                  "
+                  onmouseover="
+                    this.style.borderColor = '#cdfe00';
+                    this.style.color = '#cdfe00';
+                  "
+                  onmouseout="
+                    this.style.borderColor = '#2a2a3a';
+                    this.style.color = '#666';
+                  "
+                >
+                  ⬆
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 3px;
+                    height: 26px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: 11px;
+                    color: #666;
+                  "
+                >
+                  📎
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 3px;
+                    height: 26px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: 11px;
+                    color: #666;
+                  "
+                >
+                  🔗
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 3px;
+                    height: 26px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: 11px;
+                    color: #666;
+                  "
+                >
+                  📷
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 3px;
+                    height: 26px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: 11px;
+                    color: #666;
+                  "
+                >
+                  🎯
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 3px;
+                    height: 26px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: 11px;
+                    color: #666;
+                  "
+                >
+                  💡
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 3px;
+                    height: 26px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: 11px;
+                    color: #666;
+                  "
+                >
+                  📊
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 3px;
+                    height: 26px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    font-size: 11px;
+                    color: #666;
+                  "
+                >
+                  🔒
+                </div>
+              </div>
+            </div>
+
+            <!-- Backgrounds -->
+            <div>
+              <div
+                style="
+                  font-size: 9px;
+                  color: #555;
+                  text-transform: uppercase;
+                  letter-spacing: 1.5px;
+                  margin-bottom: 6px;
+                "
+              >
+                Backgrounds
+              </div>
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: repeat(5, 1fr);
+                  gap: 4px;
+                "
+              >
+                <div
+                  style="
+                    height: 28px;
+                    border-radius: 4px;
+                    border: 1px solid #2a2a3a;
+                    background: #111111;
+                    cursor: pointer;
+                  "
+                  onmouseover="this.style.borderColor = '#cdfe00'"
+                  onmouseout="this.style.borderColor = '#2a2a3a'"
+                ></div>
+                <div
+                  style="
+                    height: 28px;
+                    border-radius: 4px;
+                    border: 1px solid #2a2a3a;
+                    background: #ffffff;
+                    cursor: pointer;
+                  "
+                  onmouseover="this.style.borderColor = '#cdfe00'"
+                  onmouseout="this.style.borderColor = '#2a2a3a'"
+                ></div>
+                <div
+                  style="
+                    height: 28px;
+                    border-radius: 4px;
+                    border: 1px solid #2a2a3a;
+                    background: #0d0d1a;
+                    cursor: pointer;
+                  "
+                  onmouseover="this.style.borderColor = '#cdfe00'"
+                  onmouseout="this.style.borderColor = '#2a2a3a'"
+                ></div>
+                <div
+                  style="
+                    height: 28px;
+                    border-radius: 4px;
+                    border: 1px solid #2a2a3a;
+                    background: linear-gradient(135deg, #0d0d1a, #1a1a2a);
+                    cursor: pointer;
+                  "
+                  onmouseover="this.style.borderColor = '#cdfe00'"
+                  onmouseout="this.style.borderColor = '#2a2a3a'"
+                ></div>
+                <div
+                  style="
+                    height: 28px;
+                    border-radius: 4px;
+                    border: 1px solid #2a2a3a;
+                    background: linear-gradient(135deg, #1a1a2a, #cdfe0033);
+                    cursor: pointer;
+                  "
+                  onmouseover="this.style.borderColor = '#cdfe00'"
+                  onmouseout="this.style.borderColor = '#2a2a3a'"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CANVAS AREA -->
+        <div
+          style="
+            flex: 1;
+            background: #161620;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: repeating-linear-gradient(
+              45deg,
+              #111 0,
+              #111 5px,
+              #161620 5px,
+              #161620 10px
+            );
+          "
+        >
+          <div
+            style="
+              width: 200px;
+              height: 105px;
+              background: #fff;
+              box-shadow: 0 8px 40px rgba(0, 0, 0, 0.7);
+              position: relative;
+            "
+          >
+            <div
+              style="
+                position: absolute;
+                inset: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #ddd;
+                font-size: 9px;
+                letter-spacing: 1px;
+              "
+            >
+              CANVAS
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div
+          style="
+            width: 240px;
+            min-width: 240px;
+            background: #111;
+            border-left: 1px solid #1e1e2e;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+          "
+        >
+          <!-- Tabs -->
+          <div
+            style="
+              display: flex;
+              border-bottom: 1px solid #1e1e2e;
+              flex-shrink: 0;
+            "
+          >
+            <div
+              style="
+                flex: 1;
+                padding: 8px 4px;
+                text-align: center;
+                font-size: 10px;
+                color: #cdfe00;
+                border-bottom: 2px solid #cdfe00;
+                cursor: pointer;
+              "
+            >
+              Design
+            </div>
+            <div
+              style="
+                flex: 1;
+                padding: 8px 4px;
+                text-align: center;
+                font-size: 10px;
+                color: #555;
+                cursor: pointer;
+              "
+            >
+              Align
+            </div>
+            <div
+              style="
+                flex: 1;
+                padding: 8px 4px;
+                text-align: center;
+                font-size: 10px;
+                color: #555;
+                cursor: pointer;
+              "
+            >
+              Export
+            </div>
+          </div>
+
+          <!-- Design tab -->
+          <div style="flex: 1; overflow-y: auto; padding: 12px">
+            <div
+              style="
+                font-size: 9px;
+                color: #555;
+                text-transform: uppercase;
+                letter-spacing: 1.5px;
+                margin-bottom: 8px;
+              "
+            >
+              Position & Size
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 5px;
+                margin-bottom: 14px;
+              "
+            >
+              <div>
+                <div style="font-size: 8px; color: #444; margin-bottom: 3px">
+                  X
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 4px;
+                    height: 26px;
+                    display: flex;
+                    align-items: center;
+                    padding: 0 8px;
+                    color: #888;
+                    font-size: 10px;
+                  "
+                >
+                  120
+                </div>
+              </div>
+              <div>
+                <div style="font-size: 8px; color: #444; margin-bottom: 3px">
+                  Y
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 4px;
+                    height: 26px;
+                    display: flex;
+                    align-items: center;
+                    padding: 0 8px;
+                    color: #888;
+                    font-size: 10px;
+                  "
+                >
+                  80
+                </div>
+              </div>
+              <div>
+                <div style="font-size: 8px; color: #444; margin-bottom: 3px">
+                  W
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 4px;
+                    height: 26px;
+                    display: flex;
+                    align-items: center;
+                    padding: 0 8px;
+                    color: #888;
+                    font-size: 10px;
+                  "
+                >
+                  320
+                </div>
+              </div>
+              <div>
+                <div style="font-size: 8px; color: #444; margin-bottom: 3px">
+                  H
+                </div>
+                <div
+                  style="
+                    background: #1a1a2a;
+                    border: 1px solid #2a2a3a;
+                    border-radius: 4px;
+                    height: 26px;
+                    display: flex;
+                    align-items: center;
+                    padding: 0 8px;
+                    color: #888;
+                    font-size: 10px;
+                  "
+                >
+                  80
+                </div>
+              </div>
+            </div>
+
+            <div
+              style="
+                font-size: 9px;
+                color: #555;
+                text-transform: uppercase;
+                letter-spacing: 1.5px;
+                margin-bottom: 8px;
+              "
+            >
+              Fill
+            </div>
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 14px;
+              "
+            >
+              <div
+                style="
+                  width: 28px;
+                  height: 28px;
+                  background: #4a90e2;
+                  border-radius: 4px;
+                  border: 1px solid #555;
+                  flex-shrink: 0;
+                  cursor: pointer;
+                "
+              ></div>
+              <div
+                style="
+                  background: #1a1a2a;
+                  border: 1px solid #2a2a3a;
+                  border-radius: 4px;
+                  height: 26px;
+                  flex: 1;
+                  display: flex;
+                  align-items: center;
+                  padding: 0 8px;
+                  color: #888;
+                  font-size: 10px;
+                "
+              >
+                #4A90E2
+              </div>
+              <div
+                style="
+                  background: #1a1a2a;
+                  border: 1px solid #2a2a3a;
+                  border-radius: 4px;
+                  height: 26px;
+                  width: 40px;
+                  display: flex;
+                  align-items: center;
+                  padding: 0 6px;
+                  color: #666;
+                  font-size: 9px;
+                "
+              >
+                100%
+              </div>
+            </div>
+
+            <div
+              style="
+                font-size: 9px;
+                color: #555;
+                text-transform: uppercase;
+                letter-spacing: 1.5px;
+                margin-bottom: 8px;
+              "
+            >
+              Stroke
+            </div>
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 14px;
+              "
+            >
+              <div
+                style="
+                  width: 28px;
+                  height: 28px;
+                  background: #333;
+                  border-radius: 4px;
+                  border: 1px dashed #555;
+                  flex-shrink: 0;
+                  cursor: pointer;
+                "
+              ></div>
+              <div
+                style="
+                  background: #1a1a2a;
+                  border: 1px solid #2a2a3a;
+                  border-radius: 4px;
+                  height: 26px;
+                  flex: 1;
+                  display: flex;
+                  align-items: center;
+                  padding: 0 8px;
+                  color: #555;
+                  font-size: 10px;
+                "
+              >
+                None
+              </div>
+              <div
+                style="
+                  background: #1a1a2a;
+                  border: 1px solid #2a2a3a;
+                  border-radius: 4px;
+                  height: 26px;
+                  width: 40px;
+                  display: flex;
+                  align-items: center;
+                  padding: 0 6px;
+                  color: #555;
+                  font-size: 9px;
+                "
+              >
+                0 px
+              </div>
+            </div>
+
+            <div
+              style="
+                font-size: 9px;
+                color: #555;
+                text-transform: uppercase;
+                letter-spacing: 1.5px;
+                margin-bottom: 8px;
+              "
+            >
+              Opacity
+            </div>
+            <div style="position: relative; margin-bottom: 14px">
+              <div style="background: #1a1a2a; border-radius: 3px; height: 5px">
+                <div
+                  style="
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(90deg, #cdfe00, #cdfe0030);
+                    border-radius: 3px;
+                  "
+                ></div>
+              </div>
+              <div
+                style="
+                  position: absolute;
+                  left: 100%;
+                  top: 50%;
+                  transform: translate(-50%, -50%);
+                  width: 12px;
+                  height: 12px;
+                  background: #fff;
+                  border-radius: 50%;
+                  border: 2px solid #cdfe00;
+                  box-shadow: 0 0 0 2px #0009;
+                "
+              ></div>
+            </div>
+            <div
+              style="
+                display: flex;
+                gap: 6px;
+                align-items: center;
+                margin-bottom: 14px;
+              "
+            >
+              <div
+                style="
+                  background: #1a1a2a;
+                  border: 1px solid #2a2a3a;
+                  border-radius: 4px;
+                  height: 26px;
+                  flex: 1;
+                  display: flex;
+                  align-items: center;
+                  padding: 0 8px;
+                  color: #888;
+                  font-size: 10px;
+                "
+              >
+                100%
+              </div>
+            </div>
+
+            <div
+              style="
+                font-size: 9px;
+                color: #555;
+                text-transform: uppercase;
+                letter-spacing: 1.5px;
+                margin-bottom: 8px;
+              "
+            >
+              Corner Radius
+            </div>
+            <div
+              style="
+                background: #1a1a2a;
+                border: 1px solid #2a2a3a;
+                border-radius: 4px;
+                height: 26px;
+                display: flex;
+                align-items: center;
+                padding: 0 8px;
+                color: #888;
+                font-size: 10px;
+                margin-bottom: 14px;
+              "
+            >
+              0
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>What's new vs what exists</h3>
+  <table style="width: 100%; border-collapse: collapse; font-size: 12px">
+    <tr style="border-bottom: 1px solid #333">
+      <td style="padding: 8px; color: #888; width: 50%">
+        ❌ 9 tiny emoji icons as tools
+      </td>
+      <td style="padding: 8px; color: #cdfe00">
+        ✓ 4 primary tools + full element tiles
+      </td>
+    </tr>
+    <tr style="border-bottom: 1px solid #333">
+      <td style="padding: 8px; color: #888">
+        ❌ Templates/AI/Designs buried in 3 action buttons
+      </td>
+      <td style="padding: 8px; color: #cdfe00">
+        ✓ Elements tab with Frames, Shapes, Text, Icons, Backgrounds
+      </td>
+    </tr>
+    <tr style="border-bottom: 1px solid #333">
+      <td style="padding: 8px; color: #888">
+        ❌ Cryptic align bar (⊢L, ⊤T, ⊥B)
+      </td>
+      <td style="padding: 8px; color: #cdfe00">
+        ✓ Proper Align tab with labelled icon buttons
+      </td>
+    </tr>
+    <tr style="border-bottom: 1px solid #333">
+      <td style="padding: 8px; color: #888">
+        ❌ 200px panels, no room to breathe
+      </td>
+      <td style="padding: 8px; color: #cdfe00">
+        ✓ 240px panels with proper spacing and section headers
+      </td>
+    </tr>
+    <tr style="border-bottom: 1px solid #333">
+      <td style="padding: 8px; color: #888">❌ No design name</td>
+      <td style="padding: 8px; color: #cdfe00">
+        ✓ Editable title in top bar + undo/redo buttons
+      </td>
+    </tr>
+    <tr>
+      <td style="padding: 8px; color: #888">❌ No icon library</td>
+      <td style="padding: 8px; color: #cdfe00">
+        ✓ Searchable icon set (SVG, clicks straight onto canvas)
+      </td>
+    </tr>
+  </table>
+</div>
+
+<p class="subtitle" style="margin-top: 16px">
+  Does this match what you had in mind? Any sections you want to change before I
+  write the spec?
+</p>

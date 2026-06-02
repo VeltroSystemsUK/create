@@ -1,0 +1,97 @@
+<h2>🔧 Design Section 2/5: Builder Integration (Revised)</h2>
+<p class="subtitle">Zero CMS setup in the builder. It just works on export.</p>
+
+<div class="section">
+  <h3>The Revised Approach</h3>
+  <p>
+    There is <strong>no CMS tab</strong>, no CMS panel, no per-prop toggles in
+    the builder. You build your site exactly as you do today — drag blocks, set
+    props, arrange pages. The CMS is entirely about the
+    <strong>exported live site</strong>.
+  </p>
+</div>
+
+<div class="section">
+  <h3>How It Works</h3>
+  <div style="display: flex; gap: 12px; flex-wrap: wrap">
+    <div
+      style="
+        flex: 1;
+        min-width: 200px;
+        background: #1a1a2e;
+        padding: 16px;
+        border-radius: 8px;
+      "
+    >
+      <div style="font-size: 24px; margin-bottom: 4px">1️⃣</div>
+      <div style="font-weight: 600; font-size: 14px">Build as normal</div>
+      <div style="font-size: 12px; color: #888; margin-top: 4px">
+        Use Framework Builder as you always do. No CMS-specific steps.
+      </div>
+    </div>
+    <div
+      style="
+        flex: 1;
+        min-width: 200px;
+        background: #1a1a2e;
+        padding: 16px;
+        border-radius: 8px;
+      "
+    >
+      <div style="font-size: 24px; margin-bottom: 4px">2️⃣</div>
+      <div style="font-weight: 600; font-size: 14px">Export with CMS</div>
+      <div style="font-size: 12px; color: #888; margin-top: 4px">
+        Click "Export with CMS". The system auto-scans all blocks/pages,
+        generates the content schema, and bundles the CMS server + admin panel
+        with the exported site.
+      </div>
+    </div>
+    <div
+      style="
+        flex: 1;
+        min-width: 200px;
+        background: #1a1a2e;
+        padding: 16px;
+        border-radius: 8px;
+      "
+    >
+      <div style="font-size: 24px; margin-bottom: 4px">3️⃣</div>
+      <div style="font-weight: 600; font-size: 14px">Deploy to client</div>
+      <div style="font-size: 12px; color: #888; margin-top: 4px">
+        The exported site includes everything needed: the site HTML, a
+        lightweight CMS server (cms.py), the admin dashboard, and the inline
+        editing script.
+      </div>
+    </div>
+    <div
+      style="
+        flex: 1;
+        min-width: 200px;
+        background: #1a1a2e;
+        padding: 16px;
+        border-radius: 8px;
+      "
+    >
+      <div style="font-size: 24px; margin-bottom: 4px">4️⃣</div>
+      <div style="font-weight: 600; font-size: 14px">Client edits content</div>
+      <div style="font-size: 12px; color: #888; margin-top: 4px">
+        Client visits their site → inline edit clicks or /admin dashboard. No
+        Framework Builder involved at all.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Only Configuration Needed</h3>
+  <p>On first run of the exported site, the CMS prompts for:</p>
+  <ul style="font-size: 14px; color: #ccc; margin: 8px 0">
+    <li><strong>Admin password</strong> — set once, used to access /admin</li>
+    <li>That's it. Everything else is auto-configured from the build.</li>
+  </ul>
+</div>
+
+<p style="margin-top: 24px">
+  Does this revised approach feel right? No CMS in the builder — the CMS is just
+  what ships with the exported site.
+</p>
