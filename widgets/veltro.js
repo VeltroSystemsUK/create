@@ -7024,7 +7024,7 @@ FB.widgets.register("auroraBorealis", {
     height: 500,
     bg: "#0d0d1a",
     colors: "#00ff88,#8b5cf6,#3b82f6",
-    speed: 0.5,
+    speed: 4.03,
     intensity: 0.7,
   },
   render: function (p) {
@@ -7042,7 +7042,7 @@ FB.widgets.register("auroraBorealis", {
       p.height +
       "px;background:" +
       p.bg +
-      ';position:relative;overflow:hidden;border-radius:4px"><canvas class="veltro-aurora-canvas" style="position:absolute;inset:0;width:100%;height:100%" data-aurora-init="1"></canvas></div>'
+      ';position:relative;overflow:hidden;border-radius:4px"><canvas class="veltro-aurora-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas></div>'
     );
   },
   editPanel: function (id, p) { return ""; },
@@ -9602,7 +9602,7 @@ window._VeltroInitTextMask = function () {
 
 window._VeltroInitMagneticCursor = function () {
   document
-    .querySelectorAll(".fw-widget-magneticCursor:not([data-mag-init])")
+    .querySelectorAll(".veltro-magcursor-wrap:not([data-mag-init])")
     .forEach(function (wrap) {
       wrap.setAttribute("data-mag-init", "1");
       var targets = wrap.querySelectorAll(".veltro-magnetic-target");
@@ -9638,7 +9638,7 @@ window._VeltroInitMagneticCursor = function () {
 
 window._VeltroInitParticleTrail = function () {
   document
-    .querySelectorAll(".fw-widget-particleTrail:not([data-trail-init])")
+    .querySelectorAll(".veltro-ptrail-wrap:not([data-trail-init])")
     .forEach(function (wrap) {
       wrap.setAttribute("data-trail-init", "1");
       var canvas = wrap.querySelector("canvas");
@@ -9720,7 +9720,7 @@ window._VeltroInitCursorRipple = function () {
 
 window._VeltroInitCursorLens = function () {
   document
-    .querySelectorAll(".fw-widget-cursorLens:not([data-lens-init])")
+    .querySelectorAll(".veltro-lens-mask:not([data-lens-init])")
     .forEach(function (el) {
       el.setAttribute("data-lens-init", "1");
     });
@@ -12704,7 +12704,7 @@ window._VeltroInitVelocityFluidBg = function () {
 
 window._VeltroInitAuroraBorealis = function () {
   document
-    .querySelectorAll(".fw-widget-auroraBorealis:not([data-ab-init])")
+    .querySelectorAll(".veltro-aurora-wrap:not([data-ab-init])")
     .forEach(function (el) {
       el.setAttribute("data-ab-init", "1");
       var canvas = el.querySelector("canvas");
