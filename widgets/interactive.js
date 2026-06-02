@@ -33,100 +33,7 @@ FB.widgets.register("counter", {
       "</div></div>"
     );
   },
-  editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Number</label><input type="number" value="' +
-      (p.number || 100) +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','number',+this.value)\"></div>" +
-      '<div class="rp-row"><label>Prefix</label><input type="text" value="' +
-      p.prefix +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','prefix',this.value)\"></div>" +
-      '<div class="rp-row"><label>Suffix</label><input type="text" value="' +
-      p.suffix +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','suffix',this.value)\"></div>" +
-      '<div class="rp-row"><label>Title</label><input type="text" value="' +
-      p.title +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','title',this.value)\"></div>" +
-      '<div class="rp-row"><label>Size: ' +
-      (p.size || 48) +
-      'px</label><input type="range" min="24" max="96" value="' +
-      (p.size || 48) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','size',+this.value);this.previousElementSibling.textContent='Size: '+this.value+'px'\"></div>" +
-      '<div class="rp-row"><label>Color</label><div class="color-row"><input type="color" value="' +
-      (p.color || "#111111") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      '\',\'color\',this.value)"><input type="text" value="' +
-      (p.color || "#111111") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','color',this.value)\"></div></div>"
-    );
-  },
-});
-
-FB.widgets.register("progressBar", {
-  label: "Progress Bar",
-  icon: "\u25A3",
-  iconBg: "#2a2a1a",
-  iconColor: "#CDFE00",
-  category: "interactive",
-  defaultProps: { percent: 75, title: "Skills", color: "#CDFE00", height: 24 },
-  render: function (p) {
-    return (
-      '<div style="padding:0.5rem 1rem">' +
-      (p.title
-        ? '<div style="font-size:13px;margin-bottom:4px;font-weight:500">' +
-          p.title +
-          "</div>"
-        : "") +
-      '<div class="fw-progress" style="background:#e8e8e4;border-radius:4px;height:' +
-      (p.height || 24) +
-      'px;overflow:hidden">' +
-      '<div class="fw-progress-fill" style="height:100%;border-radius:4px;width:' +
-      (p.percent || 75) +
-      "%;background:" +
-      (p.color || "#CDFE00") +
-      ';display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#111">' +
-      (p.percent || 75) +
-      "%</div></div></div>"
-    );
-  },
-  editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Title</label><input type="text" value="' +
-      p.title +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','title',this.value)\"></div>" +
-      '<div class="rp-row"><label>Percent: ' +
-      (p.percent || 75) +
-      '%</label><input type="range" min="5" max="100" value="' +
-      (p.percent || 75) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','percent',+this.value);this.previousElementSibling.textContent='Percent: '+this.value+'%'\"></div>" +
-      '<div class="rp-row"><label>Bar Color</label><div class="color-row"><input type="color" value="' +
-      (p.color || "#CDFE00") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      '\',\'color\',this.value)"><input type="text" value="' +
-      (p.color || "#CDFE00") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','color',this.value)\"></div></div>"
-    );
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 FB.widgets.register("countdown", {
@@ -151,20 +58,7 @@ FB.widgets.register("countdown", {
       '<div class="fw-countdown-unit"><div class="fw-countdown-num" style="font-family:\'Lexend\',sans-serif;font-size:3rem;font-weight:800;line-height:1">--</div><div class="fw-countdown-label" style="font-size:11px;text-transform:uppercase;color:#999;letter-spacing:2px">Secs</div></div></div></div>'
     );
   },
-  editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Target Date</label><input type="date" value="' +
-      (p.date || "2027-01-01") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','date',this.value)\"></div>" +
-      '<div class="rp-row"><label>Label</label><input type="text" value="' +
-      p.label +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','label',this.value)\"></div>"
-    );
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 FB.widgets.register("animatedHeadline", {
@@ -207,34 +101,7 @@ FB.widgets.register("animatedHeadline", {
       "</div>"
     );
   },
-  editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Before Text</label><input type="text" value="' +
-      p.beforeText +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','beforeText',this.value)\"></div>" +
-      '<div class="rp-row"><label>Animated Words (one per line)</label><textarea rows="3" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','words',this.value.split('\\n').filter(function(s){return s.trim()}))\">" +
-      (p.words || []).join("\n") +
-      "</textarea></div>" +
-      '<div class="rp-row"><label>After Text</label><input type="text" value="' +
-      p.afterText +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','afterText',this.value)\"></div>" +
-      '<div class="rp-row"><label>Color</label><div class="color-row"><input type="color" value="' +
-      (p.color || "#111111") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      '\',\'color\',this.value)"><input type="text" value="' +
-      (p.color || "#111111") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','color',this.value)\"></div></div>"
-    );
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 FB.widgets.register("hotspot", {
@@ -274,48 +141,7 @@ FB.widgets.register("hotspot", {
       "</div></div>"
     );
   },
-  editPanel: function (id, p) {
-    var html =
-      '<div class="rp-row"><label>Background Image URL</label><input type="text" value="' +
-      p.src +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','src',this.value)\"></div>";
-    (p.hotspots || []).forEach(function (m, i) {
-      html +=
-        '<div class="rp-row" style="border:1px solid var(--border);border-radius:4px;margin:4px 14px;padding:8px">' +
-        "<label>Marker " +
-        (i + 1) +
-        ' Label</label><input type="text" value="' +
-        m.label +
-        '" onchange="var hs=JSON.parse(JSON.stringify(FB.state.blocks.find(function(b){return b.id===\'' +
-        id +
-        "'}).props.hotspots||[]));hs[" +
-        i +
-        "].label=this.value;FB.panels.updateWidgetProp('" +
-        id +
-        "','hotspots',hs)\">" +
-        '<div style="display:flex;gap:4px;margin-top:4px"><label style="font-size:10px">X: </label><input type="range" min="5" max="95" value="' +
-        (m.x || 30) +
-        '" style="flex:1" oninput="var hs=JSON.parse(JSON.stringify(FB.state.blocks.find(function(b){return b.id===\'' +
-        id +
-        "'}).props.hotspots||[]));hs[" +
-        i +
-        "].x=+this.value;FB.panels.updateWidgetProp('" +
-        id +
-        "','hotspots',hs)\">" +
-        '<label style="font-size:10px">Y: </label><input type="range" min="5" max="95" value="' +
-        (m.y || 30) +
-        '" style="flex:1" oninput="var hs=JSON.parse(JSON.stringify(FB.state.blocks.find(function(b){return b.id===\'' +
-        id +
-        "'}).props.hotspots||[]));hs[" +
-        i +
-        "].y=+this.value;FB.panels.updateWidgetProp('" +
-        id +
-        "','hotspots',hs)\"></div></div>";
-    });
-    return html;
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 FB.widgets.register("progressTracker", {
@@ -368,33 +194,7 @@ FB.widgets.register("progressTracker", {
       "</div>"
     );
   },
-  editPanel: function (id, p) {
-    var html =
-      '<div class="rp-row"><label>Current Step: ' +
-      (p.current || 1) +
-      '</label><input type="range" min="0" max="' +
-      (p.steps ? p.steps.length : 2) +
-      '" value="' +
-      (p.current || 1) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','current',+this.value);this.previousElementSibling.textContent='Current Step: '+this.value\"></div>";
-    (p.steps || []).forEach(function (s, i) {
-      html +=
-        '<div class="rp-row"><label>Step ' +
-        (i + 1) +
-        ' Title</label><input type="text" value="' +
-        s.title +
-        '" onchange="var steps=JSON.parse(JSON.stringify(FB.state.blocks.find(function(b){return b.id===\'' +
-        id +
-        "'}).props.steps||[]));steps[" +
-        i +
-        "].title=this.value;FB.panels.updateWidgetProp('" +
-        id +
-        "','steps',steps)\"></div>";
-    });
-    return html;
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 FB.widgets.register("alert", {
@@ -425,41 +225,5 @@ FB.widgets.register("alert", {
       "</div>"
     );
   },
-  editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Title</label><input type="text" value="' +
-      p.title +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','title',this.value)\"></div>" +
-      '<div class="rp-row"><label>Description</label><textarea rows="2" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','desc',this.value)\">" +
-      p.desc +
-      "</textarea></div>" +
-      '<div class="rp-row"><label>Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','type',this.value)\">" +
-      ["info", "success", "warning", "danger"]
-        .map(function (t) {
-          return (
-            '<option value="' +
-            t +
-            '"' +
-            (p.type === t ? " selected" : "") +
-            ">" +
-            t.charAt(0).toUpperCase() +
-            t.slice(1) +
-            "</option>"
-          );
-        })
-        .join("") +
-      "</select></div>" +
-      '<div class="rp-row"><label><input type="checkbox" ' +
-      (p.dismissible ? "checked" : "") +
-      " onchange=\"FB.panels.updateWidgetProp('" +
-      id +
-      "','dismissible',this.checked)\"> Dismissible</label></div>"
-    );
-  },
+  editPanel: function (id, p) { return ""; },
 });

@@ -1,10 +1,51 @@
 FB.design = {};
 FB.design._mode = false;
 
+// Suppress Fabric.js "alphabetical" textBaseline warnings (broken templates)
+(function () {
+  var _warn = console.warn;
+  console.warn = function (msg) {
+    if (typeof msg === "string" && msg.indexOf("alphabetical") !== -1) return;
+    return _warn.apply(console, arguments);
+  };
+})();
+
 FB.design._esc = function (s) {
   var d = document.createElement("div");
   d.textContent = String(s);
   return d.innerHTML;
+};
+
+// Normalize color for HTML5 color input (must be #rrggbb format)
+FB.design.normalizeColorForInput = function(color) {
+  if (!color) return "#000000";
+
+  // If it's already a valid 6-digit hex, return it
+  if (/^#[0-9a-f]{6}$/i.test(color)) {
+    return color;
+  }
+
+  // Convert 3-digit hex to 6-digit hex
+  if (/^#[0-9a-f]{3}$/i.test(color)) {
+    return '#' + color[1] + color[1] + color[2] + color[2] + color[3] + color[3];
+  }
+
+  // Convert 8-digit hex (with alpha) to 6-digit hex (strip alpha)
+  if (/^#[0-9a-f]{8}$/i.test(color)) {
+    return color.substring(0, 7);
+  }
+
+  // Handle rgb/rgba colors by extracting hex
+  var rgbMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+  if (rgbMatch) {
+    var r = parseInt(rgbMatch[1], 10).toString(16).padStart(2, '0');
+    var g = parseInt(rgbMatch[2], 10).toString(16).padStart(2, '0');
+    var b = parseInt(rgbMatch[3], 10).toString(16).padStart(2, '0');
+    return '#' + r + g + b;
+  }
+
+  // Default fallback
+  return "#000000";
 };
 
 FB.design.init = function () {
@@ -65,6 +106,9 @@ FB.design._loadAssets = function () {
             })
             .join("")
         : '<p style="color:#555;font-size:10px;padding:8px;">No saved designs yet.</p>';
+    })
+    .catch(function (err) {
+      console.error("[_loadAssets] Error:", err);
     });
 };
 
@@ -75,11 +119,12 @@ FB.design.renderExportTab = function () {
     typeof fc.backgroundColor === "string" ? fc.backgroundColor : "#ffffff";
   var el = document.getElementById("ds-canvas-bg-picker");
   if (!el) return;
+  var bgNormalized = FB.design.normalizeColorForInput(bg.charAt(0) === "#" ? bg : "#ffffff");
   el.innerHTML =
-    '<input type="color" class="ds-color-swatch" value="' +
-    (bg.charAt(0) === "#" ? bg : "#ffffff") +
+    '<input id="ds-bg-color" name="ds-bg-color" type="color" class="ds-color-swatch" value="' +
+    bgNormalized +
     '" onchange="FB.design.props.setCanvasBg(this.value)"/>' +
-    '<input class="ds-input" style="flex:1" value="' +
+    '<input id="ds-bg-hex" name="ds-bg-hex" class="ds-input" style="flex:1" value="' +
     FB.design._esc(bg) +
     '" onchange="FB.design.props.setCanvasBg(this.value)"/>';
 };
@@ -126,7 +171,7 @@ FB.design.elements = (function () {
       label: "Add body text",
       fontSize: 18,
       fontWeight: 400,
-      fill: "#aaaaaa",
+      fill: "#767676",
     },
     {
       id: "caption",
@@ -362,7 +407,7 @@ FB.design.elements = (function () {
     return (
       "<div>" +
       '<div class="ds-section-label">Icons</div>' +
-      '<input id="ds-icon-search" placeholder="Search icons…" value="' +
+      '<input id="ds-icon-search" name="ds-icon-search" placeholder="Search icons…" value="' +
       FB.design._esc(_iconQuery) +
       '" ' +
       'oninput="FB.design.elements._onIconSearch(this.value)" />' +
@@ -673,7 +718,7 @@ FB.design.canvas = (function () {
       preserveObjectStacking: true,
     });
 
-    applyPreset("og");
+    applyPreset("blank");
     _bindZoomPan();
     _bindEvents();
     _bindKeys();
@@ -1354,6 +1399,7 @@ FB.design.props = (function () {
     var has = !!obj.shadow;
     var sh = obj.shadow || {};
     var color = sh.color && sh.color.charAt(0) === "#" ? sh.color : "#000000";
+    var colorNormalized = FB.design.normalizeColorForInput(color);
     return (
       '<div class="ds-prop-group">' +
       '<div class="ds-prop-label" style="display:flex;justify-content:space-between;align-items:center;">' +
@@ -1365,19 +1411,19 @@ FB.design.props = (function () {
       "</button></div>" +
       (has
         ? '<div class="ds-shadow-row">' +
-          '<input class="ds-input" type="number" value="' +
+          '<input id="shadow-offsetx" name="shadow-offsetx" class="ds-input" type="number" value="' +
           (sh.offsetX || 4) +
           '" placeholder="X" title="X offset" onchange="FB.design.props.setShadow(\'offsetX\',+this.value)"/>' +
-          '<input class="ds-input" type="number" value="' +
+          '<input id="shadow-offsety" name="shadow-offsety" class="ds-input" type="number" value="' +
           (sh.offsetY || 4) +
           '" placeholder="Y" title="Y offset" onchange="FB.design.props.setShadow(\'offsetY\',+this.value)"/>' +
           "</div>" +
           '<div class="ds-shadow-row">' +
-          '<input class="ds-input" type="number" value="' +
+          '<input id="shadow-blur" name="shadow-blur" class="ds-input" type="number" value="' +
           (sh.blur || 10) +
           '" placeholder="Blur" title="Blur" onchange="FB.design.props.setShadow(\'blur\',+this.value)"/>' +
-          '<input type="color" class="ds-color-swatch" style="width:100%;border-radius:4px" value="' +
-          color +
+          '<input id="shadow-color" name="shadow-color" type="color" class="ds-color-swatch" style="width:100%;border-radius:4px" value="' +
+          colorNormalized +
           '" title="Shadow colour" onchange="FB.design.props.setShadow(\'color\',this.value)"/>' +
           "</div>"
         : "") +
@@ -1390,18 +1436,18 @@ FB.design.props = (function () {
       '<div class="ds-prop-group">' +
       '<div class="ds-prop-label">Position</div>' +
       '<div class="ds-prop-row">' +
-      '<input class="ds-input" style="width:48%" type="number" value="' +
+      '<input id="prop-left" name="prop-left" class="ds-input" style="width:48%" type="number" value="' +
       Math.round(obj.left) +
       '" onchange="FB.design.props.setProp(\'left\',+this.value)" placeholder="X"/>' +
-      '<input class="ds-input" style="width:48%" type="number" value="' +
+      '<input id="prop-top" name="prop-top" class="ds-input" style="width:48%" type="number" value="' +
       Math.round(obj.top) +
       '" onchange="FB.design.props.setProp(\'top\',+this.value)" placeholder="Y"/>' +
       "</div>" +
       '<div class="ds-prop-row">' +
-      '<input class="ds-input" style="width:48%" type="number" value="' +
+      '<input id="prop-width" name="prop-width" class="ds-input" style="width:48%" type="number" value="' +
       Math.round(obj.getScaledWidth()) +
       '" onchange="FB.design.props.setWidth(+this.value)" placeholder="W"/>' +
-      '<input class="ds-input" style="width:48%" type="number" value="' +
+      '<input id="prop-height" name="prop-height" class="ds-input" style="width:48%" type="number" value="' +
       Math.round(obj.getScaledHeight()) +
       '" onchange="FB.design.props.setHeight(+this.value)" placeholder="H"/>' +
       "</div>" +
@@ -1414,34 +1460,36 @@ FB.design.props = (function () {
     var stroke = obj.stroke || "transparent";
     var sw = obj.strokeWidth || 0;
     var op = Math.round((obj.opacity || 1) * 100);
+    var fillNormalized = FB.design.normalizeColorForInput(fill);
+    var strokeNormalized = FB.design.normalizeColorForInput(stroke === "transparent" ? "#000000" : stroke);
     var html = _posSize(obj);
     html +=
       '<div class="ds-prop-group"><div class="ds-prop-label">Fill</div>' +
-      '<div class="ds-color-row"><input type="color" class="ds-color-swatch" value="' +
-      fill +
+      '<div class="ds-color-row"><input id="shape-fill-color" name="shape-fill-color" type="color" class="ds-color-swatch" value="' +
+      fillNormalized +
       '" onchange="FB.design.props.setProp(\'fill\',this.value)"/>' +
-      '<input class="ds-input" value="' +
+      '<input id="shape-fill-hex" name="shape-fill-hex" class="ds-input" value="' +
       fill +
       '" onchange="FB.design.props.setProp(\'fill\',this.value)"/></div></div>';
     html +=
       '<div class="ds-prop-group"><div class="ds-prop-label">Stroke</div>' +
       '<div class="ds-prop-row">' +
-      '<input type="color" class="ds-color-swatch" value="' +
-      (stroke === "transparent" ? "#000000" : stroke) +
+      '<input id="shape-stroke-color" name="shape-stroke-color" type="color" class="ds-color-swatch" value="' +
+      strokeNormalized +
       '" onchange="FB.design.props.setProp(\'stroke\',this.value)"/>' +
-      '<input class="ds-input" type="number" value="' +
+      '<input id="shape-stroke-width" name="shape-stroke-width" class="ds-input" type="number" value="' +
       sw +
       '" placeholder="Width" onchange="FB.design.props.setProp(\'strokeWidth\',+this.value)"/>' +
       "</div></div>";
     html +=
       '<div class="ds-prop-group"><div class="ds-prop-label">Opacity</div>' +
-      '<input class="ds-input" type="range" min="0" max="100" value="' +
+      '<input id="shape-opacity" name="shape-opacity" class="ds-input" type="range" min="0" max="100" value="' +
       op +
       '" oninput="FB.design.props.setProp(\'opacity\',this.value/100)"/></div>';
     if (obj.type === "rect") {
       html +=
         '<div class="ds-prop-group"><div class="ds-prop-label">Corner Radius</div>' +
-        '<input class="ds-input" type="number" value="' +
+        '<input id="shape-radius" name="shape-radius" class="ds-input" type="number" value="' +
         (obj.rx || 0) +
         "\" onchange=\"FB.design.props.setPropXY('rx','ry',+this.value)\"/></div>";
     }
@@ -1460,7 +1508,7 @@ FB.design.props = (function () {
     // Font family
     html +=
       '<div class="ds-prop-group"><div class="ds-prop-label">Font</div>' +
-      '<select class="ds-select" onchange="FB.design.props.setProp(\'fontFamily\',this.value)">' +
+      '<select id="text-font" name="text-font" class="ds-select" onchange="FB.design.props.setProp(\'fontFamily\',this.value)">' +
       GOOGLE_FONTS.map(function (f) {
         return (
           "<option" +
@@ -1476,7 +1524,7 @@ FB.design.props = (function () {
     html +=
       '<div class="ds-prop-group"><div class="ds-prop-label">Size &amp; Style</div>' +
       '<div class="ds-prop-row" style="align-items:center;">' +
-      '<input class="ds-input" style="width:60px;flex-shrink:0" type="number" value="' +
+      '<input id="text-size" name="text-size" class="ds-input" style="width:60px;flex-shrink:0" type="number" value="' +
       (obj.fontSize || 32) +
       '" onchange="FB.design.props.setProp(\'fontSize\',+this.value)"/>' +
       '<div style="display:flex;gap:3px;margin-left:4px;">' +
@@ -1496,10 +1544,11 @@ FB.design.props = (function () {
       "</div></div></div>";
 
     // Colour
+    var textColor = FB.design.normalizeColorForInput(obj.fill || "#000000");
     html +=
       '<div class="ds-prop-group"><div class="ds-prop-label">Colour</div>' +
       '<div class="ds-color-row"><input type="color" class="ds-color-swatch" value="' +
-      (obj.fill || "#000000") +
+      textColor +
       '" onchange="FB.design.props.setProp(\'fill\',this.value)"/>' +
       '<input class="ds-input" value="' +
       (obj.fill || "#000000") +
@@ -1533,7 +1582,7 @@ FB.design.props = (function () {
       '<div class="ds-prop-label" style="display:flex;justify-content:space-between">Line Height <output style="font-size:9px;color:#aaa">' +
       lineH +
       "</output></div>" +
-      '<input class="ds-input" type="range" min="0.8" max="3.0" step="0.1" value="' +
+      '<input id="text-line-height" name="text-line-height" class="ds-input" type="range" min="0.8" max="3.0" step="0.1" value="' +
       lineH +
       "\" oninput=\"this.previousElementSibling.querySelector('output').value=parseFloat(this.value).toFixed(1);FB.design.props.setProp('lineHeight',+this.value)\"/>" +
       "</div>";
@@ -1544,7 +1593,7 @@ FB.design.props = (function () {
       '<div class="ds-prop-label" style="display:flex;justify-content:space-between">Letter Spacing <output style="font-size:9px;color:#aaa">' +
       spacing +
       "</output></div>" +
-      '<input class="ds-input" type="range" min="-100" max="500" step="10" value="' +
+      '<input id="text-letter-spacing" name="text-letter-spacing" class="ds-input" type="range" min="-100" max="500" step="10" value="' +
       spacing +
       "\" oninput=\"this.previousElementSibling.querySelector('output').value=this.value;FB.design.props.setProp('charSpacing',+this.value)\"/>" +
       "</div>";
@@ -1572,10 +1621,11 @@ FB.design.props = (function () {
   }
 
   function _canvasProps(fc) {
+    var canvasBgColor = FB.design.normalizeColorForInput(fc.backgroundColor || "#ffffff");
     return (
       '<div class="ds-prop-group"><div class="ds-prop-label">Canvas Background</div>' +
       '<div class="ds-color-row"><input type="color" class="ds-color-swatch" value="' +
-      (fc.backgroundColor || "#ffffff") +
+      canvasBgColor +
       '" onchange="FB.design.props.setCanvasBg(this.value)"/>' +
       '<input class="ds-input" value="' +
       (fc.backgroundColor || "#ffffff") +
@@ -1895,6 +1945,10 @@ FB.design.library = (function () {
         if (d.ok) {
           FB.util.showToast("Saved: " + name);
         }
+      })
+      .catch(function (err) {
+        console.error("[saveDesign] Error:", err);
+        FB.util.showToast("Error saving design");
       });
   }
 
@@ -1928,6 +1982,9 @@ FB.design.library = (function () {
               .join("")
           : '<p style="color:#666;padding:16px;font-size:12px">No saved designs yet.</p>';
         document.getElementById("ds-library-overlay").style.display = "flex";
+      })
+      .catch(function (err) {
+        console.error("[openPicker] Error:", err);
       });
   }
 
@@ -1943,6 +2000,10 @@ FB.design.library = (function () {
       })
       .then(function (d) {
         var fc = FB.design.canvas.get();
+        if (!fc) {
+          console.error("[loadDesign] Canvas not available");
+          return;
+        }
         fc.setWidth(d.width);
         fc.setHeight(d.height);
         FB.design.history.silent(function () {
@@ -1956,6 +2017,10 @@ FB.design.library = (function () {
             FB.util.showToast("Loaded: " + d.name);
           });
         });
+      })
+      .catch(function (err) {
+        console.error("[loadDesign] Error:", err);
+        FB.util.showToast("Error loading design");
       });
   }
 
@@ -2048,7 +2113,8 @@ FB.design.templates = (function () {
     fc.setWidth(tpl.width);
     fc.setHeight(tpl.height);
     FB.design.history.silent(function () {
-      fc.loadFromJSON(tpl.fabric, function () {
+      var fabricJson = JSON.parse(JSON.stringify(tpl.fabric));
+      fc.loadFromJSON(fabricJson, function () {
         fc.renderAll();
         FB.design.layers.render();
         FB.design.canvas.zoomFit();
@@ -2093,6 +2159,10 @@ FB.design.ai = (function () {
         status.textContent = "Placing image…";
         fabric.Image.fromURL(d.url, function (img) {
           var fc = FB.design.canvas.get();
+          if (!fc) {
+            status.textContent = "Canvas not available";
+            return;
+          }
           var maxW = fc.getWidth() * 0.6;
           if (img.width > maxW) img.scaleToWidth(maxW);
           img.set({

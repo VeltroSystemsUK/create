@@ -1,5 +1,22 @@
 FB.canvas = {};
 
+/**
+ * Sanitise arbitrary HTML before injecting it into the DOM.
+ * Strips <script> tags, javascript: hrefs, and inline event handlers (on*).
+ * Uses DOMPurify when available (loaded via CDN in the HTML), otherwise
+ * falls back to a basic regex-based approach.
+ */
+FB.canvas._sanitizeHTML = function (html) {
+  if (typeof DOMPurify !== "undefined") {
+    return DOMPurify.sanitize(html, { FORCE_BODY: true });
+  }
+  // Fallback: remove script tags, javascript: URIs, and on* event attributes
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/javascript\s*:/gi, "")
+    .replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]*)/gi, "");
+};
+
 FB.canvas.renderBlockHTML = function (block) {
   if (FB.widgets.get(block.type)) {
     return (
@@ -47,16 +64,8 @@ FB.canvas.renderBlockHTML = function (block) {
         '">' +
         '<div class="fw-nav-logo fw-nav-entrance fw-nav-entrance-d1" style="color:' +
         p.textColor +
-        '">' +
-        (p.logoImage
-          ? '<img src="' +
-            p.logoImage +
-            '" alt="' +
-            (p.logoText || "") +
-            '" style="max-height:36px;width:auto;display:block">'
-          : '<span contenteditable data-field="logoText">' +
-            p.logoText +
-            "</span>") +
+        '" contenteditable data-field="logoText">' +
+        p.logoText +
         "</div>" +
         '<ul class="fw-nav-links fw-nav-entrance fw-nav-entrance-d2">' +
         (p.links || [])
@@ -85,10 +94,16 @@ FB.canvas.renderBlockHTML = function (block) {
           );
         })
         .join(" ");
+      // NEW: Support for hero background image
+      var heroImgStyle = p.heroImage
+        ? "background:url('" + p.heroImage + "') " + p.bg + ";background-size:cover;background-position:center;"
+        : "background:" + p.bg + ";";
+      var heroOverlayHtml = p.heroImage
+        ? '<div class="hero-image-overlay" style="background:' + (p.overlayColor || "rgba(0,0,0,0.4)") + ';opacity:' + (p.imageOpacity || 0.3) + '"></div>'
+        : "";
       return (
-        '<div class="fw-hero-block" style="background:' +
-        p.bg +
-        '">' +
+        '<div class="fw-hero-block" style="' + heroImgStyle + '">' +
+        heroOverlayHtml +
         (p.blobStyle === "blob" && p.showBlob
           ? '<div class="fw-hero-blob"></div>'
           : "") +
@@ -153,20 +168,23 @@ FB.canvas.renderBlockHTML = function (block) {
     case "work":
       var cards = (p.cards || [])
         .map(function (c) {
+          var bgStyle = c.imageUrl
+            ? "background-image:url('" + c.imageUrl + "');background-size:cover;background-position:center"
+            : "background:" + (c.bg || "#1a1a2e");
           return (
             '<div class="fw-work-card">' +
-            '<div class="fw-work-card-bg" style="background:' +
-            c.bg +
-            '"></div>' +
+            '<div class="fw-work-card-bg" style="' + bgStyle + '"></div>' +
             '<div class="fw-work-card-overlay">' +
             '<div class="fw-work-card-tag" style="color:' +
-            p.accentColor +
+            (p.accentColor || "#CDFE00") +
             '">' +
             c.tag +
             "</div>" +
-            '<div class="fw-work-card-title">' +
+            '<div class="fw-work-card-title" style="color:' + (c.textColor || "#f7f6f2") + '">' +
             c.title +
-            "</div></div></div>"
+            "</div>" +
+            (c.desc ? '<div class="fw-work-card-desc" style="font-size:13px;opacity:0.7;margin-top:4px;color:' + (c.textColor || "#f7f6f2") + '">' + c.desc + "</div>" : "") +
+            "</div></div>"
           );
         })
         .join("");
@@ -443,16 +461,18 @@ FB.canvas.renderBlockHTML = function (block) {
         '<div class="fw-features-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:2rem">' +
         (p.items || [])
           .map(function (i) {
+            // NEW: Support for feature images
+            var featureImageHtml = i.useImage && i.image
+              ? '<div class="feature-image-container" style="width:100%;height:' + (p.featureImageSize || 80) + 'px;border-radius:' + (p.featureImageRadius || 8) + 'px"><img src="' + i.image + '" alt="' + i.title + '" style="width:100%;height:100%;object-fit:cover"></div>'
+              : '<div style="font-size:2rem;margin-bottom:1rem">' + i.icon + "</div>";
             return (
               '<div class="fw-feature-card" style="padding:2rem;background:' +
               (p.bg === "#ffffff" ? "#f7f6f2" : "#1a1a1f") +
               ';border-radius:4px">' +
-              '<div style="font-size:2rem;margin-bottom:1rem">' +
-              i.icon +
-              "</div>" +
+              featureImageHtml +
               "<h3 style=\"font-family:'Lexend',sans-serif;font-size:1.15rem;font-weight:700;color:" +
               p.textColor +
-              ';margin-bottom:0.6rem">' +
+              ';margin-bottom:0.6rem;margin-top:' + (i.useImage && i.image ? "0.5" : "0") + 'rem">' +
               i.title +
               "</h3>" +
               '<p style="font-size:14px;font-weight:300;line-height:1.6;color:' +
@@ -482,39 +502,40 @@ FB.canvas.renderBlockHTML = function (block) {
         '<div class="fw-pricing-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;align-items:start">' +
         (p.tiers || [])
           .map(function (t) {
+            var isHl = t.highlighted || t.featured;
+            var cardBg = t.cardBg || (isHl ? "#1a1a1a" : "#ffffff");
+            var cardText = t.cardTextColor || (isHl ? "#f7f6f2" : "#111111");
+            var accentCol = p.accentColor || "#CDFE00";
+            var planImageHtml = t.image
+              ? '<div style="width:100%;height:' + (p.pricingImageSize || 120) + 'px;border-radius:' + (p.pricingImageRadius || 8) + 'px;margin-bottom:1rem;overflow:hidden"><img src="' + t.image + '" alt="' + t.name + '" style="width:100%;height:100%;object-fit:cover"></div>'
+              : "";
             return (
               '<div class="fw-tier-card" style="background:' +
-              (t.featured ? "#111" : "#fff") +
+              cardBg +
+              ";color:" + cardText +
               ";padding:2.5rem 2rem;border-radius:4px;position:relative;" +
-              (t.featured
-                ? "color:#fff;transform:scale(1.05)"
-                : "color:#111;border:1px solid #eee") +
+              (isHl ? "transform:scale(1.05)" : "border:1px solid rgba(0,0,0,0.1)") +
               '">' +
-              (t.featured
-                ? '<div style="position:absolute;top:0;left:0;right:0;background:#CDFE00;color:#111;text-align:center;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:4px;font-weight:600">Popular</div>'
+              planImageHtml +
+              (isHl
+                ? '<div style="position:absolute;top:0;left:0;right:0;background:' + accentCol + ';color:#111;text-align:center;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:4px;font-weight:600">Popular</div>'
                 : "") +
-              "<h3 style=\"font-family:'Lexend',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:0.5rem;" +
-              (t.featured ? "color:#fff" : "color:#111") +
+              "<h3 style=\"font-family:'Lexend',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:0.5rem;color:" +
+              cardText +
               '">' +
               t.name +
               "</h3>" +
-              "<div style=\"font-family:'Lexend',sans-serif;font-size:3rem;font-weight:800;letter-spacing:-2px;" +
-              (t.featured ? "color:#CDFE00" : "color:#111") +
+              "<div style=\"font-family:'Lexend',sans-serif;font-size:3rem;font-weight:800;letter-spacing:-2px;color:" +
+              (isHl ? accentCol : cardText) +
               '">' +
               t.price +
               "</div>" +
-              '<div style="font-size:12px;color:' +
-              (t.featured ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)") +
-              ';margin-bottom:1.5rem">per month</div>' +
+              '<div style="font-size:12px;opacity:0.4;margin-bottom:1.5rem">' + (t.period || "/project") + "</div>" +
               '<ul style="list-style:none;padding:0;margin-bottom:2rem">' +
-              t.features
+              (t.features || [])
                 .map(function (f) {
                   return (
-                    '<li style="padding:0.4rem 0;font-size:13px;border-bottom:1px solid ' +
-                    (t.featured
-                      ? "rgba(255,255,255,0.06)"
-                      : "rgba(0,0,0,0.06)") +
-                    '">' +
+                    '<li style="padding:0.4rem 0;font-size:13px;border-bottom:1px solid rgba(128,128,128,0.12)">✓ ' +
                     f +
                     "</li>"
                   );
@@ -522,9 +543,9 @@ FB.canvas.renderBlockHTML = function (block) {
                 .join("") +
               "</ul>" +
               '<button style="width:100%;padding:0.8rem;background:' +
-              (t.featured ? "#CDFE00" : "#111") +
+              (isHl ? accentCol : cardText) +
               ";color:" +
-              (t.featured ? "#111" : "#fff") +
+              (isHl ? "#111" : cardBg) +
               ';border:none;border-radius:4px;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer">' +
               t.cta +
               "</button></div>"
@@ -556,13 +577,9 @@ FB.canvas.renderBlockHTML = function (block) {
               '<div class="fw-team-card" style="padding:2rem;background:' +
               (p.bg === "#ffffff" ? "#f7f6f2" : "#1a1a1f") +
               ';border-radius:4px;text-align:center">' +
-              '<div style="width:80px;height:80px;border-radius:50%;background:' +
-              p.accentColor +
-              "22;margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-family:'Lexend',sans-serif;font-size:1.8rem;font-weight:700;color:" +
-              p.accentColor +
-              '">' +
-              m.name.charAt(0) +
-              "</div>" +
+              (m.imageUrl
+                ? '<img src="' + m.imageUrl + '" alt="' + m.name + '" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin:0 auto 1rem;display:block">'
+                : '<div style="width:80px;height:80px;border-radius:50%;background:' + p.accentColor + "22;margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-family:'Lexend',sans-serif;font-size:1.8rem;font-weight:700;color:" + p.accentColor + '">' + m.name.charAt(0) + "</div>") +
               "<h3 style=\"font-family:'Lexend',sans-serif;font-size:1.15rem;font-weight:700;color:" +
               p.textColor +
               ';margin-bottom:0.3rem">' +
@@ -592,10 +609,9 @@ FB.canvas.renderBlockHTML = function (block) {
         '<video class="fw-video-bg" autoplay muted loop playsinline' +
         (p.posterUrl ? ' poster="' + p.posterUrl + '"' : "") +
         ">" +
-        (p.videoUrl
-          ? '<source src="' + p.videoUrl + '" type="video/webm">'
-          : "") +
-        "</video>" +
+        '<source src="' +
+        p.videoUrl +
+        '" type="' + (/\.webm(\?|$)/i.test(p.videoUrl) ? "video/webm" : "video/mp4") + '"></video>' +
         '<div class="fw-video-overlay" style="background:' +
         p.overlayColor +
         ";opacity:" +
@@ -631,19 +647,16 @@ FB.canvas.renderBlockHTML = function (block) {
       );
 
     case "splitHero":
-      var _embedUrl = p.embedUrl || p.imageUrl || p.imageSrc || "";
       var splitMedia =
-        p.embedType === "vimeo" && _embedUrl
+        p.embedType === "vimeo"
           ? '<iframe src="https://player.vimeo.com/video/' +
-            _embedUrl.split("/").pop() +
+            p.embedUrl.split("/").pop() +
             '?background=1&autoplay=1&loop=1&muted=1" frameborder="0" allow="autoplay" style="position:absolute;inset:0;width:100%;height:100%"></iframe>'
-          : _embedUrl
-            ? '<img src="' +
-              _embedUrl +
-              '" alt="' +
-              (p.imageAlt || "") +
-              '" style="width:100%;height:100%;object-fit:cover">'
-            : '<div style="width:100%;height:100%;background:var(--surface-1)"></div>';
+          : '<img src="' +
+            p.embedUrl +
+            '" alt="' +
+            p.imageAlt +
+            '" style="width:100%;height:100%;object-fit:cover">';
       return (
         '<div class="fw-split-hero" style="background:' +
         p.bg +
@@ -767,16 +780,8 @@ FB.canvas.renderBlockHTML = function (block) {
         '">' +
         '<div class="fw-mega-logo" style="color:' +
         p.textColor +
-        '">' +
-        (p.logoImage
-          ? '<img src="' +
-            p.logoImage +
-            '" alt="' +
-            (p.logoText || "") +
-            '" style="max-height:36px;width:auto;display:block">'
-          : '<span contenteditable data-field="logoText">' +
-            p.logoText +
-            "</span>") +
+        '" contenteditable data-field="logoText">' +
+        p.logoText +
         "</div>" +
         '<ul class="fw-mega-links">' +
         megaLinks +
@@ -828,16 +833,8 @@ FB.canvas.renderBlockHTML = function (block) {
         '">' +
         '<div class="fw-mega-logo" style="color:' +
         p.textColor +
-        '">' +
-        (p.logoImage
-          ? '<img src="' +
-            p.logoImage +
-            '" alt="' +
-            (p.logoText || "") +
-            '" style="max-height:36px;width:auto;display:block">'
-          : '<span contenteditable data-field="logoText">' +
-            p.logoText +
-            "</span>") +
+        '" contenteditable data-field="logoText">' +
+        p.logoText +
         "</div>" +
         '<label class="fw-nav-cta" style="background:' +
         p.accentColor +
@@ -977,18 +974,17 @@ FB.canvas.renderBlockHTML = function (block) {
     case "portfolioGrid":
       var portItems = (p.items || [])
         .map(function (item) {
+          var imgSrc = item.imageUrl || item.image || "";
           return (
             '<div class="fw-portfolio-item">' +
-            '<img src="' +
-            item.image +
-            '" alt="' +
-            item.title +
-            '" loading="lazy">' +
+            (imgSrc ? '<img src="' + imgSrc + '" alt="' + item.title + '" loading="lazy">' : '<div style="width:100%;height:200px;background:#2a2a2a;display:flex;align-items:center;justify-content:center;color:#555;font-size:12px">No image</div>') +
             '<div class="fw-portfolio-overlay"><h3>' +
             item.title +
             "</h3><p>" +
             item.category +
-            "</p></div></div>"
+            "</p>" +
+            (item.desc ? '<p style="font-size:12px;opacity:0.75;margin-top:4px">' + item.desc + "</p>" : "") +
+            "</div></div>"
           );
         })
         .join("");
@@ -1200,9 +1196,11 @@ FB.canvas.renderBlockHTML = function (block) {
         '">' +
         "<h1>" +
         p.prefix +
-        '<span class="fw-word-swap-wrap">' +
+        ' <span class="fw-word-swap-wrap">' +
         wsItems +
-        "</span></h1></div></div>"
+        "</span>" +
+        (p.suffix ? " " + p.suffix : "") +
+        "</h1></div></div>"
       );
 
     case "chatWidget":
@@ -1229,7 +1227,7 @@ FB.canvas.renderBlockHTML = function (block) {
         '<div class="fw-chat-body"><div class="fw-chat-message" style="background:rgba(255,255,255,0.05)">' +
         p.welcomeText +
         "</div></div>" +
-        '<div class="fw-chat-input"><input type="text" placeholder="Type a message..."><button>\u27A4</button></div></div>'
+        '<div class="fw-chat-input"><input type="text" id="chat-message" name="message" placeholder="Type a message..."><button>\u27A4</button></div></div>'
       );
 
     case "cookieConsent":
@@ -1238,7 +1236,7 @@ FB.canvas.renderBlockHTML = function (block) {
           var checked = c.required ? "checked disabled" : "checked";
           return (
             '<div class="fw-cookie-category" style="padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.1);display:flex;align-items:flex-start;gap:0.5rem">' +
-            '<input type="checkbox" class="fw-cookie-cat-toggle" data-cat="' +
+            '<input type="checkbox" id="fw-cookie-cat-' + (c.id || "") + '" name="fw-cookie-cat-' + (c.id || "") + '" class="fw-cookie-cat-toggle" data-cat="' +
             (c.id || "") +
             '" ' +
             checked +
@@ -1364,9 +1362,9 @@ FB.canvas.renderBlockHTML = function (block) {
         (p.frameStyle === "polaroid" ? "" : "") +
         '">' +
         '<img src="' +
-        p.imageUrl +
+        (p.imageUrl || "") +
         '" alt="' +
-        p.imageAlt +
+        (p.imageAlt || "") +
         '" style="width:100%;height:' +
         p.imageHeight +
         "px;object-fit:" +
@@ -1458,16 +1456,19 @@ FB.canvas.renderBlockHTML = function (block) {
         '<div class="fw-mask-reveal-block fw-entrance" style="background:' +
         p.bg +
         ';padding:5rem 3rem">' +
+        (p.imageUrl ? '<div style="width:100%;max-height:400px;overflow:hidden;border-radius:8px;margin-bottom:2rem"><img src="' + p.imageUrl + '" alt="" style="width:100%;height:100%;object-fit:cover"></div>' : "") +
         '<h1 class="fw-mask-reveal-wrap" style="color:' +
         p.textColor +
-        '" contenteditable data-field="headline">' +
+        ";font-size:" + (p.fontSize || 4) + "rem;font-weight:" + (p.fontWeight || 800) + '" contenteditable data-field="headline">' +
         p.headline +
         "</h1>" +
         '<p class="fw-mask-reveal-sub" style="color:' +
         p.textColor +
         '" contenteditable data-field="subtext">' +
-        p.subtext +
-        "</p></div>"
+        (p.subtext || "") +
+        "</p>" +
+        (p.ctaText ? '<a class="fw-hero-cta" style="display:inline-block;margin-top:2rem;background:' + p.accentColor + ';color:#111;padding:0.8rem 2rem;border-radius:4px;font-weight:700;text-decoration:none;font-size:14px;letter-spacing:1px;text-transform:uppercase" contenteditable data-field="ctaText">' + p.ctaText + "</a>" : "") +
+        "</div>"
       );
 
     case "fullscreenMenu":
@@ -1493,16 +1494,8 @@ FB.canvas.renderBlockHTML = function (block) {
         '<div class="fw-fs-topbar">' +
         '<div class="fw-fs-logo" style="color:' +
         p.textColor +
-        '">' +
-        (p.logoImage
-          ? '<img src="' +
-            p.logoImage +
-            '" alt="' +
-            (p.logoText || "") +
-            '" style="max-height:36px;width:auto;display:block">'
-          : '<span contenteditable data-field="logoText">' +
-            p.logoText +
-            "</span>") +
+        '" contenteditable data-field="logoText">' +
+        p.logoText +
         "</div>" +
         '<label for="fw-fs-toggle" class="fw-fs-hamburger" style="color:' +
         p.textColor +
@@ -1694,17 +1687,15 @@ FB.canvas.renderBlockHTML = function (block) {
         p.bg +
         ';padding:5rem 3rem">' +
         '<h1 class="fw-glitch-headline" data-text="' +
-        p.headline +
+        (p.headline || "GLITCH.") +
         '" style="color:' +
         p.textColor +
+        ";font-size:" + (p.fontSize || 6) + "rem;font-weight:" + (p.fontWeight || 900) +
         '" contenteditable data-field="headline">' +
-        p.headline +
+        (p.headline || "GLITCH.") +
         "</h1>" +
-        '<p class="fw-glitch-sub" style="color:' +
-        p.textColor +
-        ';opacity:0.6" contenteditable data-field="subtext">' +
-        p.subtext +
-        "</p></div>"
+        (p.subtext ? '<p class="fw-glitch-sub" style="color:' + p.textColor + ';opacity:0.6" contenteditable data-field="subtext">' + p.subtext + "</p>" : "") +
+        "</div>"
       );
 
     case "svgDraw":
@@ -1720,7 +1711,7 @@ FB.canvas.renderBlockHTML = function (block) {
         'fill="none" stroke="' +
         p.accentColor +
         '" stroke-width="1.5" ' +
-        'stroke-dasharray="1000" stroke-dashoffset="1000" ' +
+        'stroke-dasharray="5000" stroke-dashoffset="5000" ' +
         'class="fw-svg-draw-text">' +
         (p.headline || "") +
         "</text></svg>" +
@@ -1891,7 +1882,7 @@ FB.canvas.renderBlockHTML = function (block) {
           return (
             '<div class="fw-ctr-cell">' +
             '<div class="fw-ctr-num" data-target="' +
-            c.num +
+            c.target +
             '" style="color:' +
             p.accentColor +
             '">0' +
@@ -2451,13 +2442,701 @@ FB.canvas.renderBlockHTML = function (block) {
         "</div>"
       );
 
-    // ecomProductCard/ecomProductGrid/ecomFeaturedProduct/ecomProductCarousel/ecomQuickView
-    // moved to widgets/ecom-products.js — render via FB.widgets.render()
+    case "ecomProductCard":
+      var pcStars = "";
+      for (var i = 0; i < Math.floor(p.rating || 0); i++) pcStars += "★";
+      return (
+        '<div class="fw-ecom-product-card" style="background:' +
+        p.bg +
+        ";color:" +
+        p.textColor +
+        '">' +
+        '<div class="fw-ecom-product-card-img-wrap">' +
+        '<img class="fw-ecom-product-card-img" src="' +
+        (p.imageUrl || "") +
+        '" alt="">' +
+        (p.badge
+          ? '<span class="fw-ecom-product-card-badge" style="background:' +
+            (p.saleColor || "#ef4444") +
+            '">' +
+            p.badge +
+            "</span>"
+          : "") +
+        "</div>" +
+        '<div class="fw-ecom-product-card-body">' +
+        '<h3 class="fw-ecom-product-card-title" contenteditable data-field="title">' +
+        p.title +
+        "</h3>" +
+        '<div class="fw-ecom-product-card-rating" style="color:#FFD700">' +
+        pcStars +
+        (p.reviewCount
+          ? ' <span style="opacity:0.5;font-size:12px">(' +
+            p.reviewCount +
+            ")</span>"
+          : "") +
+        "</div>" +
+        '<div class="fw-ecom-product-card-price">' +
+        (p.salePrice
+          ? '<span class="original">' +
+            p.price +
+            '</span><span class="sale" style="color:' +
+            (p.saleColor || "#ef4444") +
+            '">' +
+            p.salePrice +
+            "</span>"
+          : '<span class="current">' + p.price + "</span>") +
+        "</div>" +
+        '<button class="fw-ecom-product-card-btn" style="background:' +
+        p.accentColor +
+        ';color:#111" contenteditable data-field="btnText">' +
+        p.btnText +
+        "</button></div></div>"
+      );
 
-    // ecomCartDrawer/ecomCartSummary/ecomCheckoutForm/ecomSaleBanner/ecomCountdown
-    // ecomCouponInput/ecomShippingProgress/ecomNewsletter moved to widgets/ecom-checkout.js
+    case "ecomProductGrid":
+      var gridCards = (p.products || [])
+        .map(function (prod) {
+          var gs = "";
+          for (var j = 0; j < Math.floor(prod.rating || 0); j++) gs += "★";
+          return (
+            '<div class="fw-ecom-product-card">' +
+            '<div class="fw-ecom-product-card-img-wrap">' +
+            '<img class="fw-ecom-product-card-img" src="' +
+            (prod.imageUrl || "") +
+            '" alt="">' +
+            (prod.badge
+              ? '<span class="fw-ecom-product-card-badge" style="background:' +
+                (p.saleColor || "#ef4444") +
+                '">' +
+                prod.badge +
+                "</span>"
+              : "") +
+            "</div>" +
+            '<div class="fw-ecom-product-card-body">' +
+            '<h3 class="fw-ecom-product-card-title">' +
+            prod.title +
+            "</h3>" +
+            '<div class="fw-ecom-product-card-rating" style="color:#FFD700">' +
+            gs +
+            "</div>" +
+            '<div class="fw-ecom-product-card-price">' +
+            (prod.salePrice
+              ? '<span class="original">' +
+                prod.price +
+                '</span><span class="sale" style="color:' +
+                (p.saleColor || "#ef4444") +
+                '">' +
+                prod.salePrice +
+                "</span>"
+              : '<span class="current">' + prod.price + "</span>") +
+            "</div>" +
+            '<button class="fw-ecom-product-card-btn" style="background:' +
+            (p.accentColor || "#CDFE00") +
+            ';color:#111">Add to Cart</button></div></div>'
+          );
+        })
+        .join("");
+      return (
+        '<div class="fw-ecom-product-grid" style="grid-template-columns:repeat(' +
+        (p.columns || 3) +
+        ",1fr);gap:" +
+        (p.gap || 24) +
+        "px;background:" +
+        p.bg +
+        ";color:" +
+        p.textColor +
+        '">' +
+        gridCards +
+        "</div>"
+      );
 
-    // All ecommerce blocks migrated to widgets/ecom-*.js
+    case "ecomFeaturedProduct":
+      return (
+        '<div class="fw-ecom-featured" style="background:' +
+        p.bg +
+        ";color:" +
+        p.textColor +
+        '">' +
+        '<div class="fw-ecom-featured-image">' +
+        '<img src="' +
+        (p.imageUrl || "") +
+        '" alt="">' +
+        "</div>" +
+        '<div class="fw-ecom-featured-details">' +
+        '<h2 contenteditable data-field="title">' +
+        p.title +
+        "</h2>" +
+        '<p contenteditable data-field="description">' +
+        p.description +
+        "</p>" +
+        '<div class="fw-ecom-featured-price">' +
+        (p.salePrice
+          ? '<span class="original">' +
+            p.price +
+            '</span><span class="sale">' +
+            p.salePrice +
+            "</span>"
+          : "<span>" + p.price + "</span>") +
+        "</div>" +
+        (p.variants
+          ? '<div class="fw-ecom-featured-variants" contenteditable data-field="variants">' +
+            p.variants +
+            "</div>"
+          : "") +
+        '<div class="fw-ecom-featured-qty">' +
+        "<button>−</button><span>1</span><button>+</button>" +
+        "</div>" +
+        '<button class="fw-ecom-featured-btn" style="background:' +
+        p.accentColor +
+        ';color:#111" contenteditable data-field="btnText">' +
+        p.btnText +
+        "</button></div></div>"
+      );
+
+    case "ecomProductCarousel":
+      var carouselCards = (p.products || [])
+        .map(function (cp) {
+          return (
+            '<div class="fw-ecom-carousel-card">' +
+            '<img src="' +
+            (cp.imageUrl || "") +
+            '" alt="">' +
+            '<div class="fw-ecom-carousel-card-title">' +
+            cp.title +
+            "</div>" +
+            '<div class="fw-ecom-carousel-card-price">' +
+            (cp.salePrice
+              ? '<span style="text-decoration:line-through;opacity:0.5;font-size:12px">' +
+                cp.price +
+                '</span> <span style="color:' +
+                (p.saleColor || "#ef4444") +
+                '">' +
+                cp.salePrice +
+                "</span>"
+              : cp.price) +
+            "</div></div>"
+          );
+        })
+        .join("");
+      return (
+        '<div class="fw-ecom-carousel" style="background:' +
+        p.bg +
+        ";color:" +
+        p.textColor +
+        '">' +
+        "<button class=\"fw-ecom-carousel-btn prev\" onclick=\"this.parentElement.querySelector('.fw-ecom-carousel-track').scrollBy({left:-240,behavior:'smooth'})\">‹</button>" +
+        '<div class="fw-ecom-carousel-track">' +
+        carouselCards +
+        "</div>" +
+        "<button class=\"fw-ecom-carousel-btn next\" onclick=\"this.parentElement.querySelector('.fw-ecom-carousel-track').scrollBy({left:240,behavior:'smooth'})\">›</button>" +
+        "</div>"
+      );
+
+    case "ecomQuickView":
+      return (
+        '<div class="fw-ecom-quickview" style="background:' +
+        p.bg +
+        ";color:" +
+        p.textColor +
+        '">' +
+        '<button class="fw-ecom-quickview-btn" style="border-color:' +
+        p.accentColor +
+        ";color:" +
+        p.accentColor +
+        "\" contenteditable data-field=\"triggerText\" onclick=\"this.closest('.fw-ecom-quickview').querySelector('.fw-ecom-quickview-modal').style.display='flex'\">" +
+        p.triggerText +
+        "</button>" +
+        '<div class="fw-ecom-quickview-modal" style="display:none">' +
+        '<div class="fw-ecom-quickview-overlay" style="background:rgba(0,0,0,' +
+        (p.overlayOpacity || 0.8) +
+        ')" onclick="this.parentElement.style.display=\'none\'"></div>' +
+        '<div class="fw-ecom-quickview-content" style="background:' +
+        (p.modalBg || "#1a1a1a") +
+        '">' +
+        "<button class=\"fw-ecom-quickview-close\" onclick=\"this.closest('.fw-ecom-quickview-modal').style.display='none'\">×</button>" +
+        '<img src="' +
+        (p.imageUrl || "") +
+        '" alt="">' +
+        '<h3 contenteditable data-field="title">' +
+        p.title +
+        "</h3>" +
+        '<div class="price">' +
+        (p.salePrice
+          ? '<span style="text-decoration:line-through;opacity:0.5">' +
+            p.price +
+            '</span> <span style="color:' +
+            (p.saleColor || "#ef4444") +
+            '">' +
+            p.salePrice +
+            "</span>"
+          : p.price) +
+        "</div>" +
+        '<div class="desc" contenteditable data-field="description">' +
+        p.description +
+        "</div>" +
+        '<button class="add-btn" style="background:' +
+        p.accentColor +
+        ';color:#111" contenteditable data-field="btnText">' +
+        p.btnText +
+        "</button></div></div></div>"
+      );
+
+    case "ecomCartDrawer":
+      return (
+        '<div class="fw-ecom-cart-drawer" style="background:' +
+        p.bg +
+        ";color:" +
+        p.textColor +
+        '">' +
+        '<div class="fw-ecom-cart-drawer-header">' +
+        "<h3>Your Cart</h3>" +
+        '<button class="fw-ecom-cart-drawer-close">×</button>' +
+        "</div>" +
+        '<div class="fw-ecom-cart-drawer-item">' +
+        '<img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=120" alt="">' +
+        '<div class="fw-ecom-cart-drawer-item-info">' +
+        '<div class="fw-ecom-cart-drawer-item-title">Premium Watch</div>' +
+        '<div class="fw-ecom-cart-drawer-item-price">£129.00</div>' +
+        '<div class="fw-ecom-cart-drawer-qty"><button>−</button><span>1</span><button>+</button></div>' +
+        "</div></div>" +
+        '<div class="fw-ecom-cart-drawer-item">' +
+        '<img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=120" alt="">' +
+        '<div class="fw-ecom-cart-drawer-item-info">' +
+        '<div class="fw-ecom-cart-drawer-item-title">Wireless Headphones</div>' +
+        '<div class="fw-ecom-cart-drawer-item-price">£89.00</div>' +
+        '<div class="fw-ecom-cart-drawer-qty"><button>−</button><span>2</span><button>+</button></div>' +
+        "</div></div>" +
+        '<div class="fw-ecom-cart-drawer-footer">' +
+        '<div class="fw-ecom-cart-drawer-subtotal"><span>Subtotal</span><span>£307.00</span></div>' +
+        '<button class="fw-ecom-cart-drawer-checkout" style="background:' +
+        p.accentColor +
+        ';color:#111" contenteditable data-field="checkoutBtnText">' +
+        p.checkoutBtnText +
+        "</button></div></div>"
+      );
+
+    case "ecomCartSummary":
+      var taxRate = p.taxRate || 20;
+      return (
+        '<div class="fw-ecom-cart-summary" style="background:' +
+        p.bg +
+        ";color:" +
+        p.textColor +
+        '">' +
+        "<h3>Order Summary</h3>" +
+        '<div class="fw-ecom-cart-summary-row"><span>Subtotal</span><span>£307.00</span></div>' +
+        '<div class="fw-ecom-cart-summary-row"><span>' +
+        (p.shippingText || "Shipping") +
+        "</span><span>£5.00</span></div>" +
+        '<div class="fw-ecom-cart-summary-row"><span>Tax (' +
+        taxRate +
+        "%)</span><span>£61.40</span></div>" +
+        '<div class="fw-ecom-cart-summary-row total"><span>Total</span><span>£373.40</span></div>' +
+        '<div class="fw-ecom-cart-summary-coupon">' +
+        '<input type="text" id="promo-code" name="promo_code" placeholder="Promo code">' +
+        '<button style="background:' +
+        p.accentColor +
+        ';color:#111">Apply</button>' +
+        "</div></div>"
+      );
+
+    case "ecomCheckoutForm":
+      return (
+        '<div class="fw-ecom-checkout" style="background:' +
+        p.bg +
+        ";color:" +
+        p.textColor +
+        '">' +
+        '<div class="fw-ecom-checkout-form">' +
+        '<h2 contenteditable data-field="heading">' +
+        p.heading +
+        "</h2>" +
+        '<div class="fw-ecom-checkout-field"><label for="ecom-email">Email</label><input type="email" id="ecom-email" name="email" placeholder="you@example.com"></div>' +
+        '<div class="fw-ecom-checkout-row">' +
+        '<div class="fw-ecom-checkout-field"><label for="ecom-fname">First Name</label><input type="text" id="ecom-fname" name="first_name" placeholder="John"></div>' +
+        '<div class="fw-ecom-checkout-field"><label for="ecom-lname">Last Name</label><input type="text" id="ecom-lname" name="last_name" placeholder="Doe"></div>' +
+        "</div>" +
+        '<div class="fw-ecom-checkout-field"><label for="ecom-address">Address</label><input type="text" id="ecom-address" name="address" placeholder="123 Main St"></div>' +
+        '<div class="fw-ecom-checkout-row">' +
+        '<div class="fw-ecom-checkout-field"><label for="ecom-city">City</label><input type="text" id="ecom-city" name="city" placeholder="London"></div>' +
+        '<div class="fw-ecom-checkout-field"><label for="ecom-postcode">Postcode</label><input type="text" id="ecom-postcode" name="postcode" placeholder="EC1A 1BB"></div>' +
+        "</div>" +
+        '<div class="fw-ecom-checkout-field"><label for="ecom-card">Card Number</label><input type="text" id="ecom-card" name="card_number" placeholder="4242 4242 4242 4242"></div>' +
+        '<div class="fw-ecom-checkout-row">' +
+        '<div class="fw-ecom-checkout-field"><label for="ecom-expiry">Expiry</label><input type="text" id="ecom-expiry" name="expiry" placeholder="MM/YY"></div>' +
+        '<div class="fw-ecom-checkout-field"><label for="ecom-cvv">CVV</label><input type="text" id="ecom-cvv" name="cvv" placeholder="123"></div>' +
+        "</div>" +
+        '<button class="fw-ecom-checkout-submit" style="background:' +
+        p.accentColor +
+        ';color:#111" contenteditable data-field="btnText">' +
+        p.btnText +
+        "</button></div>" +
+        '<div class="fw-ecom-checkout-summary">' +
+        "<h4>Order Summary</h4>" +
+        '<div class="fw-ecom-checkout-summary-item">' +
+        '<img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=80" alt="">' +
+        '<div class="fw-ecom-checkout-summary-item-name">Premium Watch × 1</div>' +
+        '<div class="fw-ecom-checkout-summary-item-price">£129.00</div>' +
+        "</div>" +
+        '<div class="fw-ecom-checkout-summary-item">' +
+        '<img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=80" alt="">' +
+        '<div class="fw-ecom-checkout-summary-item-name">Headphones × 2</div>' +
+        '<div class="fw-ecom-checkout-summary-item-price">£178.00</div>' +
+        "</div>" +
+        '<div class="fw-ecom-cart-summary-row" style="margin-top:16px"><span>Subtotal</span><span>£307.00</span></div>' +
+        '<div class="fw-ecom-cart-summary-row total"><span>Total</span><span>£373.40</span></div>' +
+        "</div></div>"
+      );
+
+    case "ecomSaleBanner":
+      return (
+        '<div class="fw-ecom-sale-banner" style="background:' +
+        p.bg +
+        ";color:" +
+        p.textColor +
+        '">' +
+        '<h2 contenteditable data-field="headline">' +
+        p.headline +
+        "</h2>" +
+        '<p contenteditable data-field="subtext">' +
+        p.subtext +
+        "</p>" +
+        '<a class="fw-ecom-sale-banner-btn" href="' +
+        (p.btnUrl || "#") +
+        '" style="background:' +
+        p.textColor +
+        ";color:" +
+        p.bg +
+        '" contenteditable data-field="btnText">' +
+        p.btnText +
+        "</a></div>"
+      );
+
+    case "ecomCountdown":
+      return (
+        '<div class="fw-ecom-countdown" style="background:' +
+        p.bg +
+        ";color:" +
+        p.textColor +
+        '" data-target-date="' +
+        (p.targetDate || "") +
+        '">' +
+        '<h3 contenteditable data-field="headline">' +
+        p.headline +
+        "</h3>" +
+        '<div class="fw-ecom-countdown-digits">' +
+        '<div class="fw-ecom-countdown-digit"><span class="number" style="border-color:' +
+        p.accentColor +
+        ";color:" +
+        p.accentColor +
+        '" data-unit="days">12</span><span class="label">Days</span></div>' +
+        '<div class="fw-ecom-countdown-digit"><span class="number" style="border-color:' +
+        p.accentColor +
+        ";color:" +
+        p.accentColor +
+        '" data-unit="hours">08</span><span class="label">Hours</span></div>' +
+        '<div class="fw-ecom-countdown-digit"><span class="number" style="border-color:' +
+        p.accentColor +
+        ";color:" +
+        p.accentColor +
+        '" data-unit="minutes">45</span><span class="label">Minutes</span></div>' +
+        '<div class="fw-ecom-countdown-digit"><span class="number" style="border-color:' +
+        p.accentColor +
+        ";color:" +
+        p.accentColor +
+        '" data-unit="seconds">30</span><span class="label">Seconds</span></div>' +
+        "</div></div>"
+      );
+
+    case "ecomCouponInput":
+      return (
+        '<div class="fw-ecom-coupon" style="background:' +
+        p.bg +
+        ";color:" +
+        p.textColor +
+        '">' +
+        '<h3 contenteditable data-field="headline">' +
+        p.headline +
+        "</h3>" +
+        '<div class="fw-ecom-coupon-form">' +
+        '<input type="text" id="coupon-code" name="coupon_code" placeholder="' +
+        (p.placeholder || "Enter code here") +
+        '">' +
+        '<button style="background:' +
+        p.accentColor +
+        ';color:#111" contenteditable data-field="btnText">' +
+        p.btnText +
+        "</button></div></div>"
+      );
+
+    case "ecomShippingProgress":
+      var pct = Math.min(
+        100,
+        Math.round(((p.currentAmount || 0) / (p.threshold || 50)) * 100),
+      );
+      var remaining = Math.max(0, (p.threshold || 50) - (p.currentAmount || 0));
+      return (
+        '<div class="fw-ecom-shipping" style="background:' +
+        p.bg +
+        ";color:" +
+        p.textColor +
+        '">' +
+        '<h4 contenteditable data-field="headline">' +
+        p.headline +
+        "</h4>" +
+        '<div class="fw-ecom-shipping-bar">' +
+        '<div class="fw-ecom-shipping-fill" style="width:' +
+        pct +
+        "%;background:" +
+        p.accentColor +
+        '"></div>' +
+        "</div>" +
+        '<div class="fw-ecom-shipping-text">£<strong>' +
+        (p.currentAmount || 0) +
+        "</strong> of £<strong>" +
+        (p.threshold || 50) +
+        "</strong>" +
+        (remaining > 0
+          ? " — add <strong>£" + remaining + "</strong> more for free shipping!"
+          : " — <strong>You qualify for free shipping!</strong>") +
+        "</div></div>"
+      );
+
+    case "ecomReviews":
+      var reviewCards = (p.reviews || [])
+        .map(function (r) {
+          var rs = "";
+          for (var k = 0; k < Math.floor(r.rating || 0); k++) rs += "★";
+          return (
+            '<div class="fw-ecom-review-card">' +
+            '<div class="fw-ecom-review-header">' +
+            '<span class="fw-ecom-review-name">' +
+            r.name +
+            "</span>" +
+            '<span class="fw-ecom-review-date">' +
+            r.date +
+            "</span></div>" +
+            '<div class="fw-ecom-review-stars">' +
+            rs +
+            "</div>" +
+            '<div class="fw-ecom-review-text">' +
+            r.text +
+            "</div></div>"
+          );
+        })
+        .join("");
+      var bigStars = "";
+      for (var m = 0; m < Math.floor(p.rating || 0); m++) bigStars += "★";
+      return (
+        '<div class="fw-ecom-reviews" style="background:' +
+        p.bg +
+        ";color:" +
+        p.textColor +
+        '">' +
+        '<div class="fw-ecom-reviews-summary">' +
+        '<div class="big-rating">' +
+        (p.rating || 0) +
+        "</div>" +
+        '<div class="stars">' +
+        bigStars +
+        "</div>" +
+        '<div class="count">' +
+        (p.reviewCount || 0) +
+        " reviews</div></div>" +
+        reviewCards +
+        "</div>"
+      );
+
+    case "ecomFilters":
+      var catBtns = (p.categories || [])
+        .map(function (c, i) {
+          return (
+            '<button class="fw-ecom-filter-btn' +
+            (i === 0 ? " active" : "") +
+            '" style="' +
+            (i === 0
+              ? "background:" + p.accentColor + ";color:#111;"
+              : "background:rgba(255,255,255,0.05);") +
+            '">' +
+            c +
+            "</button>"
+          );
+        })
+        .join("");
+      var sortOpts = (p.sortOptions || [])
+        .map(function (s) {
+          return "<option>" + s + "</option>";
+        })
+        .join("");
+      return (
+        '<div class="fw-ecom-filters" style="background:' +
+        p.bg +
+        ";color:" +
+        p.textColor +
+        '">' +
+        '<div class="fw-ecom-filters-top">' +
+        '<div class="fw-ecom-filters-cats">' +
+        catBtns +
+        "</div>" +
+        '<div class="fw-ecom-filters-controls">' +
+        (p.showPriceRange
+          ? '<div class="fw-ecom-filters-price"><label>£<input type="number" id="price-min" name="price_min" value="0" min="0" style="width:60px;padding:6px;border:1px solid rgba(255,255,255,0.2);border-radius:6px;background:rgba(255,255,255,0.05);color:inherit;font-family:Lexend,sans-serif;"> — £<input type="number" id="price-max" name="price_max" value="500" min="0" style="width:60px;padding:6px;border:1px solid rgba(255,255,255,0.2);border-radius:6px;background:rgba(255,255,255,0.05);color:inherit;font-family:Lexend,sans-serif;"></label></div>'
+          : "") +
+        '<select class="fw-ecom-filters-sort" id="sort-select" name="sort" style="padding:8px 12px;border:1px solid rgba(255,255,255,0.2);border-radius:6px;background:rgba(255,255,255,0.05);color:inherit;font-family:Lexend,sans-serif;">' +
+        sortOpts +
+        "</select>" +
+        (p.showGridToggle
+          ? '<div class="fw-ecom-filters-grid-toggle"><button class="active" title="Grid view">⊞</button><button title="List view">☰</button></div>'
+          : "") +
+        "</div></div>" +
+        '<div class="fw-ecom-filters-results" style="color:' +
+        p.accentColor +
+        '" contenteditable data-field="resultsText">' +
+        p.resultsText +
+        "</div></div>"
+      );
+
+    case "ecomTrustBadges":
+      var badgeItems = (p.badges || [])
+        .map(function (b) {
+          return (
+            '<div class="fw-ecom-trust-badge">' +
+            '<div class="fw-ecom-trust-badge-icon">' +
+            b.icon +
+            "</div>" +
+            '<div class="fw-ecom-trust-badge-title">' +
+            b.title +
+            "</div>" +
+            '<div class="fw-ecom-trust-badge-desc">' +
+            b.desc +
+            "</div></div>"
+          );
+        })
+        .join("");
+      return (
+        '<div class="fw-ecom-trust-badges" style="background:' +
+        p.bg +
+        ";color:" +
+        p.textColor +
+        '">' +
+        badgeItems +
+        "</div>"
+      );
+
+    case "ecomNewsletter":
+      return (
+        '<div class="fw-ecom-newsletter" style="background:' +
+        p.bg +
+        ";color:" +
+        p.textColor +
+        '">' +
+        '<div class="fw-ecom-newsletter-inner">' +
+        '<h2 contenteditable data-field="headline">' +
+        p.headline +
+        "</h2>" +
+        '<p contenteditable data-field="subtext">' +
+        p.subtext +
+        "</p>" +
+        '<div class="fw-ecom-newsletter-form">' +
+        '<input type="email" id="fw-ecom-newsletter-email" name="fw-ecom-newsletter-email" placeholder="' +
+        (p.placeholder || "Enter your email") +
+        '">' +
+        '<button style="background:' +
+        p.accentColor +
+        ';color:#111" contenteditable data-field="btnText">' +
+        p.btnText +
+        "</button></div></div></div>"
+      );
+
+    case "ecomRelatedProducts":
+      var relCards = (p.products || [])
+        .map(function (rp) {
+          return (
+            '<div class="fw-ecom-related-card">' +
+            '<div class="fw-ecom-related-card-img-wrap">' +
+            '<img src="' +
+            (rp.imageUrl || "") +
+            '" alt="">' +
+            "</div>" +
+            '<div class="fw-ecom-related-card-title">' +
+            rp.title +
+            "</div>" +
+            '<div class="fw-ecom-related-card-price">' +
+            (rp.salePrice
+              ? '<span style="text-decoration:line-through;opacity:0.5;font-size:13px">' +
+                rp.price +
+                '</span> <span style="color:' +
+                (p.saleColor || "#ef4444") +
+                '">' +
+                rp.salePrice +
+                "</span>"
+              : rp.price) +
+            "</div></div>"
+          );
+        })
+        .join("");
+      return (
+        '<div class="fw-ecom-related" style="background:' +
+        p.bg +
+        ";color:" +
+        p.textColor +
+        '">' +
+        '<h3 contenteditable data-field="heading">' +
+        p.heading +
+        "</h3>" +
+        '<div class="fw-ecom-related-grid">' +
+        relCards +
+        "</div></div>"
+      );
+
+    case "ecomProductTabs":
+      var tabBtns = (p.tabs || [])
+        .map(function (t, i) {
+          return (
+            '<button class="fw-ecom-tab-btn' +
+            (i === 0 ? " active" : "") +
+            '" style="' +
+            (i === 0
+              ? "border-bottom-color:" +
+                p.accentColor +
+                ";color:" +
+                p.accentColor +
+                ";"
+              : "border-bottom-color:transparent;") +
+            '" data-tab-index="' +
+            i +
+            '">' +
+            t.label +
+            "</button>"
+          );
+        })
+        .join("");
+      var tabPanels = (p.tabs || [])
+        .map(function (t, i) {
+          return (
+            '<div class="fw-ecom-tab-panel"' +
+            (i === 0 ? "" : ' style="display:none"') +
+            ' data-tab="' +
+            i +
+            '">' +
+            t.content +
+            "</div>"
+          );
+        })
+        .join("");
+      return (
+        '<div class="fw-ecom-tabs" style="background:' +
+        p.bg +
+        ";color:" +
+        p.textColor +
+        '">' +
+        '<div class="fw-ecom-tab-bar">' +
+        tabBtns +
+        "</div>" +
+        '<div class="fw-ecom-tab-content">' +
+        tabPanels +
+        "</div></div>"
+      );
 
     case "imageBlock":
       return (
@@ -2472,31 +3151,374 @@ FB.canvas.renderBlockHTML = function (block) {
         "</div>"
       );
 
+    case "kineticText":
+      return (
+        '<div class="fw-kinetic-text" style="padding:4rem 3rem;background:' +
+        p.bg +
+        ';text-align:center">' +
+        '<h2 class="fw-kinetic-headline" style="font-size:' +
+        p.fontSize +
+        'rem;font-weight:' +
+        p.fontWeight +
+        ';color:' +
+        p.textColor +
+        ';margin-bottom:1rem;position:relative" data-text="' +
+        (p.headline || "") +
+        '">' +
+        (p.headline || "Kinetic Energy") +
+        "</h2>" +
+        '<p style="color:' +
+        p.textColor +
+        ';opacity:0.7">' +
+        (p.subtext || "") +
+        "</p>" +
+        "</div>"
+      );
+
+    case "textScramble":
+      return (
+        '<div class="fw-text-scramble" style="padding:4rem 3rem;background:' +
+        p.bg +
+        ';text-align:center">' +
+        '<h2 class="fw-scramble-text" style="font-size:' +
+        p.fontSize +
+        'rem;font-weight:' +
+        p.fontWeight +
+        ';color:' +
+        p.textColor +
+        ';margin-bottom:1rem" data-text="' +
+        (p.headline || "") +
+        '" data-scramble-chars="' +
+        (p.scrambleChars || "!@#$%^&*") +
+        '">' +
+        (p.headline || "Text Scramble") +
+        "</h2>" +
+        '<p style="color:' +
+        p.textColor +
+        ';opacity:0.7">' +
+        (p.subtext || "") +
+        "</p>" +
+        "</div>"
+      );
+
+    case "typewriterReveal":
+      return (
+        '<div class="fw-typewriter" style="padding:4rem 3rem;background:' +
+        p.bg +
+        ';text-align:center">' +
+        '<h2 class="fw-typewriter-text" style="font-size:' +
+        p.fontSize +
+        'rem;font-weight:' +
+        p.fontWeight +
+        ';color:' +
+        p.textColor +
+        ';margin-bottom:1rem;min-height:' +
+        (p.fontSize * 1.2) +
+        'rem" data-text="' +
+        (p.headline || "") +
+        '" data-type-speed="' +
+        (p.typeSpeed || 50) +
+        '"></h2>' +
+        '<p style="color:' +
+        p.textColor +
+        ';opacity:0.7">' +
+        (p.subtext || "") +
+        "</p>" +
+        "</div>"
+      );
+
+    case "textMask":
+      return (
+        '<div class="fw-text-mask-wrap" style="padding:4rem 3rem;background:' +
+        p.bg +
+        ';text-align:center;position:relative;overflow:hidden">' +
+        '<h2 class="fw-text-mask" style="font-size:' +
+        p.fontSize +
+        'rem;font-weight:' +
+        p.fontWeight +
+        ';color:' +
+        p.textColor +
+        ';margin-bottom:1rem;background-image:url(' +
+        (p.imageUrl || "") +
+        ");background-size:cover;background-position:center;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text\">" +
+        (p.headline || "Text Mask") +
+        "</h2>" +
+        '<p style="color:' +
+        p.textColor +
+        ';opacity:0.7">' +
+        (p.subtext || "") +
+        "</p>" +
+        "</div>"
+      );
+
+    case "morphingCounter":
+      return (
+        '<div class="fw-morphing-counter" style="padding:4rem 3rem;background:' +
+        p.bg +
+        ';text-align:center">' +
+        '<div class="fw-counter-label" style="color:' +
+        p.textColor +
+        ';opacity:0.7;margin-bottom:0.5rem">' +
+        (p.label || "") +
+        "</div>" +
+        '<h2 class="fw-counter-value" style="font-size:' +
+        p.fontSize +
+        'rem;font-weight:' +
+        p.fontWeight +
+        ';color:' +
+        p.textColor +
+        ';margin:0" data-start="' +
+        (p.startValue || 0) +
+        '" data-end="' +
+        (p.endValue || 100) +
+        '" data-duration="' +
+        (p.duration || 2) +
+        '">0</h2>' +
+        '<span style="color:' +
+        p.textColor +
+        ';font-size:' +
+        (p.fontSize * 0.6) +
+        'rem">' +
+        (p.suffix || "") +
+        "</span>" +
+        "</div>"
+      );
+
+    case "liquidText":
+      return (
+        '<div class="fw-liquid-text" style="padding:4rem 3rem;background:' +
+        p.bg +
+        ';text-align:center">' +
+        '<svg style="display:none" width="0" height="0">' +
+        '<defs>' +
+        '<filter id="turbulence-' +
+        block.id +
+        '">' +
+        '<feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" result="noise" seed="' +
+        Math.random() +
+        '"/>' +
+        '<feDisplacementMap in="SourceGraphic" in2="noise" scale="' +
+        (p.distortionAmount || 2) +
+        '" xChannelSelector="R" yChannelSelector="G"/>' +
+        "</filter>" +
+        "</defs>" +
+        "</svg>" +
+        '<h2 class="fw-liquid-headline" style="font-size:' +
+        p.fontSize +
+        'rem;font-weight:' +
+        p.fontWeight +
+        ';color:' +
+        p.textColor +
+        ';margin-bottom:1rem;filter:url(#turbulence-' +
+        block.id +
+        ')">' +
+        (p.headline || "Liquid Motion") +
+        "</h2>" +
+        '<p style="color:' +
+        p.textColor +
+        ';opacity:0.7">' +
+        (p.subtext || "") +
+        "</p>" +
+        "</div>"
+      );
+
+    case "waveText":
+      return (
+        '<div class="fw-wave-text" style="padding:4rem 3rem;background:' +
+        p.bg +
+        ';text-align:center">' +
+        '<h2 class="fw-wave-headline" style="font-size:' +
+        p.fontSize +
+        'rem;font-weight:' +
+        p.fontWeight +
+        ';color:' +
+        p.textColor +
+        ';margin-bottom:1rem;letter-spacing:0.1em" data-wave-height="' +
+        (p.waveHeight || 30) +
+        '" data-wave-speed="' +
+        (p.waveSpeed || 1.5) +
+        '">' +
+        (p.headline || "Wave Motion").split("").map(function (char) {
+          return '<span class="fw-wave-char">' + (char === " " ? "&nbsp;" : char) + "</span>";
+        }).join("") +
+        "</h2>" +
+        '<p style="color:' +
+        p.textColor +
+        ';opacity:0.7">' +
+        (p.subtext || "") +
+        "</p>" +
+        "</div>"
+      );
+
+    case "audioVisualizer":
+      var bars = "";
+      for (var i = 0; i < (p.barCount || 20); i++) {
+        bars += '<div class="fw-audio-bar" style="background:' + p.barColor + '"></div>';
+      }
+      return (
+        '<div class="fw-audio-visualizer" style="padding:4rem 3rem;background:' +
+        p.bg +
+        ';text-align:center">' +
+        '<h3 style="color:' +
+        p.textColor +
+        ';margin-bottom:2rem">' +
+        (p.label || "Sound Visualization") +
+        "</h3>" +
+        '<div class="fw-audio-bars" style="display:flex;gap:0.5rem;justify-content:center;align-items:flex-end;height:120px">' +
+        bars +
+        "</div>" +
+        "</div>"
+      );
+
+    case "depthOfField":
+      return (
+        '<div class="fw-dof-container" style="padding:4rem 3rem;background:' +
+        p.bg +
+        ';text-align:center;position:relative">' +
+        '<h2 class="fw-dof-text" style="font-size:' +
+        p.fontSize +
+        'rem;font-weight:' +
+        p.fontWeight +
+        ';color:' +
+        p.textColor +
+        ';margin-bottom:1rem;position:relative;z-index:2" data-blur="' +
+        (p.blurAmount || 8) +
+        '" data-focus="' +
+        (p.focusIntensity || 0.7) +
+        '">' +
+        (p.headline || "Sharp Focus") +
+        "</h2>" +
+        '<p style="color:' +
+        p.textColor +
+        ';opacity:0.7;position:relative;z-index:1;filter:blur(' +
+        ((1 - (p.focusIntensity || 0.7)) * (p.blurAmount || 8)) +
+        'px)">' +
+        (p.subtext || "") +
+        "</p>" +
+        "</div>"
+      );
+
+    // Education Blocks
+    case "courseHero":
+      return (
+        '<div class="edu-course-hero" style="background:' + p.bg + ';color:' + p.textColor + '">' +
+        (p.videoCover ? '<img src="' + p.videoCover + '" class="edu-hero-image" />' : '') +
+        '<div class="edu-course-content">' +
+        '<h1>' + (p.courseTitle || 'Course Title') + '</h1>' +
+        '<p class="edu-course-meta">' + (p.level || 'Beginner') + ' • ' + (p.lessons || '0 lessons') + ' • ' + (p.duration || '0 hours') + '</p>' +
+        '<p>' + (p.courseDescription || '') + '</p>' +
+        '<div class="edu-instructor"><img src="' + (p.instructorImage || '') + '" /><div><strong>' + (p.instructorName || 'Instructor') + '</strong><br/>' + (p.instructorTitle || '') + '</div></div>' +
+        '</div></div>'
+      );
+
+    case "videoLesson":
+      return (
+        '<div class="edu-video-lesson" style="background:' + p.bg + ';color:' + p.textColor + '">' +
+        '<div class="edu-lesson-header"><span class="edu-lesson-num">' + (p.lessonNumber || 'Lesson') + '</span><h2>' + (p.lessonTitle || 'Lesson Title') + '</h2>' +
+        '<span class="edu-lesson-meta">' + (p.difficulty || 'Beginner') + ' • ' + (p.duration || '0 min') + '</span></div>' +
+        (p.videoUrl ? '<video class="edu-video" controls><source src="' + p.videoUrl + '" type="video/mp4"></video>' : '<div class="edu-placeholder">Video here</div>') +
+        '<div class="edu-lesson-description"><h3>About this lesson</h3><p>' + (p.description || '') + '</p>' +
+        '<h3>Learning Objectives</h3><ul>' + (p.learning_objectives || []).map(function(o) { return '<li>' + o + '</li>'; }).join('') + '</ul></div>' +
+        '</div>'
+      );
+
+    case "quizBlock":
+      return (
+        '<div class="edu-quiz" style="background:' + p.bg + ';color:' + p.textColor + '">' +
+        '<h2>' + (p.quizTitle || 'Quiz') + '</h2>' +
+        '<p>' + (p.instructions || '') + '</p>' +
+        '<div class="edu-questions">' +
+        (p.questions || []).map(function(q, i) {
+          return '<div class="edu-question"><p><strong>Q' + (i+1) + ': ' + (q.question || '') + '</strong></p>' +
+            (q.answers || []).map(function(a) { return '<label><input type="radio" name="q' + i + '" /> ' + a + '</label>'; }).join('') +
+            '</div>';
+        }).join('') +
+        '</div><button style="background:' + p.accentColor + ';color:' + p.bg + ';padding:10px 20px;border:none;border-radius:4px;cursor:pointer">Submit Quiz</button></div>'
+      );
+
+    case "moduleOverview":
+      return (
+        '<div class="edu-module" style="background:' + p.bg + ';color:' + p.textColor + '">' +
+        '<h1>' + (p.moduleTitle || 'Module') + '</h1>' +
+        '<p>' + (p.moduleDescription || '') + '</p>' +
+        (p.videoUrl ? '<video class="edu-video" controls><source src="' + p.videoUrl + '" type="video/mp4"></video>' : '') +
+        '<div class="edu-lessons"><h3>Lessons in this module:</h3><ol>' +
+        (p.lessons || []).map(function(l) { return '<li>' + (l.title || 'Lesson') + ' <span>(' + (l.duration || '0 min') + ')</span></li>'; }).join('') +
+        '</ol></div></div>'
+      );
+
+    case "progressTracker":
+      var pct = p.percentage || 0;
+      return (
+        '<div class="edu-progress" style="background:' + p.bg + ';color:' + p.textColor + '">' +
+        '<h3>Your Progress</h3>' +
+        '<div class="edu-progress-bar"><div class="edu-progress-fill" style="width:' + pct + '%;background:' + p.accentColor + '"></div></div>' +
+        '<p>' + (p.completed || 0) + ' of ' + (p.total || 0) + ' lessons completed (' + pct + '%)</p>' +
+        '<p>Estimated completion: ' + (p.estimatedCompletion || '—') + '</p>' +
+        '</div>'
+      );
+
+    case "objectives":
+      return (
+        '<div class="edu-objectives" style="background:' + p.bg + ';color:' + p.textColor + '">' +
+        '<h2>' + (p.title || 'Learning Objectives') + '</h2>' +
+        '<ul>' +
+        (p.objectives || []).map(function(o) { return '<li>✓ ' + o + '</li>'; }).join('') +
+        '</ul></div>'
+      );
+
+    case "certificate":
+      return (
+        '<div class="edu-certificate" style="background:linear-gradient(135deg, #fff3cd, #fffbea);color:#333;padding:3rem;text-align:center;border:2px solid #ffc107">' +
+        '<div style="font-size:2rem;margin-bottom:1rem">🏆</div>' +
+        '<h1>Certificate of Completion</h1>' +
+        '<p style="font-size:1.2rem;margin:1rem 0">This certifies that</p>' +
+        '<h2 style="color:' + p.accentColor + '">' + (p.studentName || 'Student Name') + '</h2>' +
+        '<p style="font-size:1.2rem">has successfully completed</p>' +
+        '<h3>' + (p.courseName || 'Course Name') + '</h3>' +
+        '<p>Completed on ' + (p.completionDate || 'Date') + '</p>' +
+        '<p style="margin-top:2rem;font-style:italic">Certificate #' + (p.certificateNumber || '—') + '</p>' +
+        '</div>'
+      );
+
+    case "lessonNav":
+      return (
+        '<div class="edu-lesson-nav" style="background:' + p.bg + ';color:' + p.textColor + '">' +
+        '<div style="margin:1rem 0"><small>PROGRESS</small><br/>' + (p.completedLessons || 0) + ' of ' + (p.totalLessons || 0) + ' completed</div>' +
+        '<h3>' + (p.currentLesson || 'Current Lesson') + '</h3>' +
+        '<div class="edu-nav-buttons">' +
+        '<button style="background:' + p.accentColor + ';color:' + p.bg + '">← ' + (p.previousLesson || 'Previous') + '</button>' +
+        '<button style="background:' + p.accentColor + ';color:' + p.bg + '">' + (p.nextLesson || 'Next') + ' →</button>' +
+        '</div></div>'
+      );
+
+    case "videoTranscript":
+    case "videoResources":
+    case "videoChapters":
+    case "instructorBio":
+    case "curriculum":
+    case "comments":
+    case "relatedContent":
+      return (
+        '<div class="edu-block" style="background:' + p.bg + ';color:' + p.textColor + ';padding:2rem;border-radius:8px">' +
+        '<h3>' + (p.title || p.lessonTitle || p.moduleTitle || p.courseTitle || block.type) + '</h3>' +
+        '<p style="color:' + p.textColor + ';opacity:0.8">Content for ' + block.type + ' block</p>' +
+        '</div>'
+      );
+
     default:
+      // Try to render as a registered widget
+      var widgetDef = FB.widgets.get(block.type);
+      if (widgetDef) {
+        var widgetProps = Object.assign({}, block.props || {}, { _blockId: block.id });
+        return widgetDef.render(widgetProps);
+      }
       return (
         '<div style="padding:2rem;color:#999">Unknown block type: ' +
         block.type +
         "</div>"
       );
   }
-};
-
-FB.canvas.initAnimations = function () {
-  if (!("IntersectionObserver" in window)) return;
-  var observer = new IntersectionObserver(
-    function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("visible");
-          observer.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.1, rootMargin: "0px 0px -50px 0px" },
-  );
-  document.querySelectorAll(".fw-entrance").forEach(function (el) {
-    observer.observe(el);
-  });
 };
 
 FB.canvas.initWordSwap = function () {
@@ -2572,7 +3594,7 @@ FB.canvas.initCounters = function () {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
           var el = entry.target;
-          var target = parseInt(el.getAttribute("data-target"));
+          var target = parseInt(el.getAttribute("data-target"), 10);
           if (!target) return;
           var suffix = el.textContent.replace(/[0-9]/g, "");
           var current = 0;
@@ -2600,14 +3622,235 @@ FB.canvas.initCounters = function () {
 FB.canvas.initGlitch = function () {
   var els = document.querySelectorAll(".fw-glitch-headline");
   els.forEach(function (el) {
+    // Keep data-text in sync with editable content
+    el.addEventListener("input", function () {
+      el.setAttribute("data-text", el.textContent);
+    });
     setInterval(
       function () {
+        el.setAttribute("data-text", el.textContent);
         el.style.animation = "none";
         el.offsetHeight;
         el.style.animation = "";
       },
       3000 + Math.random() * 2000,
     );
+  });
+};
+
+FB.canvas.initKineticText = function () {
+  if (!("IntersectionObserver" in window)) return;
+  var obs = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("fw-kinetic-animate");
+          obs.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1 },
+  );
+  document.querySelectorAll(".fw-kinetic-headline:not(.fw-kinetic-init)").forEach(function (el) {
+    el.classList.add("fw-kinetic-init");
+    var rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      el.classList.add("fw-kinetic-animate");
+    } else {
+      obs.observe(el);
+    }
+  });
+};
+
+FB.canvas.initTextScramble = function () {
+  if (!("IntersectionObserver" in window)) return;
+  var obs = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("fw-scramble-animate");
+          obs.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1 },
+  );
+  document.querySelectorAll(".fw-scramble-text:not(.fw-scramble-init)").forEach(function (el) {
+    el.classList.add("fw-scramble-init");
+    var rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      el.classList.add("fw-scramble-animate");
+    } else {
+      obs.observe(el);
+    }
+  });
+};
+
+FB.canvas.initTypewriter = function () {
+  if (!("IntersectionObserver" in window)) return;
+  var obs = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting && !entry.target.classList.contains("fw-typewriter-done")) {
+          var text = entry.target.getAttribute("data-text") || "";
+          var speed = +(entry.target.getAttribute("data-type-speed") || 50);
+          entry.target.textContent = "";
+          var i = 0;
+          var interval = setInterval(function () {
+            if (i < text.length) {
+              entry.target.textContent += text[i];
+              i++;
+            } else {
+              clearInterval(interval);
+              entry.target.classList.add("fw-typewriter-done");
+            }
+          }, speed);
+          obs.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1 },
+  );
+  document.querySelectorAll(".fw-typewriter-text:not(.fw-typewriter-init)").forEach(function (el) {
+    el.classList.add("fw-typewriter-init");
+    var rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      var text = el.getAttribute("data-text") || "";
+      var speed = +(el.getAttribute("data-type-speed") || 50);
+      el.textContent = "";
+      var i = 0;
+      var interval = setInterval(function () {
+        if (i < text.length) {
+          el.textContent += text[i];
+          i++;
+        } else {
+          clearInterval(interval);
+          el.classList.add("fw-typewriter-done");
+        }
+      }, speed);
+    } else {
+      obs.observe(el);
+    }
+  });
+};
+
+FB.canvas.initTextMask = function () {
+  if (!("IntersectionObserver" in window)) return;
+  var obs = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.parentElement.classList.add("fw-mask-animate");
+          obs.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1 },
+  );
+  document.querySelectorAll(".fw-text-mask:not(.fw-mask-init)").forEach(function (el) {
+    el.classList.add("fw-mask-init");
+    var rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      el.parentElement.classList.add("fw-mask-animate");
+    } else {
+      obs.observe(el);
+    }
+  });
+};
+
+FB.canvas.initMorphingCounter = function () {
+  if (!("IntersectionObserver" in window)) return;
+  var obs = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting && !entry.target.classList.contains("fw-counter-done")) {
+          var start = +(entry.target.getAttribute("data-start") || 0);
+          var end = +(entry.target.getAttribute("data-end") || 100);
+          var duration = +(entry.target.getAttribute("data-duration") || 2);
+          var startTime = Date.now();
+          var el = entry.target;
+          var animate = function () {
+            var now = Date.now();
+            var pct = Math.min(1, (now - startTime) / (duration * 1000));
+            var current = Math.floor(start + (end - start) * pct);
+            el.textContent = current;
+            if (pct < 1) requestAnimationFrame(animate);
+            else el.classList.add("fw-counter-done");
+          };
+          animate();
+          obs.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1 },
+  );
+  document.querySelectorAll(".fw-counter-value:not(.fw-counter-init)").forEach(function (el) {
+    el.classList.add("fw-counter-init");
+    var rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0 && !el.classList.contains("fw-counter-done")) {
+      var start = +(el.getAttribute("data-start") || 0);
+      var end = +(el.getAttribute("data-end") || 100);
+      var duration = +(el.getAttribute("data-duration") || 2);
+      var startTime = Date.now();
+      var animate = function () {
+        var now = Date.now();
+        var pct = Math.min(1, (now - startTime) / (duration * 1000));
+        var current = Math.floor(start + (end - start) * pct);
+        el.textContent = current;
+        if (pct < 1) requestAnimationFrame(animate);
+        else el.classList.add("fw-counter-done");
+      };
+      animate();
+    } else {
+      obs.observe(el);
+    }
+  });
+};
+
+FB.canvas.initWaveText = function () {
+  document.querySelectorAll(".fw-wave-headline").forEach(function (el) {
+    var height = +(el.getAttribute("data-wave-height") || 30);
+    var speed = +(el.getAttribute("data-wave-speed") || 1.5);
+    el.querySelectorAll(".fw-wave-char").forEach(function (char, i) {
+      char.style.animation = "fw-wave " + speed + "s ease-in-out " + (i * 0.1) + "s infinite";
+      char.style.display = "inline-block";
+    });
+  });
+};
+
+FB.canvas.initAudioVisualizer = function () {
+  document.querySelectorAll(".fw-audio-visualizer").forEach(function (container) {
+    var bars = container.querySelectorAll(".fw-audio-bar");
+    setInterval(function () {
+      bars.forEach(function (bar) {
+        var height = Math.random() * 100;
+        bar.style.height = height + "%";
+      });
+    }, 200);
+  });
+};
+
+FB.canvas.initDepthOfField = function () {
+  if (!("IntersectionObserver" in window)) return;
+  var obs = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("fw-dof-active");
+          obs.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1 },
+  );
+  document.querySelectorAll(".fw-dof-container:not(.fw-dof-init)").forEach(function (el) {
+    el.classList.add("fw-dof-init");
+    var rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      el.classList.add("fw-dof-active");
+    } else {
+      obs.observe(el);
+    }
   });
 };
 
@@ -2818,14 +4061,50 @@ FB.canvas._applyWrapperStyles = function (block, wrapper) {
     p._wordSpacing !== undefined && p._wordSpacing !== 0
       ? p._wordSpacing + "px"
       : "";
-  wrapper.style.marginTop =
-    p._marginTop !== undefined ? p._marginTop + "px" : "";
-  wrapper.style.marginRight =
-    p._marginRight !== undefined ? p._marginRight + "px" : "";
-  wrapper.style.marginBottom =
-    p._marginBottom !== undefined ? p._marginBottom + "px" : "";
-  wrapper.style.marginLeft =
-    p._marginLeft !== undefined ? p._marginLeft + "px" : "";
+
+  // Padding (vertical & horizontal)
+  if (p._paddingV !== undefined) {
+    wrapper.style.paddingTop = p._paddingV + "px";
+    wrapper.style.paddingBottom = p._paddingV + "px";
+  } else {
+    wrapper.style.paddingTop = "";
+    wrapper.style.paddingBottom = "";
+  }
+
+  if (p._paddingH !== undefined) {
+    wrapper.style.paddingLeft = p._paddingH + "px";
+    wrapper.style.paddingRight = p._paddingH + "px";
+  } else {
+    wrapper.style.paddingLeft = "";
+    wrapper.style.paddingRight = "";
+  }
+
+  // Margins (vertical & horizontal)
+  if (p._marginV !== undefined) {
+    wrapper.style.marginTop = p._marginV + "px";
+    wrapper.style.marginBottom = p._marginV + "px";
+  } else if (p._marginTop !== undefined || p._marginBottom !== undefined) {
+    wrapper.style.marginTop =
+      p._marginTop !== undefined ? p._marginTop + "px" : "";
+    wrapper.style.marginBottom =
+      p._marginBottom !== undefined ? p._marginBottom + "px" : "";
+  } else {
+    wrapper.style.marginTop = "";
+    wrapper.style.marginBottom = "";
+  }
+
+  if (p._marginH !== undefined) {
+    wrapper.style.marginLeft = p._marginH + "px";
+    wrapper.style.marginRight = p._marginH + "px";
+  } else if (p._marginLeft !== undefined || p._marginRight !== undefined) {
+    wrapper.style.marginLeft =
+      p._marginLeft !== undefined ? p._marginLeft + "px" : "";
+    wrapper.style.marginRight =
+      p._marginRight !== undefined ? p._marginRight + "px" : "";
+  } else {
+    wrapper.style.marginLeft = "";
+    wrapper.style.marginRight = "";
+  }
 
   // Dimensions
   wrapper.style.width = p._width ? p._width + (p._widthUnit || "px") : "";
@@ -2909,11 +4188,20 @@ FB.canvas._applyWrapperStyles = function (block, wrapper) {
   if (!p._bgGradient) {
     if (p._bgAlpha !== undefined && p._bgAlpha < 1) {
       var bgHex = (p.bg || "#111111").replace("#", "");
-      var r = parseInt(bgHex.substring(0, 2), 16);
-      var g = parseInt(bgHex.substring(2, 4), 16);
-      var b2 = parseInt(bgHex.substring(4, 6), 16);
-      wrapper.style.backgroundColor =
-        "rgba(" + r + "," + g + "," + b2 + "," + p._bgAlpha + ")";
+      // Validate hex color format (must be exactly 6 characters)
+      if (bgHex.length === 6) {
+        var r = parseInt(bgHex.substring(0, 2), 16);
+        var g = parseInt(bgHex.substring(2, 4), 16);
+        var b2 = parseInt(bgHex.substring(4, 6), 16);
+        if (!isNaN(r) && !isNaN(g) && !isNaN(b2)) {
+          wrapper.style.backgroundColor =
+            "rgba(" + r + "," + g + "," + b2 + "," + p._bgAlpha + ")";
+        } else {
+          wrapper.style.backgroundColor = p.bg || "";
+        }
+      } else {
+        wrapper.style.backgroundColor = p.bg || "";
+      }
     } else {
       wrapper.style.backgroundColor = p.bg || "";
     }
@@ -2973,6 +4261,158 @@ FB.canvas._applyWrapperStyles = function (block, wrapper) {
     wrapper.style.animationDelay = "";
   }
 
+  // ADVANCED SETTINGS
+
+  // Custom Classes
+  if (p._customClass && p._customClass.trim()) {
+    var customClasses = p._customClass.split(/\s+/);
+    customClasses.forEach(function (cls) {
+      if (cls && !cls.startsWith("fb-")) {
+        wrapper.classList.add(cls);
+      }
+    });
+  }
+
+  // Custom ID
+  if (p._customId && p._customId.trim()) {
+    wrapper.id = p._customId;
+  }
+
+  // Data Attributes
+  if (p._dataAttributes && p._dataAttributes.trim()) {
+    try {
+      var dataAttrs = JSON.parse(p._dataAttributes);
+      for (var dataKey in dataAttrs) {
+        if (dataAttrs.hasOwnProperty(dataKey)) {
+          wrapper.dataset[dataKey] = dataAttrs[dataKey];
+        }
+      }
+    } catch (e) {
+      // Invalid JSON, skip
+    }
+  }
+
+  // Custom Attributes
+  if (p._customAttributes && p._customAttributes.trim()) {
+    try {
+      var customAttrs = JSON.parse(p._customAttributes);
+      for (var attrKey in customAttrs) {
+        if (customAttrs.hasOwnProperty(attrKey)) {
+          wrapper.setAttribute(attrKey, customAttrs[attrKey]);
+        }
+      }
+    } catch (e) {
+      // Invalid JSON, skip
+    }
+  }
+
+  // Advanced Animations (entrance)
+  if (p._animationType && p._animationType !== "none") {
+    wrapper.classList.add("fb-adv-anim-" + p._animationType);
+    wrapper.style.setProperty("--anim-duration", (p._animDuration || 500) + "ms");
+    wrapper.style.setProperty("--anim-delay", (p._animDelay || 0) + "ms");
+    wrapper.style.setProperty("--anim-easing", p._animEasing || "ease");
+  }
+
+  // Advanced Styling (Filters)
+  if (p._filter && p._filter.trim()) {
+    wrapper.style.filter = p._filter;
+  }
+
+  // Backdrop Filter
+  if (p._backdropFilter && p._backdropFilter.trim()) {
+    wrapper.style.backdropFilter = p._backdropFilter;
+    wrapper.style.webkitBackdropFilter = p._backdropFilter;
+  }
+
+  // Will Change
+  if (p._willChange && p._willChange !== "auto") {
+    wrapper.style.willChange = p._willChange;
+  }
+
+  // Perspective
+  if (p._perspective && p._perspective.trim()) {
+    wrapper.style.perspective = p._perspective;
+  }
+
+  // Perspective Origin
+  if (p._perspectiveOrigin && p._perspectiveOrigin.trim()) {
+    wrapper.style.perspectiveOrigin = p._perspectiveOrigin;
+  }
+
+  // Clip Path
+  if (p._clipPath && p._clipPath.trim()) {
+    wrapper.style.clipPath = p._clipPath;
+    wrapper.style.webkitClipPath = p._clipPath;
+  }
+
+  // Responsive Visibility
+  if (p._hideOnMobile || p._hideOnTablet || p._hideOnDesktop) {
+    if (p._hideOnMobile) wrapper.classList.add("fb-hide-mobile");
+    if (p._hideOnTablet) wrapper.classList.add("fb-hide-tablet");
+    if (p._hideOnDesktop) wrapper.classList.add("fb-hide-desktop");
+  }
+
+  // Responsive Font
+  if (p._responsiveFont && typeof p._responsiveFont === "object") {
+    if (p._responsiveFont.mobile) {
+      wrapper.style.setProperty("--font-mobile", p._responsiveFont.mobile);
+    }
+    if (p._responsiveFont.tablet) {
+      wrapper.style.setProperty("--font-tablet", p._responsiveFont.tablet);
+    }
+    if (p._responsiveFont.desktop) {
+      wrapper.style.setProperty("--font-desktop", p._responsiveFont.desktop);
+    }
+  }
+
+  // Accessibility
+  if (p._ariaLabel && p._ariaLabel.trim()) {
+    wrapper.setAttribute("aria-label", p._ariaLabel);
+  }
+
+  if (p._ariaDescribedBy && p._ariaDescribedBy.trim()) {
+    wrapper.setAttribute("aria-describedby", p._ariaDescribedBy);
+  }
+
+  if (p._ariaHidden) {
+    wrapper.setAttribute("aria-hidden", "true");
+  }
+
+  if (p._role && p._role.trim()) {
+    wrapper.setAttribute("role", p._role);
+  }
+
+  if (p._tabIndex && p._tabIndex !== "auto") {
+    wrapper.setAttribute("tabindex", p._tabIndex);
+  }
+
+  // Analytics & Tracking
+  if (p._trackingId && p._trackingId.trim()) {
+    wrapper.dataset.trackingId = p._trackingId;
+  }
+
+  if (p._trackingEvent && p._trackingEvent.trim()) {
+    wrapper.dataset.trackingEvent = p._trackingEvent;
+  }
+
+  // Interactions
+  if (p._onClickAction && p._onClickAction !== "none" && p._onClickValue) {
+    wrapper.style.cursor = "pointer";
+    wrapper.dataset.clickAction = p._onClickAction;
+    wrapper.dataset.clickValue = p._onClickValue;
+    if (p._onClickNewTab) {
+      wrapper.dataset.clickNewTab = "true";
+    }
+  }
+
+  if (p._onHoverEffect && p._onHoverEffect !== "none") {
+    wrapper.dataset.hoverEffect = p._onHoverEffect;
+    if (p._onHoverIntensity) {
+      wrapper.dataset.hoverIntensity = p._onHoverIntensity;
+    }
+  }
+
   // Hover styles
   FB.canvas._applyHoverStyles(block);
 };
@@ -3018,7 +4458,9 @@ FB.canvas._renderBlock = function (block, parentEl) {
     block.id +
     "')\">\u2715</button>";
 
-  wrapper.innerHTML = FB.canvas.renderBlockHTML(block);
+  var html = FB.canvas.renderBlockHTML(block);
+  html = html.replace(/\bsrc=["']undefined["']/gi, 'src=""').replace(/url\(["']?undefined["']?\)/gi, "url('')");
+  wrapper.innerHTML = html;
   wrapper.appendChild(handle);
   wrapper.appendChild(controls);
 
@@ -3203,7 +4645,7 @@ FB.canvas._renderContainerChildren = function (containerBlock, wrapper) {
         e.preventDefault();
         this.style.background = "transparent";
         var colIdx =
-          parseInt(this.parentElement ? this.parentElement.dataset.col : "0") ||
+          parseInt(this.parentElement ? this.parentElement.dataset.col : "0", 10) ||
           0;
         FB.canvas.handleDropIntoContainer(containerBlock.id, colIdx, null);
       });
@@ -3239,7 +4681,7 @@ FB.canvas.render = function () {
   canvas.innerHTML = "";
   if (FB.state.blocks.length === 0) {
     canvas.innerHTML =
-      '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;color:#aaa;gap:16px;padding:3rem;text-align:center">' +
+      '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;color:#767676;gap:16px;padding:3rem;text-align:center">' +
       '<div style="font-size:48px">\u229E</div>' +
       '<div style="font-size:18px;font-weight:300">Click a section from the left panel to add it</div>' +
       '<div style="font-size:13px">or drag blocks onto the canvas</div></div>';
@@ -3259,6 +4701,7 @@ FB.canvas.render = function () {
   setTimeout(function () {
     FB.canvas.initTWM();
     FB.canvas.initHtmlEmbeds();
+    FB.canvas.initWordSwap();
     FB.canvas.initSplitText();
     FB.canvas.initMaskReveal();
     FB.canvas.initCounters();
@@ -3269,6 +4712,8 @@ FB.canvas.render = function () {
     FB.canvas.initSvgDraw();
     FB.canvas.initCountdown();
     FB.canvas.initProductTabs();
+    FB.canvas.initSpatialWidgets();
+    FB.canvas.initAllWidgets();
     if (typeof window._VeltroInitAll === "function") window._VeltroInitAll();
     if (typeof FB.panels.initLottie === "function") FB.panels.initLottie();
     if (typeof FB.panels.initMotionBlock === "function")
@@ -3304,6 +4749,7 @@ FB.canvas.handleDropIntoContainer = function (parentId, colIdx, beforeId) {
       FB.blocks.BLOCK_DEFS,
       FB.blocks.CUSTOM_BLOCK_DEFS,
       FB.blocks.ECOMMERCE_DEFS || {},
+      FB.blocks.EDUCATION_DEFS || {},
       FB.widgets._registry,
     );
     var def = allDefs[FB.canvas._dragLibType];
@@ -3356,6 +4802,7 @@ FB.canvas.handleDrop = function (targetId) {
       FB.blocks.BLOCK_DEFS,
       FB.blocks.CUSTOM_BLOCK_DEFS,
       FB.blocks.ECOMMERCE_DEFS || {},
+      FB.blocks.EDUCATION_DEFS || {},
       FB.widgets._registry,
     );
     var def = allDefs[FB.canvas._dragLibType];
@@ -3396,7 +4843,11 @@ FB.canvas.handleDrop = function (targetId) {
       var idx = FB.state.blocks.findIndex(function (b) {
         return b.id === targetId;
       });
-      FB.state.blocks.splice(idx, 0, block);
+      if (idx >= 0) {
+        FB.state.blocks.splice(idx, 0, block);
+      } else {
+        FB.state.blocks.push(block);
+      }
     } else {
       FB.state.blocks.push(block);
     }
@@ -3468,7 +4919,10 @@ FB.canvas.selectBlock = function (id) {
   document.getElementById("right-panel").classList.remove("collapsed");
   FB.panels.updatePanelsCollapsed();
   var el = document.querySelector('.canvas-block[data-id="' + id + '"]');
-  if (el) el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  if (el) {
+    el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    FB.panels.createBlockHUD(id);
+  }
 };
 
 // Single-click selection — just selects visually, no right panel
@@ -3518,6 +4972,7 @@ FB.canvas.insertBlock = function (type, afterId) {
     FB.blocks.BLOCK_DEFS,
     FB.blocks.CUSTOM_BLOCK_DEFS,
     FB.blocks.ECOMMERCE_DEFS || {},
+    FB.blocks.EDUCATION_DEFS || {},
     FB.widgets._registry,
   );
   var def = allDefs[type];
@@ -3552,6 +5007,7 @@ FB.canvas.insertBlockIntoContainer = function (
     FB.blocks.BLOCK_DEFS,
     FB.blocks.CUSTOM_BLOCK_DEFS,
     FB.blocks.ECOMMERCE_DEFS || {},
+    FB.blocks.EDUCATION_DEFS || {},
     FB.widgets._registry,
   );
   var def = allDefs[type];
@@ -3585,6 +5041,7 @@ FB.canvas.deleteBlock = function (id) {
   });
   if (FB.state.selectedId && toDelete.indexOf(FB.state.selectedId) > -1) {
     FB.state.selectedId = null;
+    FB.panels.removeBlockHUD();
     FB.panels.renderRightPanel();
   }
   FB.canvas.render();
@@ -3655,6 +5112,7 @@ FB.canvas.clearCanvas = function () {
   FB.state.saveHistory();
   FB.state.blocks = [];
   FB.state.selectedId = null;
+  FB.panels.removeBlockHUD();
   FB.canvas.render();
   FB.panels.renderRightPanel();
   FB.util.showToast("Canvas cleared");
@@ -3685,6 +5143,9 @@ FB.canvas.refreshBlock = function (id) {
   wrapper.innerHTML = FB.canvas.renderBlockHTML(block);
   if (handle) wrapper.appendChild(handle);
   if (controls) wrapper.appendChild(controls);
+  if (FB.state.selectedId === id && FB.panels && FB.panels.createBlockHUD) {
+    FB.panels.createBlockHUD(id);
+  }
   wrapper.querySelectorAll("[contenteditable]").forEach(function (el) {
     el.addEventListener("blur", function () {
       var field = el.dataset.field;
@@ -3702,11 +5163,21 @@ FB.canvas.refreshBlock = function (id) {
     FB.canvas._renderContainerChildren(block, wrapper);
   }
   FB.canvas._applyWrapperStyles(block, wrapper);
-  if (typeof window._VeltroInitAll === "function") {
-    setTimeout(function () {
-      window._VeltroInitAll();
-    }, 0);
-  }
+  setTimeout(function () {
+    if (block.type === "svgDraw") FB.canvas.initSvgDraw();
+    if (block.type === "glitchText") FB.canvas.initGlitch();
+    if (block.type === "counterSection") FB.canvas.initCounters();
+    if (block.type === "wordSwap") FB.canvas.initWordSwap();
+    if (block.type === "kineticText") FB.canvas.initKineticText();
+    if (block.type === "textScramble") FB.canvas.initTextScramble();
+    if (block.type === "typewriterReveal") FB.canvas.initTypewriter();
+    if (block.type === "textMask") FB.canvas.initTextMask();
+    if (block.type === "morphingCounter") FB.canvas.initMorphingCounter();
+    if (block.type === "waveText") FB.canvas.initWaveText();
+    if (block.type === "audioVisualizer") FB.canvas.initAudioVisualizer();
+    if (block.type === "depthOfField") FB.canvas.initDepthOfField();
+    if (typeof window._VeltroInitAll === "function") window._VeltroInitAll();
+  }, 0);
 };
 
 FB.canvas.toggleLock = function (id) {
@@ -3727,13 +5198,19 @@ FB.canvas.renameBlock = function (id) {
     FB.blocks.BLOCK_DEFS[block.type] ||
     FB.blocks.CUSTOM_BLOCK_DEFS[block.type] ||
     (FB.blocks.ECOMMERCE_DEFS && FB.blocks.ECOMMERCE_DEFS[block.type]);
-  var name = prompt(
-    "Block name:",
-    block._name || (def ? def.label : block.type),
-  );
-  if (name) {
-    block._name = name.trim();
-    FB.canvas.render();
+
+  try {
+    var name = prompt(
+      "Block name:",
+      block._name || (def ? def.label : block.type),
+    );
+    if (name) {
+      block._name = name.trim();
+      FB.canvas.render();
+    }
+  } catch (e) {
+    // prompt() not supported in Electron - silently ignore
+    console.warn('Rename not available in this context');
   }
 };
 
@@ -3880,6 +5357,981 @@ FB.canvas._initCursor = function () {
   lerp();
 };
 
+// Initialize spatial widgets: 3D Carousel, Perspective Rooms, Layered Parallax
+FB.canvas.initSpatialWidgets = function () {
+  // 1. 3D Carousel - Auto-rotating carousel with manual navigation, keyboard support, and touch
+  document.querySelectorAll("[id^='carousel-']").forEach(function (carouselWrap) {
+    var stage = carouselWrap.querySelector(".veltro-carousel-stage");
+    if (!stage) return;
+
+    var rotationSpeed = parseFloat(carouselWrap.dataset.rotationSpeed || 0.5);
+    var cards = stage.querySelectorAll(".veltro-carousel-card");
+    var cardCount = cards.length;
+    if (cardCount === 0) return;
+
+    var currentRotation = 0;
+    var autoRotate = true;
+    var touchStartX = 0;
+    var anglePerCard = 360 / cardCount;
+
+    // Apply CSS for smooth rotation with easing
+    stage.style.transition = "transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
+    stage.style.transformStyle = "preserve-3d";
+
+    function updateRotation() {
+      stage.style.transform = "rotateY(" + currentRotation + "deg)";
+    }
+
+    function rotateTo(idx) {
+      if (idx < 0 || idx >= cardCount) return;
+      currentRotation = -(idx * anglePerCard);
+      updateRotation();
+      autoRotate = false;
+      clearInterval(autoRotateInterval);
+      autoRotateInterval = setInterval(rotateNext, 4000 + rotationSpeed * 2000);
+    }
+
+    function rotateNext() {
+      if (autoRotate) {
+        var nextCard = Math.round(currentRotation / anglePerCard * -1) + 1;
+        rotateTo(nextCard % cardCount);
+      }
+    }
+
+    // Auto-rotate every 4 seconds
+    var autoRotateInterval = setInterval(rotateNext, 4000 + rotationSpeed * 2000);
+
+    // Pause on hover
+    carouselWrap.addEventListener("mouseenter", function () {
+      autoRotate = false;
+      clearInterval(autoRotateInterval);
+    });
+
+    carouselWrap.addEventListener("mouseleave", function () {
+      autoRotate = true;
+      autoRotateInterval = setInterval(rotateNext, 4000 + rotationSpeed * 2000);
+    });
+
+    // Click cards to navigate or follow links
+    var clickableCards = carouselWrap.dataset.clickableCards !== "0";
+    cards.forEach(function (card, idx) {
+      var cardLink = card.getAttribute("data-link");
+      if (clickableCards) {
+        card.style.cursor = "pointer";
+        card.addEventListener("click", function (e) {
+          // If card has a link, navigate to it; otherwise rotate to show it
+          if (cardLink && cardLink.trim()) {
+            e.preventDefault();
+            window.location.href = cardLink;
+          } else {
+            rotateTo(idx);
+          }
+        });
+      } else if (cardLink && cardLink.trim()) {
+        // If clickableCards is false but card has a link, make link clickable
+        card.style.cursor = "pointer";
+        card.addEventListener("click", function (e) {
+          e.preventDefault();
+          window.location.href = cardLink;
+        });
+      }
+    });
+
+    // Keyboard navigation
+    var carouselKeyHandler = function (e) {
+      if (!carouselWrap.contains(document.activeElement) && carouselWrap !== document.activeElement) return;
+      if (e.key === "ArrowLeft") {
+        var prevIdx = Math.round(currentRotation / anglePerCard * -1) - 1;
+        rotateTo((prevIdx + cardCount) % cardCount);
+      } else if (e.key === "ArrowRight") {
+        var nextIdx = Math.round(currentRotation / anglePerCard * -1) + 1;
+        rotateTo(nextIdx % cardCount);
+      }
+    };
+
+    // Touch/swipe support
+    carouselWrap.addEventListener("touchstart", function (e) {
+      touchStartX = e.touches[0].clientX;
+      autoRotate = false;
+    }, { passive: true });
+
+    carouselWrap.addEventListener("touchend", function (e) {
+      var touchEndX = e.changedTouches[0].clientX;
+      var diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 50) {
+        var currentIdx = Math.round(currentRotation / anglePerCard * -1);
+        rotateTo(diff > 0 ? (currentIdx + 1) % cardCount : (currentIdx - 1 + cardCount) % cardCount);
+      }
+    });
+
+    carouselWrap.tabIndex = 0;
+    carouselWrap.addEventListener("keydown", carouselKeyHandler);
+
+    // Store cleanup function
+    carouselWrap._cleanup = function () {
+      clearInterval(autoRotateInterval);
+      carouselWrap.removeEventListener("keydown", carouselKeyHandler);
+    };
+  });
+
+  // 2. Perspective Rooms - 3D room navigation with smooth transitions and enhanced interactivity
+  document.querySelectorAll("[id^='rooms-']").forEach(function (roomsWrap) {
+    var stage = roomsWrap.querySelector(".veltro-rooms-stage");
+    var navDots = roomsWrap.querySelectorAll(".veltro-room-nav");
+    if (!stage || navDots.length === 0) return;
+
+    var roomCount = parseInt(roomsWrap.dataset.roomCount || 3, 10);
+    var highlightColor = roomsWrap.dataset.highlightColor || "#cdfe00";
+    var autoRotateEnabled = roomsWrap.dataset.autoRotate !== "0";
+    var autoRotateInterval = parseInt(roomsWrap.dataset.autoRotateInterval || 8000, 10);
+    var currentRoom = 0;
+
+    stage.style.transition = "transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)";
+    stage.style.transformStyle = "preserve-3d";
+
+    function updateRoom(idx) {
+      if (idx < 0 || idx >= roomCount) return;
+      currentRoom = idx;
+      stage.style.transform = "translateZ(" + (idx * 200) + "px)";
+
+      // Update nav dots with smooth color transition using highlight color
+      navDots.forEach(function (dot, dotIdx) {
+        if (dotIdx === idx) {
+          dot.style.backgroundColor = highlightColor;
+          dot.style.transform = "scale(1.2)";
+          dot.style.boxShadow = "0 0 12px " + highlightColor + "80";
+        } else {
+          dot.style.backgroundColor = "rgba(255,255,255,0.2)";
+          dot.style.transform = "scale(1)";
+          dot.style.boxShadow = "none";
+        }
+      });
+    }
+
+    // Initialize first room
+    updateRoom(0);
+
+    // Add click handlers to nav dots
+    navDots.forEach(function (dot, idx) {
+      dot.style.cursor = "pointer";
+      dot.addEventListener("click", function () {
+        updateRoom(idx);
+        if (autoRotateEnabled) {
+          clearInterval(autoRoomRotate);
+          autoRoomRotate = setInterval(rotateNext, autoRotateInterval);
+        }
+      });
+      // Hover effect
+      dot.addEventListener("mouseenter", function () {
+        if (currentRoom !== idx) {
+          dot.style.opacity = "0.8";
+        }
+      });
+      dot.addEventListener("mouseleave", function () {
+        dot.style.opacity = "1";
+      });
+    });
+
+    // Add keyboard navigation (arrow keys)
+    var roomKeyHandler = function (e) {
+      if (e.key === "ArrowLeft" && currentRoom > 0) {
+        updateRoom(currentRoom - 1);
+      } else if (e.key === "ArrowRight" && currentRoom < roomCount - 1) {
+        updateRoom(currentRoom + 1);
+      }
+    };
+
+    // Arrow key navigation on entire wrap
+    roomsWrap.tabIndex = 0;
+    roomsWrap.addEventListener("keydown", roomKeyHandler);
+
+    // Auto-rotate rooms
+    var autoRoomRotate = null;
+    function rotateNext() {
+      updateRoom((currentRoom + 1) % roomCount);
+    }
+
+    if (autoRotateEnabled) {
+      autoRoomRotate = setInterval(rotateNext, autoRotateInterval);
+    }
+
+    // Store cleanup
+    roomsWrap._cleanup = function () {
+      if (autoRoomRotate) clearInterval(autoRoomRotate);
+      roomsWrap.removeEventListener("keydown", roomKeyHandler);
+    };
+  });
+
+  // 3. Layered Parallax - Advanced mouse and scroll-based depth parallax with easing
+  document.querySelectorAll("[id^='layerpar-']").forEach(function (layerParWrap) {
+    var layers = layerParWrap.querySelectorAll(".veltro-layer");
+    if (layers.length === 0) return;
+
+    var depthIntensity = parseFloat(layerParWrap.dataset.depthIntensity || 0.5);
+    var mouseX = window.innerWidth / 2;
+    var mouseY = window.innerHeight / 2;
+    var scrollY = 0;
+    var targetMouseX = mouseX;
+    var targetMouseY = mouseY;
+    var easeAmount = 0.1; // Easing factor for smooth transitions
+
+    // Add animation on load for each layer
+    layers.forEach(function (layer, idx) {
+      layer.style.animation = "fb-fadeIn 0.8s ease forwards";
+      layer.style.animationDelay = (idx * 0.1) + "s";
+    });
+
+    function updateParallax() {
+      // Ease mouse position for smooth motion
+      mouseX += (targetMouseX - mouseX) * easeAmount;
+      mouseY += (targetMouseY - mouseY) * easeAmount;
+
+      layers.forEach(function (layer) {
+        var depth = parseFloat(layer.dataset.depth || 0);
+        var offsetX = (mouseX - window.innerWidth / 2) * depth * depthIntensity * 0.02;
+        var offsetY = (mouseY - window.innerHeight / 2) * depth * depthIntensity * 0.02 + scrollY * depth * 0.3;
+
+        // Apply transform with scale and opacity variation for depth perception
+        layer.style.transform = "translate(" + offsetX + "px, " + offsetY + "px) scale(" + (1 + depth * 0.1) + ")";
+        layer.style.opacity = 0.5 + depth * 0.5;
+      });
+    }
+
+    layerParWrap.addEventListener("mousemove", function (e) {
+      var rect = layerParWrap.getBoundingClientRect();
+      targetMouseX = e.clientX - rect.left;
+      targetMouseY = e.clientY - rect.top;
+      updateParallax();
+    });
+
+    layerParWrap.addEventListener("mouseleave", function () {
+      targetMouseX = window.innerWidth / 2;
+      targetMouseY = window.innerHeight / 2;
+      updateParallax();
+    });
+
+    // Scroll parallax with smooth easing
+    var scrollHandler = function () {
+      scrollY = window.scrollY;
+      updateParallax();
+    };
+
+    window.addEventListener("scroll", scrollHandler, { passive: true });
+
+    // Continuous animation loop for easing
+    var parallaxAnimFrame = null;
+    function parallaxLoop() {
+      updateParallax();
+      parallaxAnimFrame = requestAnimationFrame(parallaxLoop);
+    }
+    parallaxLoop();
+
+    // Store cleanup
+    layerParWrap._cleanup = function () {
+      window.removeEventListener("scroll", scrollHandler);
+      if (parallaxAnimFrame) {
+        cancelAnimationFrame(parallaxAnimFrame);
+      }
+    };
+  });
+};
+
+// Initialize all remaining widgets with HTML/CSS but missing JavaScript
+FB.canvas.initAllWidgets = function () {
+  // Text Effect Widgets: Kinetic Text, Text Scramble, Typewriter, Wave, Morphing Text
+  document.querySelectorAll("[data-kinetic-init], [data-scramble-init], [data-wave-init], [data-morph-init]").forEach(function (el) {
+    var parent = el.closest(".fw-widget") || el;
+    if (!parent) return;
+
+    // Kinetic Text - Variable font weight based on mouse proximity
+    if (parent.querySelector("[data-kinetic-init]")) {
+      var kineticEl = parent.querySelector("[data-kinetic-init]");
+      var chars = kineticEl.querySelectorAll("[data-char]");
+      var mode = kineticEl.dataset.mode || "proximity";
+      var radius = parseFloat(kineticEl.dataset.radius || 300);
+      var minWeight = parseFloat(kineticEl.dataset.minWeight || 100);
+      var maxWeight = parseFloat(kineticEl.dataset.maxWeight || 900);
+
+      function updateKinetic(e) {
+        chars.forEach(function (char) {
+          var rect = char.getBoundingClientRect();
+          var charX = rect.left + rect.width / 2;
+          var charY = rect.top + rect.height / 2;
+          var dist = Math.sqrt(Math.pow(e.clientX - charX, 2) + Math.pow(e.clientY - charY, 2));
+          var weight = minWeight + (1 - Math.min(dist / radius, 1)) * (maxWeight - minWeight);
+          char.style.fontWeight = Math.round(weight);
+        });
+      }
+
+      document.addEventListener("mousemove", updateKinetic);
+      parent._cleanup = parent._cleanup || [];
+      parent._cleanup.push(function () {
+        document.removeEventListener("mousemove", updateKinetic);
+      });
+    }
+
+    // Text Scramble - Random character animation
+    if (parent.querySelector("[data-scramble-init]")) {
+      var scrambleEl = parent.querySelector("[data-scramble-init]");
+      var originalText = scrambleEl.textContent;
+      var intensity = parseFloat(scrambleEl.dataset.scrambleIntensity || 0.5);
+      var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+
+      function scrambleText() {
+        var result = "";
+        for (var i = 0; i < originalText.length; i++) {
+          if (Math.random() < intensity) {
+            result += chars[Math.floor(Math.random() * chars.length)];
+          } else {
+            result += originalText[i];
+          }
+        }
+        scrambleEl.textContent = result;
+      }
+
+      var scrambleInterval = setInterval(scrambleText, 50);
+      parent._cleanup = parent._cleanup || [];
+      parent._cleanup.push(function () {
+        clearInterval(scrambleInterval);
+      });
+    }
+
+    // Wave Text - Sine wave vertical movement
+    if (parent.querySelector("[data-wave-init]")) {
+      var waveContent = parent.querySelector("[data-wave-init]");
+      var waveContainer = waveContent.parentElement;
+      var waveChars = waveContent.querySelectorAll(".veltro-wave-char");
+
+      // Get amplitude, frequency, speed from the parent container which has the data attributes
+      var waveAmplitude = parseFloat(waveContainer.dataset.amplitude || 20);
+      var waveFrequency = parseFloat(waveContainer.dataset.frequency || 0.1);
+      var speed = parseFloat(waveContainer.dataset.speed || 0.05);
+      var waveDirection = waveContainer.dataset.waveDirection || "up";
+      var phaseOffset = parseFloat(waveContainer.dataset.phaseOffset || 0);
+      var time = 0;
+
+      function updateWave() {
+        waveChars.forEach(function (char, idx) {
+          var phase = idx * 0.3 + phaseOffset;
+          var offset = Math.sin((phase + time) * waveFrequency) * waveAmplitude;
+
+          // Apply direction
+          if (waveDirection === "left") {
+            char.style.transform = "translateX(" + offset + "px)";
+          } else if (waveDirection === "rotate") {
+            char.style.transform = "rotate(" + (offset * 2) + "deg)";
+          } else {
+            // Default "up" direction
+            char.style.transform = "translateY(" + offset + "px)";
+          }
+        });
+        time += speed;
+        requestAnimationFrame(updateWave);
+      }
+      updateWave();
+    }
+
+    // Morphing Text - Shape transitions
+    if (parent.querySelector("[data-morph-init]")) {
+      var morphEl = parent.querySelector("[data-morph-init]");
+      var morphChars = morphEl.querySelectorAll("[data-char]");
+      morphChars.forEach(function (char) {
+        char.style.transition = "all 0.3s ease";
+      });
+      setInterval(function () {
+        morphChars.forEach(function (char) {
+          var scale = 0.9 + Math.random() * 0.2;
+          var rotate = (Math.random() - 0.5) * 10;
+          char.style.transform = "scale(" + scale + ") rotate(" + rotate + "deg)";
+        });
+      }, 800);
+    }
+  });
+
+  // Physics & Particle Widgets
+  document.querySelectorAll("[data-physics-init], [data-particle-trail], [data-ripple-init]").forEach(function (el) {
+    var parent = el.closest(".fw-widget") || el;
+    if (!parent) return;
+
+    // Physics Sandbox - Simple gravity and collision simulation
+    if (parent.querySelector("[data-physics-init]")) {
+      var physicsEl = parent.querySelector("[data-physics-init]");
+      var particles = [];
+      var gravity = 0.5;
+      var damping = 0.99;
+
+      function initPhysics() {
+        var balls = physicsEl.querySelectorAll(".physics-ball");
+        balls.forEach(function (ball) {
+          particles.push({
+            el: ball,
+            x: Math.random() * (physicsEl.offsetWidth - 20) + 10,
+            y: Math.random() * (physicsEl.offsetHeight - 20) + 10,
+            vx: (Math.random() - 0.5) * 4,
+            vy: (Math.random() - 0.5) * 4,
+            radius: 10,
+          });
+        });
+
+        function update() {
+          particles.forEach(function (p) {
+            p.vy += gravity;
+            p.vx *= damping;
+            p.vy *= damping;
+            p.x += p.vx;
+            p.y += p.vy;
+
+            // Bounce off walls
+            if (p.x < 0) {
+              p.x = 0;
+              p.vx = Math.abs(p.vx);
+            }
+            if (p.x > physicsEl.offsetWidth - 20) {
+              p.x = physicsEl.offsetWidth - 20;
+              p.vx = -Math.abs(p.vx);
+            }
+            if (p.y < 0) {
+              p.y = 0;
+              p.vy = Math.abs(p.vy);
+            }
+            if (p.y > physicsEl.offsetHeight - 20) {
+              p.y = physicsEl.offsetHeight - 20;
+              p.vy = -Math.abs(p.vy) * 0.8;
+            }
+
+            p.el.style.left = p.x + "px";
+            p.el.style.top = p.y + "px";
+          });
+          requestAnimationFrame(update);
+        }
+        update();
+      }
+
+      initPhysics();
+    }
+
+    // Particle Trail - Mouse following particles
+    if (parent.querySelector("[data-particle-trail]")) {
+      var trailEl = parent.querySelector("[data-particle-trail]");
+      var particles = [];
+
+      trailEl.addEventListener("mousemove", function (e) {
+        var rect = trailEl.getBoundingClientRect();
+        var x = e.clientX - rect.left;
+        var y = e.clientY - rect.top;
+
+        for (var i = 0; i < 3; i++) {
+          var particle = document.createElement("div");
+          particle.style.cssText =
+            "position:absolute;width:6px;height:6px;background:rgba(205,254,0,0.8);border-radius:50%;pointer-events:none;left:" +
+            x +
+            "px;top:" +
+            y +
+            "px;animation:trailFade 0.8s ease-out forwards";
+          trailEl.appendChild(particle);
+          setTimeout(function () {
+            particle.remove();
+          }, 800);
+        }
+      });
+    }
+
+    // Ripple Effect - Click ripple animation
+    if (parent.querySelector("[data-ripple-init]")) {
+      var rippleEl = parent.querySelector("[data-ripple-init]");
+      rippleEl.addEventListener("click", function (e) {
+        var rect = rippleEl.getBoundingClientRect();
+        var x = e.clientX - rect.left;
+        var y = e.clientY - rect.top;
+
+        var ripple = document.createElement("span");
+        ripple.style.cssText =
+          "position:absolute;left:" +
+          x +
+          "px;top:" +
+          y +
+          "px;width:10px;height:10px;background:rgba(205,254,0,0.6);border-radius:50%;pointer-events:none;animation:rippleExpand 0.6s ease-out forwards";
+        rippleEl.appendChild(ripple);
+        setTimeout(function () {
+          ripple.remove();
+        }, 600);
+      });
+    }
+  });
+
+  // Interactive Cursor Widgets
+  document.querySelectorAll("[data-magnetic-init], [data-spotlight-init], [data-distort-init]").forEach(function (el) {
+    var parent = el.closest(".fw-widget") || el;
+    if (!parent) return;
+
+    // Magnetic Cursor - Elements follow cursor
+    if (parent.querySelector("[data-magnetic-init]")) {
+      var magneticEl = parent.querySelector("[data-magnetic-init]");
+      var items = magneticEl.querySelectorAll("[data-magnetic]");
+      var mouseX = 0,
+        mouseY = 0;
+
+      document.addEventListener("mousemove", function (e) {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+
+        items.forEach(function (item) {
+          var rect = item.getBoundingClientRect();
+          var itemX = rect.left + rect.width / 2;
+          var itemY = rect.top + rect.height / 2;
+          var dist = Math.sqrt(Math.pow(mouseX - itemX, 2) + Math.pow(mouseY - itemY, 2));
+          var radius = parseFloat(item.dataset.magneticRadius || 100);
+          var strength = parseFloat(item.dataset.magneticStrength || 1);
+
+          if (dist < radius) {
+            var angle = Math.atan2(mouseY - itemY, mouseX - itemX);
+            var pull = (1 - dist / radius) * strength;
+            var moveX = Math.cos(angle) * pull * 20;
+            var moveY = Math.sin(angle) * pull * 20;
+            item.style.transform = "translate(" + moveX + "px, " + moveY + "px)";
+          } else {
+            item.style.transform = "translate(0, 0)";
+          }
+        });
+      });
+    }
+
+    // Spotlight - Follow mouse spotlight effect
+    if (parent.querySelector("[data-spotlight-init]")) {
+      var spotlightEl = parent.querySelector("[data-spotlight-init]");
+      var spotlight = spotlightEl.querySelector(".veltro-spotlight") ||
+        (function () {
+          var s = document.createElement("div");
+          s.className = "veltro-spotlight";
+          s.style.cssText =
+            "position:absolute;width:200px;height:200px;background:radial-gradient(circle,rgba(205,254,0,0.3) 0%,transparent 70%);border-radius:50%;pointer-events:none;filter:blur(40px);display:none";
+          spotlightEl.appendChild(s);
+          return s;
+        })();
+
+      spotlightEl.addEventListener("mousemove", function (e) {
+        var rect = spotlightEl.getBoundingClientRect();
+        var x = e.clientX - rect.left - 100;
+        var y = e.clientY - rect.top - 100;
+        spotlight.style.left = x + "px";
+        spotlight.style.top = y + "px";
+        spotlight.style.display = "block";
+      });
+
+      spotlightEl.addEventListener("mouseleave", function () {
+        spotlight.style.display = "none";
+      });
+    }
+
+    // Canvas-based Distortion
+    if (parent.querySelector("[data-distort-init]")) {
+      var distortEl = parent.querySelector("[data-distort-init]");
+      var canvas = distortEl.querySelector("canvas");
+      if (canvas) {
+        var ctx = canvas.getContext("2d");
+        var img = new Image();
+        var imgSrc = distortEl.querySelector("img")?.src;
+        if (imgSrc) {
+          img.src = imgSrc;
+          img.onload = function () {
+            canvas.width = distortEl.offsetWidth;
+            canvas.height = distortEl.offsetHeight;
+
+            var mouseX = canvas.width / 2;
+            var mouseY = canvas.height / 2;
+
+            distortEl.addEventListener("mousemove", function (e) {
+              var rect = canvas.getBoundingClientRect();
+              mouseX = e.clientX - rect.left;
+              mouseY = e.clientY - rect.top;
+            });
+
+            function drawDistorted() {
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+              // Simple barrel distortion effect
+              var distortion = 0.3;
+              var centerX = mouseX;
+              var centerY = mouseY;
+
+              for (var y = 0; y < canvas.height; y += 20) {
+                for (var x = 0; x < canvas.width; x += 20) {
+                  var dx = x - centerX;
+                  var dy = y - centerY;
+                  var dist = Math.sqrt(dx * dx + dy * dy);
+                  var angle = Math.atan2(dy, dx);
+                  var distorted = dist * (1 + distortion * Math.sin(dist / 50));
+
+                  var srcX = centerX + Math.cos(angle) * distorted;
+                  var srcY = centerY + Math.sin(angle) * distorted;
+
+                  ctx.drawImage(img, srcX, srcY, 20, 20, x, y, 20, 20);
+                }
+              }
+              requestAnimationFrame(drawDistorted);
+            }
+            drawDistorted();
+          };
+        }
+      }
+    }
+  });
+
+  // Canvas-based Effect Widgets
+  document.querySelectorAll("[data-shader-init], [data-multishape-init], [data-sound-init]").forEach(function (el) {
+    var parent = el.closest(".fw-widget") || el;
+    if (!parent) return;
+
+    // Shader Background - Simple animated patterns
+    if (parent.querySelector("[data-shader-init]")) {
+      var shaderEl = parent.querySelector("[data-shader-init]");
+      var canvas = shaderEl.querySelector("canvas");
+      if (canvas) {
+        var ctx = canvas.getContext("2d");
+        canvas.width = shaderEl.offsetWidth;
+        canvas.height = shaderEl.offsetHeight;
+
+        var shaderType = shaderEl.dataset.shaderType || "noise";
+        var speed = parseFloat(shaderEl.dataset.speed || 0.5);
+        var color1 = shaderEl.dataset.color1 || "#3b82f6";
+        var color2 = shaderEl.dataset.color2 || "#8b5cf6";
+        var time = 0;
+
+        function drawShader() {
+          var imageData = ctx.createImageData(canvas.width, canvas.height);
+          var data = imageData.data;
+
+          for (var i = 0; i < data.length; i += 4) {
+            var noise = Math.sin(i * 0.01 + time * 0.05) * 0.5 + 0.5;
+            var r = Math.floor(60 * noise);
+            var g = Math.floor(165 * noise);
+            var b = Math.floor(250 * noise);
+
+            data[i] = r;
+            data[i + 1] = g;
+            data[i + 2] = b;
+            data[i + 3] = 255;
+          }
+
+          ctx.putImageData(imageData, 0, 0);
+          time += speed;
+          requestAnimationFrame(drawShader);
+        }
+        drawShader();
+      }
+    }
+
+    // Multi-Shape Canvas Animation
+    if (parent.querySelector("[data-multishape-init]")) {
+      var multiEl = parent.querySelector("[data-multishape-init]");
+      var canvas = multiEl;
+      if (canvas && canvas.getContext) {
+        var ctx = canvas.getContext("2d");
+        canvas.width = multiEl.parentElement.offsetWidth;
+        canvas.height = multiEl.parentElement.offsetHeight;
+
+        var shapes = [];
+        var shapeCount = parseInt(multiEl.parentElement.dataset.particleCount || 10, 10);
+
+        for (var i = 0; i < shapeCount; i++) {
+          shapes.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 2,
+            vy: (Math.random() - 0.5) * 2,
+            size: 5 + Math.random() * 15,
+            color: ["#cdfe00", "#3b82f6", "#ec4899"][Math.floor(Math.random() * 3)],
+          });
+        }
+
+        function drawShapes() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          shapes.forEach(function (shape) {
+            shape.x += shape.vx;
+            shape.y += shape.vy;
+
+            if (shape.x < 0 || shape.x > canvas.width) shape.vx *= -1;
+            if (shape.y < 0 || shape.y > canvas.height) shape.vy *= -1;
+
+            ctx.fillStyle = shape.color;
+            ctx.beginPath();
+            ctx.arc(shape.x, shape.y, shape.size, 0, Math.PI * 2);
+            ctx.fill();
+          });
+
+          requestAnimationFrame(drawShapes);
+        }
+        drawShapes();
+      }
+    }
+
+    // Audio Visualizer - Animated bars
+    if (parent.querySelector("[data-sound-init]")) {
+      var audioEl = parent.querySelector("[data-sound-init]");
+      var bars = audioEl.querySelectorAll(".audio-bar");
+      var audioElement = audioEl.querySelector("audio");
+
+      if (audioElement) {
+        var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        var analyser = audioContext.createAnalyser();
+        var source = audioContext.createMediaElementAudioSource(audioElement);
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+
+        analyser.fftSize = 256;
+        var dataArray = new Uint8Array(analyser.frequencyBinData.length);
+
+        function updateBars() {
+          analyser.getByteFrequencyData(dataArray);
+          bars.forEach(function (bar, idx) {
+            var value = dataArray[idx * Math.floor(dataArray.length / bars.length)];
+            var height = (value / 255) * 100;
+            bar.style.height = height + "%";
+          });
+          requestAnimationFrame(updateBars);
+        }
+        updateBars();
+      }
+    }
+  });
+
+  // Scroll-triggered Widgets
+  document.querySelectorAll("[data-sticky-init], [data-parallax-init], [data-mosaic-init]").forEach(function (el) {
+    var parent = el.closest(".fw-widget") || el;
+    if (!parent) return;
+
+    // Sticky Scroll Stack
+    if (parent.querySelector("[data-sticky-init]")) {
+      var stickyEl = parent.querySelector("[data-sticky-init]");
+      var cards = stickyEl.querySelectorAll(".sticky-card");
+      var scrollProgress = 0;
+
+      window.addEventListener("scroll", function () {
+        var rect = stickyEl.getBoundingClientRect();
+        scrollProgress = Math.max(0, Math.min(1, 1 - rect.top / window.innerHeight));
+
+        cards.forEach(function (card, idx) {
+          var offset = (idx * 20 * scrollProgress) + "px";
+          var scale = 1 - idx * 0.05 * scrollProgress;
+          card.style.transform = "translateY(" + offset + ") scale(" + scale + ")";
+          card.style.opacity = 1 - idx * 0.2 * scrollProgress;
+        });
+      });
+    }
+
+    // Parallax Image Stack
+    if (parent.querySelector("[data-parallax-init]")) {
+      var parallaxEl = parent.querySelector("[data-parallax-init]");
+      var images = parallaxEl.querySelectorAll(".parallax-image");
+
+      window.addEventListener("scroll", function () {
+        var rect = parallaxEl.getBoundingClientRect();
+        var scrollPercent = -rect.top / window.innerHeight;
+
+        images.forEach(function (img, idx) {
+          var depth = (idx + 1) * 0.5;
+          img.style.transform = "translateY(" + (scrollPercent * 100 * depth) + "px)";
+        });
+      });
+    }
+
+    // Mosaic Assembly
+    if (parent.querySelector("[data-mosaic-init]")) {
+      var mosaicEl = parent.querySelector("[data-mosaic-init]");
+      var tiles = mosaicEl.querySelectorAll(".mosaic-tile");
+
+      window.addEventListener("scroll", function () {
+        var rect = mosaicEl.getBoundingClientRect();
+        var visible = rect.top < window.innerHeight && rect.bottom > 0;
+
+        if (visible) {
+          var progress = Math.max(0, Math.min(1, 1 - rect.top / window.innerHeight));
+          tiles.forEach(function (tile, idx) {
+            var delay = (idx * 30) * progress;
+            var rotate = (Math.random() - 0.5) * 360 * progress;
+            var scale = progress;
+            tile.style.transform = "rotate(" + rotate + "deg) scale(" + scale + ")";
+            tile.style.opacity = progress;
+          });
+        }
+      });
+    }
+  });
+
+  // Advanced Effect Widgets - Blob morphing, Glass morphism, Tilt cards
+  document.querySelectorAll("[data-blob-init], [data-glass-init], [data-tilt-init]").forEach(function (el) {
+    var parent = el.closest(".fw-widget") || el;
+    if (!parent) return;
+
+    // Morphing Blob
+    if (parent.querySelector("[data-blob-init]")) {
+      var blobEl = parent.querySelector("[data-blob-init]");
+      var blob = blobEl.querySelector("svg");
+      if (blob) {
+        var path = blob.querySelector("path");
+        var time = 0;
+
+        function updateBlob() {
+          if (path) {
+            var morphTarget = "M150,0 Q200,50 200,150 Q150,200 50,200 Q0,150 0,50 Q50,0 150,0";
+            time += 0.01;
+            path.style.animation = "morph 3s ease-in-out infinite";
+          }
+          requestAnimationFrame(updateBlob);
+        }
+        updateBlob();
+      }
+    }
+
+    // Glass Morphism Hover
+    if (parent.querySelector("[data-glass-init]")) {
+      var glassEl = parent.querySelector("[data-glass-init]");
+      var items = glassEl.querySelectorAll(".glass-item");
+
+      items.forEach(function (item) {
+        item.style.transition = "all 0.3s ease";
+        item.addEventListener("mouseenter", function () {
+          item.style.backdropFilter = "blur(20px)";
+          item.style.background = "rgba(255,255,255,0.15)";
+        });
+        item.addEventListener("mouseleave", function () {
+          item.style.backdropFilter = "blur(10px)";
+          item.style.background = "rgba(255,255,255,0.08)";
+        });
+      });
+    }
+
+    // 3D Tilt Card
+    if (parent.querySelector("[data-tilt-init]")) {
+      var tiltEl = parent.querySelector("[data-tilt-init]");
+      tiltEl.style.perspective = "1000px";
+
+      tiltEl.addEventListener("mousemove", function (e) {
+        var rect = tiltEl.getBoundingClientRect();
+        var x = (e.clientX - rect.left) / rect.width;
+        var y = (e.clientY - rect.top) / rect.height;
+        var rotX = (y - 0.5) * 20;
+        var rotY = (x - 0.5) * -20;
+
+        tiltEl.style.transform = "rotateX(" + rotX + "deg) rotateY(" + rotY + "deg)";
+      });
+
+      tiltEl.addEventListener("mouseleave", function () {
+        tiltEl.style.transform = "rotateX(0) rotateY(0)";
+      });
+    }
+  });
+
+  // Gradient & Visual Effect Widgets
+  document.querySelectorAll("[data-flow-init], [data-liqgrad-init], [data-nebula-init]").forEach(function (el) {
+    var parent = el.closest(".fw-widget") || el;
+    if (!parent) return;
+
+    // Gradient Flow
+    if (parent.querySelector("[data-flow-init]")) {
+      var flowEl = parent.querySelector("[data-flow-init]");
+      var colors = ["#cdfe00", "#3b82f6", "#ec4899", "#fbbf24"];
+      var angle = 0;
+
+      function updateFlow() {
+        angle += 1;
+        var gradient = "linear-gradient(" + angle + "deg, " + colors.join(", ") + ")";
+        flowEl.style.background = gradient;
+        requestAnimationFrame(updateFlow);
+      }
+      updateFlow();
+    }
+
+    // Liquid Gradient
+    if (parent.querySelector("[data-liqgrad-init]")) {
+      var liqEl = parent.querySelector("[data-liqgrad-init]");
+      var canvas = liqEl.querySelector("canvas") || (function () {
+        var c = document.createElement("canvas");
+        liqEl.appendChild(c);
+        return c;
+      })();
+
+      if (canvas && canvas.getContext) {
+        var ctx = canvas.getContext("2d");
+        canvas.width = liqEl.offsetWidth;
+        canvas.height = liqEl.offsetHeight;
+
+        var time = 0;
+        function drawLiquid() {
+          var imageData = ctx.createImageData(canvas.width, canvas.height);
+          var data = imageData.data;
+          var index = 0;
+
+          for (var i = 0; i < data.length; i += 4) {
+            var wave = Math.sin((index * 0.01 + time * 0.02)) * 127 + 128;
+            data[i] = wave * 0.8;
+            data[i + 1] = wave * 0.6;
+            data[i + 2] = wave;
+            data[i + 3] = 200;
+            index++;
+          }
+
+          ctx.putImageData(imageData, 0, 0);
+          time += 1;
+          requestAnimationFrame(drawLiquid);
+        }
+        drawLiquid();
+      }
+    }
+
+    // Particle Nebula
+    if (parent.querySelector("[data-nebula-init]")) {
+      var nebulaEl = parent.querySelector("[data-nebula-init]");
+      var canvas = nebulaEl.querySelector("canvas") || (function () {
+        var c = document.createElement("canvas");
+        nebulaEl.appendChild(c);
+        return c;
+      })();
+
+      if (canvas && canvas.getContext) {
+        var ctx = canvas.getContext("2d");
+        canvas.width = nebulaEl.offsetWidth;
+        canvas.height = nebulaEl.offsetHeight;
+
+        var particles = [];
+        for (var i = 0; i < 50; i++) {
+          particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.5,
+            vy: (Math.random() - 0.5) * 0.5,
+            size: Math.random() * 2,
+          });
+        }
+
+        function drawNebula() {
+          ctx.fillStyle = "rgba(13, 13, 26, 0.1)";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          particles.forEach(function (p) {
+            p.x += p.vx;
+            p.y += p.vy;
+
+            if (p.x < 0) p.x = canvas.width;
+            if (p.x > canvas.width) p.x = 0;
+            if (p.y < 0) p.y = canvas.height;
+            if (p.y > canvas.height) p.y = 0;
+
+            ctx.fillStyle = "rgba(205, 254, 0, 0.6)";
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+          });
+
+          requestAnimationFrame(drawNebula);
+        }
+        drawNebula();
+      }
+    }
+  });
+};
+
 // TWM focus controller for tiling window manager
 FB.canvas.initTWM = function () {
   try {
@@ -3910,7 +6362,7 @@ FB.canvas.initHtmlEmbeds = function () {
     if (!block || !block.props || !block.props.html) return;
     try {
       var root = el.attachShadow({ mode: "open" });
-      root.innerHTML = block.props.html;
+      root.innerHTML = FB.canvas._sanitizeHTML(block.props.html);
     } catch (_) {}
   });
 
@@ -3926,7 +6378,7 @@ FB.canvas.initHtmlEmbeds = function () {
     if (!block || !block.props || !block.props.html) return;
     try {
       var root = el.attachShadow({ mode: "open" });
-      root.innerHTML = block.props.html;
+      root.innerHTML = FB.canvas._sanitizeHTML(block.props.html);
     } catch (_) {}
   });
 };
@@ -3994,6 +6446,7 @@ FB.canvas.initKeyboard = function () {
     }
     if (e.key === "Escape") {
       FB.state.selectedId = null;
+      FB.panels.removeBlockHUD();
       document
         .querySelectorAll(".canvas-block.selected")
         .forEach(function (el) {

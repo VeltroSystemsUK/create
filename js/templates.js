@@ -3,7 +3,13 @@ FB.templates = {};
 FB.templates.save = function () {
   var name = prompt("Template name:", "My Template");
   if (!name) return;
-  var templates = JSON.parse(localStorage.getItem("fb-templates") || "[]");
+  var templates = [];
+  try {
+    templates = JSON.parse(localStorage.getItem("fb-templates") || "[]");
+  } catch (e) {
+    console.error("[templates.save] Failed to parse templates:", e);
+    templates = [];
+  }
   templates.push({
     id: Date.now(),
     name: name,
@@ -18,7 +24,13 @@ FB.templates.save = function () {
 };
 
 FB.templates.load = function (id) {
-  var templates = JSON.parse(localStorage.getItem("fb-templates") || "[]");
+  var templates = [];
+  try {
+    templates = JSON.parse(localStorage.getItem("fb-templates") || "[]");
+  } catch (e) {
+    console.error("[templates.load] Failed to parse templates:", e);
+    return;
+  }
   var tpl = templates.find(function (t) {
     return t.id === id;
   });
@@ -36,7 +48,13 @@ FB.templates.load = function (id) {
 };
 
 FB.templates.delete = function (id) {
-  var templates = JSON.parse(localStorage.getItem("fb-templates") || "[]");
+  var templates = [];
+  try {
+    templates = JSON.parse(localStorage.getItem("fb-templates") || "[]");
+  } catch (e) {
+    console.error("[templates.delete] Failed to parse templates:", e);
+    return;
+  }
   templates = templates.filter(function (t) {
     return t.id !== id;
   });
@@ -161,9 +179,9 @@ FB.templates.populateTemplates = function () {
   var html = "";
   builtIn.forEach(function (t) {
     html +=
-      '<div class="block-item" onclick="FB.templates.loadBuiltIn(\'' +
-      t.name +
-      '\')" style="cursor:pointer">' +
+      '<div class="block-item" data-template-name="' +
+      (t.name || "").replace(/"/g, "&quot;") +
+      '" style="cursor:pointer">' +
       FB.panels._icon(t.icon, tplColor, 28, 22, 14) +
       '<div><div class="block-label" style="font-size:11px">' +
       t.label +
@@ -171,6 +189,15 @@ FB.templates.populateTemplates = function () {
       "</div>";
   });
   panel.innerHTML = html;
+
+  // Attach event listeners safely
+  var templateItems = panel.querySelectorAll(".block-item[data-template-name]");
+  templateItems.forEach(function(item) {
+    item.addEventListener("click", function() {
+      var templateName = this.getAttribute("data-template-name");
+      if (templateName) FB.templates.loadBuiltIn(templateName);
+    });
+  });
 };
 
 FB.BLOCK_THEMES = {
@@ -693,4 +720,197 @@ FB.blockThemes.applyTheme = function (themeId) {
   FB.canvas.render();
   FB.canvas.selectBlock(block.id);
   FB.util.showToast("\uD83C\uDFA8 " + theme.label + " added");
+};
+
+// Built-in Education Course Template
+FB.templates.loadEducationTemplate = function () {
+  if (FB.state.blocks.length > 0) {
+    if (!confirm("Load Education Template? Current canvas will be replaced.")) return;
+  }
+
+  FB.state.saveHistory();
+  FB.state.blocks = [
+    {
+      id: FB.state.genId(),
+      type: "courseHero",
+      props: {
+        courseTitle: "Advanced Web Development Fundamentals",
+        courseDescription: "Master the essentials of modern web development. Learn HTML, CSS, JavaScript, and best practices for building responsive, accessible websites.",
+        instructorName: "Jane Smith",
+        instructorTitle: "Senior Web Developer",
+        videoCover: "",
+        videoUrl: "",
+        duration: "12 hours",
+        lessons: "24 lessons",
+        level: "Beginner to Intermediate",
+        price: "Free",
+        bg: "#0f172a",
+        textColor: "#f1f5f9",
+        accentColor: "#3b82f6",
+      }
+    },
+    {
+      id: FB.state.genId(),
+      type: "objectives",
+      props: {
+        title: "What You'll Learn",
+        objectives: [
+          "Understand HTML structure and semantic markup",
+          "Master CSS layouts and responsive design",
+          "Learn JavaScript fundamentals and DOM manipulation",
+          "Build interactive web applications",
+          "Implement modern web development best practices"
+        ],
+        bg: "#0f172a",
+        textColor: "#f1f5f9",
+        accentColor: "#3b82f6",
+      }
+    },
+    {
+      id: FB.state.genId(),
+      type: "curriculum",
+      props: {
+        courseName: "Advanced Web Development",
+        modules: [
+          { title: "Module 1: HTML Basics", lessons: 5, duration: "2 hours" },
+          { title: "Module 2: CSS & Styling", lessons: 6, duration: "3 hours" },
+          { title: "Module 3: JavaScript Fundamentals", lessons: 7, duration: "4 hours" },
+          { title: "Module 4: Web Projects", lessons: 6, duration: "3 hours" }
+        ],
+        totalDuration: "12 hours",
+        totalLessons: "24 lessons",
+        bg: "#0f172a",
+        textColor: "#f1f5f9",
+        accentColor: "#3b82f6",
+      }
+    },
+    {
+      id: FB.state.genId(),
+      type: "videoLesson",
+      props: {
+        lessonTitle: "Introduction to HTML5",
+        lessonNumber: "Lesson 1",
+        videoUrl: "",
+        duration: "15 min",
+        difficulty: "Beginner",
+        description: "Learn the basics of HTML5, the foundation of web development. We'll cover semantic HTML, best practices, and how to structure your web pages.",
+        learning_objectives: [
+          "Understand HTML document structure",
+          "Learn about semantic HTML elements",
+          "Create properly formatted web pages",
+          "Use accessibility best practices"
+        ],
+        bg: "#0f172a",
+        textColor: "#f1f5f9",
+        accentColor: "#3b82f6",
+      }
+    },
+    {
+      id: FB.state.genId(),
+      type: "progressTracker",
+      props: {
+        completed: 5,
+        total: 24,
+        percentage: 21,
+        recentLessons: [
+          "Lesson 1: Introduction - Complete",
+          "Lesson 2: HTML Structure - Complete",
+          "Lesson 3: Semantic HTML - In Progress"
+        ],
+        estimatedCompletion: "2 weeks",
+        bg: "#0f172a",
+        textColor: "#f1f5f9",
+        accentColor: "#3b82f6",
+      }
+    },
+    {
+      id: FB.state.genId(),
+      type: "quizBlock",
+      props: {
+        quizTitle: "HTML Fundamentals Quiz",
+        instructions: "Test your knowledge of HTML basics. Answer all questions and score 70% or higher to pass.",
+        questions: [
+          {
+            question: "What does HTML stand for?",
+            answers: ["Hyper Text Markup Language", "High Tech Modern Language", "Home Tool Markup Language"],
+            correct: 0
+          },
+          {
+            question: "Which tag is used for the main heading?",
+            answers: ["<header>", "<h1>", "<heading>"],
+            correct: 1
+          },
+          {
+            question: "What is semantic HTML?",
+            answers: ["HTML that is properly formatted", "HTML that gives meaning to the content", "HTML with good styling"],
+            correct: 1
+          }
+        ],
+        passingScore: 70,
+        bg: "#0f172a",
+        textColor: "#f1f5f9",
+        accentColor: "#3b82f6",
+      }
+    },
+    {
+      id: FB.state.genId(),
+      type: "instructorBio",
+      props: {
+        instructorName: "Jane Smith",
+        title: "Senior Web Developer & Instructor",
+        bio: "With 10+ years of experience in web development, Jane has helped thousands of students master modern web technologies. She's passionate about making web development accessible to everyone.",
+        image: "",
+        videoUrl: "",
+        expertise: ["HTML/CSS", "JavaScript", "React", "Web Design"],
+        social: [
+          { platform: "Twitter", url: "#" },
+          { platform: "LinkedIn", url: "#" },
+          { platform: "GitHub", url: "#" }
+        ],
+        bg: "#0f172a",
+        textColor: "#f1f5f9",
+        accentColor: "#3b82f6",
+      }
+    },
+    {
+      id: FB.state.genId(),
+      type: "relatedContent",
+      props: {
+        title: "Continue Learning",
+        relatedLessons: [
+          { title: "CSS Fundamentals", duration: "18 min", status: "available" },
+          { title: "Responsive Design Principles", duration: "22 min", status: "available" },
+          { title: "CSS Grid & Flexbox", duration: "25 min", status: "locked" }
+        ],
+        suggestedCourses: [
+          { title: "Advanced CSS & Animations", price: "Free" },
+          { title: "JavaScript Mastery", price: "Paid" }
+        ],
+        bg: "#0f172a",
+        textColor: "#f1f5f9",
+        accentColor: "#3b82f6",
+      }
+    },
+    {
+      id: FB.state.genId(),
+      type: "certificate",
+      props: {
+        studentName: "Your Name",
+        courseName: "Advanced Web Development Fundamentals",
+        completionDate: "May 30, 2026",
+        certificateNumber: "CERT-WEB-2026-001",
+        instructorName: "Jane Smith",
+        status: "Not Started",
+        showCertificate: true,
+        bg: "#0f172a",
+        textColor: "#f1f5f9",
+        accentColor: "#3b82f6",
+      }
+    }
+  ];
+
+  FB.state.selectedId = null;
+  FB.canvas.render();
+  FB.panels.renderRightPanel();
+  FB.util.showToast("\uD83C\uDF93 Education Course Template loaded!");
 };

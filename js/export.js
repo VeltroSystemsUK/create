@@ -78,50 +78,42 @@ FB.export.getBlockCSS = function () {
 FB.export.generateMetaTags = function (seo) {
   seo = seo || {};
   var pageState = FB.state.page || {};
+  var currentPage = FB.pages.current();
+
+  // Priority: page-specific > global > defaults
   var title = seo.siteName || "My Site";
-  var description =
-    seo.siteDescription || "A website built with Framework Builder";
+  var description = seo.siteDescription || "A website built with Framework Builder";
   if (pageState.title) title = pageState.title;
+  if (currentPage && currentPage.title) title = currentPage.title;
   if (pageState.description) description = pageState.description;
-  var hasPageTitle = !!seo._titleOverride;
-  var hasPageDesc = !!seo._descOverride;
-  if (seo._titleOverride) title = seo._titleOverride;
-  if (seo._descOverride) description = seo._descOverride;
+  if (currentPage && currentPage.description) description = currentPage.description;
+
   var url = seo.canonicalUrl || window.location.href;
   var image = seo.ogImage || "";
+  if (currentPage && currentPage.ogImage) image = currentPage.ogImage;
   var locale = seo.locale || "en_GB";
   var robots = seo.robots || "index, follow, max-image-preview:large";
   var themeColor = seo.themeColor || "#111111";
   var googleVerification = seo.googleVerification || "";
   var twitterHandle = seo.twitterHandle || "";
-  if (!hasPageTitle || !hasPageDesc) {
-    FB.state.blocks.forEach(function (b) {
-      if (
-        !hasPageTitle &&
-        (b.type === "hero" ||
-          b.type === "videoHero" ||
-          b.type === "splitHero") &&
-        b.props.headline
-      ) {
-        title = seo.siteName
-          ? seo.siteName +
-            " \u2014 " +
-            b.props.headline.replace(/<[^>]*>/g, "").substring(0, 60)
-          : b.props.headline.replace(/<[^>]*>/g, "").substring(0, 60);
-      }
-      if (
-        !hasPageDesc &&
-        (b.type === "hero" ||
-          b.type === "videoHero" ||
-          b.type === "splitHero") &&
-        b.props.subtext
-      ) {
-        description = b.props.subtext.substring(0, 160);
-      }
-    });
-  }
-  var ogTitle = seo._ogTitleOverride || title;
-  var ogDesc = seo._ogDescOverride || description;
+  FB.state.blocks.forEach(function (b) {
+    if (
+      (b.type === "hero" || b.type === "videoHero" || b.type === "splitHero") &&
+      b.props.headline
+    ) {
+      title = seo.siteName
+        ? seo.siteName +
+          " \u2014 " +
+          b.props.headline.replace(/<[^>]*>/g, "").substring(0, 60)
+        : b.props.headline.replace(/<[^>]*>/g, "").substring(0, 60);
+    }
+    if (
+      (b.type === "hero" || b.type === "videoHero" || b.type === "splitHero") &&
+      b.props.subtext
+    ) {
+      description = b.props.subtext.substring(0, 160);
+    }
+  });
   var tags = "";
   tags += "<title>" + title + "</title>\n";
   tags += '<meta name="description" content="' + description + '">\n';
@@ -136,26 +128,50 @@ FB.export.generateMetaTags = function (seo) {
   tags += '<meta property="og:type" content="website">\n';
   tags += '<meta property="og:locale" content="' + locale + '">\n';
   tags += '<meta property="og:url" content="' + url + '">\n';
-  tags += '<meta property="og:title" content="' + ogTitle + '">\n';
-  tags += '<meta property="og:description" content="' + ogDesc + '">\n';
+  tags += '<meta property="og:title" content="' + title + '">\n';
+  tags += '<meta property="og:description" content="' + description + '">\n';
   if (image) {
     tags += '<meta property="og:image" content="' + image + '">\n';
     tags += '<meta property="og:image:width" content="1200">\n';
     tags += '<meta property="og:image:height" content="630">\n';
-    tags += '<meta property="og:image:alt" content="' + ogTitle + '">\n';
+    tags += '<meta property="og:image:alt" content="' + title + '">\n';
   }
   tags += '<meta name="twitter:card" content="summary_large_image">\n';
-  tags += '<meta name="twitter:title" content="' + ogTitle + '">\n';
-  tags += '<meta name="twitter:description" content="' + ogDesc + '">\n';
+  tags += '<meta name="twitter:title" content="' + title + '">\n';
+  tags += '<meta name="twitter:description" content="' + description + '">\n';
   if (image) {
     tags += '<meta name="twitter:image" content="' + image + '">\n';
   }
   if (twitterHandle) {
     tags += '<meta name="twitter:site" content="' + twitterHandle + '">\n';
   }
-  tags += '<link rel="canonical" href="' + url + '">\n';
-  if (pageState.favicon)
-    tags += '<link rel="icon" href="' + pageState.favicon + '">\n';
+
+  // Add per-page metalinks
+  if (currentPage && currentPage.metalinks && currentPage.metalinks.length) {
+    currentPage.metalinks.forEach(function (link) {
+      var linkTag = '<link rel="' + (link.rel || "").replace(/"/g, '&quot;') + '" href="' + (link.href || "").replace(/"/g, '&quot;') + '"';
+      if (link.hreflang) {
+        linkTag += ' hreflang="' + (link.hreflang || "").replace(/"/g, '&quot;') + '"';
+      }
+      linkTag += '>\n';
+      tags += linkTag;
+    });
+  }
+
+  // Canonical link (page-specific or global)
+  var canonicalHref = url;
+  if (currentPage && currentPage.metalinks) {
+    var canonical = currentPage.metalinks.find(function (l) { return l.rel === "canonical"; });
+    if (canonical) canonicalHref = canonical.href;
+  }
+  tags += '<link rel="canonical" href="' + canonicalHref + '">\n';
+
+  // Favicon (page-specific or global)
+  var faviconUrl = pageState.favicon || (currentPage && currentPage.favicon) || "";
+  if (faviconUrl) {
+    tags += '<link rel="icon" href="' + faviconUrl + '">\n';
+  }
+
   return tags;
 };
 
@@ -467,17 +483,6 @@ FB.export.generateHTML = function () {
     .join("\n\n");
 
   var seo = FB.export._getSeoSettings();
-  // Per-page SEO overrides
-  var curPage = FB.pages.current();
-  if (curPage) {
-    if (curPage.title) seo._titleOverride = curPage.title;
-    if (curPage.metaDesc) seo._descOverride = curPage.metaDesc;
-    if (curPage.ogTitle) seo._ogTitleOverride = curPage.ogTitle;
-    if (curPage.ogDesc) seo._ogDescOverride = curPage.ogDesc;
-    if (curPage.ogImage) seo.ogImage = curPage.ogImage;
-    if (!seo.canonicalUrl)
-      seo.canonicalUrl = "/" + (curPage.slug === "index" ? "" : curPage.slug);
-  }
   var blockCSS = FB.export.getBlockCSS();
   var theme = FB.state.theme || {};
   var page = FB.state.page || {};
@@ -821,12 +826,14 @@ FB.export.open = function (mode) {
   // Restore modal tabs
   var tabs = document.getElementById("modal-tabs");
   if (tabs) tabs.style.display = "";
-  document.getElementById("modal-overlay").classList.add("open");
+  var overlay = document.getElementById("modal-overlay");
+  if (overlay) overlay.classList.add("open");
   FB.export.generateCode(mode);
 };
 
 FB.export.close = function () {
-  document.getElementById("modal-overlay").classList.remove("open");
+  var overlay = document.getElementById("modal-overlay");
+  if (overlay) overlay.classList.remove("open");
 };
 
 FB.export.switchTab = function (mode) {
@@ -857,6 +864,9 @@ FB.export.copyCode = function () {
   if (!out) return;
   navigator.clipboard.writeText(out.textContent).then(function () {
     FB.util.showToast("Copied to clipboard!");
+  }).catch(function (err) {
+    console.error("[copyCode] Error:", err);
+    FB.util.showToast("Failed to copy to clipboard");
   });
 };
 
@@ -914,8 +924,7 @@ FB.export.exportWithCMS = function () {
       var def =
         FB.blocks.BLOCK_DEFS[block.type] ||
         FB.blocks.CUSTOM_BLOCK_DEFS[block.type] ||
-        FB.blocks.ECOMMERCE_DEFS[block.type] ||
-        FB.widgets._registry[block.type];
+        FB.blocks.ECOMMERCE_DEFS[block.type];
 
       if (!def) return;
 

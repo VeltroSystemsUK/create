@@ -593,6 +593,7 @@
         <input
           type="password"
           id="login-password"
+          name="password"
           placeholder="Enter password"
           onkeydown="if (event.key === 'Enter') login();"
         />
@@ -1219,7 +1220,7 @@
         html += '<div class="icon">📁</div>';
         html += "<p>Click to upload images</p>";
         html +=
-          '<input type="file" id="media-upload-input" accept="image/*" multiple onchange="uploadMedia()">';
+          '<input type="file" id="media-upload-input" name="media-upload" accept="image/*" multiple onchange="uploadMedia()">';
         html += "</div>";
         if (mediaItems.length === 0) {
           html += '<div class="empty-state">No media uploaded yet.</div>';

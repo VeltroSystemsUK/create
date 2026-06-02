@@ -27,44 +27,20 @@ FB.widgets.register("gallery", {
       "</div>"
     );
   },
-  editPanel: function (id, p) {
-    var html =
-      '<div class="rp-row"><label>Columns: ' +
-      (p.columns || 3) +
-      '</label><input type="range" min="2" max="6" value="' +
-      (p.columns || 3) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','columns',+this.value);this.previousElementSibling.textContent='Columns: '+this.value\"></div>";
-    (p.images || []).forEach(function (src, i) {
-      html +=
-        '<div class="rp-row"><label>Image ' +
-        (i + 1) +
-        ' URL</label><input type="text" value="' +
-        src +
-        '" onchange="var blk=FB.state.blocks.find(function(b){return b.id===\'' +
-        id +
-        "'});var imgs=JSON.parse(JSON.stringify(blk.props.images||[]));imgs[" +
-        i +
-        "]=this.value;FB.panels.updateWidgetProp('" +
-        id +
-        "','images',imgs)\"></div>";
-    });
-    return html;
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 FB.widgets.register("portfolio", {
-  label: "Portfolio",
-  icon: "\u25A9",
-  iconBg: "#2a1a3a",
+  label: "Portfolio Grid",
+  icon: "\u25A8",
+  iconBg: "#1a3a2a",
   iconColor: "#CDFE00",
   category: "gallery-like",
   defaultProps: {
     items: [
-      { title: "Project 1", tag: "Brand" },
-      { title: "Project 2", tag: "Web" },
-      { title: "Project 3", tag: "Brand" },
+      { title: "Project 1", tag: "Brand", image: "" },
+      { title: "Project 2", tag: "Web", image: "" },
+      { title: "Project 3", tag: "App", image: "" },
     ],
     columns: 3,
   },
@@ -78,9 +54,9 @@ FB.widgets.register("portfolio", {
         .map(function (item, i) {
           return (
             '<div class="fw-portfolio-item" style="position:relative;overflow:hidden;border-radius:6px;background:#f5f5f5">' +
-            '<div style="width:100%;aspect-ratio:4/3;background:linear-gradient(135deg,#1a1a3a,' +
-            ["#3a1a5e", "#1a4a6e", "#2e6e2e", "#7e3a1a", "#3a3a3a"][i % 5] +
-            ");display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.2);font-size:2rem;font-weight:700;font-family:'Lexend',sans-serif\">" +
+            '<div style="width:100%;aspect-ratio:4/3;' +
+            (item.image ? 'background-image:url(' + item.image + ');background-size:cover;background-position:center' : 'background:linear-gradient(135deg,#1a1a3a,' + ["#3a1a5e", "#1a4a6e", "#2e6e2e", "#7e3a1a", "#3a3a3a"][i % 5] + ')') +
+            ';display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.2);font-size:2rem;font-weight:700;font-family:\'Lexend\',sans-serif">' +
             (item.title || "").charAt(0) +
             "</div>" +
             '<div style="padding:0.8rem"><div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:2px">' +
@@ -95,39 +71,7 @@ FB.widgets.register("portfolio", {
       "</div></div>"
     );
   },
-  editPanel: function (id, p) {
-    var html =
-      '<div class="rp-row"><label>Columns: ' +
-      (p.columns || 3) +
-      '</label><input type="range" min="2" max="4" value="' +
-      (p.columns || 3) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','columns',+this.value);this.previousElementSibling.textContent='Columns: '+this.value\"></div>";
-    (p.items || []).forEach(function (item, i) {
-      html +=
-        '<div class="rp-row" style="border:1px solid var(--border);border-radius:4px;margin:4px 14px;padding:8px">' +
-        '<div style="display:flex;gap:4px"><input type="text" value="' +
-        item.title +
-        '" placeholder="Title" style="flex:1" onchange="var items=JSON.parse(JSON.stringify(FB.state.blocks.find(function(b){return b.id===\'' +
-        id +
-        "'}).props.items||[]));items[" +
-        i +
-        "].title=this.value;FB.panels.updateWidgetProp('" +
-        id +
-        "','items',items)\">" +
-        '<input type="text" value="' +
-        (item.tag || "") +
-        '" placeholder="Tag" style="width:80px" onchange="var items=JSON.parse(JSON.stringify(FB.state.blocks.find(function(b){return b.id===\'' +
-        id +
-        "'}).props.items||[]));items[" +
-        i +
-        "].tag=this.value;FB.panels.updateWidgetProp('" +
-        id +
-        "','items',items)\"></div></div>";
-    });
-    return html;
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 FB.widgets.register("slides", {
@@ -138,8 +82,8 @@ FB.widgets.register("slides", {
   category: "gallery-like",
   defaultProps: {
     slides: [
-      { title: "Slide 1", desc: "Description 1", cta: "Learn More" },
-      { title: "Slide 2", desc: "Description 2", cta: "Get Started" },
+      { title: "Slide 1", desc: "Description 1", cta: "Learn More", bgImage: "" },
+      { title: "Slide 2", desc: "Description 2", cta: "Get Started", bgImage: "" },
     ],
   },
   render: function (p) {
@@ -153,11 +97,9 @@ FB.widgets.register("slides", {
             (i === 0 ? " active" : "") +
             '" style="' +
             (i === 0 ? "display:flex;" : "display:none;") +
-            "flex-direction:column;justify-content:center;min-height:350px;padding:3rem;background:linear-gradient(135deg," +
-            ["#1a1a3a", "#1a3a2a", "#2a1a3a"][i % 3] +
-            "," +
-            ["#3a1a5e", "#2a6e3a", "#5a2a7a"][i % 3] +
-            ')">' +
+            "flex-direction:column;justify-content:center;min-height:350px;padding:3rem;" +
+            (s.bgImage ? 'background-image:url(' + s.bgImage + ');background-size:cover;background-position:center' : 'background:linear-gradient(135deg,' + ["#1a1a3a", "#1a3a2a", "#2a1a3a"][i % 3] + ',' + ["#3a1a5e", "#2a6e3a", "#5a2a7a"][i % 3] + ')') +
+            '">' +
             '<div style="max-width:500px"><h2 style="font-family:\'Lexend\',sans-serif;font-size:clamp(1.5rem,4vw,3rem);font-weight:800;color:#fff;line-height:1.1;margin-bottom:0.8rem">' +
             s.title +
             "</h2>" +
@@ -173,41 +115,5 @@ FB.widgets.register("slides", {
       "</div>"
     );
   },
-  editPanel: function (id, p) {
-    var html = "";
-    (p.slides || []).forEach(function (s, i) {
-      html +=
-        '<div class="rp-row" style="border:1px solid var(--border);border-radius:4px;margin:4px 14px;padding:8px">' +
-        "<label>Slide " +
-        (i + 1) +
-        ' Title</label><input type="text" value="' +
-        s.title +
-        '" onchange="var slides=JSON.parse(JSON.stringify(FB.state.blocks.find(function(b){return b.id===\'' +
-        id +
-        "'}).props.slides||[]));slides[" +
-        i +
-        "].title=this.value;FB.panels.updateWidgetProp('" +
-        id +
-        "','slides',slides)\">" +
-        '<label style="margin-top:4px">Description</label><textarea rows="2" onchange="var slides=JSON.parse(JSON.stringify(FB.state.blocks.find(function(b){return b.id===\'' +
-        id +
-        "'}).props.slides||[]));slides[" +
-        i +
-        "].desc=this.value;FB.panels.updateWidgetProp('" +
-        id +
-        "','slides',slides)\">" +
-        s.desc +
-        "</textarea>" +
-        '<label style="margin-top:4px">CTA Text</label><input type="text" value="' +
-        s.cta +
-        '" onchange="var slides=JSON.parse(JSON.stringify(FB.state.blocks.find(function(b){return b.id===\'' +
-        id +
-        "'}).props.slides||[]));slides[" +
-        i +
-        "].cta=this.value;FB.panels.updateWidgetProp('" +
-        id +
-        "','slides',slides)\"></div>";
-    });
-    return html;
-  },
+  editPanel: function (id, p) { return ""; },
 });

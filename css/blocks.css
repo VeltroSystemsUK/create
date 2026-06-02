@@ -310,6 +310,8 @@
   animation-play-state: paused;
 }
 .fw-marquee-inner {
+  display: flex;
+  white-space: nowrap;
   animation: marqueeRoll 16s linear infinite;
 }
 
@@ -566,10 +568,8 @@
   background: #cdfe00;
   padding: 0.7rem 0;
   overflow: hidden;
-}
-.fw-marquee-inner {
-  display: flex;
-  white-space: nowrap;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
 }
 .fw-marquee-item {
   font-family: "Lexend", sans-serif;
@@ -590,7 +590,7 @@
   font-size: 11px;
   letter-spacing: 4px;
   text-transform: uppercase;
-  color: #999;
+  color: #c0c0c0;
   margin-bottom: 1rem;
   font-weight: 400;
 }
@@ -840,7 +840,7 @@
   font-size: 11px;
   letter-spacing: 4px;
   text-transform: uppercase;
-  color: #999;
+  color: #c0c0c0;
   margin-bottom: 1rem;
   font-weight: 400;
 }
@@ -4945,7 +4945,7 @@
   border-radius: 16px;
 }
 .fw-img-frame.frame-sketch {
-  border: 2px dashed var(--frame-border-color, #999);
+  border: 2px dashed var(--frame-border-color, #c0c0c0);
   border-radius: 4px;
 }
 .fw-img-frame.frame-ribbon {
@@ -5018,4 +5018,383 @@
     rgba(0, 0, 0, 0.15) 100%
   );
   border-radius: 0 0 0 8px;
+}
+
+/* ── TEXT ANIMATION BLOCKS ── */
+
+/* Kinetic Text */
+.fw-kinetic-headline {
+  position: relative;
+  animation: fw-kinetic-none 0.1s ease;
+}
+.fw-kinetic-animate {
+  animation: fw-kinetic-scramble 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+@keyframes fw-kinetic-scramble {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px) rotateX(90deg);
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotateX(0deg);
+  }
+}
+@keyframes fw-kinetic-none {
+  0% { transform: none; }
+  100% { transform: none; }
+}
+
+/* Text Scramble */
+.fw-text-scramble {
+  position: relative;
+}
+.fw-scramble-text {
+  position: relative;
+  display: inline-block;
+  animation: fw-scramble-none 0.1s ease;
+}
+.fw-scramble-animate {
+  animation: fw-scramble-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+@keyframes fw-scramble-reveal {
+  0% {
+    opacity: 0;
+    filter: blur(8px);
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+@keyframes fw-scramble-none {
+  0% { transform: none; }
+  100% { transform: none; }
+}
+
+/* Typewriter */
+.fw-typewriter-text {
+  border-right: 2px solid currentColor;
+  padding-right: 4px;
+  animation: fw-typewriter-blink 0.7s step-end infinite;
+}
+.fw-typewriter-done {
+  border-right: none;
+  animation: none !important;
+}
+@keyframes fw-typewriter-blink {
+  0%, 50% {
+    border-right-color: currentColor;
+  }
+  51%, 100% {
+    border-right-color: transparent;
+  }
+}
+
+/* Text Mask */
+.fw-text-mask {
+  position: relative;
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  animation: fw-mask-none 0.1s ease;
+}
+.fw-text-mask-wrap.fw-mask-animate .fw-text-mask {
+  animation: fw-mask-slide 3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+@keyframes fw-mask-slide {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+@keyframes fw-mask-none {
+  0% { background-position: 0; }
+  100% { background-position: 0; }
+}
+
+/* Morphing Counter */
+.fw-morphing-counter {
+  position: relative;
+}
+.fw-counter-value {
+  font-variant-numeric: tabular-nums;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Liquid Text */
+.fw-liquid-text {
+  position: relative;
+}
+.fw-liquid-headline {
+  animation: fw-liquid-flow 4s ease-in-out infinite;
+}
+@keyframes fw-liquid-flow {
+  0%, 100% {
+    transform: translateY(0px) scaleY(1);
+  }
+  25% {
+    transform: translateY(-8px) scaleY(1.05);
+  }
+  50% {
+    transform: translateY(0px) scaleY(0.95);
+  }
+  75% {
+    transform: translateY(8px) scaleY(1.05);
+  }
+}
+
+/* Wave Text */
+.fw-wave-char {
+  display: inline-block;
+  animation: fw-wave 1.5s ease-in-out infinite;
+}
+@keyframes fw-wave {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-30px);
+  }
+}
+
+/* Audio Visualizer */
+.fw-audio-visualizer {
+  position: relative;
+}
+.fw-audio-bar {
+  flex: 1;
+  border-radius: 4px 4px 0 0;
+  transition: height 0.2s ease;
+  min-height: 2px;
+}
+
+/* Depth of Field */
+.fw-dof-container {
+  position: relative;
+}
+.fw-dof-text {
+  position: relative;
+  z-index: 2;
+  animation: fw-dof-none 0.1s ease;
+}
+.fw-dof-active .fw-dof-text {
+  animation: fw-dof-focus 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+@keyframes fw-dof-focus {
+  0% {
+    filter: blur(12px);
+    opacity: 0.3;
+  }
+  100% {
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+@keyframes fw-dof-none {
+  0% { filter: none; }
+  100% { filter: none; }
+}
+
+/* Education Blocks */
+.edu-course-hero {
+  padding: 4rem 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+.edu-hero-image {
+  width: 100%;
+  max-width: 600px;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+.edu-course-content h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+.edu-course-meta {
+  opacity: 0.7;
+  margin-bottom: 1rem;
+}
+.edu-instructor {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.edu-instructor img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.edu-video-lesson {
+  padding: 2rem;
+}
+.edu-lesson-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.edu-lesson-num {
+  background: rgba(255,255,255,0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+.edu-lesson-header h2 {
+  margin: 0;
+  flex: 1;
+}
+.edu-lesson-meta {
+  opacity: 0.7;
+  font-size: 0.9rem;
+}
+.edu-video {
+  width: 100%;
+  max-width: 800px;
+  margin: 2rem auto;
+  display: block;
+  border-radius: 8px;
+}
+.edu-placeholder {
+  background: rgba(255,255,255,0.1);
+  padding: 4rem 2rem;
+  text-align: center;
+  border-radius: 8px;
+  margin: 2rem 0;
+}
+.edu-lesson-description {
+  max-width: 800px;
+}
+.edu-lesson-description h3 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+.edu-lesson-description ul {
+  list-style: none;
+  padding-left: 1.5rem;
+}
+.edu-lesson-description li {
+  margin-bottom: 0.5rem;
+}
+
+.edu-quiz {
+  padding: 2rem;
+  max-width: 800px;
+}
+.edu-questions {
+  margin: 2rem 0;
+}
+.edu-question {
+  background: rgba(255,255,255,0.05);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-radius: 8px;
+}
+.edu-question label {
+  display: block;
+  margin: 0.5rem 0;
+  cursor: pointer;
+}
+.edu-question input[type="radio"] {
+  margin-right: 0.5rem;
+}
+
+.edu-module {
+  padding: 2rem;
+}
+.edu-lessons {
+  background: rgba(255,255,255,0.05);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-top: 1.5rem;
+}
+.edu-lessons ol {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+.edu-lessons li {
+  margin-bottom: 0.5rem;
+}
+.edu-lessons span {
+  opacity: 0.7;
+  font-size: 0.9rem;
+}
+
+.edu-progress {
+  padding: 2rem;
+}
+.edu-progress-bar {
+  background: rgba(255,255,255,0.1);
+  height: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 1rem 0;
+}
+.edu-progress-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.edu-objectives {
+  padding: 2rem;
+}
+.edu-objectives ul {
+  list-style: none;
+  padding-left: 0;
+}
+.edu-objectives li {
+  margin-bottom: 1rem;
+  padding-left: 2rem;
+  position: relative;
+}
+
+.edu-certificate {
+  max-width: 900px;
+  margin: 2rem auto;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+.edu-certificate h1 {
+  font-size: 3rem;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.edu-lesson-nav {
+  padding: 2rem;
+  display: flex;
+  gap: 2rem;
+  justify-content: space-between;
+  align-items: center;
+}
+.edu-nav-buttons {
+  display: flex;
+  gap: 1rem;
+}
+.edu-nav-buttons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+.edu-nav-buttons button:hover {
+  opacity: 0.8;
+}
+
+.edu-block {
+  margin: 1rem 0;
 }

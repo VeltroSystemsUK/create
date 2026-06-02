@@ -31,9 +31,62 @@ FB.widgets.register("row", {
       "</div>"
     );
   },
+  editPanel: function (id, p) { return ""; },
 });
 
-// tabs moved to widgets/tabs.js (enhanced version with styles, positions, add/remove)
+FB.widgets.register("tabs", {
+  label: "Tabs",
+  icon: "\u2637",
+  iconBg: "#1a1a2a",
+  iconColor: "#CDFE00",
+  category: "layout",
+  defaultProps: {
+    items: [
+      { title: "Tab 1", content: "Content for tab 1" },
+      { title: "Tab 2", content: "Content for tab 2" },
+    ],
+    activeTab: 0,
+  },
+  render: function (p) {
+    var items = p.items || [];
+    if (items.length === 0)
+      return '<div style="padding:1rem;color:#999">No tabs defined</div>';
+    var headers = items
+      .map(function (item, i) {
+        return (
+          '<div class="fw-tab-header" style="padding:10px 20px;cursor:pointer;border-bottom:2px solid ' +
+          (i === (p.activeTab || 0) ? "var(--accent)" : "transparent") +
+          ";color:" +
+          (i === (p.activeTab || 0) ? "var(--accent)" : "#999") +
+          ";font-weight:" +
+          (i === (p.activeTab || 0) ? "600" : "400") +
+          ';font-size:13px;transition:all 0.2s">' +
+          item.title +
+          "</div>"
+        );
+      })
+      .join("");
+    var panels = items
+      .map(function (item, i) {
+        return (
+          '<div class="fw-tab-panel" style="display:' +
+          (i === (p.activeTab || 0) ? "block" : "none") +
+          ';padding:20px 0;font-size:14px;line-height:1.6">' +
+          item.content +
+          "</div>"
+        );
+      })
+      .join("");
+    return (
+      '<div class="fw-widget-tabs" style="padding:0.5rem 1rem"><div class="fw-tabs-headers" style="display:flex;border-bottom:2px solid #eee">' +
+      headers +
+      '</div><div class="fw-tabs-panels">' +
+      panels +
+      "</div></div>"
+    );
+  },
+  editPanel: function (id, p) { return ""; },
+});
 
 FB.widgets.register("accordion", {
   label: "Accordion",
@@ -69,34 +122,7 @@ FB.widgets.register("accordion", {
       "</div>"
     );
   },
-  editPanel: function (id, p) {
-    var html = "";
-    (p.items || []).forEach(function (item, i) {
-      html +=
-        '<div class="rp-row" style="border:1px solid var(--border);border-radius:4px;margin:4px 14px;padding:8px">' +
-        "<label>Section " +
-        (i + 1) +
-        ' Title</label><input type="text" value="' +
-        item.title +
-        '" onchange="var items=JSON.parse(JSON.stringify(FB.state.blocks.find(function(b){return b.id===\'' +
-        id +
-        "'}).props.items||[]));items[" +
-        i +
-        "].title=this.value;FB.panels.updateWidgetProp('" +
-        id +
-        "','items',items)\">" +
-        '<label style="margin-top:4px">Content</label><textarea rows="2" onchange="var items=JSON.parse(JSON.stringify(FB.state.blocks.find(function(b){return b.id===\'' +
-        id +
-        "'}).props.items||[]));items[" +
-        i +
-        "].content=this.value;FB.panels.updateWidgetProp('" +
-        id +
-        "','items',items)\">" +
-        item.content +
-        "</textarea></div>";
-    });
-    return html;
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 FB.widgets.register("toggle", {
@@ -132,34 +158,7 @@ FB.widgets.register("toggle", {
       "</div>"
     );
   },
-  editPanel: function (id, p) {
-    var html = "";
-    (p.items || []).forEach(function (item, i) {
-      html +=
-        '<div class="rp-row" style="border:1px solid var(--border);border-radius:4px;margin:4px 14px;padding:8px">' +
-        "<label>Option " +
-        (i + 1) +
-        ' Title</label><input type="text" value="' +
-        item.title +
-        '" onchange="var items=JSON.parse(JSON.stringify(FB.state.blocks.find(function(b){return b.id===\'' +
-        id +
-        "'}).props.items||[]));items[" +
-        i +
-        "].title=this.value;FB.panels.updateWidgetProp('" +
-        id +
-        "','items',items)\">" +
-        '<label style="margin-top:4px">Content</label><textarea rows="2" onchange="var items=JSON.parse(JSON.stringify(FB.state.blocks.find(function(b){return b.id===\'' +
-        id +
-        "'}).props.items||[]));items[" +
-        i +
-        "].content=this.value;FB.panels.updateWidgetProp('" +
-        id +
-        "','items',items)\">" +
-        item.content +
-        "</textarea></div>";
-    });
-    return html;
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 FB.widgets.register("priceTable", {
@@ -170,11 +169,15 @@ FB.widgets.register("priceTable", {
   category: "layout",
   defaultProps: {
     title: "Basic",
-    price: "$19",
+    price: "19",
     period: "/mo",
+    currency: "$",
+    description: "",
     features: ["Feature 1", "Feature 2", "Feature 3"],
     cta: "Buy Now",
     featured: false,
+    badgeText: "Popular",
+    image: "",
   },
   render: function (p) {
     return (
@@ -185,14 +188,29 @@ FB.widgets.register("priceTable", {
       ";border-radius:8px;padding:2rem;text-align:center;" +
       (p.featured ? "color:#fff;transform:scale(1.03)" : "color:#111") +
       '">' +
+      (p.image
+        ? '<img src="' +
+          p.image +
+          '" style="max-height:60px;margin-bottom:0.75rem" alt="">'
+        : "") +
       (p.featured
-        ? '<div style="background:var(--accent);color:#111;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:4px;font-weight:600;border-radius:4px;margin-bottom:1rem;display:inline-block">Popular</div>'
+        ? '<div style="background:var(--accent);color:#111;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:4px;font-weight:600;border-radius:4px;margin-bottom:1rem;display:inline-block">' +
+          (p.badgeText || "Popular") +
+          "</div>"
         : "") +
       "<h3 style=\"font-family:'Lexend',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:0.5rem\">" +
       (p.title || "Basic") +
       "</h3>" +
+      (p.description
+        ? '<p style="font-size:12px;color:' +
+          (p.featured ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.5)") +
+          ";margin-bottom:0.75rem\">" +
+          p.description +
+          "</p>"
+        : "") +
       "<div style=\"font-family:'Lexend',sans-serif;font-size:3rem;font-weight:800;letter-spacing:-2px\">" +
-      (p.price || "$19") +
+      (p.currency || "") +
+      (p.price || "19") +
       "</div>" +
       '<div style="font-size:12px;color:' +
       (p.featured ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)") +
@@ -221,40 +239,7 @@ FB.widgets.register("priceTable", {
       "</button></div></div>"
     );
   },
-  editPanel: function (id, p) {
-    var html =
-      '<div class="rp-row"><label>Title</label><input type="text" value="' +
-      p.title +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','title',this.value)\"></div>" +
-      '<div class="rp-row"><label>Price</label><input type="text" value="' +
-      p.price +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','price',this.value)\"></div>" +
-      '<div class="rp-row"><label>Period</label><input type="text" value="' +
-      p.period +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','period',this.value)\"></div>" +
-      '<div class="rp-row"><label>CTA Text</label><input type="text" value="' +
-      p.cta +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','cta',this.value)\"></div>" +
-      '<div class="rp-row"><label>Features (one per line)</label><textarea rows="4" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','features',this.value.split('\\n').filter(function(s){return s.trim()}))\">" +
-      (p.features || []).join("\n") +
-      "</textarea></div>" +
-      '<div class="rp-row"><label><input type="checkbox" ' +
-      (p.featured ? "checked" : "") +
-      " onchange=\"FB.panels.updateWidgetProp('" +
-      id +
-      "','featured',this.checked)\"> Featured/Highlighted</label></div>";
-    return html;
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 FB.widgets.register("priceList", {
@@ -265,8 +250,8 @@ FB.widgets.register("priceList", {
   category: "layout",
   defaultProps: {
     items: [
-      { title: "Item 1", desc: "Description", price: "$10" },
-      { title: "Item 2", desc: "Description", price: "$15" },
+      { title: "Item 1", desc: "Description", price: "$10", image: "", tag: "" },
+      { title: "Item 2", desc: "Description", price: "$15", image: "", tag: "" },
     ],
     columns: 1,
   },
@@ -278,13 +263,25 @@ FB.widgets.register("priceList", {
         .map(function (item) {
           return (
             '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #eee">' +
-            '<div><div style="font-weight:500;font-size:14px">' +
+            '<div style="display:flex;align-items:center;gap:10px">' +
+            (item.image
+              ? '<img src="' +
+                item.image +
+                '" style="width:40px;height:40px;border-radius:50%;object-fit:cover" alt="">'
+              : "") +
+            '<div><div style="display:flex;align-items:center;gap:6px"><span style="font-weight:500;font-size:14px">' +
             item.title +
+            "</span>" +
+            (item.tag
+              ? '<span style="font-size:9px;letter-spacing:1px;text-transform:uppercase;background:var(--accent);color:#111;padding:2px 6px;border-radius:3px;font-weight:600">' +
+                item.tag +
+                "</span>"
+              : "") +
             "</div>" +
             (item.desc
               ? '<div style="font-size:12px;color:#999">' + item.desc + "</div>"
               : "") +
-            "</div>" +
+            "</div></div>" +
             '<div style="font-weight:700;font-size:16px;color:var(--accent)">' +
             item.price +
             "</div></div>"
@@ -294,41 +291,7 @@ FB.widgets.register("priceList", {
       "</div>"
     );
   },
-  editPanel: function (id, p) {
-    var html = "";
-    (p.items || []).forEach(function (item, i) {
-      html +=
-        '<div class="rp-row" style="border:1px solid var(--border);border-radius:4px;margin:4px 14px;padding:8px">' +
-        '<div style="display:flex;gap:4px;margin-bottom:4px"><input type="text" value="' +
-        item.title +
-        '" placeholder="Title" style="flex:1" onchange="var items=JSON.parse(JSON.stringify(FB.state.blocks.find(function(b){return b.id===\'' +
-        id +
-        "'}).props.items||[]));items[" +
-        i +
-        "].title=this.value;FB.panels.updateWidgetProp('" +
-        id +
-        "','items',items)\">" +
-        '<input type="text" value="' +
-        item.price +
-        '" placeholder="$0" style="width:60px" onchange="var items=JSON.parse(JSON.stringify(FB.state.blocks.find(function(b){return b.id===\'' +
-        id +
-        "'}).props.items||[]));items[" +
-        i +
-        "].price=this.value;FB.panels.updateWidgetProp('" +
-        id +
-        "','items',items)\"></div>" +
-        '<input type="text" value="' +
-        (item.desc || "") +
-        '" placeholder="Description (optional)" style="width:100%" onchange="var items=JSON.parse(JSON.stringify(FB.state.blocks.find(function(b){return b.id===\'' +
-        id +
-        "'}).props.items||[]));items[" +
-        i +
-        "].desc=this.value;FB.panels.updateWidgetProp('" +
-        id +
-        "','items',items)\"></div>";
-    });
-    return html;
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 FB.widgets.register("flipBox", {
@@ -367,37 +330,7 @@ FB.widgets.register("flipBox", {
       "</p></div></div></div>"
     );
   },
-  editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Front Title</label><input type="text" value="' +
-      p.frontTitle +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','frontTitle',this.value)\"></div>" +
-      '<div class="rp-row"><label>Front Description</label><textarea rows="2" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','frontDesc',this.value)\">" +
-      p.frontDesc +
-      "</textarea></div>" +
-      '<div class="rp-row"><label>Back Title</label><input type="text" value="' +
-      p.backTitle +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','backTitle',this.value)\"></div>" +
-      '<div class="rp-row"><label>Back Description</label><textarea rows="2" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','backDesc',this.value)\">" +
-      p.backDesc +
-      "</textarea></div>" +
-      '<div class="rp-row"><label>Height: ' +
-      (p.height || 300) +
-      'px</label><input type="range" min="200" max="500" value="' +
-      (p.height || 300) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','height',+this.value);this.previousElementSibling.textContent='Height: '+this.value+'px'\"></div>"
-    );
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 FB.widgets.register("cta", {
@@ -437,43 +370,7 @@ FB.widgets.register("cta", {
       "</button></div>"
     );
   },
-  editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Title</label><input type="text" value="' +
-      p.title +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','title',this.value)\"></div>" +
-      '<div class="rp-row"><label>Description</label><textarea rows="2" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','desc',this.value)\">" +
-      p.desc +
-      "</textarea></div>" +
-      '<div class="rp-row"><label>Button Text</label><input type="text" value="' +
-      p.btnText +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','btnText',this.value)\"></div>" +
-      '<div class="rp-row"><label>Background</label><div class="color-row"><input type="color" value="' +
-      (p.bg || "#CDFE00") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      '\',\'bg\',this.value)"><input type="text" value="' +
-      (p.bg || "#CDFE00") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','bg',this.value)\"></div></div>" +
-      '<div class="rp-row"><label>Text Color</label><div class="color-row"><input type="color" value="' +
-      (p.color || "#111111") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      '\',\'color\',this.value)"><input type="text" value="' +
-      (p.color || "#111111") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','color',this.value)\"></div></div>"
-    );
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 // Footer widget — configurable multi-column footer
@@ -560,98 +457,7 @@ FB.widgets.register("footerWidget", {
       "</div></div>"
     );
   },
-  editPanel: function (id, p) {
-    var presets = {
-      "1fr": { label: "Single", cols: 1 },
-      "1fr 1fr": { label: "Two", cols: 2 },
-      "1fr 1fr 1fr": { label: "Three", cols: 3 },
-      "1fr 1fr 1fr 1fr": { label: "Four", cols: 4 },
-    };
-    var presetOpts = "";
-    for (var key in presets) {
-      presetOpts +=
-        '<option value="' +
-        key +
-        '"' +
-        (p.layout === key ? " selected" : "") +
-        ">" +
-        presets[key].label +
-        "</option>";
-    }
-    var rows =
-      "<div class=\"rp-row\"><label>Columns</label><select onchange=\"var v=this.value;var ps={'1fr':1,'1fr 1fr':2,'1fr 1fr 1fr':3,'1fr 1fr 1fr 1fr':4};FB.panels.updateWidgetProp('" +
-      id +
-      "','layout',v);FB.panels.updateWidgetProp('" +
-      id +
-      "','columns',ps[v]||3)\">" +
-      presetOpts +
-      "</select></div>";
-    var cols = p.columns || 3;
-    if (cols >= 1)
-      rows +=
-        '<div class="rp-row"><label>Column 1 \u2014 Title</label><input type="text" value="' +
-        (p.col1Title || "About") +
-        '" onchange="FB.panels.updateWidgetProp(\'' +
-        id +
-        "','col1Title',this.value)\"></div>" +
-        '<div class="rp-row"><label>Column 1 \u2014 Content</label><textarea rows="3" onchange="FB.panels.updateWidgetProp(\'' +
-        id +
-        "','col1Content',this.value)\">" +
-        (p.col1Content || "") +
-        "</textarea></div>";
-    if (cols >= 2)
-      rows +=
-        '<div class="rp-row"><label>Column 2 \u2014 Title</label><input type="text" value="' +
-        (p.col2Title || "Links") +
-        '" onchange="FB.panels.updateWidgetProp(\'' +
-        id +
-        "','col2Title',this.value)\"></div>" +
-        '<div class="rp-row"><label>Column 2 \u2014 Links (comma-separated)</label><input type="text" value="' +
-        (p.col2Links || []).join(", ") +
-        '" onchange="FB.panels.updateWidgetProp(\'' +
-        id +
-        "','col2Links',this.value.split(',').map(function(s){return s.trim()}))\"></div>";
-    if (cols >= 3)
-      rows +=
-        '<div class="rp-row"><label>Column 3 \u2014 Title</label><input type="text" value="' +
-        (p.col3Title || "Contact") +
-        '" onchange="FB.panels.updateWidgetProp(\'' +
-        id +
-        "','col3Title',this.value)\"></div>" +
-        '<div class="rp-row"><label>Column 3 \u2014 Content</label><textarea rows="3" onchange="FB.panels.updateWidgetProp(\'' +
-        id +
-        "','col3Content',this.value)\">" +
-        (p.col3Content || "") +
-        "</textarea></div>";
-    if (cols >= 4)
-      rows +=
-        '<div class="rp-row"><label>Column 4 \u2014 Title</label><input type="text" value="' +
-        (p.col4Title || "Follow") +
-        '" onchange="FB.panels.updateWidgetProp(\'' +
-        id +
-        "','col4Title',this.value)\"></div>" +
-        '<div class="rp-row"><label>Column 4 \u2014 Links (comma-separated)</label><input type="text" value="' +
-        (p.col4Links || []).join(", ") +
-        '" onchange="FB.panels.updateWidgetProp(\'' +
-        id +
-        "','col4Links',this.value.split(',').map(function(s){return s.trim()}))\"></div>";
-    rows +=
-      '<div class="rp-row"><label>Copyright</label><input type="text" value="' +
-      (p.copyright || "") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','copyright',this.value)\"></div>" +
-      '<div class="rp-row"><label>Background</label><div class="color-row"><input type="color" value="' +
-      (p.bg || "#111111") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      '\',\'bg\',this.value)"><input type="text" value="' +
-      (p.bg || "#111111") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','bg',this.value)\"></div></div>";
-    return rows;
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 // Section / Container — full-bleed background with overlay and droppable content zone
@@ -767,233 +573,7 @@ FB.widgets.register("container", {
       "</div></div></div>"
     );
   },
-  editPanel: function (id, p) {
-    var cols = p.columns || 1;
-
-    var colBtns = [1, 2, 3, 4]
-      .map(function (n) {
-        var layouts = {
-          1: "1fr",
-          2: "1fr 1fr",
-          3: "1fr 1fr 1fr",
-          4: "1fr 1fr 1fr 1fr",
-        };
-        return (
-          '<button style="flex:1;padding:4px;border:1px solid ' +
-          (cols === n ? "var(--accent)" : "var(--border)") +
-          ";background:" +
-          (cols === n ? "var(--accent)" : "transparent") +
-          ";color:" +
-          (cols === n ? "#111" : "var(--text)") +
-          ';border-radius:3px;cursor:pointer;font-size:11px" onclick="FB.panels.updateWidgetProp(\'' +
-          id +
-          "','columns'," +
-          n +
-          ");FB.panels.updateWidgetProp('" +
-          id +
-          "','columnLayout','" +
-          layouts[n] +
-          "')\">" +
-          n +
-          "</button>"
-        );
-      })
-      .join("");
-
-    var layoutOpts = [
-      { label: "Equal", val: Array(cols).fill("1fr").join(" ") },
-      { label: "Left heavy", val: cols === 2 ? "2fr 1fr" : "2fr 1fr 1fr" },
-      { label: "Right heavy", val: cols === 2 ? "1fr 2fr" : "1fr 1fr 2fr" },
-    ]
-      .map(function (o) {
-        return (
-          '<option value="' +
-          o.val +
-          '"' +
-          (p.columnLayout === o.val ? " selected" : "") +
-          ">" +
-          o.label +
-          "</option>"
-        );
-      })
-      .join("");
-
-    var typeOpts = ["color", "image", "gradient", "video"]
-      .map(function (t) {
-        return (
-          '<option value="' +
-          t +
-          '"' +
-          (p.bgType === t ? " selected" : "") +
-          ">" +
-          t.charAt(0).toUpperCase() +
-          t.slice(1) +
-          "</option>"
-        );
-      })
-      .join("");
-
-    var html =
-      '<div class="rp-section-label">Columns</div>' +
-      '<div class="rp-row"><label>Count</label><div style="display:flex;gap:4px">' +
-      colBtns +
-      "</div></div>";
-
-    if (cols > 1) {
-      html +=
-        '<div class="rp-row"><label>Layout</label><select onchange="FB.panels.updateWidgetProp(\'' +
-        id +
-        "','columnLayout',this.value)\">" +
-        layoutOpts +
-        "</select></div>" +
-        '<div class="rp-row"><label>Gap: ' +
-        (p.columnGap || 24) +
-        'px</label><input type="range" min="0" max="80" value="' +
-        (p.columnGap || 24) +
-        '" oninput="FB.panels.updateWidgetProp(\'' +
-        id +
-        "','columnGap',+this.value);this.previousElementSibling.textContent='Gap: '+this.value+'px'\"></div>";
-    }
-
-    html +=
-      '<div class="rp-section-label">Background</div>' +
-      '<div class="rp-row"><label>Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','bgType',this.value)\">" +
-      typeOpts +
-      "</select></div>";
-
-    if (p.bgType === "color" || !p.bgType) {
-      html +=
-        '<div class="rp-row"><label>Colour</label><div class="color-row"><input type="color" value="' +
-        (p.bgColor || "#111111") +
-        '" onchange="FB.panels.updateWidgetProp(\'' +
-        id +
-        '\',\'bgColor\',this.value)"><input type="text" value="' +
-        (p.bgColor || "#111111") +
-        '" onchange="FB.panels.updateWidgetProp(\'' +
-        id +
-        "','bgColor',this.value)\"></div></div>";
-    }
-
-    if (p.bgType === "image") {
-      html +=
-        '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
-        (p.bgImage || "") +
-        '" placeholder="https://..." onchange="FB.panels.updateWidgetProp(\'' +
-        id +
-        "','bgImage',this.value)\"></div>" +
-        '<div class="rp-row"><label>Size</label><select onchange="FB.panels.updateWidgetProp(\'' +
-        id +
-        "','bgSize',this.value)\"><option" +
-        (p.bgSize === "cover" ? " selected" : "") +
-        ">cover</option><option" +
-        (p.bgSize === "contain" ? " selected" : "") +
-        ">contain</option><option" +
-        (p.bgSize === "auto" ? " selected" : "") +
-        ">auto</option></select></div>" +
-        '<div class="rp-row"><label>Position</label><input type="text" value="' +
-        (p.bgPosition || "center center") +
-        '" onchange="FB.panels.updateWidgetProp(\'' +
-        id +
-        "','bgPosition',this.value)\"></div>";
-    }
-
-    if (p.bgType === "gradient") {
-      html +=
-        '<div class="rp-row"><label>Colour 1</label><div class="color-row"><input type="color" value="' +
-        (p.gradientColor1 || "#0d1117") +
-        '" onchange="FB.panels.updateWidgetProp(\'' +
-        id +
-        '\',\'gradientColor1\',this.value)"><input type="text" value="' +
-        (p.gradientColor1 || "#0d1117") +
-        '" onchange="FB.panels.updateWidgetProp(\'' +
-        id +
-        "','gradientColor1',this.value)\"></div></div>" +
-        '<div class="rp-row"><label>Colour 2</label><div class="color-row"><input type="color" value="' +
-        (p.gradientColor2 || "#1a1a2e") +
-        '" onchange="FB.panels.updateWidgetProp(\'' +
-        id +
-        '\',\'gradientColor2\',this.value)"><input type="text" value="' +
-        (p.gradientColor2 || "#1a1a2e") +
-        '" onchange="FB.panels.updateWidgetProp(\'' +
-        id +
-        "','gradientColor2',this.value)\"></div></div>" +
-        '<div class="rp-row"><label>Angle: ' +
-        (p.gradientAngle || 135) +
-        'deg</label><input type="range" min="0" max="360" value="' +
-        (p.gradientAngle || 135) +
-        '" oninput="FB.panels.updateWidgetProp(\'' +
-        id +
-        "','gradientAngle',+this.value);this.previousElementSibling.textContent='Angle: '+this.value+'deg'\"></div>";
-    }
-
-    if (p.bgType === "video") {
-      html +=
-        '<div class="rp-row"><label>Video URL</label><input type="text" value="' +
-        (p.videoUrl || "") +
-        '" placeholder="https://...mp4" onchange="FB.panels.updateWidgetProp(\'' +
-        id +
-        "','videoUrl',this.value)\"></div>";
-    }
-
-    html +=
-      '<div class="rp-section-label">Overlay</div>' +
-      '<div class="rp-row"><label>Colour</label><div class="color-row"><input type="color" value="' +
-      (p.overlayColor || "#000000") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      '\',\'overlayColor\',this.value)"><input type="text" value="' +
-      (p.overlayColor || "#000000") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','overlayColor',this.value)\"></div></div>" +
-      '<div class="rp-row"><label>Opacity: ' +
-      (p.overlayOpacity || 0) +
-      '</label><input type="range" min="0" max="1" step="0.01" value="' +
-      (p.overlayOpacity || 0) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','overlayOpacity',+this.value);this.previousElementSibling.textContent='Opacity: '+this.value\"></div>" +
-      '<div class="rp-section-label">Spacing</div>' +
-      '<div class="rp-row"><label>Min Height: ' +
-      (p.minHeight || 300) +
-      'px</label><input type="range" min="0" max="1200" value="' +
-      (p.minHeight || 300) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','minHeight',+this.value);this.previousElementSibling.textContent='Min Height: '+this.value+'px'\"></div>" +
-      '<div class="rp-row"><label>Padding V: ' +
-      (p.paddingV || 60) +
-      'px</label><input type="range" min="0" max="200" value="' +
-      (p.paddingV || 60) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','paddingV',+this.value);this.previousElementSibling.textContent='Padding V: '+this.value+'px'\"></div>" +
-      '<div class="rp-row"><label>Padding H: ' +
-      (p.paddingH || 40) +
-      'px</label><input type="range" min="0" max="200" value="' +
-      (p.paddingH || 40) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','paddingH',+this.value);this.previousElementSibling.textContent='Padding H: '+this.value+'px'\"></div>" +
-      '<div class="rp-row"><label><input type="checkbox" ' +
-      (p.contentMaxWidthEnabled !== false ? "checked" : "") +
-      " onchange=\"FB.panels.updateWidgetProp('" +
-      id +
-      "','contentMaxWidthEnabled',this.checked)\"> Max content width</label></div>" +
-      (p.contentMaxWidthEnabled !== false
-        ? '<div class="rp-row"><label>Max Width: ' +
-          (p.contentMaxWidth || 1200) +
-          'px</label><input type="range" min="400" max="2400" value="' +
-          (p.contentMaxWidth || 1200) +
-          '" oninput="FB.panels.updateWidgetProp(\'' +
-          id +
-          "','contentMaxWidth',+this.value);this.previousElementSibling.textContent='Max Width: '+this.value+'px'\"></div>"
-        : "");
-
-    return html;
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 // Tiling Window Manager — dynamic focus-driven flex layout
@@ -1045,64 +625,5 @@ FB.widgets.register("twmWorkspace", {
     html += "</div>";
     return html;
   },
-  editPanel: function (id, p) {
-    var nodes = p.nodes || [];
-    var html =
-      '<div style="font-size:11px;color:var(--text-muted);padding:8px 14px;border-bottom:1px solid var(--border)">Hover or click a node to focus it. The layout re-tiles dynamically.</div>';
-    nodes.forEach(function (n, i) {
-      html +=
-        '<div class="rp-row"><label>Node ' +
-        (i + 1) +
-        ' Label</label><input type="text" value="' +
-        (n.label || "") +
-        '" onchange="var v=this.value;var nodes=JSON.parse(JSON.stringify((FB.panels._getWidgetProp&&FB.panels._getWidgetProp(\'' +
-        id +
-        "','nodes'))||" +
-        JSON.stringify(p.nodes) +
-        "));if(!nodes[" +
-        i +
-        "])nodes[" +
-        i +
-        "]={};nodes[" +
-        i +
-        "].label=v;FB.panels.updateWidgetProp('" +
-        id +
-        "','nodes',nodes)\"></div>" +
-        '<div class="rp-row"><label>Node ' +
-        (i + 1) +
-        ' Title</label><input type="text" value="' +
-        (n.title || "") +
-        '" onchange="var v=this.value;var nodes=JSON.parse(JSON.stringify((FB.panels._getWidgetProp&&FB.panels._getWidgetProp(\'' +
-        id +
-        "','nodes'))||" +
-        JSON.stringify(p.nodes) +
-        "));if(!nodes[" +
-        i +
-        "])nodes[" +
-        i +
-        "]={};nodes[" +
-        i +
-        "].title=v;FB.panels.updateWidgetProp('" +
-        id +
-        "','nodes',nodes)\"></div>" +
-        '<div class="rp-row"><label>Node ' +
-        (i + 1) +
-        ' Description</label><textarea rows="2" onchange="var v=this.value;var nodes=JSON.parse(JSON.stringify((FB.panels._getWidgetProp&&FB.panels._getWidgetProp(\'' +
-        id +
-        "','nodes'))||" +
-        JSON.stringify(p.nodes) +
-        "));if(!nodes[" +
-        i +
-        "])nodes[" +
-        i +
-        "]={};nodes[" +
-        i +
-        "].desc=v;FB.panels.updateWidgetProp('" +
-        id +
-        "','nodes',nodes)\">" +
-        (n.desc || "") +
-        "</textarea></div>";
-    });
-    return html;
-  },
+  editPanel: function (id, p) { return ""; },
 });

@@ -1,0 +1,2860 @@
+{
+  "version": "1.0",
+  "generated": "2026-05-29T19:25:39.971Z",
+  "source": "js/widgets.js:_propMeta",
+  "totalProperties": 416,
+  "textProperties": [
+    "text",
+    "words",
+    "overlayText",
+    "tag",
+    "image",
+    "images",
+    "imageUrl",
+    "prefix",
+    "suffix",
+    "charset",
+    "colors",
+    "particleColors",
+    "gradientTextDir",
+    "multiText",
+    "maskVideoUrl",
+    "elementColors",
+    "rippleText",
+    "cardColor",
+    "ballColors",
+    "shapes",
+    "roomLabels",
+    "islandLabels",
+    "itemBg",
+    "itemLabels",
+    "navItems",
+    "gridColor",
+    "nebulaColors",
+    "icon",
+    "title",
+    "desc",
+    "description",
+    "html",
+    "shortcode",
+    "quote",
+    "attribution",
+    "url",
+    "src",
+    "alt",
+    "address",
+    "code",
+    "language",
+    "date",
+    "beforeText",
+    "afterText",
+    "badgeText",
+    "price",
+    "period",
+    "currency",
+    "features",
+    "frontTitle",
+    "frontDesc",
+    "backTitle",
+    "backDesc",
+    "btnText",
+    "cta",
+    "caption",
+    "animData",
+    "col1Content",
+    "col3Content",
+    "columnLayout",
+    "elementLabels",
+    "videoUrl",
+    "col1Title",
+    "col2Title",
+    "col3Title",
+    "col4Title",
+    "col2Links",
+    "col4Links",
+    "copyright",
+    "networks",
+    "captions",
+    "label",
+    "subtitle",
+    "bgImage",
+    "navLabel",
+    "link",
+    "linkText",
+    "thumbnail"
+  ],
+  "colorProperties": [
+    "color",
+    "textColor",
+    "accentColor",
+    "bg",
+    "particleColor",
+    "borderColor",
+    "rippleColor",
+    "glowColor",
+    "color1",
+    "color2",
+    "dualColour2",
+    "gradientTextColor1",
+    "gradientTextColor2",
+    "textShadowColor",
+    "highlightColor",
+    "cursorColor",
+    "maskFallbackColor",
+    "imageBorderColor",
+    "rippleTextColor",
+    "ringColor",
+    "patternColor",
+    "barColor",
+    "starColor",
+    "lineColor",
+    "accretionColor",
+    "jetColor",
+    "overlayColor",
+    "leakColor",
+    "shimmerColor",
+    "bgColor",
+    "cardBg",
+    "gradientColor1",
+    "gradientColor2",
+    "elementColor",
+    "overlayBgColor"
+  ],
+  "numericProperties": [
+    {
+      "name": "fontSize",
+      "min": 12,
+      "max": 200,
+      "step": 2
+    },
+    {
+      "name": "fontWeight",
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "name": "letterSpacing",
+      "min": -10,
+      "max": 20,
+      "step": 1
+    },
+    {
+      "name": "lineHeight",
+      "min": 0.5,
+      "max": 3,
+      "step": 0.1
+    },
+    {
+      "name": "height",
+      "min": 100,
+      "max": 1000,
+      "step": 10
+    },
+    {
+      "name": "speed",
+      "min": 0.01,
+      "max": 5,
+      "step": 0.01
+    },
+    {
+      "name": "amplitude",
+      "min": 0,
+      "max": 100,
+      "step": 1
+    },
+    {
+      "name": "frequency",
+      "min": 0.001,
+      "max": 1,
+      "step": 0.001
+    },
+    {
+      "name": "intensity",
+      "min": 0,
+      "max": 2,
+      "step": 0.05
+    },
+    {
+      "name": "opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "name": "particleCount",
+      "min": 1,
+      "max": 500,
+      "step": 1
+    },
+    {
+      "name": "particleSize",
+      "min": 1,
+      "max": 20,
+      "step": 1
+    },
+    {
+      "name": "elementCount",
+      "min": 1,
+      "max": 50,
+      "step": 1
+    },
+    {
+      "name": "cardCount",
+      "min": 1,
+      "max": 20,
+      "step": 1
+    },
+    {
+      "name": "layerCount",
+      "min": 1,
+      "max": 10,
+      "step": 1
+    },
+    {
+      "name": "count",
+      "min": 1,
+      "max": 50,
+      "step": 1
+    },
+    {
+      "name": "rows",
+      "min": 1,
+      "max": 10,
+      "step": 1
+    },
+    {
+      "name": "cols",
+      "min": 1,
+      "max": 10,
+      "step": 1
+    },
+    {
+      "name": "gap",
+      "min": 0,
+      "max": 40,
+      "step": 2
+    },
+    {
+      "name": "borderRadius",
+      "min": 0,
+      "max": 60,
+      "step": 1
+    },
+    {
+      "name": "borderWidth",
+      "min": 0,
+      "max": 12,
+      "step": 1
+    },
+    {
+      "name": "value",
+      "step": 1
+    },
+    {
+      "name": "duration",
+      "min": 100,
+      "max": 5000,
+      "step": 100
+    },
+    {
+      "name": "scrambleSpeed",
+      "min": 5,
+      "max": 200,
+      "step": 5
+    },
+    {
+      "name": "revealSpeed",
+      "min": 100,
+      "max": 10000,
+      "step": 100
+    },
+    {
+      "name": "magneticRadius",
+      "min": 20,
+      "max": 500,
+      "step": 10
+    },
+    {
+      "name": "magneticStrength",
+      "min": 0.01,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "name": "distortionRadius",
+      "min": 20,
+      "max": 300,
+      "step": 5
+    },
+    {
+      "name": "distortionStrength",
+      "min": 0.01,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "name": "lensSize",
+      "min": 20,
+      "max": 300,
+      "step": 5
+    },
+    {
+      "name": "magnification",
+      "min": 1,
+      "max": 10,
+      "step": 0.5
+    },
+    {
+      "name": "rippleSize",
+      "min": 20,
+      "max": 300,
+      "step": 5
+    },
+    {
+      "name": "rippleDuration",
+      "min": 100,
+      "max": 3000,
+      "step": 50
+    },
+    {
+      "name": "gravity",
+      "min": 0,
+      "max": 5,
+      "step": 0.1
+    },
+    {
+      "name": "restitution",
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "name": "wellStrength",
+      "min": 0.01,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "name": "wellCount",
+      "min": 1,
+      "max": 10,
+      "step": 1
+    },
+    {
+      "name": "wellRadius",
+      "min": 5,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "name": "glowSize",
+      "min": 1,
+      "max": 50,
+      "step": 1
+    },
+    {
+      "name": "textShadowBlur",
+      "min": 0,
+      "max": 30,
+      "step": 1
+    },
+    {
+      "name": "minWeight",
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "name": "maxWeight",
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "name": "radius",
+      "min": 50,
+      "max": 500,
+      "step": 10
+    },
+    {
+      "name": "phaseOffset",
+      "min": 0,
+      "max": 6.28,
+      "step": 0.01
+    },
+    {
+      "name": "morphSpeed",
+      "min": 50,
+      "max": 2000,
+      "step": 50
+    },
+    {
+      "name": "fadeSpeed",
+      "min": 0.5,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "name": "autoScrambleInterval",
+      "min": 500,
+      "max": 10000,
+      "step": 500
+    },
+    {
+      "name": "scrambleIntensity",
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "name": "multiTextDelay",
+      "min": 500,
+      "max": 10000,
+      "step": 100
+    },
+    {
+      "name": "maskScale",
+      "min": 10,
+      "max": 200,
+      "step": 5
+    },
+    {
+      "name": "maskAnimSpeed",
+      "min": 1,
+      "max": 60,
+      "step": 1
+    },
+    {
+      "name": "startFrom",
+      "step": 1
+    },
+    {
+      "name": "filterIntensity",
+      "min": 0,
+      "max": 2,
+      "step": 0.05
+    },
+    {
+      "name": "imageSize",
+      "min": 20,
+      "max": 200,
+      "step": 5
+    },
+    {
+      "name": "imageBorderRadius",
+      "min": 0,
+      "max": 50,
+      "step": 1
+    },
+    {
+      "name": "imageBorderWidth",
+      "min": 0,
+      "max": 10,
+      "step": 1
+    },
+    {
+      "name": "mouseForce",
+      "min": 0,
+      "max": 20,
+      "step": 1
+    },
+    {
+      "name": "windStrength",
+      "min": 0,
+      "max": 3,
+      "step": 0.1
+    },
+    {
+      "name": "elementSize",
+      "min": 10,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "name": "cursorSize",
+      "min": 5,
+      "max": 60,
+      "step": 1
+    },
+    {
+      "name": "particleGravity",
+      "min": -2,
+      "max": 2,
+      "step": 0.1
+    },
+    {
+      "name": "particleRotation",
+      "min": 0,
+      "max": 360,
+      "step": 5
+    },
+    {
+      "name": "particleScatter",
+      "min": 0,
+      "max": 5,
+      "step": 0.1
+    },
+    {
+      "name": "rippleBorderWidth",
+      "min": 0,
+      "max": 10,
+      "step": 1
+    },
+    {
+      "name": "rippleTextSize",
+      "min": 12,
+      "max": 120,
+      "step": 2
+    },
+    {
+      "name": "cardHeight",
+      "min": 80,
+      "max": 400,
+      "step": 10
+    },
+    {
+      "name": "cardWidth",
+      "min": 80,
+      "max": 400,
+      "step": 10
+    },
+    {
+      "name": "snapStrength",
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "name": "maxSkew",
+      "min": 1,
+      "max": 45,
+      "step": 1
+    },
+    {
+      "name": "elasticity",
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "name": "depth",
+      "min": 0,
+      "max": 200,
+      "step": 5
+    },
+    {
+      "name": "complexity",
+      "min": 1,
+      "max": 15,
+      "step": 1
+    },
+    {
+      "name": "ringSize",
+      "min": 20,
+      "max": 200,
+      "step": 5
+    },
+    {
+      "name": "ringWidth",
+      "min": 1,
+      "max": 20,
+      "step": 1
+    },
+    {
+      "name": "angle",
+      "min": 0,
+      "max": 360,
+      "step": 5
+    },
+    {
+      "name": "patternSize",
+      "min": 5,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "name": "blur",
+      "min": 0,
+      "max": 30,
+      "step": 1
+    },
+    {
+      "name": "maxTilt",
+      "min": 1,
+      "max": 45,
+      "step": 1
+    },
+    {
+      "name": "perspective",
+      "min": 200,
+      "max": 3000,
+      "step": 50
+    },
+    {
+      "name": "barCount",
+      "min": 4,
+      "max": 64,
+      "step": 2
+    },
+    {
+      "name": "barWidth",
+      "min": 2,
+      "max": 20,
+      "step": 1
+    },
+    {
+      "name": "barGap",
+      "min": 0,
+      "max": 10,
+      "step": 1
+    },
+    {
+      "name": "starCount",
+      "min": 10,
+      "max": 500,
+      "step": 10
+    },
+    {
+      "name": "connectionDistance",
+      "min": 20,
+      "max": 300,
+      "step": 10
+    },
+    {
+      "name": "ringCount",
+      "min": 1,
+      "max": 10,
+      "step": 1
+    },
+    {
+      "name": "sensitivity",
+      "min": 0.01,
+      "max": 2,
+      "step": 0.05
+    },
+    {
+      "name": "reflectionOpacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "name": "lineWidth",
+      "min": 0.5,
+      "max": 5,
+      "step": 0.5
+    },
+    {
+      "name": "lineOpacity",
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "name": "clothGravity",
+      "min": 0,
+      "max": 3,
+      "step": 0.1
+    },
+    {
+      "name": "stiffness",
+      "min": 0.1,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "name": "damping",
+      "min": 0.1,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "name": "tearForce",
+      "min": 1,
+      "max": 30,
+      "step": 1
+    },
+    {
+      "name": "fieldLineOpacity",
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "name": "fieldStrength",
+      "min": 0.01,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "name": "pendulumLength",
+      "min": 20,
+      "max": 200,
+      "step": 5
+    },
+    {
+      "name": "bobSize",
+      "min": 2,
+      "max": 20,
+      "step": 1
+    },
+    {
+      "name": "trailLength",
+      "min": 5,
+      "max": 100,
+      "step": 1
+    },
+    {
+      "name": "spawnRate",
+      "min": 0.1,
+      "max": 10,
+      "step": 0.1
+    },
+    {
+      "name": "ballMinSize",
+      "min": 5,
+      "max": 50,
+      "step": 1
+    },
+    {
+      "name": "ballMaxSize",
+      "min": 10,
+      "max": 100,
+      "step": 1
+    },
+    {
+      "name": "maxBalls",
+      "min": 5,
+      "max": 200,
+      "step": 5
+    },
+    {
+      "name": "friction",
+      "min": 0.9,
+      "max": 1,
+      "step": 0.005
+    },
+    {
+      "name": "blackHoleSize",
+      "min": 5,
+      "max": 100,
+      "step": 1
+    },
+    {
+      "name": "eventHorizon",
+      "min": 10,
+      "max": 200,
+      "step": 5
+    },
+    {
+      "name": "pullStrength",
+      "min": 0.01,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "name": "diskOpacity",
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "name": "shapeScale",
+      "min": 0.1,
+      "max": 3,
+      "step": 0.1
+    },
+    {
+      "name": "rotationSpeed",
+      "min": 0.01,
+      "max": 5,
+      "step": 0.01
+    },
+    {
+      "name": "particleSpacing",
+      "min": 1,
+      "max": 20,
+      "step": 1
+    },
+    {
+      "name": "glowBlur",
+      "min": 1,
+      "max": 30,
+      "step": 1
+    },
+    {
+      "name": "overlayOpacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "name": "sampleSize",
+      "min": 2,
+      "max": 30,
+      "step": 1
+    },
+    {
+      "name": "paletteSize",
+      "min": 2,
+      "max": 10,
+      "step": 1
+    },
+    {
+      "name": "gridCols",
+      "min": 1,
+      "max": 8,
+      "step": 1
+    },
+    {
+      "name": "gridRows",
+      "min": 1,
+      "max": 6,
+      "step": 1
+    },
+    {
+      "name": "swatchBorderRadius",
+      "min": 0,
+      "max": 20,
+      "step": 1
+    },
+    {
+      "name": "gravityStrength",
+      "min": 0.01,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "name": "roomCount",
+      "min": 1,
+      "max": 6,
+      "step": 1
+    },
+    {
+      "name": "islandCount",
+      "min": 1,
+      "max": 10,
+      "step": 1
+    },
+    {
+      "name": "floatRange",
+      "min": 5,
+      "max": 80,
+      "step": 5
+    },
+    {
+      "name": "depthIntensity",
+      "min": 0,
+      "max": 2,
+      "step": 0.05
+    },
+    {
+      "name": "responseRadius",
+      "min": 20,
+      "max": 300,
+      "step": 10
+    },
+    {
+      "name": "repulseStrength",
+      "min": 10,
+      "max": 200,
+      "step": 5
+    },
+    {
+      "name": "itemSize",
+      "min": 20,
+      "max": 200,
+      "step": 5
+    },
+    {
+      "name": "itemCount",
+      "min": 2,
+      "max": 12,
+      "step": 1
+    },
+    {
+      "name": "cycleSpeed",
+      "min": 0.5,
+      "max": 10,
+      "step": 0.5
+    },
+    {
+      "name": "transitionDuration",
+      "min": 0.1,
+      "max": 2,
+      "step": 0.1
+    },
+    {
+      "name": "spacing",
+      "min": 20,
+      "max": 200,
+      "step": 5
+    },
+    {
+      "name": "gridSize",
+      "min": 10,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "name": "scrollStrength",
+      "min": 0.1,
+      "max": 2,
+      "step": 0.05
+    },
+    {
+      "name": "cursorStrength",
+      "min": 0,
+      "max": 2,
+      "step": 0.05
+    },
+    {
+      "name": "decay",
+      "min": 0.9,
+      "max": 1,
+      "step": 0.005
+    },
+    {
+      "name": "resolution",
+      "min": 64,
+      "max": 512,
+      "step": 64
+    },
+    {
+      "name": "scrollSensitivity",
+      "min": 0.1,
+      "max": 5,
+      "step": 0.1
+    },
+    {
+      "name": "flowAngle",
+      "min": 0,
+      "max": 360,
+      "step": 5
+    },
+    {
+      "name": "chaosFrequency",
+      "min": 0.1,
+      "max": 10,
+      "step": 0.1
+    },
+    {
+      "name": "cellSize",
+      "min": 10,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "name": "strokeWidth",
+      "min": 0.5,
+      "max": 5,
+      "step": 0.5
+    },
+    {
+      "name": "flowSpeed",
+      "min": 0.01,
+      "max": 3,
+      "step": 0.01
+    },
+    {
+      "name": "turbulence",
+      "min": 0,
+      "max": 2,
+      "step": 0.05
+    },
+    {
+      "name": "paletteBgOpacity",
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "name": "swatchGap",
+      "min": 1,
+      "max": 10,
+      "step": 1
+    },
+    {
+      "name": "size",
+      "min": 12,
+      "max": 200,
+      "step": 2
+    },
+    {
+      "name": "zoom",
+      "min": 1,
+      "max": 20,
+      "step": 1
+    },
+    {
+      "name": "number",
+      "step": 1
+    },
+    {
+      "name": "active",
+      "min": 0,
+      "max": 20,
+      "step": 1
+    },
+    {
+      "name": "activeTab",
+      "min": 0,
+      "max": 10,
+      "step": 1
+    },
+    {
+      "name": "minHeight",
+      "min": 100,
+      "max": 1200,
+      "step": 10
+    },
+    {
+      "name": "contentMaxWidth",
+      "min": 400,
+      "max": 2000,
+      "step": 10
+    },
+    {
+      "name": "sectionCount",
+      "min": 1,
+      "max": 20,
+      "step": 1
+    },
+    {
+      "name": "columns",
+      "min": 1,
+      "max": 8,
+      "step": 1
+    },
+    {
+      "name": "width",
+      "min": 1,
+      "max": 100,
+      "step": 1
+    },
+    {
+      "name": "revealDelay",
+      "min": 0,
+      "max": 5000,
+      "step": 100
+    },
+    {
+      "name": "delay",
+      "min": 0,
+      "max": 10000,
+      "step": 100
+    },
+    {
+      "name": "current",
+      "min": 0,
+      "max": 20,
+      "step": 1
+    },
+    {
+      "name": "shapeOpacity",
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "name": "maskOpacity",
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "name": "weight",
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "name": "particleFriction",
+      "min": 0.9,
+      "max": 1,
+      "step": 0.005
+    },
+    {
+      "name": "particleSpread",
+      "min": 0,
+      "max": 5,
+      "step": 0.1
+    },
+    {
+      "name": "charAnimationSpeed",
+      "min": 0.1,
+      "max": 3,
+      "step": 0.1
+    },
+    {
+      "name": "shapeRotation",
+      "min": 0,
+      "max": 360,
+      "step": 5
+    },
+    {
+      "name": "columnGap",
+      "min": 0,
+      "max": 60,
+      "step": 2
+    },
+    {
+      "name": "gradientAngle",
+      "min": 0,
+      "max": 360,
+      "step": 5
+    },
+    {
+      "name": "blurAmount",
+      "min": 0,
+      "max": 20,
+      "step": 1
+    },
+    {
+      "name": "textShadowOffsetX",
+      "min": -20,
+      "max": 20,
+      "step": 1
+    },
+    {
+      "name": "textShadowOffsetY",
+      "min": -20,
+      "max": 20,
+      "step": 1
+    },
+    {
+      "name": "layers",
+      "min": 1,
+      "max": 20,
+      "step": 1
+    },
+    {
+      "name": "autoRotateInterval",
+      "min": 2000,
+      "max": 15000,
+      "step": 1000
+    },
+    {
+      "name": "cardScale",
+      "min": 0.8,
+      "max": 1.5,
+      "step": 0.1
+    },
+    {
+      "name": "imageOpacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "name": "thumbnailBorderRadius",
+      "min": 0,
+      "max": 50,
+      "step": 1
+    },
+    {
+      "name": "titleFontSize",
+      "min": 12,
+      "max": 48,
+      "step": 2
+    },
+    {
+      "name": "descFontSize",
+      "min": 12,
+      "max": 32,
+      "step": 2
+    },
+    {
+      "name": "imageMarginBottom",
+      "min": 0,
+      "max": 30,
+      "step": 2
+    }
+  ],
+  "selectProperties": {
+    "mode": [
+      "proximity",
+      "always",
+      "hover"
+    ],
+    "fontFamily": [
+      "Inter",
+      "Lexend",
+      "monospace",
+      "sans-serif",
+      "serif",
+      "inherit"
+    ],
+    "align": [
+      "left",
+      "center",
+      "right"
+    ],
+    "textAlign": [
+      "left",
+      "center",
+      "right"
+    ],
+    "textTransform": [
+      "none",
+      "uppercase",
+      "lowercase",
+      "capitalize"
+    ],
+    "wellMode": [
+      "attract",
+      "repel",
+      "orbit"
+    ],
+    "waveType": [
+      "sine",
+      "cosine",
+      "triangle",
+      "sawtooth"
+    ],
+    "waveDirection": [
+      "up",
+      "down",
+      "left",
+      "right"
+    ],
+    "morphDirection": [
+      "forward",
+      "reverse",
+      "random"
+    ],
+    "revealTrigger": [
+      "hover",
+      "click",
+      "scroll",
+      "auto"
+    ],
+    "decodeTrigger": [
+      "hover",
+      "click",
+      "scroll"
+    ],
+    "cipherStyle": [
+      "random",
+      "sequential",
+      "reverse"
+    ],
+    "cursorStyle": [
+      "blink",
+      "solid",
+      "underscore"
+    ],
+    "maskBlendMode": [
+      "source-atop",
+      "multiply",
+      "screen",
+      "overlay"
+    ],
+    "numberFormat": [
+      "plain",
+      "comma",
+      "dot",
+      "space"
+    ],
+    "separatorStyle": [
+      "none",
+      "comma",
+      "dot",
+      "space"
+    ],
+    "easingCurve": [
+      "ease-out",
+      "ease-in-out",
+      "linear",
+      "spring"
+    ],
+    "imageShape": [
+      "square",
+      "circle",
+      "triangle"
+    ],
+    "elementShape": [
+      "circle",
+      "square",
+      "triangle",
+      "diamond"
+    ],
+    "particleShape": [
+      "circle",
+      "square",
+      "triangle",
+      "star"
+    ],
+    "particleBlendMode": [
+      "normal",
+      "screen",
+      "multiply",
+      "overlay"
+    ],
+    "rippleShape": [
+      "circle",
+      "square",
+      "diamond"
+    ],
+    "rippleDirection": [
+      "outward",
+      "inward"
+    ],
+    "pattern": [
+      "dots",
+      "grid",
+      "diagonal",
+      "hexagons",
+      "circles"
+    ],
+    "pinEdges": [
+      "top",
+      "left",
+      "right",
+      "all",
+      "none"
+    ],
+    "fieldMode": [
+      "dipole",
+      "quadrupole",
+      "vortex",
+      "random"
+    ],
+    "colorMode": [
+      "single",
+      "gradient",
+      "rainbow",
+      "palette"
+    ],
+    "layout": [
+      "bottom",
+      "center",
+      "top"
+    ],
+    "bobShape": [
+      "circle",
+      "square",
+      "diamond"
+    ],
+    "waveMode": [
+      "sine",
+      "cosine",
+      "random"
+    ],
+    "ballShape": [
+      "circle",
+      "square",
+      "triangle"
+    ],
+    "ballStyle": [
+      "solid",
+      "glass",
+      "hollow",
+      "gradient"
+    ],
+    "shapeOrder": [
+      "sequential",
+      "random"
+    ],
+    "shapeEasing": [
+      "ease-out",
+      "ease-in",
+      "linear",
+      "spring"
+    ],
+    "magneticEasing": [
+      "ease-out",
+      "ease-in-out",
+      "spring"
+    ],
+    "distortionType": [
+      "lens",
+      "ripple",
+      "swirl",
+      "pinch"
+    ],
+    "distortionShape": [
+      "circle",
+      "square",
+      "triangle"
+    ],
+    "imageFilter": [
+      "none",
+      "grayscale",
+      "sepia",
+      "invert",
+      "blur"
+    ],
+    "samplerMode": [
+      "hover",
+      "click"
+    ],
+    "colorFormat": [
+      "hex",
+      "rgb",
+      "hsl"
+    ],
+    "swatchAnimation": [
+      "none",
+      "pop",
+      "fade",
+      "slide"
+    ],
+    "shaderType": [
+      "noise",
+      "plasma",
+      "waves",
+      "aurora"
+    ],
+    "viscosityPreset": [
+      "water",
+      "oil",
+      "honey",
+      "tar"
+    ],
+    "patternType": [
+      "hexagons",
+      "triangles",
+      "circles",
+      "squares",
+      "diamonds",
+      "lines"
+    ],
+    "tool": [
+      "line",
+      "circle",
+      "rect",
+      "arc"
+    ],
+    "direction": [
+      "top-left",
+      "top-right",
+      "bottom-left",
+      "bottom-right"
+    ],
+    "palettePosition": [
+      "bottom",
+      "top",
+      "left",
+      "right"
+    ],
+    "aspectRatio": [
+      "56.25%",
+      "75%",
+      "100%",
+      "177.78%"
+    ],
+    "type": [
+      "info",
+      "success",
+      "warning",
+      "error"
+    ],
+    "style": [
+      "solid",
+      "dashed",
+      "dotted",
+      "double",
+      "groove",
+      "ridge"
+    ],
+    "shape": [
+      "circle",
+      "square",
+      "rounded"
+    ],
+    "gravityMode": [
+      "attract",
+      "repel"
+    ],
+    "splitBy": [
+      "none",
+      "char",
+      "word",
+      "line"
+    ],
+    "charAnimation": [
+      "none",
+      "fadeIn",
+      "slideUp",
+      "scaleIn",
+      "rotateIn",
+      "bounceIn"
+    ],
+    "maskPosition": [
+      "center",
+      "top",
+      "bottom",
+      "left",
+      "right"
+    ],
+    "maskRepeat": [
+      "no-repeat",
+      "repeat",
+      "repeat-x",
+      "repeat-y"
+    ],
+    "bgSize": [
+      "cover",
+      "contain",
+      "auto",
+      "100% auto"
+    ],
+    "bgPosition": [
+      "center center",
+      "top center",
+      "bottom center",
+      "left center",
+      "right center",
+      "top left",
+      "top right",
+      "bottom left",
+      "bottom right"
+    ],
+    "imagePosition": [
+      "top",
+      "background",
+      "left"
+    ]
+  },
+  "booleanProperties": [
+    "cursor",
+    "loop",
+    "particleTrail",
+    "particleGlow",
+    "glowEffect",
+    "dualColour",
+    "gradientText",
+    "textShadow",
+    "highlightCurrent",
+    "autoScramble",
+    "maskAnimation",
+    "animateOnScroll",
+    "perCharRandom",
+    "physicsEnabled",
+    "mouseInteraction",
+    "windEnabled",
+    "repelMode",
+    "elasticBounce",
+    "showCursor",
+    "particleRandomSize",
+    "particlePulse",
+    "rippleMultiple",
+    "rippleGlow",
+    "clothWind",
+    "mouseTear",
+    "useGradient",
+    "fieldLines",
+    "showTrail",
+    "glow",
+    "ballGlow",
+    "spawnOnClick",
+    "accretionDisk",
+    "jetEnabled",
+    "trailFade",
+    "trailGlow",
+    "trailBlur",
+    "autonomousMode",
+    "velocityStretch",
+    "letterSpacingAnim",
+    "magneticReturn",
+    "textGlow",
+    "distortionInvert",
+    "distortionChromatic",
+    "distortionOverlay",
+    "showGrid",
+    "autoCycle",
+    "chaosEnabled",
+    "snap",
+    "momentum",
+    "filled",
+    "particleRandomColor",
+    "wellGlow",
+    "copyOnHover",
+    "controls",
+    "autoplay",
+    "featured",
+    "dismissible",
+    "contentMaxWidthEnabled",
+    "particleBounce",
+    "autoRotate",
+    "clickableCards",
+    "showCardNumbers",
+    "showThumbnail",
+    "useImage"
+  ],
+  "generationRules": {
+    "textGeneration": {
+      "allowed": [
+        "text",
+        "words",
+        "overlayText",
+        "tag",
+        "image",
+        "images",
+        "imageUrl",
+        "prefix",
+        "suffix",
+        "charset",
+        "colors",
+        "particleColors",
+        "gradientTextDir",
+        "multiText",
+        "maskVideoUrl",
+        "elementColors",
+        "rippleText",
+        "cardColor",
+        "ballColors",
+        "shapes",
+        "roomLabels",
+        "islandLabels",
+        "itemBg",
+        "itemLabels",
+        "navItems",
+        "gridColor",
+        "nebulaColors",
+        "icon",
+        "title",
+        "desc",
+        "description",
+        "html",
+        "shortcode",
+        "quote",
+        "attribution",
+        "url",
+        "src",
+        "alt",
+        "address",
+        "code",
+        "language",
+        "date",
+        "beforeText",
+        "afterText",
+        "badgeText",
+        "price",
+        "period",
+        "currency",
+        "features",
+        "frontTitle",
+        "frontDesc",
+        "backTitle",
+        "backDesc",
+        "btnText",
+        "cta",
+        "caption",
+        "animData",
+        "col1Content",
+        "col3Content",
+        "columnLayout",
+        "elementLabels",
+        "videoUrl",
+        "col1Title",
+        "col2Title",
+        "col3Title",
+        "col4Title",
+        "col2Links",
+        "col4Links",
+        "copyright",
+        "networks",
+        "captions",
+        "label",
+        "subtitle",
+        "bgImage",
+        "navLabel",
+        "link",
+        "linkText",
+        "thumbnail"
+      ],
+      "guidance": "Generate realistic text content for these text properties. Keep text concise and relevant."
+    },
+    "colorGeneration": {
+      "allowed": [
+        "color",
+        "textColor",
+        "accentColor",
+        "bg",
+        "particleColor",
+        "borderColor",
+        "rippleColor",
+        "glowColor",
+        "color1",
+        "color2",
+        "dualColour2",
+        "gradientTextColor1",
+        "gradientTextColor2",
+        "textShadowColor",
+        "highlightColor",
+        "cursorColor",
+        "maskFallbackColor",
+        "imageBorderColor",
+        "rippleTextColor",
+        "ringColor",
+        "patternColor",
+        "barColor",
+        "starColor",
+        "lineColor",
+        "accretionColor",
+        "jetColor",
+        "overlayColor",
+        "leakColor",
+        "shimmerColor",
+        "bgColor",
+        "cardBg",
+        "gradientColor1",
+        "gradientColor2",
+        "elementColor",
+        "overlayBgColor"
+      ],
+      "guidance": "Generate valid hex colors for these color properties. Ensure good contrast and visual hierarchy.",
+      "validFormats": [
+        "#rrggbb",
+        "#rgb"
+      ]
+    },
+    "numericGeneration": {
+      "guidance": "Generate numeric values within specified ranges. Use meaningful defaults based on property semantics.",
+      "ranges": {
+        "fontSize": {
+          "min": 12,
+          "max": 200
+        },
+        "fontWeight": {
+          "min": 100,
+          "max": 900
+        },
+        "letterSpacing": {
+          "min": -10,
+          "max": 20
+        },
+        "lineHeight": {
+          "min": 0.5,
+          "max": 3
+        },
+        "height": {
+          "min": 100,
+          "max": 1000
+        },
+        "speed": {
+          "min": 0.01,
+          "max": 5
+        },
+        "amplitude": {
+          "min": 0,
+          "max": 100
+        },
+        "frequency": {
+          "min": 0.001,
+          "max": 1
+        },
+        "intensity": {
+          "min": 0,
+          "max": 2
+        },
+        "opacity": {
+          "min": 0,
+          "max": 100
+        },
+        "particleCount": {
+          "min": 1,
+          "max": 500
+        },
+        "particleSize": {
+          "min": 1,
+          "max": 20
+        },
+        "elementCount": {
+          "min": 1,
+          "max": 50
+        },
+        "cardCount": {
+          "min": 1,
+          "max": 20
+        },
+        "layerCount": {
+          "min": 1,
+          "max": 10
+        },
+        "count": {
+          "min": 1,
+          "max": 50
+        },
+        "rows": {
+          "min": 1,
+          "max": 10
+        },
+        "cols": {
+          "min": 1,
+          "max": 10
+        },
+        "gap": {
+          "min": 0,
+          "max": 40
+        },
+        "borderRadius": {
+          "min": 0,
+          "max": 60
+        },
+        "borderWidth": {
+          "min": 0,
+          "max": 12
+        },
+        "value": {},
+        "duration": {
+          "min": 100,
+          "max": 5000
+        },
+        "scrambleSpeed": {
+          "min": 5,
+          "max": 200
+        },
+        "revealSpeed": {
+          "min": 100,
+          "max": 10000
+        },
+        "magneticRadius": {
+          "min": 20,
+          "max": 500
+        },
+        "magneticStrength": {
+          "min": 0.01,
+          "max": 2
+        },
+        "distortionRadius": {
+          "min": 20,
+          "max": 300
+        },
+        "distortionStrength": {
+          "min": 0.01,
+          "max": 1
+        },
+        "lensSize": {
+          "min": 20,
+          "max": 300
+        },
+        "magnification": {
+          "min": 1,
+          "max": 10
+        },
+        "rippleSize": {
+          "min": 20,
+          "max": 300
+        },
+        "rippleDuration": {
+          "min": 100,
+          "max": 3000
+        },
+        "gravity": {
+          "min": 0,
+          "max": 5
+        },
+        "restitution": {
+          "min": 0,
+          "max": 1
+        },
+        "wellStrength": {
+          "min": 0.01,
+          "max": 2
+        },
+        "wellCount": {
+          "min": 1,
+          "max": 10
+        },
+        "wellRadius": {
+          "min": 5,
+          "max": 100
+        },
+        "glowSize": {
+          "min": 1,
+          "max": 50
+        },
+        "textShadowBlur": {
+          "min": 0,
+          "max": 30
+        },
+        "minWeight": {
+          "min": 100,
+          "max": 900
+        },
+        "maxWeight": {
+          "min": 100,
+          "max": 900
+        },
+        "radius": {
+          "min": 50,
+          "max": 500
+        },
+        "phaseOffset": {
+          "min": 0,
+          "max": 6.28
+        },
+        "morphSpeed": {
+          "min": 50,
+          "max": 2000
+        },
+        "fadeSpeed": {
+          "min": 0.5,
+          "max": 1
+        },
+        "autoScrambleInterval": {
+          "min": 500,
+          "max": 10000
+        },
+        "scrambleIntensity": {
+          "min": 0,
+          "max": 1
+        },
+        "multiTextDelay": {
+          "min": 500,
+          "max": 10000
+        },
+        "maskScale": {
+          "min": 10,
+          "max": 200
+        },
+        "maskAnimSpeed": {
+          "min": 1,
+          "max": 60
+        },
+        "startFrom": {},
+        "filterIntensity": {
+          "min": 0,
+          "max": 2
+        },
+        "imageSize": {
+          "min": 20,
+          "max": 200
+        },
+        "imageBorderRadius": {
+          "min": 0,
+          "max": 50
+        },
+        "imageBorderWidth": {
+          "min": 0,
+          "max": 10
+        },
+        "mouseForce": {
+          "min": 0,
+          "max": 20
+        },
+        "windStrength": {
+          "min": 0,
+          "max": 3
+        },
+        "elementSize": {
+          "min": 10,
+          "max": 100
+        },
+        "cursorSize": {
+          "min": 5,
+          "max": 60
+        },
+        "particleGravity": {
+          "min": -2,
+          "max": 2
+        },
+        "particleRotation": {
+          "min": 0,
+          "max": 360
+        },
+        "particleScatter": {
+          "min": 0,
+          "max": 5
+        },
+        "rippleBorderWidth": {
+          "min": 0,
+          "max": 10
+        },
+        "rippleTextSize": {
+          "min": 12,
+          "max": 120
+        },
+        "cardHeight": {
+          "min": 80,
+          "max": 400
+        },
+        "cardWidth": {
+          "min": 80,
+          "max": 400
+        },
+        "snapStrength": {
+          "min": 0,
+          "max": 1
+        },
+        "maxSkew": {
+          "min": 1,
+          "max": 45
+        },
+        "elasticity": {
+          "min": 0,
+          "max": 1
+        },
+        "depth": {
+          "min": 0,
+          "max": 200
+        },
+        "complexity": {
+          "min": 1,
+          "max": 15
+        },
+        "ringSize": {
+          "min": 20,
+          "max": 200
+        },
+        "ringWidth": {
+          "min": 1,
+          "max": 20
+        },
+        "angle": {
+          "min": 0,
+          "max": 360
+        },
+        "patternSize": {
+          "min": 5,
+          "max": 100
+        },
+        "blur": {
+          "min": 0,
+          "max": 30
+        },
+        "maxTilt": {
+          "min": 1,
+          "max": 45
+        },
+        "perspective": {
+          "min": 200,
+          "max": 3000
+        },
+        "barCount": {
+          "min": 4,
+          "max": 64
+        },
+        "barWidth": {
+          "min": 2,
+          "max": 20
+        },
+        "barGap": {
+          "min": 0,
+          "max": 10
+        },
+        "starCount": {
+          "min": 10,
+          "max": 500
+        },
+        "connectionDistance": {
+          "min": 20,
+          "max": 300
+        },
+        "ringCount": {
+          "min": 1,
+          "max": 10
+        },
+        "sensitivity": {
+          "min": 0.01,
+          "max": 2
+        },
+        "reflectionOpacity": {
+          "min": 0,
+          "max": 1
+        },
+        "lineWidth": {
+          "min": 0.5,
+          "max": 5
+        },
+        "lineOpacity": {
+          "min": 0,
+          "max": 100
+        },
+        "clothGravity": {
+          "min": 0,
+          "max": 3
+        },
+        "stiffness": {
+          "min": 0.1,
+          "max": 1
+        },
+        "damping": {
+          "min": 0.1,
+          "max": 1
+        },
+        "tearForce": {
+          "min": 1,
+          "max": 30
+        },
+        "fieldLineOpacity": {
+          "min": 0,
+          "max": 100
+        },
+        "fieldStrength": {
+          "min": 0.01,
+          "max": 2
+        },
+        "pendulumLength": {
+          "min": 20,
+          "max": 200
+        },
+        "bobSize": {
+          "min": 2,
+          "max": 20
+        },
+        "trailLength": {
+          "min": 5,
+          "max": 100
+        },
+        "spawnRate": {
+          "min": 0.1,
+          "max": 10
+        },
+        "ballMinSize": {
+          "min": 5,
+          "max": 50
+        },
+        "ballMaxSize": {
+          "min": 10,
+          "max": 100
+        },
+        "maxBalls": {
+          "min": 5,
+          "max": 200
+        },
+        "friction": {
+          "min": 0.9,
+          "max": 1
+        },
+        "blackHoleSize": {
+          "min": 5,
+          "max": 100
+        },
+        "eventHorizon": {
+          "min": 10,
+          "max": 200
+        },
+        "pullStrength": {
+          "min": 0.01,
+          "max": 2
+        },
+        "diskOpacity": {
+          "min": 0,
+          "max": 100
+        },
+        "shapeScale": {
+          "min": 0.1,
+          "max": 3
+        },
+        "rotationSpeed": {
+          "min": 0.01,
+          "max": 5
+        },
+        "particleSpacing": {
+          "min": 1,
+          "max": 20
+        },
+        "glowBlur": {
+          "min": 1,
+          "max": 30
+        },
+        "overlayOpacity": {
+          "min": 0,
+          "max": 1
+        },
+        "sampleSize": {
+          "min": 2,
+          "max": 30
+        },
+        "paletteSize": {
+          "min": 2,
+          "max": 10
+        },
+        "gridCols": {
+          "min": 1,
+          "max": 8
+        },
+        "gridRows": {
+          "min": 1,
+          "max": 6
+        },
+        "swatchBorderRadius": {
+          "min": 0,
+          "max": 20
+        },
+        "gravityStrength": {
+          "min": 0.01,
+          "max": 2
+        },
+        "roomCount": {
+          "min": 1,
+          "max": 6
+        },
+        "islandCount": {
+          "min": 1,
+          "max": 10
+        },
+        "floatRange": {
+          "min": 5,
+          "max": 80
+        },
+        "depthIntensity": {
+          "min": 0,
+          "max": 2
+        },
+        "responseRadius": {
+          "min": 20,
+          "max": 300
+        },
+        "repulseStrength": {
+          "min": 10,
+          "max": 200
+        },
+        "itemSize": {
+          "min": 20,
+          "max": 200
+        },
+        "itemCount": {
+          "min": 2,
+          "max": 12
+        },
+        "cycleSpeed": {
+          "min": 0.5,
+          "max": 10
+        },
+        "transitionDuration": {
+          "min": 0.1,
+          "max": 2
+        },
+        "spacing": {
+          "min": 20,
+          "max": 200
+        },
+        "gridSize": {
+          "min": 10,
+          "max": 100
+        },
+        "scrollStrength": {
+          "min": 0.1,
+          "max": 2
+        },
+        "cursorStrength": {
+          "min": 0,
+          "max": 2
+        },
+        "decay": {
+          "min": 0.9,
+          "max": 1
+        },
+        "resolution": {
+          "min": 64,
+          "max": 512
+        },
+        "scrollSensitivity": {
+          "min": 0.1,
+          "max": 5
+        },
+        "flowAngle": {
+          "min": 0,
+          "max": 360
+        },
+        "chaosFrequency": {
+          "min": 0.1,
+          "max": 10
+        },
+        "cellSize": {
+          "min": 10,
+          "max": 100
+        },
+        "strokeWidth": {
+          "min": 0.5,
+          "max": 5
+        },
+        "flowSpeed": {
+          "min": 0.01,
+          "max": 3
+        },
+        "turbulence": {
+          "min": 0,
+          "max": 2
+        },
+        "paletteBgOpacity": {
+          "min": 0,
+          "max": 100
+        },
+        "swatchGap": {
+          "min": 1,
+          "max": 10
+        },
+        "size": {
+          "min": 12,
+          "max": 200
+        },
+        "zoom": {
+          "min": 1,
+          "max": 20
+        },
+        "number": {},
+        "active": {
+          "min": 0,
+          "max": 20
+        },
+        "activeTab": {
+          "min": 0,
+          "max": 10
+        },
+        "minHeight": {
+          "min": 100,
+          "max": 1200
+        },
+        "contentMaxWidth": {
+          "min": 400,
+          "max": 2000
+        },
+        "sectionCount": {
+          "min": 1,
+          "max": 20
+        },
+        "columns": {
+          "min": 1,
+          "max": 8
+        },
+        "width": {
+          "min": 1,
+          "max": 100
+        },
+        "revealDelay": {
+          "min": 0,
+          "max": 5000
+        },
+        "delay": {
+          "min": 0,
+          "max": 10000
+        },
+        "current": {
+          "min": 0,
+          "max": 20
+        },
+        "shapeOpacity": {
+          "min": 0,
+          "max": 100
+        },
+        "maskOpacity": {
+          "min": 0,
+          "max": 100
+        },
+        "weight": {
+          "min": 100,
+          "max": 900
+        },
+        "particleFriction": {
+          "min": 0.9,
+          "max": 1
+        },
+        "particleSpread": {
+          "min": 0,
+          "max": 5
+        },
+        "charAnimationSpeed": {
+          "min": 0.1,
+          "max": 3
+        },
+        "shapeRotation": {
+          "min": 0,
+          "max": 360
+        },
+        "columnGap": {
+          "min": 0,
+          "max": 60
+        },
+        "gradientAngle": {
+          "min": 0,
+          "max": 360
+        },
+        "blurAmount": {
+          "min": 0,
+          "max": 20
+        },
+        "textShadowOffsetX": {
+          "min": -20,
+          "max": 20
+        },
+        "textShadowOffsetY": {
+          "min": -20,
+          "max": 20
+        },
+        "layers": {
+          "min": 1,
+          "max": 20
+        },
+        "autoRotateInterval": {
+          "min": 2000,
+          "max": 15000
+        },
+        "cardScale": {
+          "min": 0.8,
+          "max": 1.5
+        },
+        "imageOpacity": {
+          "min": 0,
+          "max": 1
+        },
+        "thumbnailBorderRadius": {
+          "min": 0,
+          "max": 50
+        },
+        "titleFontSize": {
+          "min": 12,
+          "max": 48
+        },
+        "descFontSize": {
+          "min": 12,
+          "max": 32
+        },
+        "imageMarginBottom": {
+          "min": 0,
+          "max": 30
+        }
+      }
+    },
+    "enumGeneration": {
+      "guidance": "For select properties, only use values from the specified options. No custom values allowed.",
+      "options": {
+        "mode": [
+          "proximity",
+          "always",
+          "hover"
+        ],
+        "fontFamily": [
+          "Inter",
+          "Lexend",
+          "monospace",
+          "sans-serif",
+          "serif",
+          "inherit"
+        ],
+        "align": [
+          "left",
+          "center",
+          "right"
+        ],
+        "textAlign": [
+          "left",
+          "center",
+          "right"
+        ],
+        "textTransform": [
+          "none",
+          "uppercase",
+          "lowercase",
+          "capitalize"
+        ],
+        "wellMode": [
+          "attract",
+          "repel",
+          "orbit"
+        ],
+        "waveType": [
+          "sine",
+          "cosine",
+          "triangle",
+          "sawtooth"
+        ],
+        "waveDirection": [
+          "up",
+          "down",
+          "left",
+          "right"
+        ],
+        "morphDirection": [
+          "forward",
+          "reverse",
+          "random"
+        ],
+        "revealTrigger": [
+          "hover",
+          "click",
+          "scroll",
+          "auto"
+        ],
+        "decodeTrigger": [
+          "hover",
+          "click",
+          "scroll"
+        ],
+        "cipherStyle": [
+          "random",
+          "sequential",
+          "reverse"
+        ],
+        "cursorStyle": [
+          "blink",
+          "solid",
+          "underscore"
+        ],
+        "maskBlendMode": [
+          "source-atop",
+          "multiply",
+          "screen",
+          "overlay"
+        ],
+        "numberFormat": [
+          "plain",
+          "comma",
+          "dot",
+          "space"
+        ],
+        "separatorStyle": [
+          "none",
+          "comma",
+          "dot",
+          "space"
+        ],
+        "easingCurve": [
+          "ease-out",
+          "ease-in-out",
+          "linear",
+          "spring"
+        ],
+        "imageShape": [
+          "square",
+          "circle",
+          "triangle"
+        ],
+        "elementShape": [
+          "circle",
+          "square",
+          "triangle",
+          "diamond"
+        ],
+        "particleShape": [
+          "circle",
+          "square",
+          "triangle",
+          "star"
+        ],
+        "particleBlendMode": [
+          "normal",
+          "screen",
+          "multiply",
+          "overlay"
+        ],
+        "rippleShape": [
+          "circle",
+          "square",
+          "diamond"
+        ],
+        "rippleDirection": [
+          "outward",
+          "inward"
+        ],
+        "pattern": [
+          "dots",
+          "grid",
+          "diagonal",
+          "hexagons",
+          "circles"
+        ],
+        "pinEdges": [
+          "top",
+          "left",
+          "right",
+          "all",
+          "none"
+        ],
+        "fieldMode": [
+          "dipole",
+          "quadrupole",
+          "vortex",
+          "random"
+        ],
+        "colorMode": [
+          "single",
+          "gradient",
+          "rainbow",
+          "palette"
+        ],
+        "layout": [
+          "bottom",
+          "center",
+          "top"
+        ],
+        "bobShape": [
+          "circle",
+          "square",
+          "diamond"
+        ],
+        "waveMode": [
+          "sine",
+          "cosine",
+          "random"
+        ],
+        "ballShape": [
+          "circle",
+          "square",
+          "triangle"
+        ],
+        "ballStyle": [
+          "solid",
+          "glass",
+          "hollow",
+          "gradient"
+        ],
+        "shapeOrder": [
+          "sequential",
+          "random"
+        ],
+        "shapeEasing": [
+          "ease-out",
+          "ease-in",
+          "linear",
+          "spring"
+        ],
+        "magneticEasing": [
+          "ease-out",
+          "ease-in-out",
+          "spring"
+        ],
+        "distortionType": [
+          "lens",
+          "ripple",
+          "swirl",
+          "pinch"
+        ],
+        "distortionShape": [
+          "circle",
+          "square",
+          "triangle"
+        ],
+        "imageFilter": [
+          "none",
+          "grayscale",
+          "sepia",
+          "invert",
+          "blur"
+        ],
+        "samplerMode": [
+          "hover",
+          "click"
+        ],
+        "colorFormat": [
+          "hex",
+          "rgb",
+          "hsl"
+        ],
+        "swatchAnimation": [
+          "none",
+          "pop",
+          "fade",
+          "slide"
+        ],
+        "shaderType": [
+          "noise",
+          "plasma",
+          "waves",
+          "aurora"
+        ],
+        "viscosityPreset": [
+          "water",
+          "oil",
+          "honey",
+          "tar"
+        ],
+        "patternType": [
+          "hexagons",
+          "triangles",
+          "circles",
+          "squares",
+          "diamonds",
+          "lines"
+        ],
+        "tool": [
+          "line",
+          "circle",
+          "rect",
+          "arc"
+        ],
+        "direction": [
+          "top-left",
+          "top-right",
+          "bottom-left",
+          "bottom-right"
+        ],
+        "palettePosition": [
+          "bottom",
+          "top",
+          "left",
+          "right"
+        ],
+        "aspectRatio": [
+          "56.25%",
+          "75%",
+          "100%",
+          "177.78%"
+        ],
+        "type": [
+          "info",
+          "success",
+          "warning",
+          "error"
+        ],
+        "style": [
+          "solid",
+          "dashed",
+          "dotted",
+          "double",
+          "groove",
+          "ridge"
+        ],
+        "shape": [
+          "circle",
+          "square",
+          "rounded"
+        ],
+        "gravityMode": [
+          "attract",
+          "repel"
+        ],
+        "splitBy": [
+          "none",
+          "char",
+          "word",
+          "line"
+        ],
+        "charAnimation": [
+          "none",
+          "fadeIn",
+          "slideUp",
+          "scaleIn",
+          "rotateIn",
+          "bounceIn"
+        ],
+        "maskPosition": [
+          "center",
+          "top",
+          "bottom",
+          "left",
+          "right"
+        ],
+        "maskRepeat": [
+          "no-repeat",
+          "repeat",
+          "repeat-x",
+          "repeat-y"
+        ],
+        "bgSize": [
+          "cover",
+          "contain",
+          "auto",
+          "100% auto"
+        ],
+        "bgPosition": [
+          "center center",
+          "top center",
+          "bottom center",
+          "left center",
+          "right center",
+          "top left",
+          "top right",
+          "bottom left",
+          "bottom right"
+        ],
+        "imagePosition": [
+          "top",
+          "background",
+          "left"
+        ]
+      }
+    },
+    "booleanGeneration": {
+      "allowed": [
+        "cursor",
+        "loop",
+        "particleTrail",
+        "particleGlow",
+        "glowEffect",
+        "dualColour",
+        "gradientText",
+        "textShadow",
+        "highlightCurrent",
+        "autoScramble",
+        "maskAnimation",
+        "animateOnScroll",
+        "perCharRandom",
+        "physicsEnabled",
+        "mouseInteraction",
+        "windEnabled",
+        "repelMode",
+        "elasticBounce",
+        "showCursor",
+        "particleRandomSize",
+        "particlePulse",
+        "rippleMultiple",
+        "rippleGlow",
+        "clothWind",
+        "mouseTear",
+        "useGradient",
+        "fieldLines",
+        "showTrail",
+        "glow",
+        "ballGlow",
+        "spawnOnClick",
+        "accretionDisk",
+        "jetEnabled",
+        "trailFade",
+        "trailGlow",
+        "trailBlur",
+        "autonomousMode",
+        "velocityStretch",
+        "letterSpacingAnim",
+        "magneticReturn",
+        "textGlow",
+        "distortionInvert",
+        "distortionChromatic",
+        "distortionOverlay",
+        "showGrid",
+        "autoCycle",
+        "chaosEnabled",
+        "snap",
+        "momentum",
+        "filled",
+        "particleRandomColor",
+        "wellGlow",
+        "copyOnHover",
+        "controls",
+        "autoplay",
+        "featured",
+        "dismissible",
+        "contentMaxWidthEnabled",
+        "particleBounce",
+        "autoRotate",
+        "clickableCards",
+        "showCardNumbers",
+        "showThumbnail",
+        "useImage"
+      ],
+      "guidance": "Generate true/false values for boolean properties based on design context."
+    }
+  },
+  "validationRules": {
+    "text": {
+      "type": "string",
+      "maxLength": 1000,
+      "required": false
+    },
+    "color": {
+      "type": "string",
+      "pattern": "^#[0-9a-fA-F]{3,6}$",
+      "required": false
+    },
+    "numeric": {
+      "type": "number",
+      "required": false
+    },
+    "select": {
+      "type": "string",
+      "mustBeOneOf": true,
+      "required": false
+    },
+    "boolean": {
+      "type": "boolean",
+      "required": false
+    }
+  },
+  "backendPromptTemplate": "You are an Award-Winning Creative Director generating website component properties.\n\nCRITICAL CONSTRAINTS:\n1. Only use these TEXT properties: text, words, overlayText, tag, image, images, imageUrl, prefix, suffix, charset, colors, particleColors, gradientTextDir, multiText, maskVideoUrl, elementColors, rippleText, cardColor, ballColors, shapes, roomLabels, islandLabels, itemBg, itemLabels, navItems, gridColor, nebulaColors, icon, title, desc, description, html, shortcode, quote, attribution, url, src, alt, address, code, language, date, beforeText, afterText, badgeText, price, period, currency, features, frontTitle, frontDesc, backTitle, backDesc, btnText, cta, caption, animData, col1Content, col3Content, columnLayout, elementLabels, videoUrl, col1Title, col2Title, col3Title, col4Title, col2Links, col4Links, copyright, networks, captions, label, subtitle, bgImage, navLabel, link, linkText, thumbnail\n2. Only use these COLOR properties: color, textColor, accentColor, bg, particleColor, borderColor, rippleColor, glowColor, color1, color2, dualColour2, gradientTextColor1, gradientTextColor2, textShadowColor, highlightColor, cursorColor, maskFallbackColor, imageBorderColor, rippleTextColor, ringColor, patternColor, barColor, starColor, lineColor, accretionColor, jetColor, overlayColor, leakColor, shimmerColor, bgColor, cardBg, gradientColor1, gradientColor2, elementColor, overlayBgColor\n3. Only use these NUMERIC properties: fontSize, fontWeight, letterSpacing, lineHeight, height, speed, amplitude, frequency, intensity, opacity, particleCount, particleSize, elementCount, cardCount, layerCount, count, rows, cols, gap, borderRadius, borderWidth, value, duration, scrambleSpeed, revealSpeed, magneticRadius, magneticStrength, distortionRadius, distortionStrength, lensSize, magnification, rippleSize, rippleDuration, gravity, restitution, wellStrength, wellCount, wellRadius, glowSize, textShadowBlur, minWeight, maxWeight, radius, phaseOffset, morphSpeed, fadeSpeed, autoScrambleInterval, scrambleIntensity, multiTextDelay, maskScale, maskAnimSpeed, startFrom, filterIntensity, imageSize, imageBorderRadius, imageBorderWidth, mouseForce, windStrength, elementSize, cursorSize, particleGravity, particleRotation, particleScatter, rippleBorderWidth, rippleTextSize, cardHeight, cardWidth, snapStrength, maxSkew, elasticity, depth, complexity, ringSize, ringWidth, angle, patternSize, blur, maxTilt, perspective, barCount, barWidth, barGap, starCount, connectionDistance, ringCount, sensitivity, reflectionOpacity, lineWidth, lineOpacity, clothGravity, stiffness, damping, tearForce, fieldLineOpacity, fieldStrength, pendulumLength, bobSize, trailLength, spawnRate, ballMinSize, ballMaxSize, maxBalls, friction, blackHoleSize, eventHorizon, pullStrength, diskOpacity, shapeScale, rotationSpeed, particleSpacing, glowBlur, overlayOpacity, sampleSize, paletteSize, gridCols, gridRows, swatchBorderRadius, gravityStrength, roomCount, islandCount, floatRange, depthIntensity, responseRadius, repulseStrength, itemSize, itemCount, cycleSpeed, transitionDuration, spacing, gridSize, scrollStrength, cursorStrength, decay, resolution, scrollSensitivity, flowAngle, chaosFrequency, cellSize, strokeWidth, flowSpeed, turbulence, paletteBgOpacity, swatchGap, size, zoom, number, active, activeTab, minHeight, contentMaxWidth, sectionCount, columns, width, revealDelay, delay, current, shapeOpacity, maskOpacity, weight, particleFriction, particleSpread, charAnimationSpeed, shapeRotation, columnGap, gradientAngle, blurAmount, textShadowOffsetX, textShadowOffsetY, layers, autoRotateInterval, cardScale, imageOpacity, thumbnailBorderRadius, titleFontSize, descFontSize, imageMarginBottom\n4. Only use these ENUM properties with specified values: mode:[proximity,always,hover], fontFamily:[Inter,Lexend,monospace,sans-serif,serif,inherit], align:[left,center,right], textAlign:[left,center,right], textTransform:[none,uppercase,lowercase,capitalize], wellMode:[attract,repel,orbit], waveType:[sine,cosine,triangle,sawtooth], waveDirection:[up,down,left,right], morphDirection:[forward,reverse,random], revealTrigger:[hover,click,scroll,auto], decodeTrigger:[hover,click,scroll], cipherStyle:[random,sequential,reverse], cursorStyle:[blink,solid,underscore], maskBlendMode:[source-atop,multiply,screen,overlay], numberFormat:[plain,comma,dot,space], separatorStyle:[none,comma,dot,space], easingCurve:[ease-out,ease-in-out,linear,spring], imageShape:[square,circle,triangle], elementShape:[circle,square,triangle,diamond], particleShape:[circle,square,triangle,star], particleBlendMode:[normal,screen,multiply,overlay], rippleShape:[circle,square,diamond], rippleDirection:[outward,inward], pattern:[dots,grid,diagonal,hexagons,circles], pinEdges:[top,left,right,all,none], fieldMode:[dipole,quadrupole,vortex,random], colorMode:[single,gradient,rainbow,palette], layout:[bottom,center,top], bobShape:[circle,square,diamond], waveMode:[sine,cosine,random], ballShape:[circle,square,triangle], ballStyle:[solid,glass,hollow,gradient], shapeOrder:[sequential,random], shapeEasing:[ease-out,ease-in,linear,spring], magneticEasing:[ease-out,ease-in-out,spring], distortionType:[lens,ripple,swirl,pinch], distortionShape:[circle,square,triangle], imageFilter:[none,grayscale,sepia,invert,blur], samplerMode:[hover,click], colorFormat:[hex,rgb,hsl], swatchAnimation:[none,pop,fade,slide], shaderType:[noise,plasma,waves,aurora], viscosityPreset:[water,oil,honey,tar], patternType:[hexagons,triangles,circles,squares,diamonds,lines], tool:[line,circle,rect,arc], direction:[top-left,top-right,bottom-left,bottom-right], palettePosition:[bottom,top,left,right], aspectRatio:[56.25%,75%,100%,177.78%], type:[info,success,warning,error], style:[solid,dashed,dotted,double,groove,ridge], shape:[circle,square,rounded], gravityMode:[attract,repel], splitBy:[none,char,word,line], charAnimation:[none,fadeIn,slideUp,scaleIn,rotateIn,bounceIn], maskPosition:[center,top,bottom,left,right], maskRepeat:[no-repeat,repeat,repeat-x,repeat-y], bgSize:[cover,contain,auto,100% auto], bgPosition:[center center,top center,bottom center,left center,right center,top left,top right,bottom left,bottom right], imagePosition:[top,background,left]\n5. Only use these BOOLEAN properties: cursor, loop, particleTrail, particleGlow, glowEffect, dualColour, gradientText, textShadow, highlightCurrent, autoScramble, maskAnimation, animateOnScroll, perCharRandom, physicsEnabled, mouseInteraction, windEnabled, repelMode, elasticBounce, showCursor, particleRandomSize, particlePulse, rippleMultiple, rippleGlow, clothWind, mouseTear, useGradient, fieldLines, showTrail, glow, ballGlow, spawnOnClick, accretionDisk, jetEnabled, trailFade, trailGlow, trailBlur, autonomousMode, velocityStretch, letterSpacingAnim, magneticReturn, textGlow, distortionInvert, distortionChromatic, distortionOverlay, showGrid, autoCycle, chaosEnabled, snap, momentum, filled, particleRandomColor, wellGlow, copyOnHover, controls, autoplay, featured, dismissible, contentMaxWidthEnabled, particleBounce, autoRotate, clickableCards, showCardNumbers, showThumbnail, useImage\n\nNUMERIC PROPERTY RANGES:\n  - fontSize: 12 to 200\n  - fontWeight: 100 to 900\n  - letterSpacing: -10 to 20\n  - lineHeight: 0.5 to 3\n  - height: 100 to 1000\n  - speed: 0.01 to 5\n  - amplitude: 0 to 100\n  - frequency: 0.001 to 1\n  - intensity: 0 to 2\n  - opacity: 0 to 100\n  - particleCount: 1 to 500\n  - particleSize: 1 to 20\n  - elementCount: 1 to 50\n  - cardCount: 1 to 20\n  - layerCount: 1 to 10\n  - count: 1 to 50\n  - rows: 1 to 10\n  - cols: 1 to 10\n  - gap: 0 to 40\n  - borderRadius: 0 to 60\n  - borderWidth: 0 to 12\n  - value: undefined to undefined\n  - duration: 100 to 5000\n  - scrambleSpeed: 5 to 200\n  - revealSpeed: 100 to 10000\n  - magneticRadius: 20 to 500\n  - magneticStrength: 0.01 to 2\n  - distortionRadius: 20 to 300\n  - distortionStrength: 0.01 to 1\n  - lensSize: 20 to 300\n  - magnification: 1 to 10\n  - rippleSize: 20 to 300\n  - rippleDuration: 100 to 3000\n  - gravity: 0 to 5\n  - restitution: 0 to 1\n  - wellStrength: 0.01 to 2\n  - wellCount: 1 to 10\n  - wellRadius: 5 to 100\n  - glowSize: 1 to 50\n  - textShadowBlur: 0 to 30\n  - minWeight: 100 to 900\n  - maxWeight: 100 to 900\n  - radius: 50 to 500\n  - phaseOffset: 0 to 6.28\n  - morphSpeed: 50 to 2000\n  - fadeSpeed: 0.5 to 1\n  - autoScrambleInterval: 500 to 10000\n  - scrambleIntensity: 0 to 1\n  - multiTextDelay: 500 to 10000\n  - maskScale: 10 to 200\n  - maskAnimSpeed: 1 to 60\n  - startFrom: undefined to undefined\n  - filterIntensity: 0 to 2\n  - imageSize: 20 to 200\n  - imageBorderRadius: 0 to 50\n  - imageBorderWidth: 0 to 10\n  - mouseForce: 0 to 20\n  - windStrength: 0 to 3\n  - elementSize: 10 to 100\n  - cursorSize: 5 to 60\n  - particleGravity: -2 to 2\n  - particleRotation: 0 to 360\n  - particleScatter: 0 to 5\n  - rippleBorderWidth: 0 to 10\n  - rippleTextSize: 12 to 120\n  - cardHeight: 80 to 400\n  - cardWidth: 80 to 400\n  - snapStrength: 0 to 1\n  - maxSkew: 1 to 45\n  - elasticity: 0 to 1\n  - depth: 0 to 200\n  - complexity: 1 to 15\n  - ringSize: 20 to 200\n  - ringWidth: 1 to 20\n  - angle: 0 to 360\n  - patternSize: 5 to 100\n  - blur: 0 to 30\n  - maxTilt: 1 to 45\n  - perspective: 200 to 3000\n  - barCount: 4 to 64\n  - barWidth: 2 to 20\n  - barGap: 0 to 10\n  - starCount: 10 to 500\n  - connectionDistance: 20 to 300\n  - ringCount: 1 to 10\n  - sensitivity: 0.01 to 2\n  - reflectionOpacity: 0 to 1\n  - lineWidth: 0.5 to 5\n  - lineOpacity: 0 to 100\n  - clothGravity: 0 to 3\n  - stiffness: 0.1 to 1\n  - damping: 0.1 to 1\n  - tearForce: 1 to 30\n  - fieldLineOpacity: 0 to 100\n  - fieldStrength: 0.01 to 2\n  - pendulumLength: 20 to 200\n  - bobSize: 2 to 20\n  - trailLength: 5 to 100\n  - spawnRate: 0.1 to 10\n  - ballMinSize: 5 to 50\n  - ballMaxSize: 10 to 100\n  - maxBalls: 5 to 200\n  - friction: 0.9 to 1\n  - blackHoleSize: 5 to 100\n  - eventHorizon: 10 to 200\n  - pullStrength: 0.01 to 2\n  - diskOpacity: 0 to 100\n  - shapeScale: 0.1 to 3\n  - rotationSpeed: 0.01 to 5\n  - particleSpacing: 1 to 20\n  - glowBlur: 1 to 30\n  - overlayOpacity: 0 to 1\n  - sampleSize: 2 to 30\n  - paletteSize: 2 to 10\n  - gridCols: 1 to 8\n  - gridRows: 1 to 6\n  - swatchBorderRadius: 0 to 20\n  - gravityStrength: 0.01 to 2\n  - roomCount: 1 to 6\n  - islandCount: 1 to 10\n  - floatRange: 5 to 80\n  - depthIntensity: 0 to 2\n  - responseRadius: 20 to 300\n  - repulseStrength: 10 to 200\n  - itemSize: 20 to 200\n  - itemCount: 2 to 12\n  - cycleSpeed: 0.5 to 10\n  - transitionDuration: 0.1 to 2\n  - spacing: 20 to 200\n  - gridSize: 10 to 100\n  - scrollStrength: 0.1 to 2\n  - cursorStrength: 0 to 2\n  - decay: 0.9 to 1\n  - resolution: 64 to 512\n  - scrollSensitivity: 0.1 to 5\n  - flowAngle: 0 to 360\n  - chaosFrequency: 0.1 to 10\n  - cellSize: 10 to 100\n  - strokeWidth: 0.5 to 5\n  - flowSpeed: 0.01 to 3\n  - turbulence: 0 to 2\n  - paletteBgOpacity: 0 to 100\n  - swatchGap: 1 to 10\n  - size: 12 to 200\n  - zoom: 1 to 20\n  - number: undefined to undefined\n  - active: 0 to 20\n  - activeTab: 0 to 10\n  - minHeight: 100 to 1200\n  - contentMaxWidth: 400 to 2000\n  - sectionCount: 1 to 20\n  - columns: 1 to 8\n  - width: 1 to 100\n  - revealDelay: 0 to 5000\n  - delay: 0 to 10000\n  - current: 0 to 20\n  - shapeOpacity: 0 to 100\n  - maskOpacity: 0 to 100\n  - weight: 100 to 900\n  - particleFriction: 0.9 to 1\n  - particleSpread: 0 to 5\n  - charAnimationSpeed: 0.1 to 3\n  - shapeRotation: 0 to 360\n  - columnGap: 0 to 60\n  - gradientAngle: 0 to 360\n  - blurAmount: 0 to 20\n  - textShadowOffsetX: -20 to 20\n  - textShadowOffsetY: -20 to 20\n  - layers: 1 to 20\n  - autoRotateInterval: 2000 to 15000\n  - cardScale: 0.8 to 1.5\n  - imageOpacity: 0 to 1\n  - thumbnailBorderRadius: 0 to 50\n  - titleFontSize: 12 to 48\n  - descFontSize: 12 to 32\n  - imageMarginBottom: 0 to 30\n\nENUM PROPERTY OPTIONS:\n  - mode: proximity, always, hover\n  - fontFamily: Inter, Lexend, monospace, sans-serif, serif, inherit\n  - align: left, center, right\n  - textAlign: left, center, right\n  - textTransform: none, uppercase, lowercase, capitalize\n  - wellMode: attract, repel, orbit\n  - waveType: sine, cosine, triangle, sawtooth\n  - waveDirection: up, down, left, right\n  - morphDirection: forward, reverse, random\n  - revealTrigger: hover, click, scroll, auto\n  - decodeTrigger: hover, click, scroll\n  - cipherStyle: random, sequential, reverse\n  - cursorStyle: blink, solid, underscore\n  - maskBlendMode: source-atop, multiply, screen, overlay\n  - numberFormat: plain, comma, dot, space\n  - separatorStyle: none, comma, dot, space\n  - easingCurve: ease-out, ease-in-out, linear, spring\n  - imageShape: square, circle, triangle\n  - elementShape: circle, square, triangle, diamond\n  - particleShape: circle, square, triangle, star\n  - particleBlendMode: normal, screen, multiply, overlay\n  - rippleShape: circle, square, diamond\n  - rippleDirection: outward, inward\n  - pattern: dots, grid, diagonal, hexagons, circles\n  - pinEdges: top, left, right, all, none\n  - fieldMode: dipole, quadrupole, vortex, random\n  - colorMode: single, gradient, rainbow, palette\n  - layout: bottom, center, top\n  - bobShape: circle, square, diamond\n  - waveMode: sine, cosine, random\n  - ballShape: circle, square, triangle\n  - ballStyle: solid, glass, hollow, gradient\n  - shapeOrder: sequential, random\n  - shapeEasing: ease-out, ease-in, linear, spring\n  - magneticEasing: ease-out, ease-in-out, spring\n  - distortionType: lens, ripple, swirl, pinch\n  - distortionShape: circle, square, triangle\n  - imageFilter: none, grayscale, sepia, invert, blur\n  - samplerMode: hover, click\n  - colorFormat: hex, rgb, hsl\n  - swatchAnimation: none, pop, fade, slide\n  - shaderType: noise, plasma, waves, aurora\n  - viscosityPreset: water, oil, honey, tar\n  - patternType: hexagons, triangles, circles, squares, diamonds, lines\n  - tool: line, circle, rect, arc\n  - direction: top-left, top-right, bottom-left, bottom-right\n  - palettePosition: bottom, top, left, right\n  - aspectRatio: 56.25%, 75%, 100%, 177.78%\n  - type: info, success, warning, error\n  - style: solid, dashed, dotted, double, groove, ridge\n  - shape: circle, square, rounded\n  - gravityMode: attract, repel\n  - splitBy: none, char, word, line\n  - charAnimation: none, fadeIn, slideUp, scaleIn, rotateIn, bounceIn\n  - maskPosition: center, top, bottom, left, right\n  - maskRepeat: no-repeat, repeat, repeat-x, repeat-y\n  - bgSize: cover, contain, auto, 100% auto\n  - bgPosition: center center, top center, bottom center, left center, right center, top left, top right, bottom left, bottom right\n  - imagePosition: top, background, left\n\nGenerate only valid properties from above. Do not invent new properties or use invalid values."
+}

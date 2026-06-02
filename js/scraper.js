@@ -191,7 +191,7 @@ FB.scraper._getStyle = function (el, prop) {
 
 FB.scraper._isDark = function (colorStr) {
   if (!colorStr) return false;
-  var r, g, b;
+  var r = 0, g = 0, b = 0;
   var hex = colorStr.match(/^#([0-9a-fA-F]{3,6})$/);
   if (hex) {
     var h = hex[1];
@@ -202,9 +202,9 @@ FB.scraper._isDark = function (colorStr) {
   } else {
     var rgb = colorStr.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
     if (!rgb) return false;
-    r = parseInt(rgb[1]);
-    g = parseInt(rgb[2]);
-    b = parseInt(rgb[3]);
+    r = parseInt(rgb[1], 10);
+    g = parseInt(rgb[2], 10);
+    b = parseInt(rgb[3], 10);
   }
   return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255 < 0.35;
 };
@@ -981,7 +981,8 @@ FB.scraper.openAiImport = function () {
   if (tabs) tabs.style.display = "none";
   var co = document.getElementById("code-output");
   if (co && co.parentElement) co.parentElement.innerHTML = html;
-  document.getElementById("modal-overlay").classList.add("open");
+  var overlay = document.getElementById("modal-overlay");
+  if (overlay) overlay.classList.add("open");
 };
 
 FB.scraper.openImportDialog = function () {
@@ -1002,5 +1003,6 @@ FB.scraper.openImportDialog = function () {
   if (tabs) tabs.style.display = "none";
   var co = document.getElementById("code-output");
   if (co && co.parentElement) co.parentElement.innerHTML = html;
-  document.getElementById("modal-overlay").classList.add("open");
+  var overlay = document.getElementById("modal-overlay");
+  if (overlay) overlay.classList.add("open");
 };

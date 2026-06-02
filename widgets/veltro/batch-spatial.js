@@ -2,7 +2,7 @@
 // 1. 3D Carousel
 FB.widgets.register("carousel3d", {
   label: "3D Carousel",
-  sublabel: "Rotating 3D card carousel",
+  sublabel: "Rotating 3D card carousel with rich content",
   icon: "◈",
   iconBg: "#0d1a2e",
   iconColor: "#60a5fa",
@@ -13,146 +13,103 @@ FB.widgets.register("carousel3d", {
     bg: "#0d0d1a",
     cardCount: 6,
     rotationSpeed: 0.5,
+    autoRotate: true,
+    clickableCards: true,
+    showCardNumbers: false,
+    cardScale: 1.0,
+    // New: Card content array
+    cards: Array.from({length:6}, (_,i)=>({
+      title: "Card " + (i+1),
+      subtitle: "",
+      description: "",
+      image: "",
+      imagePosition: "top",
+      bgColor: "#4a90e2",
+      textColor: "#ffffff",
+      accentColor: "#cdfe00",
+      link: "",
+      linkText: "Learn More"
+    })),
   },
   render: function (p) {
     var id = p._blockId || "carousel";
-    var cardsHtml = "";
-    for (var i = 0; i < (p.cardCount || 6); i++) {
-      var angle = (i * 360) / (p.cardCount || 6);
-      cardsHtml +=
-        '<div class="veltro-carousel-card" style="position:absolute;width:120px;height:160px;background:linear-gradient(135deg,rgba(205,254,0,0.2) 0%,rgba(60,165,250,0.2) 100%);border-radius:12px;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:800;color:#fff;transform:rotateY(' +
-        angle +
-        'deg) translateZ(200px);backface-visibility:hidden">' +
-        (i + 1) +
-        "</div>";
-    }
-    return (
-      '<div class="veltro-carousel-wrap" id="carousel-' +
-      id +
-      '" data-rotation-speed="' +
-      p.rotationSpeed +
-      '" style="height:' +
-      p.height +
-      "px;background:" +
-      p.bg +
-      ';position:relative;overflow:hidden;border-radius:4px;display:flex;align-items:center;justify-content:center;perspective:1000px"><div class="veltro-carousel-stage" style="position:relative;width:120px;height:160px;transform-style:preserve-3d" data-carousel-init="1">' +
-      cardsHtml +
-      "</div></div>"
-    );
-  },
-  editPanel: function (id, p) {
-    var h =
-      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
-      (p.height || 400) +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','height',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Background</label><input type="color" value="' +
-      (p.bg || "#0d0d1a") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','bg',this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Card Count</label><input type="range" min="3" max="12" step="1" value="' +
-      (p.cardCount || 6) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','cardCount',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Rotation Speed</label><input type="range" min="0.1" max="3" step="0.1" value="' +
-      (p.rotationSpeed || 0.5) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','rotationSpeed',+this.value)\"></div>";
-    return h;
-  },
-});
+    var cardCount = p.cardCount || 6;
+    var cards = p.cards || [];
 
-// 2. Isometric Grid
-FB.widgets.register("isometricGrid", {
-  label: "Isometric Grid",
-  sublabel: "Isometric layout",
-  icon: "▣",
-  iconBg: "#1a0d2e",
-  iconColor: "#a78bfa",
-  category: "veltro",
-  subCategory: "spatial",
-  defaultProps: { height: 500, bg: "#0d0d1a", cols: 4, rows: 3, spacing: 20 },
-  render: function (p) {
-    var id = p._blockId || "iso";
-    var itemsHtml = "";
-    for (var r = 0; r < (p.rows || 3); r++) {
-      for (var c = 0; c < (p.cols || 4); c++) {
-        itemsHtml +=
-          '<div class="veltro-iso-cell" style="width:80px;height:80px;background:linear-gradient(135deg,rgba(205,254,0,0.15) 0%,rgba(60,165,250,0.15) 100%);border-radius:8px;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;color:#cdfe00;transform:rotateX(60deg) rotateZ(-45deg);margin:' +
-          (p.spacing || 20) +
-          'px">' +
-          (r * (p.cols || 4) + c + 1) +
-          "</div>";
-      }
+    // Ensure we have enough cards
+    while (cards.length < cardCount) {
+      var idx = cards.length;
+      cards.push({
+        title: "Card " + (idx+1),
+        subtitle: "",
+        description: "",
+        image: "",
+        imagePosition: "top",
+        bgColor: "#4a90e2",
+        textColor: "#ffffff",
+        accentColor: "#cdfe00",
+        link: "",
+        linkText: "Learn More"
+      });
     }
+
+    var cardsHtml = "";
+    for (var i = 0; i < cardCount; i++) {
+      var angle = (i * 360) / cardCount;
+      var card = cards[i] || {};
+      var cardBg = card.bgColor || "#4a90e2";
+      var cardText = card.textColor || "#ffffff";
+      var cardAccent = card.accentColor || "#cdfe00";
+
+      var cardContent = '<div class="veltro-card-content" style="padding:12px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:' + cardText + '">';
+
+      if (card.title) cardContent += '<h3 class="veltro-card-title" style="margin:0 0 4px;font-size:0.9rem;font-weight:700">' + card.title + '</h3>';
+      if (card.subtitle) cardContent += '<p class="veltro-card-subtitle" style="margin:0 0 4px;font-size:0.75rem;opacity:0.8">' + card.subtitle + '</p>';
+      if (card.description) cardContent += '<p class="veltro-card-description" style="margin:0 0 6px;font-size:0.7rem;opacity:0.75;line-height:1.3">' + card.description + '</p>';
+      if (card.link && card.linkText) cardContent += '<a href="#" class="veltro-card-link" style="font-size:0.7rem;color:' + cardAccent + ';text-decoration:none;font-weight:600">' + card.linkText + '</a>';
+
+      cardContent += '</div>';
+
+      var cardImageHtml = card.image && card.imagePosition !== 'background'
+        ? '<div class="veltro-card-image" style="width:100%;height:60px;overflow:hidden"><img src="' + card.image + '" style="width:100%;height:100%;object-fit:cover;border-radius:4px"></div>'
+        : '';
+
+      var cardNumber = p.showCardNumbers ? '<span class="veltro-card-number" style="position:absolute;bottom:4px;right:8px;font-size:0.7rem;opacity:0.6">' + (i+1) + '/' + cardCount + '</span>' : '';
+
+      var backgroundStyle = card.image && card.imagePosition === 'background'
+        ? 'background:url("' + card.image + '") ' + cardBg + ';background-size:cover;background-position:center;'
+        : 'background:' + cardBg + ';';
+
+      cardsHtml +=
+        '<div class="veltro-carousel-card" style="position:absolute;width:120px;height:160px;' + backgroundStyle + 'border-radius:12px;border:1px solid rgba(255,255,255,0.1);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:0.9rem;font-weight:600;color:' + cardText + ';transform:rotateY(' + angle + 'deg) translateZ(200px) scale(' + p.cardScale + ');backface-visibility:hidden;cursor:' + (card.link ? 'pointer' : 'default') + '" data-link="' + (card.link || '') + '">' +
+        cardImageHtml +
+        cardContent +
+        cardNumber +
+        '</div>';
+    }
+
     return (
-      '<div class="veltro-iso-wrap" id="iso-' +
-      id +
-      '" data-cols="' +
-      p.cols +
-      '" data-rows="' +
-      p.rows +
-      '" data-spacing="' +
-      p.spacing +
-      '" style="height:' +
-      p.height +
-      "px;background:" +
-      p.bg +
-      ';position:relative;overflow:hidden;border-radius:4px;display:flex;align-items:center;justify-content:center"><div class="veltro-iso-grid" style="display:grid;grid-template-columns:repeat(' +
-      p.cols +
-      ",1fr);gap:" +
-      p.spacing +
-      'px;transform:rotateX(60deg) rotateZ(-45deg);perspective:1000px">' +
-      itemsHtml +
-      "</div></div>"
+      '<div class="veltro-carousel-wrap" id="carousel-' + id + '" data-rotation-speed="' + (p.rotationSpeed || 0.5) + '" data-auto-rotate="' + (p.autoRotate !== false ? '1' : '0') + '" data-clickable-cards="' + (p.clickableCards !== false ? '1' : '0') + '" style="height:' + p.height + 'px;background:' + p.bg + ';position:relative;overflow:hidden;border-radius:4px;display:flex;align-items:center;justify-content:center;perspective:1000px"><div class="veltro-carousel-stage" style="position:relative;width:120px;height:160px;transform-style:preserve-3d" data-carousel-init="1">' + cardsHtml + '</div></div>'
     );
   },
   editPanel: function (id, p) {
-    var h =
-      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
-      (p.height || 500) +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','height',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Background</label><input type="color" value="' +
-      (p.bg || "#0d0d1a") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','bg',this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Columns</label><input type="range" min="2" max="8" step="1" value="' +
-      (p.cols || 4) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','cols',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Rows</label><input type="range" min="2" max="6" step="1" value="' +
-      (p.rows || 3) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','rows',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Spacing (px)</label><input type="range" min="4" max="60" step="4" value="' +
-      (p.spacing || 20) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','spacing',+this.value)\"></div>";
-    return h;
+    var html = '';
+    // Render card count and basic settings
+    html += '<div class="rp-row"><label for="card_count_' + id + '">Card Count</label>';
+    html += '<input id="card_count_' + id + '" name="card_count" type="number" min="1" max="20" value="' + (p.cardCount || 6) + '" data-prop="cardCount" data-block-id="' + id + '" style="width:60px">';
+    html += '</div>';
+
+    // Render card properties array editor
+    html += FB.panels.renderArrayEditor(id, 'cards', p.cards || [], 'carousel3d');
+
+    return html;
   },
 });
 
 // 3. Perspective Rooms
 FB.widgets.register("perspectiveRooms", {
   label: "Perspective Rooms",
-  sublabel: "3D room layout",
+  sublabel: "3D room layout with customizable content",
   icon: "◉",
   iconBg: "#0d1a1a",
   iconColor: "#34d399",
@@ -163,74 +120,120 @@ FB.widgets.register("perspectiveRooms", {
     bg: "#0d0d1a",
     roomCount: 3,
     perspective: 800,
+    autoRotate: true,
+    autoRotateInterval: 8000,
+    highlightColor: "#cdfe00",
+    // Legacy comma-separated format support
     colors: "#cdfe00,#3b82f6,#ec4899",
+    roomLabels: "Room 1,Room 2,Room 3",
+    // New: Room content array
+    rooms: [
+      {
+        title: "Room 1",
+        subtitle: "",
+        description: "",
+        bgColor: "#cdfe00",
+        textColor: "#111111",
+        bgImage: "",
+        imageOpacity: 0.3,
+        navLabel: "1",
+        cta: ""
+      },
+      {
+        title: "Room 2",
+        subtitle: "",
+        description: "",
+        bgColor: "#3b82f6",
+        textColor: "#ffffff",
+        bgImage: "",
+        imageOpacity: 0.3,
+        navLabel: "2",
+        cta: ""
+      },
+      {
+        title: "Room 3",
+        subtitle: "",
+        description: "",
+        bgColor: "#ec4899",
+        textColor: "#ffffff",
+        bgImage: "",
+        imageOpacity: 0.3,
+        navLabel: "3",
+        cta: ""
+      }
+    ]
   },
   render: function (p) {
     var id = p._blockId || "rooms";
-    var colors = (p.colors || "#cdfe00,#3b82f6,#ec4899").split(",");
-    var roomsHtml = "";
-    for (var i = 0; i < (p.roomCount || 3); i++) {
-      roomsHtml +=
-        '<div class="veltro-room" style="position:absolute;inset:0;background:' +
-        (colors[i % colors.length] || "#cdfe00") +
-        ";opacity:0.1;transform:translateZ(" +
-        i * -200 +
-        'px);border:2px solid rgba(255,255,255,0.1);border-radius:16px;display:flex;align-items:center;justify-content:center"><span style="font-size:2rem;font-weight:800;color:#fff;opacity:0.5">Room ' +
-        (i + 1) +
-        "</span></div>";
+    var roomCount = p.roomCount || 3;
+    var rooms = p.rooms || [];
+
+    // Ensure we have enough rooms
+    while (rooms.length < roomCount) {
+      var idx = rooms.length;
+      rooms.push({
+        title: "Room " + (idx + 1),
+        subtitle: "",
+        description: "",
+        bgColor: ["#cdfe00", "#3b82f6", "#ec4899"][idx % 3],
+        textColor: idx === 0 ? "#111111" : "#ffffff",
+        bgImage: "",
+        imageOpacity: 0.3,
+        navLabel: String(idx + 1),
+        cta: ""
+      });
     }
+
+    var roomsHtml = "";
+    for (var i = 0; i < roomCount; i++) {
+      var room = rooms[i] || {};
+      var bgStyle = room.bgImage
+        ? 'background:url("' + room.bgImage + '") ' + (room.bgColor || "#cdfe00") + ';background-size:cover;background-position:center;'
+        : 'background:' + (room.bgColor || "#cdfe00") + ';';
+
+      var contentHtml = '';
+      if (room.title || room.subtitle || room.description || room.cta) {
+        contentHtml = '<div class="veltro-room-content" style="color:' + (room.textColor || "#fff") + ';padding:20px;text-align:center;z-index:10;position:relative">';
+        if (room.title) contentHtml += '<h3 class="veltro-room-title" style="margin:0 0 8px;font-size:1.5rem;font-weight:700">' + room.title + '</h3>';
+        if (room.subtitle) contentHtml += '<p class="veltro-room-subtitle" style="margin:0 0 8px;font-size:0.9rem;opacity:0.9">' + room.subtitle + '</p>';
+        if (room.description) contentHtml += '<p class="veltro-room-description" style="margin:0 0 12px;font-size:0.85rem;opacity:0.85;max-width:250px;line-height:1.4">' + room.description + '</p>';
+        if (room.cta) contentHtml += '<a class="veltro-room-cta" style="display:inline-block;padding:6px 16px;background:' + (p.highlightColor || "#cdfe00") + ';color:#111;border-radius:4px;font-size:0.85rem;font-weight:600;text-decoration:none;cursor:pointer;transition:opacity 0.2s">' + room.cta + '</a>';
+        contentHtml += '</div>';
+      }
+
+      if (room.bgImage) {
+        contentHtml = '<div class="veltro-room-overlay" style="position:absolute;inset:0;background:rgba(0,0,0,' + (room.imageOpacity || 0.3) + ');z-index:5"></div>' + contentHtml;
+      }
+
+      var roomOpacity = i === 0 ? '1' : '0';
+      roomsHtml +=
+        '<div class="veltro-room" data-tz="' + (i * -200) + '" data-room="' + i + '" style="position:absolute;inset:0;' + bgStyle + 'opacity:' + roomOpacity + ';transform:translateZ(' + (i * -200) + 'px);border:2px solid rgba(255,255,255,0.1);border-radius:16px;display:flex;align-items:center;justify-content:center;overflow:hidden;transition:opacity 0.3s ease">' + contentHtml + '</div>';
+    }
+
+    var navDotsHtml = "";
+    for (var n = 0; n < roomCount; n++) {
+      var navLabel = (rooms[n] && rooms[n].navLabel) || String(n + 1);
+      navDotsHtml +=
+        '<button class="veltro-room-nav" data-room-idx="' +
+        n +
+        '" title="' + (rooms[n] && rooms[n].title || "Room " + (n + 1)) + '" style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);margin:0 4px;cursor:pointer;transition:all 0.3s ease;color:#fff;font-size:0.8rem;font-weight:600">' + navLabel + '</button>';
+    }
+
     return (
-      '<div class="veltro-rooms-wrap" id="rooms-' +
-      id +
-      '" data-room-count="' +
-      p.roomCount +
-      '" data-perspective="' +
-      p.perspective +
-      '" data-colors="' +
-      p.colors +
-      '" style="height:' +
-      p.height +
-      "px;background:" +
-      p.bg +
-      ";position:relative;overflow:hidden;border-radius:4px;display:flex;align-items:center;justify-center;perspective:" +
-      p.perspective +
-      'px"><div class="veltro-rooms-stage" style="position:relative;width:300px;height:300px;transform-style:preserve-3d">' +
-      roomsHtml +
-      "</div></div>"
+      '<div class="veltro-rooms-wrap" id="rooms-' + id + '" data-room-count="' + roomCount + '" data-perspective="' + p.perspective + '" data-highlight-color="' + (p.highlightColor || "#cdfe00") + '" data-auto-rotate="' + (p.autoRotate !== false ? '1' : '0') + '" data-auto-rotate-interval="' + (p.autoRotateInterval || 8000) + '" style="height:' + p.height + 'px;background:' + p.bg + ';position:relative;overflow:hidden;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;perspective:' + p.perspective + 'px"><div class="veltro-rooms-stage" style="position:relative;width:300px;height:300px;transform-style:preserve-3d">' + roomsHtml + '</div><div class="veltro-room-nav-row" style="margin-top:20px;display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center">' + navDotsHtml + '</div></div>'
     );
   },
   editPanel: function (id, p) {
-    var h =
-      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
-      (p.height || 500) +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','height',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Background</label><input type="color" value="' +
-      (p.bg || "#0d0d1a") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','bg',this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Room Count</label><input type="range" min="1" max="8" step="1" value="' +
-      (p.roomCount || 3) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','roomCount',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Perspective (px)</label><input type="range" min="200" max="2000" step="100" value="' +
-      (p.perspective || 800) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','perspective',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Colours (CSV)</label><input type="text" value="' +
-      (p.colors || "#cdfe00,#3b82f6,#ec4899") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','colors',this.value)\"></div>";
-    return h;
+    var html = '';
+    // Render room count and basic settings
+    html += '<div class="rp-row"><label for="room_count_' + id + '">Room Count</label>';
+    html += '<input id="room_count_' + id + '" name="room_count" type="number" min="1" max="10" value="' + (p.roomCount || 3) + '" data-prop="roomCount" data-block-id="' + id + '" style="width:60px">';
+    html += '</div>';
+
+    // Render room properties array editor
+    html += FB.panels.renderArrayEditor(id, 'rooms', p.rooms || [], 'perspectiveRooms');
+
+    return html;
   },
 });
 
@@ -249,9 +252,11 @@ FB.widgets.register("floatingIslands", {
     islandCount: 5,
     floatRange: 20,
     speed: 1,
+    islandLabels: "1,2,3,4,5",
   },
   render: function (p) {
     var id = p._blockId || "islands";
+    var islandLabels = FB.widgets.safeSplit(p.islandLabels, "1,2,3,4,5");
     var itemsHtml = "";
     for (var i = 0; i < (p.islandCount || 5); i++) {
       var size = 80 + Math.random() * 60;
@@ -271,7 +276,7 @@ FB.widgets.register("floatingIslands", {
         "s ease-in-out infinite;animation-delay:" +
         Math.random() * 2 +
         's">' +
-        (i + 1) +
+        (islandLabels[i] || (i + 1)) +
         "</div>";
     }
     return (
@@ -292,39 +297,7 @@ FB.widgets.register("floatingIslands", {
       "</div>"
     );
   },
-  editPanel: function (id, p) {
-    var h =
-      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
-      (p.height || 500) +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','height',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Background</label><input type="color" value="' +
-      (p.bg || "#0d0d1a") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','bg',this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Island Count</label><input type="range" min="2" max="12" step="1" value="' +
-      (p.islandCount || 5) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','islandCount',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Float Range (px)</label><input type="range" min="5" max="60" step="5" value="' +
-      (p.floatRange || 20) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','floatRange',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Speed</label><input type="range" min="0.2" max="3" step="0.2" value="' +
-      (p.speed || 1) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','speed',+this.value)\"></div>";
-    return h;
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 // 5. Layered Parallax
@@ -341,6 +314,12 @@ FB.widgets.register("layeredParallax", {
     bg: "#0d0d1a",
     layerCount: 5,
     depthIntensity: 0.5,
+    overlayText: "DEPTH",
+    scrollParallax: true,
+    mouseParallax: true,
+    scrollStrength: 0.8,
+    cursorStrength: 1.0,
+    perspective: 1000,
   },
   render: function (p) {
     var id = p._blockId || "layerPar";
@@ -370,37 +349,13 @@ FB.widgets.register("layeredParallax", {
       "px;background:" +
       p.bg +
       ';position:relative;overflow:hidden;border-radius:4px;display:flex;align-items:center;justify-content:center">' +
-      layersHtml +
-      '<div style="position:relative;z-index:10"><h2 style="color:#fff;font-size:3rem;font-weight:800;margin:0;text-shadow:0 4px 20px rgba(0,0,0,0.5)">DEPTH</h2></div></div>'
+layersHtml +
+       '<div style="position:relative;z-index:10"><h2 style="color:#fff;font-size:3rem;font-weight:800;margin:0;text-shadow:0 4px 20px rgba(0,0,0,0.5)">' +
+       (p.overlayText || "DEPTH") +
+       '</h2></div></div>'
     );
   },
-  editPanel: function (id, p) {
-    var h =
-      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
-      (p.height || 500) +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','height',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Background</label><input type="color" value="' +
-      (p.bg || "#0d0d1a") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','bg',this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Layer Count</label><input type="range" min="2" max="10" step="1" value="' +
-      (p.layerCount || 5) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','layerCount',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Depth Intensity</label><input type="range" min="0.1" max="1" step="0.05" value="' +
-      (p.depthIntensity || 0.5) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','depthIntensity',+this.value)\"></div>";
-    return h;
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 // 6. Kinetic Layout
@@ -421,11 +376,13 @@ FB.widgets.register("kineticLayout", {
     itemSize: 80,
     accentColor: "#cdfe00",
     mode: "repulse",
+    elementLabels: "1,2,3,4,5,6,7,8,9",
   },
   render: function (p) {
     var id = p._blockId || "kinetic";
     var size = p.itemSize || 80;
     var accent = p.accentColor || "#cdfe00";
+    var elementLabels = FB.widgets.safeSplit(p.elementLabels, "1,2,3,4,5,6,7,8,9");
     var itemsHtml = "";
     for (var i = 0; i < (p.elementCount || 9); i++) {
       itemsHtml +=
@@ -436,7 +393,7 @@ FB.widgets.register("kineticLayout", {
         "px;background:linear-gradient(135deg,rgba(205,254,0,0.12) 0%,rgba(60,165,250,0.12) 100%);border-radius:12px;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;color:" +
         accent +
         ';will-change:transform">' +
-        (i + 1) +
+        (elementLabels[i] || (i + 1)) +
         "</div>";
     }
     return (
@@ -457,59 +414,7 @@ FB.widgets.register("kineticLayout", {
       "</div>"
     );
   },
-  editPanel: function (id, p) {
-    var h =
-      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
-      (p.height || 400) +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','height',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Background</label><input type="color" value="' +
-      (p.bg || "#0d0d1a") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','bg',this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Mode</label><select onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','mode',this.value)\"><option value=\"repulse\"" +
-      ((p.mode || "repulse") === "repulse" ? " selected" : "") +
-      '>Repulse</option><option value="attract"' +
-      (p.mode === "attract" ? " selected" : "") +
-      ">Attract</option></select></div>";
-    h +=
-      '<div class="rp-row"><label>Element Count</label><input type="range" min="4" max="24" step="1" value="' +
-      (p.elementCount || 9) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','elementCount',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Response Radius (px)</label><input type="range" min="40" max="300" step="10" value="' +
-      (p.responseRadius || 120) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','responseRadius',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Push Strength (px)</label><input type="range" min="10" max="120" step="5" value="' +
-      (p.repulseStrength || 50) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','repulseStrength',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Item Size (px)</label><input type="range" min="40" max="160" step="8" value="' +
-      (p.itemSize || 80) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','itemSize',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Accent Colour</label><input type="color" value="' +
-      (p.accentColor || "#cdfe00") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','accentColor',this.value)\"></div>";
-    return h;
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 // 7. Morphing Grid
@@ -531,6 +436,7 @@ FB.widgets.register("morphingGrid", {
     itemBg: "rgba(255,255,255,0.05)",
     gap: 10,
     autoCycle: true,
+    itemLabels: "1,2,3,4,5,6",
   },
   render: function (p) {
     var id = p._blockId || "morphGrid";
@@ -539,6 +445,7 @@ FB.widgets.register("morphingGrid", {
     var dur = p.transitionDuration || 0.6;
     var accent = p.accentColor || "#cdfe00";
     var ibg = p.itemBg || "rgba(255,255,255,0.05)";
+    var itemLabels = FB.widgets.safeSplit(p.itemLabels, "1,2,3,4,5,6");
     var itemsHtml = "";
     for (var i = 0; i < count; i++) {
       itemsHtml +=
@@ -553,7 +460,7 @@ FB.widgets.register("morphingGrid", {
         "s ease,opacity " +
         dur +
         's ease;overflow:hidden">' +
-        (i + 1) +
+        (itemLabels[i] || (i + 1)) +
         "</div>";
     }
     return (
@@ -580,65 +487,7 @@ FB.widgets.register("morphingGrid", {
       "</div></div>"
     );
   },
-  editPanel: function (id, p) {
-    var h =
-      '<div class="rp-row"><label>Height (px)</label><input type="number" min="200" max="1200" value="' +
-      (p.height || 440) +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','height',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Background</label><input type="color" value="' +
-      (p.bg || "#0d0d1a") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','bg',this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Item Count</label><input type="range" min="4" max="9" step="1" value="' +
-      (p.itemCount || 6) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','itemCount',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Cycle Speed (s)</label><input type="range" min="1" max="8" step="0.5" value="' +
-      (p.cycleSpeed || 2.5) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','cycleSpeed',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Transition Duration (s)</label><input type="range" min="0.2" max="1.5" step="0.1" value="' +
-      (p.transitionDuration || 0.6) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','transitionDuration',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Gap (px)</label><input type="range" min="4" max="24" step="2" value="' +
-      (p.gap || 10) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','gap',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Accent Colour</label><input type="color" value="' +
-      (p.accentColor || "#cdfe00") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','accentColor',this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Item Background</label><input type="text" value="' +
-      (p.itemBg || "rgba(255,255,255,0.05)") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','itemBg',this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Auto Cycle</label><select onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','autoCycle',this.value==='true')\"><option value=\"true\"" +
-      (p.autoCycle !== false ? " selected" : "") +
-      '>On</option><option value="false"' +
-      (p.autoCycle === false ? " selected" : "") +
-      ">Off</option></select></div>";
-    return h;
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 // 8. Spatial Navigation
@@ -659,7 +508,7 @@ FB.widgets.register("spatialNavigation", {
   },
   render: function (p) {
     var id = p._blockId || "spatialNav";
-    var items = (p.navItems || "Home,About,Work,Contact").split(",");
+    var items = FB.widgets.safeSplit(p.navItems, "Home,About,Work,Contact");
     var itemsHtml = items
       .map(function (item, i) {
         return (
@@ -693,39 +542,7 @@ FB.widgets.register("spatialNavigation", {
       "</div></div>"
     );
   },
-  editPanel: function (id, p) {
-    var h =
-      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
-      (p.height || 400) +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','height',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Background</label><input type="color" value="' +
-      (p.bg || "#0d0d1a") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','bg',this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Nav Items (CSV)</label><input type="text" value="' +
-      (p.navItems || "Home,About,Work,Contact") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','navItems',this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Perspective (px)</label><input type="range" min="200" max="2000" step="100" value="' +
-      (p.perspective || 800) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','perspective',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Spacing (px)</label><input type="range" min="20" max="300" step="10" value="' +
-      (p.spacing || 100) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','spacing',+this.value)\"></div>";
-    return h;
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 // ── Missing Original Widgets ──
@@ -774,39 +591,7 @@ FB.widgets.register("cursorLens", {
       '%;object-fit:cover;left:var(--lx-offset,0);top:var(--ly-offset,0)"></div></div>'
     );
   },
-  editPanel: function (id, p) {
-    var h =
-      '<div class="rp-row"><label>Height (px)</label><input type="number" value="' +
-      (p.height || 300) +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','height',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
-      (p.image || "") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','image',this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Lens Size (px)</label><input type="number" min="60" max="300" value="' +
-      (p.lensSize || 120) +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','lensSize',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Magnification</label><input type="range" min="1.2" max="5" step="0.1" value="' +
-      (p.magnification || 2) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','magnification',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Background</label><input type="color" value="' +
-      (p.bg || "#0d0d1a") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','bg',this.value)\"></div>";
-    return h;
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 // shaderBg
@@ -849,64 +634,7 @@ FB.widgets.register("shaderBg", {
       ';position:relative;overflow:hidden;border-radius:4px"><canvas class="veltro-shader-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas></div>'
     );
   },
-  editPanel: function (id, p) {
-    var h =
-      '<div class="rp-row"><label>Shader Type</label><select onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','shaderType',this.value)\">" +
-      ["noise", "plasma", "grid", "ripple", "tunnel"]
-        .map(function (v) {
-          return (
-            '<option value="' +
-            v +
-            '"' +
-            ((p.shaderType || "noise") === v ? " selected" : "") +
-            ">" +
-            v.charAt(0).toUpperCase() +
-            v.slice(1) +
-            "</option>"
-          );
-        })
-        .join("") +
-      "</select></div>";
-    h +=
-      '<div class="rp-row"><label>Height (px)</label><input type="number" value="' +
-      (p.height || 400) +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','height',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Speed</label><input type="range" min="0" max="2" step="0.05" value="' +
-      (p.speed || 0.5) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','speed',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Intensity</label><input type="range" min="0.1" max="3" step="0.1" value="' +
-      (p.intensity || 1) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','intensity',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Colour 1</label><input type="color" value="' +
-      (p.color1 || "#3b82f6") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','color1',this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Colour 2</label><input type="color" value="' +
-      (p.color2 || "#8b5cf6") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','color2',this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Background</label><input type="color" value="' +
-      (p.bg || "#050510") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','bg',this.value)\"></div>";
-    return h;
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 // infiniteCanvas
@@ -940,32 +668,386 @@ FB.widgets.register("infiniteCanvas", {
       ';position:relative;overflow:hidden;border-radius:4px;cursor:grab"><canvas class="veltro-infinite-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas></div>'
     );
   },
-  editPanel: function (id, p) {
-    var h =
-      '<div class="rp-row"><label>Height (px)</label><input type="number" min="100" max="1200" value="' +
-      (p.height || 400) +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','height',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Background</label><input type="color" value="' +
-      (p.bg || "#0a0a1a") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','bg',this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Grid Size (px)</label><input type="range" min="10" max="100" step="5" value="' +
-      (p.gridSize || 40) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','gridSize',+this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Grid Colour (rgba)</label><input type="text" value="' +
-      (p.gridColor || "rgba(255,255,255,0.05)") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','gridColor',this.value)\"></div>";
-    return h;
-  },
+  editPanel: function (id, p) { return ""; },
 });
+
+// 8. Isometric Grid
+FB.widgets.register("isometricGrid", {
+  label: "Isometric Grid",
+  sublabel: "3D isometric tile layout",
+  icon: "⬡",
+  iconBg: "#0d1a2e",
+  iconColor: "#34d399",
+  category: "veltro",
+  subCategory: "spatial",
+  defaultProps: {
+    height: 500,
+    bg: "#0d0d1a",
+    rows: 3,
+    cols: 4,
+    gap: 12,
+    perspective: 1200,
+    tileColor: "#4a90e2",
+    tileSize: 80,
+    animationType: "none",
+    gridColor: "rgba(205,254,0,0.1)",
+  },
+  render: function (p) {
+    var id = p._blockId || "isogrid";
+    var rows = p.rows || 3;
+    var cols = p.cols || 4;
+    var gap = p.gap || 12;
+    var size = p.tileSize || 80;
+    var tilesHtml = "";
+
+    for (var i = 0; i < rows * cols; i++) {
+      tilesHtml +=
+        '<div class="veltro-iso-tile" style="width:' +
+        size +
+        "px;height:" +
+        size +
+        "px;background:" +
+        (p.tileColor || "#4a90e2") +
+        ';border:1px solid rgba(205,254,0,0.2);display:flex;align-items:center;justify-content:center;border-radius:4px;transform:perspective(' +
+        (p.perspective || 1200) +
+        "px) rotateX(20deg) rotateZ(45deg);font-size:0.8rem;font-weight:700;color:#fff\">" +
+        (i + 1) +
+        "</div>";
+    }
+
+    return (
+      '<div class="veltro-isogrid-wrap" id="isogrid-' +
+      id +
+      '" data-rows="' +
+      rows +
+      '" data-cols="' +
+      cols +
+      '" data-perspective="' +
+      (p.perspective || 1200) +
+      '" style="height:' +
+      (p.height || 500) +
+      "px;background:" +
+      (p.bg || "#0d0d1a") +
+      ';position:relative;overflow:hidden;border-radius:4px;display:flex;align-items:center;justify-content:center;perspective:' +
+      (p.perspective || 1200) +
+      'px"><div style="display:grid;grid-template-columns:repeat(' +
+      cols +
+      ",1fr);grid-template-rows:repeat(" +
+      rows +
+      ",1fr);gap:" +
+      gap +
+      "px;padding:20px;perspective:" +
+      (p.perspective || 1200) +
+      "px\">" +
+      tilesHtml +
+      "</div></div>"
+    );
+  },
+  editPanel: function (id, p) { return ""; },
+});
+
+// ── INITIALIZER FUNCTIONS ──
+// These are called after widgets are rendered to set up interactions
+
+window._VeltroInitCarousel3d = function () {
+  document
+    .querySelectorAll(".veltro-carousel-wrap[data-carousel-init]:not([data-carousel-loaded])")
+    .forEach(function (wrap) {
+      wrap.setAttribute("data-carousel-loaded", "1");
+      var stage = wrap.querySelector(".veltro-carousel-stage");
+      if (!stage) return;
+      var rotationSpeed = parseFloat(wrap.dataset.rotationSpeed) || 0.5;
+      var autoRotate = wrap.dataset.autoRotate === "1";
+      var clickable = wrap.dataset.clickableCards === "1";
+      var currentRotation = 0;
+      var autoRotateTimer = null;
+
+      function updateRotation() {
+        stage.style.transform = "rotateY(" + currentRotation + "deg)";
+      }
+
+      function startAutoRotate() {
+        if (!autoRotate || autoRotateTimer) return;
+        autoRotateTimer = setInterval(function () {
+          currentRotation -= 360 / 6;
+          updateRotation();
+        }, 3000);
+      }
+
+      function stopAutoRotate() {
+        if (autoRotateTimer) {
+          clearInterval(autoRotateTimer);
+          autoRotateTimer = null;
+        }
+      }
+
+      if (clickable) {
+        wrap.addEventListener("click", function (e) {
+          var card = e.target.closest(".veltro-carousel-card");
+          if (card && card.dataset.link) {
+            window.open(card.dataset.link, "_blank");
+          }
+        });
+      }
+
+      wrap.addEventListener("mouseenter", stopAutoRotate);
+      wrap.addEventListener("mouseleave", startAutoRotate);
+
+      updateRotation();
+      startAutoRotate();
+    });
+};
+
+window._VeltroInitPerspectiveRooms = function () {
+  document
+    .querySelectorAll(".veltro-rooms-wrap:not([data-rooms-init])")
+    .forEach(function (wrap) {
+      wrap.setAttribute("data-rooms-init", "1");
+      var rooms = wrap.querySelectorAll(".veltro-room");
+      var navDots = wrap.querySelectorAll(".veltro-room-nav");
+      if (!rooms.length || !navDots.length) return;
+
+      var currentRoom = 0;
+      var autoRotate = wrap.dataset.autoRotate === "1";
+      var autoRotateInterval = parseInt(wrap.dataset.autoRotateInterval) || 8000;
+      var autoRotateTimer = null;
+
+      function showRoom(index) {
+        currentRoom = index % rooms.length;
+        // Update room opacity
+        for (var i = 0; i < rooms.length; i++) {
+          var room = rooms[i];
+          if (room && room.style) {
+            room.style.opacity = i === currentRoom ? "1" : "0";
+          }
+        }
+        // Update nav dot highlighting
+        for (var i = 0; i < navDots.length; i++) {
+          var dot = navDots[i];
+          if (dot && dot.style) {
+            dot.style.background = i === currentRoom ? wrap.dataset.highlightColor : "rgba(255,255,255,0.2)";
+          }
+        }
+      }
+
+      function startAutoRotate() {
+        if (!autoRotate || autoRotateTimer) return;
+        autoRotateTimer = setInterval(function () {
+          currentRoom = (currentRoom + 1) % rooms.length;
+          showRoom(currentRoom);
+        }, autoRotateInterval);
+      }
+
+      function stopAutoRotate() {
+        if (autoRotateTimer) {
+          clearInterval(autoRotateTimer);
+          autoRotateTimer = null;
+        }
+      }
+
+      navDots.forEach(function (dot, i) {
+        dot.addEventListener("click", function () {
+          showRoom(i);
+          stopAutoRotate();
+          startAutoRotate();
+        });
+      });
+
+      wrap.addEventListener("mouseenter", stopAutoRotate);
+      wrap.addEventListener("mouseleave", startAutoRotate);
+
+      showRoom(currentRoom);
+      startAutoRotate();
+    });
+};
+
+window._VeltroInitKineticLayout = function () {
+  document
+    .querySelectorAll(".veltro-kinetic-wrap:not([data-kinetic-init])")
+    .forEach(function (wrap) {
+      wrap.setAttribute("data-kinetic-init", "1");
+      var items = Array.from(wrap.querySelectorAll(".veltro-kinetic-item"));
+      if (!items.length) return;
+
+      var radius = parseFloat(wrap.dataset.responseRadius) || 120;
+      var strength = parseFloat(wrap.dataset.repulseStrength) || 50;
+      var mode = wrap.dataset.mode || "repulse";
+      var state = items.map(function () {
+        return { cx: 0, cy: 0 };
+      });
+      var mx = -9999,
+        my = -9999,
+        raf = null;
+
+      function lerp(a, b, t) {
+        return a + (b - a) * t;
+      }
+
+      function tick() {
+        var rect = wrap.getBoundingClientRect();
+        var settled = true;
+        items.forEach(function (item, i) {
+          var s = state[i];
+          var ir = item.getBoundingClientRect();
+          var icx = ir.left + ir.width / 2 - rect.left;
+          var icy = ir.top + ir.height / 2 - rect.top;
+          var dx = mx - icx,
+            dy = my - icy;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          var targetX = 0,
+            targetY = 0;
+          if (mx !== -9999 && dist < radius && dist > 1) {
+            var factor = 1 - dist / radius;
+            var norm = 1 / dist;
+            if (mode === "repulse") {
+              targetX = -dx * norm * factor * strength;
+              targetY = -dy * norm * factor * strength;
+            } else {
+              targetX = dx * norm * factor * strength;
+              targetY = dy * norm * factor * strength;
+            }
+          }
+          s.cx = lerp(s.cx, targetX, 0.1);
+          s.cy = lerp(s.cy, targetY, 0.1);
+          item.style.transform =
+            "translate(" + s.cx.toFixed(2) + "px," + s.cy.toFixed(2) + "px)";
+          if (
+            Math.abs(s.cx - targetX) > 0.05 ||
+            Math.abs(s.cy - targetY) > 0.05
+          )
+            settled = false;
+        });
+        raf = settled ? null : requestAnimationFrame(tick);
+      }
+
+      function startRaf() {
+        if (!raf) raf = requestAnimationFrame(tick);
+      }
+
+      wrap.addEventListener("mousemove", function (e) {
+        var rect = wrap.getBoundingClientRect();
+        mx = e.clientX - rect.left;
+        my = e.clientY - rect.top;
+        startRaf();
+      });
+      wrap.addEventListener("mouseleave", function () {
+        mx = -9999;
+        my = -9999;
+        startRaf();
+      });
+    });
+};
+
+window._VeltroInitFloatingIslands = function () {
+  // Floating Islands uses CSS animations - no additional initialization needed
+};
+
+window._VeltroInitLayeredParallax = function () {
+  document
+    .querySelectorAll(".veltro-parallax-wrap:not([data-parallax-init])")
+    .forEach(function (wrap) {
+      wrap.setAttribute("data-parallax-init", "1");
+      var layers = wrap.querySelectorAll(".veltro-parallax-layer");
+      if (!layers.length) return;
+
+      var scrollStrength = parseFloat(wrap.dataset.scrollStrength) || 0.8;
+      var cursorStrength = parseFloat(wrap.dataset.cursorStrength) || 1.0;
+      var mouseParallax = wrap.dataset.mouseParallax !== "0";
+      var scrollParallax = wrap.dataset.scrollParallax !== "0";
+
+      if (mouseParallax) {
+        wrap.addEventListener("mousemove", function (e) {
+          var rect = wrap.getBoundingClientRect();
+          var x = e.clientX - rect.left;
+          var y = e.clientY - rect.top;
+          layers.forEach(function (layer, i) {
+            var depth = (i + 1) / layers.length;
+            var offsetX = (x - rect.width / 2) * depth * cursorStrength * 0.01;
+            var offsetY = (y - rect.height / 2) * depth * cursorStrength * 0.01;
+            layer.style.transform =
+              "translate(" + offsetX + "px," + offsetY + "px)";
+          });
+        });
+      }
+
+      if (scrollParallax) {
+        window.addEventListener("scroll", function () {
+          var rect = wrap.getBoundingClientRect();
+          var scrollY = window.scrollY;
+          layers.forEach(function (layer, i) {
+            var depth = (i + 1) / layers.length;
+            var offsetY = scrollY * depth * scrollStrength * 0.05;
+            layer.style.transform =
+              "translateY(" + offsetY + "px)";
+          });
+        });
+      }
+    });
+};
+
+window._VeltroInitMorphingGrid = function () {
+  document
+    .querySelectorAll(".fw-widget-morphingGrid:not([data-mg-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-mg-init", "1");
+      var wrap = el.querySelector(".veltro-morphgrid-wrap");
+      if (!wrap) return;
+      var items = wrap.querySelectorAll(".veltro-morphgrid-item");
+      if (!items.length) return;
+
+      var cycleSpeed = +(wrap.dataset.cycleSpeed || 2.5) * 1000;
+      var autoCycle = wrap.dataset.autoCycle !== "0";
+      var layoutIndex = 0;
+      var timer = null;
+
+      function applyLayout(index) {
+        layoutIndex = index % 4;
+        // This is a simplified version - full morphing logic would cycle through layouts
+      }
+
+      if (autoCycle) {
+        timer = setInterval(function () {
+          applyLayout(layoutIndex + 1);
+        }, cycleSpeed);
+      }
+    });
+};
+
+window._VeltroInitSpatialNavigation = function () {
+  document
+    .querySelectorAll(".veltro-spatial-nav:not([data-spatial-nav-init])")
+    .forEach(function (nav) {
+      nav.setAttribute("data-spatial-nav-init", "1");
+      var items = nav.querySelectorAll(".veltro-spatial-item");
+      if (!items.length) return;
+
+      items.forEach(function (item) {
+        item.addEventListener("mouseenter", function () {
+          item.style.transform = "scale(1.1)";
+        });
+        item.addEventListener("mouseleave", function () {
+          item.style.transform = "scale(1)";
+        });
+      });
+    });
+};
+
+window._VeltroInitIsometricGrid = function () {
+  document
+    .querySelectorAll(".veltro-isogrid-wrap:not([data-iso-init])")
+    .forEach(function (wrap) {
+      wrap.setAttribute("data-iso-init", "1");
+      var tiles = wrap.querySelectorAll(".veltro-iso-tile");
+      if (!tiles.length) return;
+
+      tiles.forEach(function (tile, i) {
+        tile.addEventListener("mouseenter", function () {
+          tile.style.transform = "perspective(1200px) rotateX(20deg) rotateZ(45deg) scale(1.05)";
+        });
+        tile.addEventListener("mouseleave", function () {
+          tile.style.transform = "perspective(1200px) rotateX(20deg) rotateZ(45deg) scale(1)";
+        });
+      });
+    });
+};
 

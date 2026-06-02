@@ -2,12 +2,14 @@ FB.ai = FB.ai || {};
 
 FB.ai.open = function () {
   FB.ai._state = "prompt";
+  FB.ai._brandContext = "";
   document.getElementById("ds-ai-template-overlay").style.display = "flex";
   FB.ai._render();
 };
 
 FB.ai.close = function () {
-  document.getElementById("ds-ai-template-overlay").style.display = "none";
+  var overlay = document.getElementById("ds-ai-template-overlay");
+  if (overlay) overlay.style.display = "none";
   FB.ai._state = "prompt";
   FB.ai._generated = null;
 };
@@ -75,6 +77,11 @@ FB.ai._render = function () {
       '<textarea id="ai-prompt-input" class="ai-prompt-input" placeholder="Describe the website you want to build...&#10;&#10;Examples:&#10;· A bold creative agency with dark mode, orbs hero, glass services cards, and testimonials&#10;· A minimalist SaaS landing page with split hero, feature grid, pricing, and FAQ&#10;· A playful ecommerce storefront with bubble hero, product grid, and countdown sale">';
     if (FB.ai._promptText) h += FB.ai._esc(FB.ai._promptText);
     h += "</textarea>";
+    h += '<div style="display:flex;gap:6px;margin-top:6px;align-items:center">';
+    h += '<input id="ai-brand-url" type="text" placeholder="Brand URL (optional — scrape for context)" style="flex:1;padding:6px 10px;background:#1a1a1a;border:1px solid #333;border-radius:6px;color:#fff;font-size:11px">';
+    h += '<button class="tb-btn" onclick="FB.ai._scrapeBrand()" style="font-size:10px;white-space:nowrap" title="Scrape URL for brand colors, tone, and content">🔍 Scrape</button>';
+    h += '</div>';
+    h += '<div id="ai-brand-ctx" style="display:none;margin-top:4px;padding:6px 10px;background:#1a2a1a;border:1px solid #2a4a2a;border-radius:4px;font-size:10px;color:#7ab648"></div>';
     h += '<div style="display:flex;gap:6px;margin-top:8px">';
     h +=
       '<button class="ds-save-btn" onclick="FB.ai._generate()" ' +
@@ -88,6 +95,11 @@ FB.ai._render = function () {
       '<button class="tb-btn" onclick="FB.ai._generateSection()" ' +
       (FB.ai._state === "generating" ? "disabled" : "") +
       ">➕ Generate Section</button>";
+    h +=
+      '<button class="tb-btn" onclick="FB.ai._generateFromURL()" ' +
+      (FB.ai._state === "generating" ? "disabled" : "") +
+      ' id="ai-pipeline-btn" title="3-stage pipeline: Brand Decoder → Component Chef → Layout Architect">' +
+      "🚀 From URL</button>";
     h += "</div>";
     if (FB.ai._state === "generating") {
       h +=
@@ -175,6 +187,94 @@ FB.ai._renderPreview = function () {
   return h;
 };
 
+FB.ai._brandContext = "";
+
+FB.ai._scrapeBrand = function () {
+  var url = document.getElementById("ai-brand-url");
+  var ctx = document.getElementById("ai-brand-ctx");
+  if (!url || !url.value.trim()) return;
+  ctx.style.display = "block";
+  ctx.textContent = "Scraping...";
+  
+  function tryEndpoint(endpoint, onSuccess) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", endpoint);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        try {
+          var data = JSON.parse(xhr.responseText);
+          var title = data.title || "";
+          var desc = data.description || "";
+          var content = (data.markdown || data.content || "").slice(0, 3000);
+          var ctxText = "BRAND CONTEXT from " + url.value.trim() + ":\nTitle: " + title + "\nDescription: " + desc;
+          if (data.palette) ctxText += "\nBrand colors: " + JSON.stringify(data.palette);
+          ctxText += "\n\nContent sample:\n" + content;
+          FB.ai._brandContext = ctxText;
+          ctx.textContent = "✓ Brand context captured (" + content.length + " chars)";
+          ctx.style.background = "#1a2a1a"; ctx.style.borderColor = "#2a4a2a";
+        } catch(e) {
+          ctx.textContent = "✗ Failed to parse response"; ctx.style.background = "#2a1a1a"; ctx.style.borderColor = "#4a2a2a";
+        }
+      } else {
+        onSuccess();
+      }
+    };
+    xhr.onerror = function () { onSuccess(); };
+    xhr.send(JSON.stringify({ url: url.value.trim() }));
+  }
+  
+  tryEndpoint("/api/scrape", function () {
+    tryEndpoint("/api/brand-scrape", function () {
+      ctx.textContent = "✗ All scrape methods failed. Is the URL accessible?"; ctx.style.background = "#2a1a1a"; ctx.style.borderColor = "#4a2a2a";
+    });
+  });
+};
+
+FB.ai._generateFromURL = function () {
+  var url = document.getElementById("ai-brand-url");
+  if (!url || !url.value.trim()) {
+    FB.ai._error = "Enter a URL first, then click 🚀 From URL";
+    FB.ai._render();
+    return;
+  }
+  var apiKey = FB.ai.getApiKey();
+  if (!apiKey) {
+    FB.ai._error = "API key required. Click the 🔑 API Key button to add your Gemini API key.";
+    FB.ai._render();
+    return;
+  }
+  FB.ai._state = "generating";
+  FB.ai._genStatus = "Pipeline: Brand Decoder → Component Chef → Layout Architect...";
+  FB.ai._render();
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "/api/ai-pipeline");
+  xhr.setRequestHeader("Content-Type", "application/json");
+  xhr.onload = function () {
+    if (xhr.status === 200) {
+      try {
+        var data = JSON.parse(xhr.responseText);
+        if (data.template && data.template.blocks) {
+          FB.ai._generated = data.template;
+          FB.ai._state = "review";
+          FB.ai._error = null;
+          FB.ai._render();
+          return;
+        }
+      } catch(e) {}
+    }
+    FB.ai._error = "Pipeline failed: " + (xhr.responseText || "Unknown error").slice(0, 200);
+    FB.ai._state = "prompt";
+    FB.ai._render();
+  };
+  xhr.onerror = function () {
+    FB.ai._error = "Server error. Is the Python server running on :8899?";
+    FB.ai._state = "prompt";
+    FB.ai._render();
+  };
+  xhr.send(JSON.stringify({ url: url.value.trim(), apiKey: FB.ai.getApiKey() }));
+};
+
 FB.ai._generate = function () {
   var input = document.getElementById("ai-prompt-input");
   if (!input || !input.value.trim()) return;
@@ -187,8 +287,10 @@ FB.ai._generate = function () {
   if (FB.ai._agentMode) {
     FB.ai._genStatus = "Analysing brief...";
     FB.ai._render();
+    var promptWithCtx = FB.ai._promptText;
+    if (FB.ai._brandContext) promptWithCtx = FB.ai._brandContext + "\n\nUser request: " + FB.ai._promptText;
     FB.agent
-      .generate(FB.ai._promptText, {}, function (status) {
+      .generate(promptWithCtx, {}, function (status) {
         FB.ai._genStatus = status;
         FB.ai._render();
       })
@@ -197,8 +299,7 @@ FB.ai._generate = function () {
         FB.ai._state = "review";
         FB.ai._error = null;
         if (result.validation && !result.validation.valid) {
-          FB.ai._error =
-            "Minor issues detected: " + result.validation.errors.join("; ");
+          FB.ai._error = "Minor issues: " + result.validation.errors.join("; ");
         }
         FB.ai._render();
       })
@@ -210,10 +311,9 @@ FB.ai._generate = function () {
   } else {
     FB.ai._genStatus = "Consulting the creative agent...";
     FB.ai._render();
-    var prompt =
-      "Generate a COMPLETE multi-section website template. The user wants: " +
-      FB.ai._promptText +
-      "\n\nGenerate 5-12 blocks for a full page. Be creative and bold.";
+    var prompt = "Generate a COMPLETE multi-section website template. The user wants: ";
+    if (FB.ai._brandContext) prompt = FB.ai._brandContext + "\n\nGenerate a website for: ";
+    prompt += FB.ai._promptText + "\n\nGenerate 8-14 blocks using mostly widget types for maximum visual variety.";
     FB.ai.generateTemplate(
       prompt,
       function () {},
@@ -265,39 +365,44 @@ FB.ai._generateSection = function () {
 };
 
 FB.ai._approve = function () {
-  var tpl = FB.ai._generated;
-  if (!tpl || !tpl.blocks) return;
+  try {
+    var tpl = FB.ai._generated;
+    if (!tpl || !tpl.blocks) return;
 
-  if (FB.state.blocks.length > 0) {
-    if (!confirm("Load this template? It will replace the current canvas."))
-      return;
+    var allDefs = Object.assign(
+      {},
+      FB.blocks?.BLOCK_DEFS || {},
+      FB.blocks?.CUSTOM_BLOCK_DEFS || {},
+      FB.blocks?.ECOMMERCE_DEFS || {},
+    );
+
+    FB.state.saveHistory();
+    FB.state.blocks = tpl.blocks.map(function (b) {
+      var def = allDefs[b.type] || FB.widgets.get(b.type) || {};
+      var defaults = def.defaultProps || {};
+      var block = {
+        id: b.id || FB.state.genId(),
+        type: b.type,
+        props: Object.assign({}, defaults, b.props || {}),
+      };
+      if (b.bindings && b.bindings.length) block.bindings = b.bindings;
+      return block;
+    });
+    FB.state.selectedId = null;
+    FB.panels.setMode("app");
+    FB.canvas.render();
+    var cw = document.getElementById("canvas-wrap");
+    var cc = document.getElementById("canvas-column");
+    if (cw) { cw.style.display = "none"; void cw.offsetHeight; cw.style.display = ""; }
+    if (cc) { cc.style.flex = ""; void cc.offsetHeight; cc.style.flex = "1"; }
+    FB.panels.renderRightPanel();
+    FB.util.showToast("✓ Template loaded: " + (tpl.name || "AI Generated"));
+    FB.ai.close();
+    FB.export.close();
+  } catch(e) {
+    console.error("[approve] ERROR:", e);
+    FB.util.showToast("Error loading template: " + e.message);
   }
-
-  var allDefs = Object.assign(
-    {},
-    FB.blocks.BLOCK_DEFS,
-    FB.blocks.CUSTOM_BLOCK_DEFS,
-    FB.blocks.ECOMMERCE_DEFS,
-  );
-
-  FB.state.saveHistory();
-  FB.state.blocks = tpl.blocks.map(function (b) {
-    var def = allDefs[b.type] || FB.widgets.get(b.type) || {};
-    var defaults = def.defaultProps || {};
-    var block = {
-      id: b.id || FB.state.genId(),
-      type: b.type,
-      props: Object.assign({}, defaults, b.props || {}),
-    };
-    if (b.bindings && b.bindings.length) block.bindings = b.bindings;
-    return block;
-  });
-  FB.state.selectedId = null;
-  FB.canvas.render();
-  FB.panels.renderRightPanel();
-  FB.util.showToast("✓ Template loaded: " + (tpl.name || "AI Generated"));
-  FB.ai.close();
-  FB.export.close();
 };
 
 FB.ai._reject = function () {
@@ -313,6 +418,7 @@ FB.ai._regenerate = function () {
 
 FB.ai._removeBlock = function (idx) {
   if (!FB.ai._generated || !FB.ai._generated.blocks) return;
+  if (idx < 0 || idx >= FB.ai._generated.blocks.length) return;
   FB.ai._generated.blocks.splice(idx, 1);
   FB.ai._render();
 };

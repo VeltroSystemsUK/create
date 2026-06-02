@@ -503,123 +503,137 @@ window._VeltroInitShaders = function () {
 window._VeltroICState = window._VeltroICState || {};
 window._VeltroInitInfiniteCanvas = function () {
   document
-    .querySelectorAll('[data-infinite-canvas="true"]:not([data-ic-init])')
-    .forEach(function (viewport) {
-      viewport.dataset.icInit = "1";
-      var world = viewport.querySelector(".veltro-ic-world");
-      var coordsEl = viewport.querySelector(".veltro-ic-coords");
-      if (!world) return;
-      var blockId = viewport.id.replace("ic-", "");
-      var saved = window._VeltroICState[blockId] || {};
+    .querySelectorAll(".fw-widget-infiniteCanvas:not([data-ic-init])")
+    .forEach(function (el) {
+      el.setAttribute("data-ic-init", "1");
+      var wrap = el.querySelector(".veltro-infinite-wrap");
+      var canvas = el.querySelector(".veltro-infinite-canvas");
+      if (!wrap || !canvas) return;
+
+      var gridSize = +(wrap.dataset.gridSize || 40);
+      var gridColor = wrap.dataset.gridColor || "rgba(255,255,255,0.05)";
+
+      wrap.style.cursor = "grab";
       var state = {
-        panX: saved.panX || 0,
-        panY: saved.panY || 0,
-        zoom: saved.zoom || 1,
+        panX: 0,
+        panY: 0,
+        zoom: 1,
         isDragging: false,
         startX: 0,
         startY: 0,
-        minZoom: +(viewport.dataset.minZoom || 0.15),
-        maxZoom: +(viewport.dataset.maxZoom || 3.0),
       };
-      viewport.style.cursor = "grab";
+
+      var ctx = canvas.getContext("2d");
+      var dpr = window.devicePixelRatio || 1;
+
+      function resizeCanvas() {
+        var rect = wrap.getBoundingClientRect();
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.setTransform(dpr * state.zoom, 0, 0, dpr * state.zoom, 0, 0);
+        canvas.style.width = rect.width + "px";
+        canvas.style.height = rect.height + "px";
+      }
+
+      function drawGrid() {
+        var w = canvas.width / dpr;
+        var h = canvas.height / dpr;
+        ctx.save();
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, w, h);
+        ctx.restore();
+
+        ctx.save();
+        ctx.setTransform(dpr * state.zoom, 0, 0, dpr * state.zoom, dpr * (state.panX % (gridSize * state.zoom)), dpr * (state.panY % (gridSize * state.zoom)));
+        ctx.strokeStyle = gridColor;
+        ctx.lineWidth = 1 / state.zoom;
+
+        var offsetX = state.panX / state.zoom;
+        var offsetY = state.panY / state.zoom;
+        var startX = (-offsetX % gridSize + gridSize) % gridSize;
+        var startY = (-offsetY % gridSize + gridSize) % gridSize;
+
+        for (var x = startX; x < w / state.zoom + gridSize; x += gridSize) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, h / state.zoom + gridSize);
+          ctx.stroke();
+        }
+        for (var y = startY; y < h / state.zoom + gridSize; y += gridSize) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(w / state.zoom + gridSize, y);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      function redraw() {
+        resizeCanvas();
+        drawGrid();
+      }
+
       function handleWheel(e) {
         e.preventDefault();
         e.stopPropagation();
-        if (e.ctrlKey || e.metaKey) {
-          var rect = viewport.getBoundingClientRect();
-          var cx = e.clientX - rect.left;
-          var cy = e.clientY - rect.top;
-          var factor = 1 - e.deltaY * 0.005;
-          var newZoom = Math.max(
-            state.minZoom,
-            Math.min(state.maxZoom, state.zoom * factor),
-          );
-          state.panX = cx - ((cx - state.panX) * newZoom) / state.zoom;
-          state.panY = cy - ((cy - state.panY) * newZoom) / state.zoom;
-          state.zoom = newZoom;
-        } else {
-          state.panX -= e.deltaX;
-          state.panY -= e.deltaY;
-        }
+        var rect = wrap.getBoundingClientRect();
+        var cx = e.clientX - rect.left;
+        var cy = e.clientY - rect.top;
+        var factor = 1 - e.deltaY * 0.002;
+        var newZoom = Math.max(0.15, Math.min(3.0, state.zoom * factor));
+        state.panX = cx - ((cx - state.panX) * newZoom) / state.zoom;
+        state.panY = cy - ((cy - state.panY) * newZoom) / state.zoom;
+        state.zoom = newZoom;
+        redraw();
       }
+
       function handleMouseDown(e) {
         if (e.button === 0 || e.button === 1) {
           e.preventDefault();
           state.isDragging = true;
           state.startX = e.clientX - state.panX;
           state.startY = e.clientY - state.panY;
-          viewport.style.cursor = "grabbing";
+          wrap.style.cursor = "grabbing";
         }
       }
+
       function handleMouseMove(e) {
         if (!state.isDragging) return;
         state.panX = e.clientX - state.startX;
         state.panY = e.clientY - state.startY;
+        redraw();
       }
+
       function handleMouseUp() {
         state.isDragging = false;
-        viewport.style.cursor = "grab";
+        wrap.style.cursor = "grab";
       }
-      viewport.addEventListener("wheel", handleWheel, { passive: false });
-      viewport.addEventListener("mousedown", handleMouseDown);
+
+      var observer = new ResizeObserver(function () {
+        redraw();
+      });
+      observer.observe(wrap);
+
+      wrap.addEventListener("wheel", handleWheel, { passive: false });
+      wrap.addEventListener("mousedown", handleMouseDown);
       window.addEventListener("mousemove", handleMouseMove);
       window.addEventListener("mouseup", handleMouseUp);
-      var frameCount = 0;
-      var rafId = 0;
-      function loop() {
-        if (!viewport.isConnected) {
-          window.removeEventListener("mousemove", handleMouseMove);
-          window.removeEventListener("mouseup", handleMouseUp);
-          return;
-        }
-        world.style.transform =
-          "translate3d(" +
-          state.panX +
-          "px," +
-          state.panY +
-          "px,0) scale(" +
-          state.zoom +
-          ")";
-        world.querySelectorAll(".veltro-ic-node").forEach(function (node) {
-          var df = +(node.dataset.depthFactor || 1);
-          if (df === 1) return;
-          node.style.transform =
-            "translate3d(" +
-            state.panX * (df - 1) +
-            "px," +
-            state.panY * (df - 1) +
-            "px,0)";
-        });
-        if (++frameCount % 12 === 0) {
-          if (coordsEl) {
-            coordsEl.textContent =
-              "X: " +
-              Math.round(-state.panX) +
-              "  Y: " +
-              Math.round(-state.panY) +
-              "  " +
-              Math.round(state.zoom * 100) +
-              "%";
-          }
-          window._VeltroICState[blockId] = {
-            panX: state.panX,
-            panY: state.panY,
-            zoom: state.zoom,
-          };
-        }
-        rafId = requestAnimationFrame(loop);
-      }
-      new IntersectionObserver(
+
+      var io = new IntersectionObserver(
         function (e) {
-          if (e[0].isIntersecting) {
-            if (!rafId) rafId = requestAnimationFrame(loop);
+          if (!e[0].isIntersecting) {
+            window.removeEventListener("mousemove", handleMouseMove);
+            window.removeEventListener("mouseup", handleMouseUp);
           } else {
-            cancelAnimationFrame(rafId);
-            rafId = 0;
+            window.addEventListener("mousemove", handleMouseMove);
+            window.addEventListener("mouseup", handleMouseUp);
           }
         },
         { threshold: 0.01 },
-      ).observe(viewport);
+      );
+      io.observe(el);
+
+      redraw();
     });
 };
 
@@ -1583,38 +1597,64 @@ window._VeltroInitColorSampler = function () {
     .querySelectorAll(".veltro-colorsampler-wrap:not([data-init])")
     .forEach(function (wrap) {
       wrap.setAttribute("data-init", "1");
-      var palette = wrap.querySelector(".veltro-color-palette");
-      var swatches = palette.querySelectorAll(".veltro-color-swatch");
-      var sampleSize = +wrap.dataset.sampleSize || 10;
-      var paletteSize = +wrap.dataset.paletteSize || 5;
-      var canvas = document.createElement("canvas");
-      canvas.style.display = "none";
-      wrap.appendChild(canvas);
-      var ctx = canvas.getContext("2d");
-      wrap.addEventListener("mousemove", function (e) {
-        var r = wrap.getBoundingClientRect();
-        var x = e.clientX - r.left;
-        var y = e.clientY - r.top;
-        canvas.width = sampleSize;
-        canvas.height = sampleSize;
-        ctx.drawImage(
-          wrap,
-          x - sampleSize / 2,
-          y - sampleSize / 2,
-          sampleSize,
-          sampleSize,
-          0,
-          0,
-          sampleSize,
-          sampleSize,
-        );
-        var pixel = ctx.getImageData(sampleSize / 2, sampleSize / 2, 1, 1).data;
-        var color = "rgb(" + pixel[0] + "," + pixel[1] + "," + pixel[2] + ")";
-        swatches[0].style.background = color;
-        for (var i = 1; i < paletteSize; i++) {
-          swatches[i].style.background = swatches[i - 1].style.background;
-        }
-      });
+      try {
+        var palette = wrap.querySelector(".veltro-color-palette");
+        if (!palette) return;
+        var swatches = palette.querySelectorAll(".veltro-color-swatch");
+        if (!swatches.length) return;
+        var sampleSize = +wrap.dataset.sampleSize || 10;
+        var paletteSize = +(wrap.dataset.paletteSize || 5);
+        var canvas = document.createElement("canvas");
+        canvas.style.display = "none";
+        wrap.appendChild(canvas);
+        var ctx = canvas.getContext("2d");
+        wrap.addEventListener("mousemove", function (e) {
+          try {
+            var el = wrap.querySelector("img, video, canvas, .veltro-colorsampler-img");
+            if (!el) {
+              var bgImg = window.getComputedStyle(wrap).backgroundImage;
+              if (bgImg && bgImg !== "none") {
+                var url = bgImg.replace(/url\(["']?([^"')]+)["']?\)/, "$1");
+                var img = new Image();
+                img.crossOrigin = "anonymous";
+                img.onload = function () {
+                  canvas.width = sampleSize;
+                  canvas.height = sampleSize;
+                  var r = wrap.getBoundingClientRect();
+                  var x = e.clientX - r.left;
+                  var y = e.clientY - r.top;
+                  var scaleX = img.naturalWidth / r.width;
+                  var scaleY = img.naturalHeight / r.height;
+                  ctx.drawImage(img, x * scaleX - sampleSize / 2, y * scaleY - sampleSize / 2, sampleSize, sampleSize, 0, 0, sampleSize, sampleSize);
+                  var pixel = ctx.getImageData(sampleSize / 2, sampleSize / 2, 1, 1).data;
+                  var color = "rgb(" + pixel[0] + "," + pixel[1] + "," + pixel[2] + ")";
+                  swatches[0].style.background = color;
+                  for (var i = 1; i < paletteSize && i < swatches.length; i++) {
+                    swatches[i].style.background = swatches[i - 1].style.background;
+                  }
+                };
+                img.src = url;
+              }
+              return;
+            }
+            var r = el.getBoundingClientRect();
+            var wr = wrap.getBoundingClientRect();
+            var x = e.clientX - wr.left;
+            var y = e.clientY - wr.top;
+            var sx = (e.clientX - r.left) / r.width * (el.naturalWidth || el.videoWidth || el.width);
+            var sy = (e.clientY - r.top) / r.height * (el.naturalHeight || el.videoHeight || el.height);
+            canvas.width = sampleSize;
+            canvas.height = sampleSize;
+            ctx.drawImage(el, sx - sampleSize / 2, sy - sampleSize / 2, sampleSize, sampleSize, 0, 0, sampleSize, sampleSize);
+            var pixel = ctx.getImageData(sampleSize / 2, sampleSize / 2, 1, 1).data;
+            var color = "rgb(" + pixel[0] + "," + pixel[1] + "," + pixel[2] + ")";
+            swatches[0].style.background = color;
+            for (var i = 1; i < paletteSize && i < swatches.length; i++) {
+              swatches[i].style.background = swatches[i - 1].style.background;
+            }
+          } catch (ignored) {}
+        });
+      } catch (ignored) {}
     });
 };
 
@@ -1720,34 +1760,80 @@ window._VeltroInitMagneticCursor = function () {
     .querySelectorAll(".fw-widget-magneticCursor:not([data-mag-init])")
     .forEach(function (wrap) {
       wrap.setAttribute("data-mag-init", "1");
-      var targets = wrap.querySelectorAll(".veltro-magnetic-target");
+      var inner = wrap.querySelector(".veltro-magcursor-wrap") || wrap;
+      var targets = wrap.querySelectorAll(".veltro-mag-item");
+      var strength = +(inner.dataset.magneticStrength || 0.5);
+      var radius = +(inner.dataset.magneticRadius || 150);
+      var repel = inner.dataset.repelMode === "1";
+      var elastic = inner.dataset.elasticBounce === "1";
+      var cursorEl = wrap.querySelector(".veltro-mag-cursor");
+      var targetsData = [];
+      targets.forEach(function (t) {
+        var tr = t.getBoundingClientRect();
+        targetsData.push({ el: t, ox: 0, oy: 0, vx: 0, vy: 0 });
+      });
+      var rafId = 0;
+      var mx = -9999, my = -9999;
       wrap.addEventListener("mousemove", function (e) {
         var rect = wrap.getBoundingClientRect();
-        var mx = e.clientX - rect.left,
-          my = e.clientY - rect.top;
-        targets.forEach(function (t) {
-          var tr = t.getBoundingClientRect();
-          var cx = tr.left + tr.width / 2 - rect.left;
-          var cy = tr.top + tr.height / 2 - rect.top;
-          var dx = mx - cx,
-            dy = my - cy;
-          var dist = Math.sqrt(dx * dx + dy * dy);
-          var strength = +t.dataset.magneticStrength || 0.3;
-          var maxDist = +t.dataset.magneticRadius || 150;
-          var pull = Math.max(0, 1 - dist / maxDist);
-          t.style.transform =
-            "translate(" +
-            dx * pull * strength +
-            "px," +
-            dy * pull * strength +
-            "px)";
-        });
+        mx = e.clientX - rect.left;
+        my = e.clientY - rect.top;
+        if (cursorEl) {
+          cursorEl.style.left = mx + "px";
+          cursorEl.style.top = my + "px";
+        }
       });
       wrap.addEventListener("mouseleave", function () {
-        targets.forEach(function (t) {
-          t.style.transform = "";
-        });
+        mx = -9999;
+        my = -9999;
+        if (elastic) {
+          targetsData.forEach(function (td) {
+            td.vx += -td.ox * 0.1;
+            td.vy += -td.oy * 0.1;
+          });
+        }
       });
+      function animate() {
+        if (!wrap.isConnected) return;
+        if (mx > -9998) {
+          targetsData.forEach(function (td, i) {
+            var tr = td.el.getBoundingClientRect();
+            var wr = wrap.getBoundingClientRect();
+            var cx = tr.left - wr.left + tr.width / 2;
+            var cy = tr.top - wr.top + tr.height / 2;
+            var dx = mx - cx, dy = my - cy;
+            var dist = Math.sqrt(dx * dx + dy * dy);
+            var pull = Math.max(0, 1 - dist / radius);
+            var tx = dx * pull * strength * (repel ? -1 : 1);
+            var ty = dy * pull * strength * (repel ? -1 : 1);
+            if (elastic) {
+              td.vx += (tx - td.ox) * 0.15;
+              td.vy += (ty - td.oy) * 0.15;
+              td.vx *= 0.9;
+              td.vy *= 0.9;
+              td.ox += td.vx;
+              td.oy += td.vy;
+            } else {
+              td.ox = tx;
+              td.oy = ty;
+            }
+            td.el.style.transform = "translate(" + td.ox + "px," + td.oy + "px)";
+          });
+        } else if (elastic) {
+          targetsData.forEach(function (td) {
+            td.vx += -td.ox * 0.1;
+            td.vy += -td.oy * 0.1;
+            td.vx *= 0.9;
+            td.vy *= 0.9;
+            td.ox += td.vx;
+            td.oy += td.vy;
+            if (Math.abs(td.ox) < 0.1 && Math.abs(td.oy) < 0.1) { td.ox = 0; td.oy = 0; td.vx = 0; td.vy = 0; }
+            td.el.style.transform = "translate(" + td.ox + "px," + td.oy + "px)";
+          });
+        }
+        rafId = requestAnimationFrame(animate);
+      }
+      rafId = requestAnimationFrame(animate);
     });
 };
 
@@ -1759,54 +1845,93 @@ window._VeltroInitParticleTrail = function () {
       var canvas = wrap.querySelector("canvas");
       if (!canvas) return;
       var ctx = canvas.getContext("2d");
-      var W = (canvas.width = wrap.offsetWidth);
-      var H = (canvas.height = wrap.offsetHeight);
+      var dpr = window.devicePixelRatio || 1;
+      function resize() {
+        var W = wrap.offsetWidth;
+        var H = wrap.offsetHeight;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        return { W: W, H: H };
+      }
+      var dims = resize();
+      var inner = wrap.querySelector(".veltro-ptrail-wrap") || wrap;
+      var ds = inner.dataset;
+      var particleColor = ds.particleColor || "#cdfe00";
+      var particleCount = +(ds.particleCount || 30);
+      var particleSize = +(ds.particleSize || 4);
+      var fadeSpeed = +(ds.fadeSpeed || 0.95);
+      var particleShape = ds.particleShape || "circle";
+      var particleTrail = ds.particleTrail !== "false";
+      var particleGravity = +(ds.particleGravity || 0);
+      var particleRandomSize = ds.particleRandomSize === "true";
+      var particleRotation = +(ds.particleRotation || 0);
+      var particleScatter = +(ds.particleScatter || 1);
+      var particlePulse = ds.particlePulse === "true";
+      var particleBlendMode = ds.particleBlendMode || "normal";
+
       var particles = [];
-      var color = wrap.dataset.trailColor || "#00d4ff";
+      var spawnCount = 3;
       wrap.addEventListener("mousemove", function (e) {
         var rect = wrap.getBoundingClientRect();
-        for (var i = 0; i < 3; i++) {
+        for (var i = 0; i < spawnCount; i++) {
+          var size = particleSize;
+          if (particleRandomSize) size = particleSize * (0.3 + Math.random() * 1.4);
           particles.push({
             x: e.clientX - rect.left,
             y: e.clientY - rect.top,
-            vx: (Math.random() - 0.5) * 2,
-            vy: (Math.random() - 0.5) * 2,
+            vx: (Math.random() - 0.5) * particleScatter * 4,
+            vy: (Math.random() - 0.5) * particleScatter * 4 - 1,
             life: 1,
-            size: Math.random() * 3 + 1,
+            size: size,
+            rotation: Math.random() * Math.PI * 2,
+            rotSpeed: (Math.random() - 0.5) * particleRotation * 0.02,
+            pulsePhase: Math.random() * Math.PI * 2,
           });
         }
+        if (particles.length > particleCount * 3) particles.splice(0, particles.length - particleCount * 3);
       });
+
+      function drawShape(type, x, y, s, alpha, rot) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+        ctx.translate(x, y);
+        ctx.rotate(rot);
+        ctx.fillStyle = particleColor;
+        ctx.beginPath();
+        if (type === "square") { ctx.rect(-s * 0.7, -s * 0.7, s * 1.4, s * 1.4); ctx.fill(); }
+        else if (type === "triangle") { ctx.moveTo(0, -s); ctx.lineTo(s * 0.866, s * 0.5); ctx.lineTo(-s * 0.866, s * 0.5); ctx.closePath(); ctx.fill(); }
+        else if (type === "star") { for (var j = 0; j < 10; j++) { var a = (j * Math.PI) / 5 - Math.PI / 2; var r = j % 2 === 0 ? s : s * 0.42; if (j === 0) ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r); else ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r); } ctx.closePath(); ctx.fill(); }
+        else { ctx.arc(0, 0, s, 0, Math.PI * 2); ctx.fill(); }
+        ctx.restore();
+      }
+
       var rafId = 0;
       function animate() {
         if (!wrap.isConnected) return;
-        ctx.clearRect(0, 0, W, H);
+        dims = resize();
+        if (particleTrail) {
+          ctx.fillStyle = "rgba(10,10,20,0.15)";
+          ctx.fillRect(0, 0, dims.W, dims.H);
+        } else {
+          ctx.clearRect(0, 0, dims.W, dims.H);
+        }
         for (var i = particles.length - 1; i >= 0; i--) {
           var p = particles[i];
           p.x += p.vx;
           p.y += p.vy;
-          p.life -= 0.02;
-          if (p.life <= 0) {
-            particles.splice(i, 1);
-            continue;
-          }
-          ctx.globalAlpha = p.life;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fillStyle = color;
-          ctx.fill();
+          p.vy += particleGravity * 0.05;
+          p.life -= (1 - fadeSpeed) * 0.4;
+          p.rotation += p.rotSpeed;
+          if (particlePulse) p.size = particleSize * (0.7 + 0.3 * Math.sin(Date.now() * 0.01 + p.pulsePhase));
+          if (p.life <= 0) { particles.splice(i, 1); continue; }
+          drawShape(particleShape, p.x, p.y, p.size, p.life, p.rotation);
         }
         ctx.globalAlpha = 1;
         rafId = requestAnimationFrame(animate);
       }
       new IntersectionObserver(
-        function (e) {
-          if (e[0].isIntersecting) {
-            if (!rafId) rafId = requestAnimationFrame(animate);
-          } else {
-            cancelAnimationFrame(rafId);
-            rafId = 0;
-          }
-        },
+        function (e) { if (e[0].isIntersecting) { if (!rafId) rafId = requestAnimationFrame(animate); } else { cancelAnimationFrame(rafId); rafId = 0; } },
         { threshold: 0.01 },
       ).observe(wrap);
     });
@@ -1957,7 +2082,7 @@ window._VeltroInitMosaicAssemble = function () {
     .querySelectorAll(".fw-widget-mosaicAssemble:not([data-mosaic-init])")
     .forEach(function (el) {
       el.setAttribute("data-mosaic-init", "1");
-      var tiles = el.querySelectorAll(".veltro-mosaic-tile");
+      var tiles = el.querySelectorAll(".veltro-mosaic-cell");
       var observer = new IntersectionObserver(
         function (entries) {
           entries.forEach(function (entry, i) {
@@ -2094,12 +2219,22 @@ window._VeltroInitNoiseGrain = function () {
       var canvas = el.querySelector("canvas");
       if (!canvas) return;
       var ctx = canvas.getContext("2d");
-      var W = (canvas.width = el.offsetWidth);
-      var H = (canvas.height = el.offsetHeight);
-      var imgData = ctx.createImageData(W, H);
+      var dpr = window.devicePixelRatio || 1;
+      var W = 0, H = 0, imgData = null;
+      function resize() {
+        W = el.offsetWidth || 400;
+        H = el.offsetHeight || 300;
+        if (W < 1 || H < 1) return;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        imgData = ctx.createImageData(W, H);
+      }
+      resize();
       var rafId = 0;
       function animate() {
         if (!el.isConnected) return;
+        if (!imgData) { resize(); if (!imgData) { rafId = requestAnimationFrame(animate); return; } }
         for (var i = 0; i < imgData.data.length; i += 4) {
           var v = Math.random() * 255;
           imgData.data[i] = v;
@@ -3193,40 +3328,126 @@ window._VeltroInitMagneticFields = function () {
       var canvas = el.querySelector("canvas");
       if (!canvas) return;
       var ctx = canvas.getContext("2d");
-      var W = (canvas.width = el.offsetWidth);
-      var H = (canvas.height = el.offsetHeight);
+      var dpr = window.devicePixelRatio || 1;
+
+      function resize() {
+        var W = el.offsetWidth;
+        var H = el.offsetHeight;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        return { W: W, H: H };
+      }
+      var dims = resize();
+
+      var wrap = el.querySelector(".veltro-magfield-wrap") || el;
+      var ds = wrap.dataset;
+      var particleCount = +(ds.particleCount || 80);
+      var fieldStrength = +(ds.fieldStrength || 0.5);
+      var particleColor = ds.particleColor || "#34d399";
+      var particleSize = +(ds.particleSize || 2);
+      var fieldLines = ds.fieldLines !== "false";
+      var lineOpacity = (+(ds.fieldLineOpacity || 30)) / 100;
+      var fieldMode = ds.fieldMode || "dipole";
+      var particleTrail = ds.particleTrail !== "false";
+      var particleGlow = ds.particleGlow === "true";
+      var glowColor = ds.glowColor || "#34d399";
+
       var particles = [];
-      for (var i = 0; i < 100; i++) {
+      for (var i = 0; i < particleCount; i++) {
         particles.push({
-          x: Math.random() * W,
-          y: Math.random() * H,
+          x: Math.random() * dims.W,
+          y: Math.random() * dims.H,
+          vx: (Math.random() - 0.5) * 2,
+          vy: (Math.random() - 0.5) * 2,
           angle: Math.random() * Math.PI * 2,
         });
       }
+
       var rafId = 0;
+      var tick = 0;
       function animate() {
         if (!el.isConnected) return;
-        ctx.fillStyle = "rgba(8,8,16,0.1)";
-        ctx.fillRect(0, 0, W, H);
+        tick++;
+        var newDims = resize();
+        dims = newDims;
+
+        var fade = particleTrail ? 0.15 : 1;
+        ctx.fillStyle = "rgba(5,5,15," + fade + ")";
+        ctx.fillRect(0, 0, dims.W, dims.H);
+
+        if (particleGlow) {
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = glowColor;
+        }
+
         particles.forEach(function (p) {
-          var dx = W / 2 - p.x,
-            dy = H / 2 - p.y;
-          var dist = Math.sqrt(dx * dx + dy * dy) + 1;
-          var force = 100 / dist;
-          p.angle += force * 0.05;
-          p.x += Math.cos(p.angle) * 2;
-          p.y += Math.sin(p.angle) * 2;
-          if (p.x < 0 || p.x > W || p.y < 0 || p.y > H) {
-            p.x = Math.random() * W;
-            p.y = Math.random() * H;
+          var cx = dims.W / 2, cy = dims.H / 2;
+          if (fieldMode === "quadrupole") {
+            cx = Math.abs(p.x - dims.W / 2) < dims.W * 0.25 ? dims.W * 0.25 : dims.W * 0.75;
+            cy = Math.abs(p.y - dims.H / 2) < dims.H * 0.25 ? dims.H * 0.25 : dims.H * 0.75;
+          } else if (fieldMode === "vortex") {
+            cx = dims.W / 2;
+            cy = dims.H / 2;
+          } else if (fieldMode === "random") {
+            cx = dims.W * 0.5 + Math.sin(tick * 0.02 + p.angle) * dims.W * 0.3;
+            cy = dims.H * 0.5 + Math.cos(tick * 0.017 + p.angle) * dims.H * 0.3;
           }
+
+          var dx = cx - p.x, dy = cy - p.y;
+          var dist = Math.sqrt(dx * dx + dy * dy) + 1;
+          var force = fieldStrength * 50 / (dist * dist);
+
+          if (fieldMode === "vortex") {
+            p.vx += (-dy / dist) * force * 0.15;
+            p.vy += (dx / dist) * force * 0.15;
+          } else {
+            p.vx += (dx / dist) * force;
+            p.vy += (dy / dist) * force;
+          }
+
+          p.vx *= 0.98;
+          p.vy *= 0.98;
+          p.x += p.vx;
+          p.y += p.vy;
+
+          if (p.x < 0 || p.x > dims.W || p.y < 0 || p.y > dims.H) {
+            p.x = Math.random() * dims.W;
+            p.y = Math.random() * dims.H;
+            p.vx = (Math.random() - 0.5) * 2;
+            p.vy = (Math.random() - 0.5) * 2;
+          }
+
           ctx.beginPath();
-          ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
-          ctx.fillStyle = "#ff6b6b";
+          ctx.arc(p.x, p.y, particleSize, 0, Math.PI * 2);
+          ctx.fillStyle = particleColor;
           ctx.fill();
         });
+
+        if (fieldLines) {
+          ctx.globalAlpha = lineOpacity;
+          ctx.strokeStyle = particleColor;
+          ctx.lineWidth = 0.5;
+          for (var a = 0; a < particles.length; a += 3) {
+            for (var b = a + 1; b < particles.length; b += 3) {
+              var ldx = particles[a].x - particles[b].x;
+              var ldy = particles[a].y - particles[b].y;
+              var ld = Math.sqrt(ldx * ldx + ldy * ldy);
+              if (ld < 60) {
+                ctx.beginPath();
+                ctx.moveTo(particles[a].x, particles[a].y);
+                ctx.lineTo(particles[b].x, particles[b].y);
+                ctx.stroke();
+              }
+            }
+          }
+          ctx.globalAlpha = 1;
+        }
+
+        ctx.shadowBlur = 0;
         rafId = requestAnimationFrame(animate);
       }
+
       new IntersectionObserver(
         function (e) {
           if (e[0].isIntersecting) {
@@ -4179,7 +4400,7 @@ window._VeltroInitParallaxDepth = function () {
     .querySelectorAll(".fw-widget-parallaxDepth:not([data-pd-init])")
     .forEach(function (el) {
       el.setAttribute("data-pd-init", "1");
-      var layers = el.querySelectorAll(".veltro-depth-layer");
+      var layers = el.querySelectorAll(".veltro-parallax-layer");
       window.addEventListener("scroll", function () {
         var rect = el.getBoundingClientRect();
         var progress = Math.max(
@@ -4283,12 +4504,12 @@ window._VeltroInitVelocitySkew = function () {
       var elasticity = +(wrap.dataset.elasticity || 0.8);
       var targets = el.querySelectorAll(".veltro-velskew-target");
       if (!targets.length) return;
-      var lastScroll = window.scrollY || window.pageYOffset;
+      var lastScroll = 0;
       var velocity = 0;
       var rafId = 0;
       function update() {
         if (!el.isConnected) return;
-        var current = window.scrollY || window.pageYOffset;
+        var current = wrap.scrollTop || 0;
         var raw = current - lastScroll;
         velocity += (raw - velocity) * elasticity;
         lastScroll = current;
@@ -4298,6 +4519,9 @@ window._VeltroInitVelocitySkew = function () {
         });
         rafId = requestAnimationFrame(update);
       }
+      wrap.addEventListener("scroll", function () {
+        if (!rafId) rafId = requestAnimationFrame(update);
+      }, { passive: true });
       new IntersectionObserver(
         function (e) {
           if (e[0].isIntersecting) {
@@ -5269,17 +5493,14 @@ window._VeltroInitHolographicOverlay = function () {
     .querySelectorAll(".fw-widget-holographicOverlay:not([data-ho-init])")
     .forEach(function (el) {
       el.setAttribute("data-ho-init", "1");
-      var overlay = el.querySelector(".veltro-holo-overlay");
-      if (!overlay) return;
+      var shine = el.querySelector(".veltro-holo-shine");
+      if (!shine) return;
       var t = 0;
       var rafId = 0;
       function animate() {
         if (!el.isConnected) return;
         t += 0.02;
-        overlay.style.background =
-          "linear-gradient(" +
-          t * 30 +
-          "deg, rgba(0,212,255,0.1) 0%, rgba(255,0,128,0.1) 50%, rgba(0,212,255,0.1) 100%)";
+        shine.style.setProperty("--holo-angle", (t * 30 % 360) + "deg");
         rafId = requestAnimationFrame(animate);
       }
       new IntersectionObserver(
@@ -5378,15 +5599,16 @@ window._VeltroInitIsometricGrid = function () {
     .querySelectorAll(".fw-widget-isometricGrid:not([data-ig-init])")
     .forEach(function (el) {
       el.setAttribute("data-ig-init", "1");
-      var items = el.querySelectorAll(".veltro-iso-item");
-      items.forEach(function (item, i) {
-        item.style.transitionDelay = i * 50 + "ms";
+      var cells = el.querySelectorAll(".veltro-iso-cell");
+      cells.forEach(function (cell, i) {
+        cell.style.opacity = "0";
+        cell.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+        cell.style.transitionDelay = i * 60 + "ms";
         setTimeout(
           function () {
-            item.style.opacity = "1";
-            item.style.transform = "translateY(0)";
+            cell.style.opacity = "1";
           },
-          100 + i * 50,
+          80 + i * 60,
         );
       });
     });
@@ -5398,17 +5620,25 @@ window._VeltroInitPerspectiveRooms = function () {
     .forEach(function (el) {
       el.setAttribute("data-pr-init", "1");
       var rooms = el.querySelectorAll(".veltro-room");
+      var navs = el.querySelectorAll(".veltro-room-nav");
       var activeRoom = 0;
       function showRoom(index) {
         rooms.forEach(function (room, i) {
+          var tz = parseFloat(room.dataset.tz) || i * -200;
           room.style.opacity = i === index ? "1" : "0";
           room.style.transform =
-            i === index ? "rotateY(0deg)" : "rotateY(90deg)";
+            "translateZ(" +
+            tz +
+            "px) " +
+            (i === index ? "rotateY(0deg)" : "rotateY(90deg)");
+        });
+        navs.forEach(function (dot, i) {
+          dot.style.background =
+            i === index ? "#cdfe00" : "rgba(255,255,255,0.3)";
         });
         activeRoom = index;
       }
-      var nav = el.querySelectorAll(".veltro-room-nav");
-      nav.forEach(function (btn, i) {
+      navs.forEach(function (btn, i) {
         btn.addEventListener("click", function () {
           showRoom(i);
         });
@@ -5455,7 +5685,7 @@ window._VeltroInitLayeredParallax = function () {
     .querySelectorAll(".fw-widget-layeredParallax:not([data-lp-init])")
     .forEach(function (el) {
       el.setAttribute("data-lp-init", "1");
-      var layers = el.querySelectorAll(".veltro-lp-layer");
+      var layers = el.querySelectorAll(".veltro-layer");
       el.addEventListener("mousemove", function (e) {
         var rect = el.getBoundingClientRect();
         var x = (e.clientX - rect.left) / rect.width - 0.5;
@@ -5697,11 +5927,11 @@ window._VeltroInitSpatialNavigation = function () {
     .querySelectorAll(".fw-widget-spatialNavigation:not([data-sn-init])")
     .forEach(function (el) {
       el.setAttribute("data-sn-init", "1");
-      var nodes = el.querySelectorAll(".veltro-sn-node");
+      var nodes = el.querySelectorAll(".veltro-spatial-item");
       var activeNode = 0;
       function activate(index) {
         nodes.forEach(function (node, i) {
-          node.classList.toggle("veltro-sn-active", i === index);
+          node.classList.toggle("veltro-spatial-active", i === index);
         });
         activeNode = index;
       }

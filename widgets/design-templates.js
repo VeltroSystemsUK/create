@@ -44,7 +44,7 @@ FB.design.TEMPLATES = [
           text: "A short supporting tagline for your hero section",
           fontFamily: "Lexend",
           fontSize: 28,
-          fill: "#aaaaaa",
+          fill: "#767676",
           styles: {},
           name: "Subhead",
         },

@@ -32,38 +32,55 @@ FB.widgets.register("image", {
       "</div>"
     );
   },
-  editPanel: function (id, p) {
+  editPanel: function (id, p) { return ""; },
+});
+
+FB.widgets.register("imageBox", {
+  label: "Image Box",
+  icon: "\uD83D\uDDBC",
+  iconBg: "#2a1a3a",
+  iconColor: "#CDFE00",
+  category: "content",
+  defaultProps: {
+    src: "",
+    title: "Image Title",
+    desc: "Description text",
+    imageBorderRadius: 6,
+    imageOpacity: 1,
+    titleFontSize: 18,
+    descFontSize: 14,
+    overlayBgColor: "rgba(0, 0, 0, 0.6)",
+  },
+  render: function (p) {
     return (
-      '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
-      p.src +
-      '" placeholder="https://..." onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','src',this.value)\"></div>" +
-      '<div class="rp-row"><label>Alt Text</label><input type="text" value="' +
-      p.alt +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','alt',this.value)\"></div>" +
-      '<div class="rp-row"><label>Max Width</label><input type="text" value="' +
-      (p.width || "100%") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','width',this.value)\"></div>" +
-      '<div class="rp-row"><label>Border Radius: ' +
-      (p.borderRadius || 0) +
-      'px</label><input type="range" min="0" max="50" value="' +
-      (p.borderRadius || 0) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','borderRadius',+this.value);this.previousElementSibling.textContent='Border Radius: '+this.value+'px'\"></div>"
+      '<div class="fw-image-box" style="position:relative;overflow:hidden;border-radius:' +
+      (p.imageBorderRadius || 6) +
+      'px;margin:0.5rem 1rem;height:300px;background:#f0f0f0' +
+      (p.src ? ";background-image:url('" + p.src + "');background-size:cover;background-position:center" : "") +
+      '">' +
+      (p.src ? '<div class="fw-image-overlay" style="position:absolute;inset:0;background:' +
+      (p.overlayBgColor || "rgba(0, 0, 0, 0.6)") +
+      ';display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;padding:20px;opacity:1;z-index:2">' +
+      '<h3 class="fw-image-title" style="margin:0 0 8px;font-size:' +
+      (p.titleFontSize || 18) +
+      'px;font-weight:600;color:#fff;width:100%">' +
+      (p.title || "Image Title") +
+      '</h3>' +
+      '<p class="fw-image-desc" style="margin:0;font-size:' +
+      (p.descFontSize || 14) +
+      'px;color:#fff;line-height:1.4;width:100%">' +
+      (p.desc || "Description text") +
+      '</p></div>' : '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#999;text-align:center;flex-direction:column"><div style="font-size:3rem">\uD83D\uDDBC\uFE0F</div><div style="font-size:14px;margin-top:10px">Image Box<br><span style="font-size:11px;opacity:0.7">Add image URL in properties</span></div></div>') +
+      '</div>'
     );
   },
+  editPanel: function (id, p) { return ""; },
 });
 
 FB.widgets.register("button", {
   label: "Button",
-  icon: "\u25A6",
-  iconBg: "#2a3a1a",
+  icon: "\u25B6",
+  iconBg: "#1a2a3a",
   iconColor: "#CDFE00",
   category: "content",
   defaultProps: {
@@ -73,6 +90,10 @@ FB.widgets.register("button", {
     align: "center",
     bg: "#CDFE00",
     color: "#111",
+    image: "",
+    imagePosition: "left",
+    imageSize: 20,
+    imageBorderRadius: 4,
   },
   render: function (p) {
     var sizes = {
@@ -81,13 +102,24 @@ FB.widgets.register("button", {
       lg: "16px 32px;font-size:15px",
     };
     var parts = (sizes[p.size] || sizes.md).split(";");
+    var imageHtml = p.image
+      ? '<img src="' +
+        p.image +
+        '" style="width:' +
+        (p.imageSize || 20) +
+        'px;height:' +
+        (p.imageSize || 20) +
+        'px;object-fit:cover;border-radius:' +
+        (p.imageBorderRadius || 4) +
+        'px">'
+      : "";
     return (
       '<div style="text-align:' +
       (p.align || "center") +
       ';padding:0.5rem 1rem">' +
       '<a href="' +
       (p.url || "#") +
-      '" style="display:inline-block;background:' +
+      '" style="display:inline-flex;align-items:center;gap:8px;background:' +
       (p.bg || "#CDFE00") +
       ";color:" +
       (p.color || "#111") +
@@ -95,79 +127,16 @@ FB.widgets.register("button", {
       parts[0] +
       ";" +
       (parts[1] || "") +
-      ';font-weight:600;border:none;border-radius:6px;cursor:pointer;text-decoration:none;font-family:inherit" contenteditable data-field="text">' +
+      ';font-weight:600;border:none;border-radius:6px;cursor:pointer;text-decoration:none;font-family:inherit;' +
+      (p.imagePosition === "top" ? "flex-direction:column;" : "") +
+      '" contenteditable data-field="text">' +
+      (p.imagePosition === "left" ? imageHtml : "") +
       (p.text || "Click Me") +
+      (p.imagePosition === "top" ? imageHtml : "") +
       "</a></div>"
     );
   },
-  editPanel: function (id, p) {
-    var sizes = ["sm", "md", "lg"];
-    return (
-      '<div class="rp-row"><label>Text</label><input type="text" value="' +
-      p.text +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','text',this.value)\"></div>" +
-      '<div class="rp-row"><label>Link</label><input type="text" value="' +
-      (p.url || "#") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','url',this.value)\"></div>" +
-      '<div class="rp-row"><label>Size</label><select onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','size',this.value)\">" +
-      sizes
-        .map(function (s) {
-          return (
-            '<option value="' +
-            s +
-            '"' +
-            (p.size === s ? " selected" : "") +
-            ">" +
-            s.toUpperCase() +
-            "</option>"
-          );
-        })
-        .join("") +
-      "</select></div>" +
-      '<div class="rp-row"><label>Align</label><select onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','align',this.value)\">" +
-      ["left", "center", "right"]
-        .map(function (a) {
-          return (
-            '<option value="' +
-            a +
-            '"' +
-            ((p.align || "center") === a ? " selected" : "") +
-            ">" +
-            a.charAt(0).toUpperCase() +
-            a.slice(1) +
-            "</option>"
-          );
-        })
-        .join("") +
-      "</select></div>" +
-      '<div class="rp-row"><label>Button BG</label><div class="color-row"><input type="color" value="' +
-      (p.bg || "#CDFE00") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      '\',\'bg\',this.value)"><input type="text" value="' +
-      (p.bg || "#CDFE00") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','bg',this.value)\"></div></div>" +
-      '<div class="rp-row"><label>Text Color</label><div class="color-row"><input type="color" value="' +
-      (p.color || "#111111") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      '\',\'color\',this.value)"><input type="text" value="' +
-      (p.color || "#111111") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','color',this.value)\"></div></div>"
-    );
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 FB.widgets.register("video", {
@@ -180,147 +149,96 @@ FB.widgets.register("video", {
     src: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     controls: true,
     aspectRatio: "56.25%",
+    thumbnail: "",
+    showThumbnail: true,
+    thumbnailBorderRadius: 6,
   },
   render: function (p) {
+    var bgStyle = p.thumbnail && p.showThumbnail
+      ? "background-image:url('" + p.thumbnail + "');background-size:cover;background-position:center;"
+      : "";
     return (
       '<div style="padding:0.5rem 1rem"><div style="position:relative;padding-bottom:' +
       (p.aspectRatio || "56.25%") +
-      ';height:0;overflow:hidden;border-radius:6px">' +
-      '<iframe src="' +
+      ';height:0;overflow:hidden;border-radius:' +
+      (p.thumbnailBorderRadius || 6) +
+      'px;' +
+      (p.thumbnail && p.showThumbnail ? bgStyle : "") +
+      '">' +
+      (p.src ? '<iframe src="' +
       (p.src || "") +
       '" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none" ' +
       (p.controls ? "allowfullscreen" : "") +
-      "></iframe></div></div>"
+      "></iframe>" : '<div style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);color:#fff;font-size:14px">Add video URL</div>') +
+      '</div></div>'
     );
   },
-  editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Video URL (embed)</label><input type="text" value="' +
-      p.src +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','src',this.value)\"></div>"
-    );
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
-FB.widgets.register("starRating", {
-  label: "Star Rating",
-  icon: "\u2605",
-  iconBg: "#2a2a1a",
-  iconColor: "#f0ad4e",
-  category: "content",
-  defaultProps: { rating: 4, max: 5, color: "#f0ad4e", size: 24 },
-  render: function (p) {
-    var stars = "";
-    var r = Math.round(p.rating || 4);
-    for (var i = 1; i <= (p.max || 5); i++) {
-      stars +=
-        '<span class="fw-star' +
-        (i <= r ? "-filled" : "-empty") +
-        '" style="font-size:' +
-        (p.size || 24) +
-        'px">' +
-        (i <= r ? "\u2605" : "\u2606") +
-        "</span>";
-    }
-    return (
-      '<div style="padding:0.5rem 1rem;text-align:center" class="fw-stars">' +
-      stars +
-      "</div>"
-    );
-  },
-  editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Rating: ' +
-      (p.rating || 4) +
-      "/" +
-      (p.max || 5) +
-      '</label><input type="range" min="0" max="5" step="0.5" value="' +
-      (p.rating || 4) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','rating',+this.value);this.previousElementSibling.textContent='Rating: '+this.value+'/" +
-      (p.max || 5) +
-      "'\"></div>" +
-      '<div class="rp-row"><label>Size: ' +
-      (p.size || 24) +
-      'px</label><input type="range" min="16" max="48" value="' +
-      (p.size || 24) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','size',+this.value);this.previousElementSibling.textContent='Size: '+this.value+'px'\"></div>" +
-      '<div class="rp-row"><label>Star Color</label><div class="color-row"><input type="color" value="' +
-      (p.color || "#f0ad4e") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      '\',\'color\',this.value)"><input type="text" value="' +
-      (p.color || "#f0ad4e") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','color',this.value)\"></div></div>"
-    );
-  },
-});
-
-// iconBox moved to widgets/icon-box.js (enhanced version with link, alignment, colors)
-
-FB.widgets.register("imageBox", {
-  label: "Image Box",
-  icon: "\u25F1",
-  iconBg: "#1a3a2a",
+FB.widgets.register("iconBox", {
+  label: "Icon Box",
+  icon: "\u2B1B",
+  iconBg: "#1a2a3a",
   iconColor: "#CDFE00",
   category: "content",
-  defaultProps: { src: "", title: "Image Title", desc: "Description" },
+  defaultProps: {
+    icon: "\u2726",
+    title: "Feature Title",
+    desc: "Short description of this feature.",
+    align: "left",
+    image: "",
+    useImage: false,
+    imageSize: 60,
+    imageBorderRadius: 4,
+    imageMarginBottom: 12,
+  },
   render: function (p) {
-    if (!p.src)
-      return '<div style="padding:0.5rem 1rem"><div style="background:#f0f0f0;border:2px dashed #ccc;border-radius:6px;padding:3rem;text-align:center;color:#999">\uD83D\uDDBC Image Box<br><span style="font-size:11px">Set image in panel</span></div></div>';
+    var iconHtml = p.useImage && p.image
+      ? '<img src="' +
+        p.image +
+        '" style="width:' +
+        (p.imageSize || 60) +
+        'px;height:' +
+        (p.imageSize || 60) +
+        'px;object-fit:cover;border-radius:' +
+        (p.imageBorderRadius || 4) +
+        'px;display:block;' +
+        (p.align === "center" ? "margin:0 auto " : "margin:0 0 ") +
+        (p.imageMarginBottom || 12) +
+        'px">'
+      : '<div class="fw-iconbox-icon" style="font-size:2rem;' +
+      (p.align === "center" ? "margin:0 auto 8px" : "") +
+      '">' +
+      p.icon +
+      "</div>";
     return (
-      '<div class="fw-image-box" style="margin:0.5rem 1rem;position:relative;overflow:hidden;border-radius:6px">' +
-      '<img src="' +
-      p.src +
-      '" style="width:100%;display:block;transition:transform 0.4s">' +
-      '<div class="fw-image-overlay" style="position:absolute;bottom:0;left:0;right:0;padding:1.5rem;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);color:#fff">' +
-      '<h3 style="margin:0 0 4px;font-size:16px" contenteditable data-field="title">' +
+      '<div class="fw-iconbox" style="padding:1rem;text-align:' +
+      (p.align || "left") +
+      '">' +
+      iconHtml +
+      '<div class="fw-iconbox-content"><h4 style="margin:0 0 4px;font-size:15px;font-weight:600" contenteditable data-field="title">' +
       p.title +
-      "</h3>" +
-      '<p style="margin:0;font-size:13px" contenteditable data-field="desc">' +
+      "</h4>" +
+      '<p style="margin:0;font-size:13px;line-height:1.5" contenteditable data-field="desc">' +
       p.desc +
       "</p></div></div>"
     );
   },
-  editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Image URL</label><input type="text" value="' +
-      p.src +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','src',this.value)\"></div>" +
-      '<div class="rp-row"><label>Title</label><input type="text" value="' +
-      p.title +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','title',this.value)\"></div>" +
-      '<div class="rp-row"><label>Description</label><textarea rows="2" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','desc',this.value)\">" +
-      p.desc +
-      "</textarea></div>"
-    );
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 FB.widgets.register("iconList", {
   label: "Icon List",
   icon: "\u2630",
-  iconBg: "#2a1a2a",
+  iconBg: "#1a2a3a",
   iconColor: "#CDFE00",
   category: "content",
   defaultProps: {
     items: [
-      { icon: "\u2713", text: "First item" },
-      { icon: "\u2713", text: "Second item" },
-      { icon: "\u2713", text: "Third item" },
+      { icon: "\u2726", text: "List item one" },
+      { icon: "\u2726", text: "List item two" },
+      { icon: "\u2726", text: "List item three" },
     ],
     color: "#CDFE00",
   },
@@ -344,42 +262,7 @@ FB.widgets.register("iconList", {
       "</ul>"
     );
   },
-  editPanel: function (id, p) {
-    var html = "";
-    html +=
-      '<div class="rp-row"><label>Icon Color</label><div class="color-row"><input type="color" value="' +
-      (p.color || "#CDFE00") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      '\',\'color\',this.value)"><input type="text" value="' +
-      (p.color || "#CDFE00") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','color',this.value)\"></div></div>";
-    (p.items || []).forEach(function (item, i) {
-      html +=
-        '<div class="rp-row" style="flex-direction:row;gap:4px">' +
-        '<input type="text" value="' +
-        item.icon +
-        '" style="width:30px" onchange="var items=JSON.parse(JSON.stringify(FB.state.blocks.find(function(b){return b.id===\'' +
-        id +
-        "'}).props.items||[]));items[" +
-        i +
-        "].icon=this.value;FB.panels.updateWidgetProp('" +
-        id +
-        "','items',items)\">" +
-        '<input type="text" value="' +
-        item.text +
-        '" style="flex:1" onchange="var items=JSON.parse(JSON.stringify(FB.state.blocks.find(function(b){return b.id===\'' +
-        id +
-        "'}).props.items||[]));items[" +
-        i +
-        "].text=this.value;FB.panels.updateWidgetProp('" +
-        id +
-        "','items',items)\"></div>";
-    });
-    return html;
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 FB.widgets.register("socialIcons", {
@@ -429,30 +312,5 @@ FB.widgets.register("socialIcons", {
       "</div>"
     );
   },
-  editPanel: function (id, p) {
-    var html = "";
-    (p.items || []).forEach(function (item, i) {
-      html +=
-        '<div class="rp-row" style="flex-direction:row;gap:4px">' +
-        '<input type="text" value="' +
-        item.icon +
-        '" style="width:30px" placeholder="icon" onchange="var items=JSON.parse(JSON.stringify(FB.state.blocks.find(function(b){return b.id===\'' +
-        id +
-        "'}).props.items||[]));items[" +
-        i +
-        "].icon=this.value;FB.panels.updateWidgetProp('" +
-        id +
-        "','items',items)\">" +
-        '<input type="text" value="' +
-        item.url +
-        '" style="flex:1" placeholder="URL" onchange="var items=JSON.parse(JSON.stringify(FB.state.blocks.find(function(b){return b.id===\'' +
-        id +
-        "'}).props.items||[]));items[" +
-        i +
-        "].url=this.value;FB.panels.updateWidgetProp('" +
-        id +
-        "','items',items)\"></div>";
-    });
-    return html;
-  },
+  editPanel: function (id, p) { return ""; },
 });

@@ -31,66 +31,7 @@ FB.widgets.register("heading", {
       ">"
     );
   },
-  editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Text</label><input type="text" value="' +
-      p.text +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','text',this.value)\"></div>" +
-      '<div class="rp-row"><label>Tag</label><select onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','tag',this.value)\">" +
-      ["h1", "h2", "h3", "h4", "h5", "h6", "div", "p"]
-        .map(function (t) {
-          return (
-            '<option value="' +
-            t +
-            '"' +
-            (p.tag === t ? " selected" : "") +
-            ">" +
-            t.toUpperCase() +
-            "</option>"
-          );
-        })
-        .join("") +
-      "</select></div>" +
-      '<div class="rp-row"><label>Align</label><select onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','align',this.value)\">" +
-      ["left", "center", "right"]
-        .map(function (a) {
-          return (
-            '<option value="' +
-            a +
-            '"' +
-            ((p.align || "left") === a ? " selected" : "") +
-            ">" +
-            a.charAt(0).toUpperCase() +
-            a.slice(1) +
-            "</option>"
-          );
-        })
-        .join("") +
-      "</select></div>" +
-      '<div class="rp-row"><label>Size: ' +
-      (p.size || 32) +
-      'px</label><input type="range" min="14" max="120" value="' +
-      (p.size || 32) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','size',+this.value);this.previousElementSibling.textContent='Size: '+this.value+'px'\"></div>" +
-      '<div class="rp-row"><label>Color</label><div class="color-row"><input type="color" value="' +
-      (p.color || "#111111") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      '\',\'color\',this.value)"><input type="text" value="' +
-      (p.color || "#111111") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','color',this.value)\"></div></div>"
-    );
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 FB.widgets.register("divider", {
@@ -111,33 +52,7 @@ FB.widgets.register("divider", {
       ';border:none;margin:1rem auto">'
     );
   },
-  editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Width: ' +
-      (p.width || 100) +
-      '%</label><input type="range" min="10" max="100" value="' +
-      (p.width || 100) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','width',+this.value);this.previousElementSibling.textContent='Width: '+this.value+'%'\"></div>" +
-      '<div class="rp-row"><label>Height: ' +
-      (p.height || 2) +
-      'px</label><input type="range" min="1" max="10" value="' +
-      (p.height || 2) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','height',+this.value);this.previousElementSibling.textContent='Height: '+this.value+'px'\"></div>" +
-      '<div class="rp-row"><label>Color</label><div class="color-row"><input type="color" value="' +
-      (p.color || "#ddd") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      '\',\'color\',this.value)"><input type="text" value="' +
-      (p.color || "#ddd") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','color',this.value)\"></div></div>"
-    );
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 FB.widgets.register("spacer", {
@@ -154,17 +69,7 @@ FB.widgets.register("spacer", {
       'px;pointer-events:none"></div>'
     );
   },
-  editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Height: ' +
-      (p.height || 50) +
-      'px</label><input type="range" min="10" max="200" value="' +
-      (p.height || 50) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','height',+this.value);this.previousElementSibling.textContent='Height: '+this.value+'px'\"></div>"
-    );
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 FB.widgets.register("icon", {
@@ -185,31 +90,7 @@ FB.widgets.register("icon", {
       "</span></div>"
     );
   },
-  editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Icon (emoji/SVG)</label><input type="text" value="' +
-      p.icon +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','icon',this.value)\"></div>" +
-      '<div class="rp-row"><label>Size: ' +
-      (p.size || 48) +
-      'px</label><input type="range" min="16" max="128" value="' +
-      (p.size || 48) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','size',+this.value);this.previousElementSibling.textContent='Size: '+this.value+'px'\"></div>" +
-      '<div class="rp-row"><label>Color</label><div class="color-row"><input type="color" value="' +
-      (p.color || "#CDFE00") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      '\',\'color\',this.value)"><input type="text" value="' +
-      (p.color || "#CDFE00") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','color',this.value)\"></div></div>"
-    );
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 FB.widgets.register("html", {
@@ -222,15 +103,7 @@ FB.widgets.register("html", {
   render: function (p) {
     return '<div style="padding:0.5rem 1rem">' + (p.html || "") + "</div>";
   },
-  editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Raw HTML</label><textarea rows="6" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','html',this.value)\">" +
-      p.html +
-      "</textarea></div>"
-    );
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 FB.widgets.register("shortcode", {
@@ -247,15 +120,7 @@ FB.widgets.register("shortcode", {
       "</div>"
     );
   },
-  editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Shortcode</label><input type="text" value="' +
-      p.shortcode +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','shortcode',this.value)\"></div>"
-    );
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 FB.widgets.register("blockquote", {
@@ -280,29 +145,7 @@ FB.widgets.register("blockquote", {
       "</cite></blockquote>"
     );
   },
-  editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Quote</label><textarea rows="3" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','quote',this.value)\">" +
-      p.quote +
-      "</textarea></div>" +
-      '<div class="rp-row"><label>Attribution</label><input type="text" value="' +
-      p.attribution +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','attribution',this.value)\"></div>" +
-      '<div class="rp-row"><label>Border Color</label><div class="color-row"><input type="color" value="' +
-      (p.borderColor || "#CDFE00") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      '\',\'borderColor\',this.value)"><input type="text" value="' +
-      (p.borderColor || "#CDFE00") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','borderColor',this.value)\"></div></div>"
-    );
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 FB.widgets.register("textPath", {
@@ -331,20 +174,5 @@ FB.widgets.register("textPath", {
       "</textPath></text></svg>"
     );
   },
-  editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Text</label><input type="text" value="' +
-      p.text +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','text',this.value)\"></div>" +
-      '<div class="rp-row"><label>Font Size: ' +
-      (p.fontSize || 24) +
-      'px</label><input type="range" min="12" max="60" value="' +
-      (p.fontSize || 24) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','fontSize',+this.value);this.previousElementSibling.textContent='Font Size: '+this.value+'px'\"></div>"
-    );
-  },
+  editPanel: function (id, p) { return ""; },
 });

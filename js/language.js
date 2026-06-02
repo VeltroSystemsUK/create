@@ -95,7 +95,8 @@ FB.language.select = function (code) {
   localStorage.setItem("fb-language", code);
   FB.language.updateDisplay();
   FB.language.renderMenu();
-  document.getElementById("lang-menu").classList.remove("open");
+  var menu = document.getElementById("lang-menu");
+  if (menu) menu.classList.remove("open");
 
   if (
     typeof google !== "undefined" &&

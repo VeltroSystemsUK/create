@@ -1,35 +1,21 @@
 // Framework Builder — ES module entry point
 // Import order matches the original script-tag load order exactly.
 
-// CSS imports — needed for Vite dev mode (Vite transforms CSS to JS modules for HMR)
-import "../css/reset.css";
-import "../css/layout.css";
-import "../css/components.css";
-import "../css/blocks.css";
-import "../css/canvas.css";
-import "../css/pages-manager.css";
-import "../css/widgets.css";
-import "../css/grids.css";
-import "../css/help.css";
-import "../css/design.css";
-import "../css/custom-blocks.css";
-
 import "../js/state.js";
 import "../js/events.js";
 import "../js/bindings.js";
 import "../js/pages.js";
-import "../js/pages-manager.js";
 import "../js/blocks.js";
 import "../js/theme.js";
 import "../js/canvas.js";
 import "../js/panels.js";
 import "../js/export.js";
+import "../js/project.js";
 import "../js/cms-schema.js";
 import "../js/templates.js";
-import "../js/project.js";
-import "../js/media-gallery.js";
 import "../js/scraper.js";
 import "../js/widgets.js";
+import "../js/creative-library.js";
 import "../widgets/basic.js";
 import "../widgets/content.js";
 import "../widgets/media.js";
@@ -50,12 +36,3 @@ import "../js/design.js";
 import "../widgets/design-templates.js";
 import "../js/motion-creator.js";
 import "../js/deep-scrape.js";
-import "../js/rebuild.js";
-import "../widgets/icon-box.js";
-import "../widgets/tabs.js";
-import "../widgets/modal.js";
-import "../widgets/image-viewer.js";
-import "../widgets/data-table.js";
-import "../widgets/ecom-products.js";
-import "../widgets/ecom-checkout.js";
-import "../widgets/ecom-others.js";

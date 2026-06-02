@@ -1,7 +1,9 @@
 FB.ai = FB.ai || {};
 
 FB.ai.getApiKey = function () {
-  var stored = localStorage.getItem("fb-gemini-key");
+  // sessionStorage is preferred — key does not persist after the tab closes.
+  // Also check an optional build-time config object as a fallback.
+  var stored = sessionStorage.getItem("fb-gemini-key");
   if (stored) return stored;
   if (typeof FB_AI_CONFIG !== "undefined" && FB_AI_CONFIG.geminiKey) {
     return FB_AI_CONFIG.geminiKey;
@@ -10,11 +12,13 @@ FB.ai.getApiKey = function () {
 };
 
 FB.ai.setApiKey = function (key) {
-  localStorage.setItem("fb-gemini-key", key);
+  // Use sessionStorage so the key is not persisted to disk and is cleared
+  // automatically when the browser tab/window is closed.
+  sessionStorage.setItem("fb-gemini-key", key);
 };
 
 FB.ai.clearApiKey = function () {
-  localStorage.removeItem("fb-gemini-key");
+  sessionStorage.removeItem("fb-gemini-key");
 };
 
 FB.ai._extractJSON = function (text) {
@@ -47,7 +51,7 @@ FB.ai.generateTemplate = function (userPrompt, onChunk, onDone, onError) {
       },
     ],
     generationConfig: {
-      temperature: 0.8,
+      temperature: 0.95,
       topP: 0.95,
       topK: 40,
       maxOutputTokens: 8192,
@@ -64,23 +68,27 @@ FB.ai.generateTemplate = function (userPrompt, onChunk, onDone, onError) {
 
   xhr.onload = function () {
     if (xhr.status === 200) {
-      var data = JSON.parse(xhr.responseText);
-      var text = "";
-      if (data.candidates && data.candidates[0] && data.candidates[0].content) {
-        var parts = data.candidates[0].content.parts || [];
-        text = parts
-          .map(function (p) {
-            return p.text || "";
-          })
-          .join("");
-      }
-      if (onChunk) onChunk(text);
-      var parsed = FB.ai._extractJSON(text);
-      if (parsed) {
-        if (onDone) onDone(parsed);
-      } else {
-        if (onError)
-          onError("AI returned invalid JSON. Try rephrasing your prompt.");
+      try {
+        var data = JSON.parse(xhr.responseText);
+        var text = "";
+        if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+          var parts = data.candidates[0].content.parts || [];
+          text = parts
+            .map(function (p) {
+              return p.text || "";
+            })
+            .join("");
+        }
+        if (onChunk) onChunk(text);
+        var parsed = FB.ai._extractJSON(text);
+        if (parsed) {
+          if (onDone) onDone(parsed);
+        } else {
+          if (onError)
+            onError("AI returned invalid JSON. Try rephrasing your prompt.");
+        }
+      } catch (e) {
+        if (onError) onError("Failed to parse API response: " + e.message);
       }
     } else {
       var errMsg = "API error: " + xhr.status;

@@ -10,4 +10,4 @@ import "./batch-physics.js";
 import "./batch-scroll.js";
 import "./batch-ambient.js";
 import "./batch-spatial.js";
-import "./inits.js";
+import "./inits-lazy.js";

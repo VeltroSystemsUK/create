@@ -44,7 +44,7 @@
   background: #1a1a2a;
   border: 1px solid #2a2a3a;
   border-radius: 5px;
-  color: #888;
+  color: #d0d0d0;
   width: 30px;
   height: 30px;
   cursor: pointer;
@@ -55,7 +55,7 @@
 }
 .ds-icon-btn:hover {
   color: #fff;
-  border-color: #555;
+  border-color: #a8a8a8;
 }
 .ds-divider {
   width: 1px;
@@ -74,7 +74,7 @@
   white-space: nowrap;
 }
 .ds-back-btn:hover {
-  border-color: #555;
+  border-color: #a8a8a8;
   color: #fff;
 }
 .ds-save-btn {
@@ -113,18 +113,18 @@
   font-size: 11px;
 }
 #ds-zoom-controls button:hover {
-  border-color: #555;
+  border-color: #a8a8a8;
   color: #fff;
 }
 #ds-zoom-label {
   font-size: 10px;
-  color: #666;
+  color: #a6a6a6;
   min-width: 36px;
   text-align: center;
 }
 #ds-size-label {
   font-size: 10px;
-  color: #555;
+  color: #a8a8a8;
 }
 
 /* MAIN AREA */
@@ -184,7 +184,7 @@
   background: none;
   border: none;
   border-bottom: 2px solid transparent;
-  color: #555;
+  color: #a8a8a8;
   font-size: 10px;
   cursor: pointer;
   letter-spacing: 0.5px;
@@ -227,7 +227,7 @@
   background: #1a1a2a;
   border: 1px solid #2a2a3a;
   border-radius: 6px;
-  color: #888;
+  color: #d0d0d0;
   padding: 7px 0;
   cursor: pointer;
   font-size: 13px;
@@ -235,7 +235,7 @@
   transition: all 0.15s;
 }
 .ds-tool-btn:hover {
-  border-color: #555;
+  border-color: #a8a8a8;
   color: #ccc;
 }
 .ds-tool-btn.active {
@@ -256,7 +256,7 @@
 
 .ds-section-label {
   font-size: 9px;
-  color: #555;
+  color: #a8a8a8;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   margin-bottom: 6px;
@@ -305,7 +305,7 @@
   justify-content: center;
   cursor: pointer;
   font-size: 16px;
-  color: #777;
+  color: #b8b8b8;
   transition: all 0.15s;
 }
 .ds-shape-tile:hover {
@@ -362,7 +362,7 @@
   justify-content: center;
   cursor: pointer;
   font-size: 13px;
-  color: #666;
+  color: #a6a6a6;
   transition: all 0.15s;
 }
 .ds-icon-tile:hover {
@@ -404,11 +404,11 @@
   background: #1a1a2a;
   cursor: pointer;
   font-size: 10px;
-  color: #888;
+  color: #d0d0d0;
   user-select: none;
 }
 .ds-layer-row:hover {
-  border-color: #555;
+  border-color: #a8a8a8;
   color: #ccc;
 }
 .ds-layer-row.selected {
@@ -425,7 +425,7 @@
 .ds-layer-vis {
   background: none;
   border: none;
-  color: #555;
+  color: #a8a8a8;
   cursor: pointer;
   font-size: 10px;
   padding: 0 2px;
@@ -449,7 +449,7 @@
   display: block;
 }
 .ds-full-btn:hover {
-  border-color: #555;
+  border-color: #a8a8a8;
   color: #fff;
 }
 #ds-assets-designs {
@@ -470,7 +470,7 @@
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: #555;
+  color: #a8a8a8;
   margin-bottom: 4px;
 }
 .ds-prop-row {
@@ -522,14 +522,14 @@
   background: #1a1a2a;
   border: 1px solid #2a2a3a;
   border-radius: 4px;
-  color: #888;
+  color: #d0d0d0;
   font-size: 10px;
   padding: 4px 8px;
   cursor: pointer;
   flex: 1;
 }
 .ds-sm-btn:hover {
-  border-color: #555;
+  border-color: #a8a8a8;
   color: #fff;
 }
 .ds-sm-btn.active {
@@ -547,7 +547,7 @@
 }
 .ds-align-group-label {
   font-size: 9px;
-  color: #555;
+  color: #a8a8a8;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   margin-bottom: 4px;
@@ -571,7 +571,7 @@
   background: #1a1a2a;
   border: 1px solid #2a2a3a;
   border-radius: 5px;
-  color: #777;
+  color: #b8b8b8;
   padding: 8px 4px;
   cursor: pointer;
   font-size: 10px;
@@ -579,7 +579,7 @@
   transition: all 0.15s;
 }
 .ds-align-btn:hover {
-  border-color: #555;
+  border-color: #a8a8a8;
   color: #fff;
 }
 
@@ -620,7 +620,7 @@
   text-align: center;
 }
 .ds-export-btn:hover {
-  border-color: #555;
+  border-color: #a8a8a8;
   color: #fff;
 }
 #ds-canvas-bg-picker {
@@ -700,7 +700,7 @@
 }
 .ds-thumb-label {
   font-size: 10px;
-  color: #888;
+  color: #d0d0d0;
   padding: 4px 6px;
   text-align: center;
 }
@@ -724,7 +724,7 @@
 }
 #ds-ai-status {
   font-size: 11px;
-  color: #888;
+  color: #d0d0d0;
   padding: 0 16px 12px;
 }
 
@@ -752,7 +752,7 @@
 }
 .ds-builder-thumb-label {
   font-size: 9px;
-  color: #666;
+  color: #a6a6a6;
   padding: 2px 4px;
   text-align: center;
   overflow: hidden;
@@ -772,7 +772,7 @@
   background: #1a1a2a;
   border: 1px solid #2a2a3a;
   border-radius: 5px;
-  color: #888;
+  color: #d0d0d0;
   flex: 1;
   padding: 5px 2px;
   cursor: pointer;
@@ -782,7 +782,7 @@
   white-space: nowrap;
 }
 .ds-action-btn:hover {
-  border-color: #555;
+  border-color: #a8a8a8;
   color: #fff;
 }
 .ds-action-danger:hover {
@@ -795,7 +795,7 @@
   background: #1a1a2a;
   border: 1px solid #2a2a3a;
   border-radius: 4px;
-  color: #666;
+  color: #a6a6a6;
   width: 28px;
   height: 28px;
   cursor: pointer;
@@ -807,7 +807,7 @@
   flex-shrink: 0;
 }
 .ds-toggle-btn:hover {
-  border-color: #555;
+  border-color: #a8a8a8;
   color: #ccc;
 }
 .ds-toggle-btn.active {
@@ -899,7 +899,7 @@
   background: #1a1a24;
   border-radius: 8px;
   font-size: 11px;
-  color: #888;
+  color: #d0d0d0;
 }
 .ai-spinner {
   width: 14px;
@@ -957,7 +957,7 @@
 }
 .ai-block-card-sub {
   font-size: 9px;
-  color: #666;
+  color: #a6a6a6;
   margin-top: 1px;
 }
 .ai-block-card-actions {
@@ -1037,7 +1037,7 @@
 }
 .mc-btn:hover {
   background: #2a2a3a;
-  border-color: #555;
+  border-color: #a8a8a8;
 }
 .mc-btn-play {
   background: #cdfe00;
@@ -1080,7 +1080,7 @@
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: #555;
+  color: #a8a8a8;
   padding: 6px 8px;
   border-bottom: 1px solid #222;
 }
@@ -1137,7 +1137,7 @@
 }
 .mc-ruler-tick span {
   font-size: 8px;
-  color: #555;
+  color: #a8a8a8;
   position: absolute;
   left: 3px;
   top: 4px;
@@ -1164,7 +1164,7 @@
 .mc-track-label {
   width: 100px;
   font-size: 9px;
-  color: #666;
+  color: #a6a6a6;
   padding: 2px 6px;
   flex-shrink: 0;
   overflow: hidden;

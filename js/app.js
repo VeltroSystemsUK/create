@@ -31,7 +31,13 @@ FB.util.bindSearch = function () {
 
 FB.util.showToast = function (msg) {
   const t = document.getElementById("toast");
-  t.innerHTML = msg + '<div class="toast-progress"></div>';
+  if (!t) return;
+  // Use textContent for the message to prevent XSS, then append the
+  // progress bar element separately rather than via innerHTML.
+  t.textContent = msg;
+  var progress = document.createElement("div");
+  progress.className = "toast-progress";
+  t.appendChild(progress);
   t.classList.add("show");
   clearTimeout(t._timer);
   t._timer = setTimeout(function () {
@@ -40,9 +46,14 @@ FB.util.showToast = function (msg) {
 };
 
 FB.init = function () {
+  FB.blocks.normalizeAllBlocks();
   FB.panels.buildLibrary();
+  FB.panels.buildWidgetLibrary();
+  FB.panels.buildEcommerceLibrary();
   FB.util.bindSearch();
+  // Always start fresh - no auto-restore from localStorage
   FB.pages.init();
+  // Never load starter template - blank canvas only
   FB.pages.render();
   FB.canvas.render();
   FB.canvas.initAnimations();
@@ -56,7 +67,6 @@ FB.init = function () {
   FB.canvas.initScrollIndicator();
   FB.canvas.initSvgDraw();
   FB.canvas.initCountdown();
-  if (FB.mediaGallery && FB.mediaGallery.init) FB.mediaGallery.init();
   FB.canvas.initProductTabs();
   if (FB.theme && FB.theme.apply) FB.theme.apply();
   if (FB.themeToggle && FB.themeToggle.init) FB.themeToggle.init();
@@ -109,6 +119,9 @@ FB.init = function () {
             FB.util.showToast("\uD83D\uDCCB Block pasted");
           }
         } catch (_) {}
+      }).catch(function (err) {
+        // Clipboard access was denied or unavailable \u2014 fail silently
+        console.debug("Clipboard read unavailable:", err);
       });
     }
   });

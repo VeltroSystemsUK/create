@@ -440,3 +440,135 @@ input[type="range"] {
   border-color: var(--accent);
   font-weight: 600;
 }
+
+/* ── ARRAY EDITOR ── */
+.array-editor {
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-1);
+  margin: 8px 8px;
+}
+
+.array-item {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 8px;
+  background: var(--surface);
+}
+
+.array-item > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  background: var(--surface-2);
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.15s;
+}
+
+.array-item > div:first-child:hover {
+  background: var(--surface-3);
+}
+
+.array-item-toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 12px;
+  width: 20px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s;
+}
+
+.array-item-toggle:hover {
+  color: var(--accent);
+}
+
+.array-item-content {
+  padding: 12px;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.array-item-content .rp-row {
+  padding: 0 0 8px 0;
+  margin-bottom: 0;
+}
+
+.array-item-content .rp-row:last-child {
+  margin-bottom: 0;
+}
+
+.array-item-content label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.array-item-content input[type="text"],
+.array-item-content input[type="color"],
+.array-item-content input[type="range"],
+.array-item-content textarea {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-family: inherit;
+  width: 100%;
+  transition: border-color 0.15s;
+}
+
+.array-item-content input[type="text"]:focus,
+.array-item-content input[type="color"]:focus,
+.array-item-content textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.array-item-content textarea {
+  resize: vertical;
+  min-height: 50px;
+}
+
+.array-item-delete {
+  background: #c33;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 2px 6px;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 600;
+  transition: background-color 0.15s;
+}
+
+.array-item-delete:hover {
+  background: #a22;
+}
+
+.array-add-btn {
+  background: var(--accent);
+  color: #111;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  transition: opacity 0.15s;
+}
+
+.array-add-btn:hover {
+  opacity: 0.9;
+}

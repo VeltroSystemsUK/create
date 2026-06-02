@@ -59,7 +59,7 @@
 }
 .fw-counter-title {
   font-size: 14px;
-  color: #666;
+  color: #a6a6a6;
   margin-top: 4px;
 }
 
@@ -102,7 +102,7 @@
 .fw-countdown-label {
   font-size: 11px;
   text-transform: uppercase;
-  color: #999;
+  color: #c0c0c0;
   letter-spacing: 2px;
 }
 
@@ -283,7 +283,7 @@
   font-size: 14px;
   font-weight: 700;
   background: #eee;
-  color: #999;
+  color: #c0c0c0;
 }
 .fw-tracker-step.active .fw-tracker-dot {
   background: var(--accent);
@@ -291,7 +291,7 @@
 }
 .fw-tracker-label {
   font-size: 11px;
-  color: #999;
+  color: #c0c0c0;
 }
 .fw-tracker-step.active .fw-tracker-label {
   color: #111;
@@ -343,7 +343,7 @@
   padding: 6px 12px;
   background: #f5f5f5;
   font-size: 11px;
-  color: #999;
+  color: #c0c0c0;
   border-bottom: 1px solid #eee;
 }
 .fw-code-block pre {
@@ -702,25 +702,24 @@
 }
 
 /* Spatial navigation */
-.veltro-sn-node {
+.veltro-spatial-item {
   cursor: pointer;
   transition: all 0.3s ease;
   opacity: 0.5;
 }
-.veltro-sn-node.veltro-sn-active {
+.veltro-spatial-item.veltro-spatial-active {
   opacity: 1;
-  transform: scale(1.05);
+  transform: scale(1.05) translateZ(0);
 }
 
-/* Isometric items */
-.veltro-iso-item {
+/* Isometric cells */
+.veltro-iso-cell {
   opacity: 0;
-  transform: translateY(20px);
   transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
-/* Morphing grid cells */
-.veltro-mg-cell {
+/* Morphing grid items */
+.veltro-morphgrid-item {
   transition: transform 0.3s ease;
 }
 
@@ -730,7 +729,7 @@
 }
 
 /* Layered parallax layers */
-.veltro-lp-layer {
+.veltro-layer {
   transition: transform 0.1s ease-out;
 }
 

@@ -42,9 +42,9 @@ FB.theme.apply = function () {
   if (!styleEl) {
     styleEl = document.createElement("style");
     styleEl.id = "fb-custom-css";
-    document.head.appendChild(styleEl);
+    if (document.head) document.head.appendChild(styleEl);
   }
-  styleEl.textContent = FB.state.page.customCSS || "";
+  if (styleEl) styleEl.textContent = FB.state.page.customCSS || "";
 };
 
 FB.theme.set = function (key, val) {
@@ -76,21 +76,50 @@ FB.theme.renderPanel = function () {
   var t = FB.state.theme;
   var p = FB.state.page;
 
+  // Normalize color for HTML5 color input (must be #rrggbb format)
+  function normalizeColorForTheme(color) {
+    if (!color) return "#000000";
+
+    // If it's already a valid 6-digit hex, return it
+    if (/^#[0-9a-f]{6}$/i.test(color)) {
+      return color;
+    }
+
+    // Convert 3-digit hex to 6-digit hex
+    if (/^#[0-9a-f]{3}$/i.test(color)) {
+      return '#' + color[1] + color[1] + color[2] + color[2] + color[3] + color[3];
+    }
+
+    // Convert 8-digit hex (with alpha) to 6-digit hex (strip alpha)
+    if (/^#[0-9a-f]{8}$/i.test(color)) {
+      return color.substring(0, 7);
+    }
+
+    // Handle rgb/rgba colors by extracting hex
+    var rgbMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+    if (rgbMatch) {
+      var r = parseInt(rgbMatch[1], 10).toString(16).padStart(2, '0');
+      var g = parseInt(rgbMatch[2], 10).toString(16).padStart(2, '0');
+      var b = parseInt(rgbMatch[3], 10).toString(16).padStart(2, '0');
+      return '#' + r + g + b;
+    }
+
+    // Default fallback
+    return "#000000";
+  }
+
   function colorRow(label, key, val) {
+    var normalizedColor = normalizeColorForTheme(val);
     return (
-      '<div class="rp-row"><label>' +
+      '<div class="rp-row"><label for="theme_' + key + '_color">' +
       label +
       '</label><div class="color-row">' +
-      '<input type="color" value="' +
+      '<input id="theme_' + key + '_color" name="theme_' + key + '_color" type="color" value="' +
+      normalizedColor +
+      '" data-theme-key="' + key + '" data-theme-type="color">' +
+      '<input id="theme_' + key + '_text" name="theme_' + key + '_text" type="text" value="' +
       val +
-      '" oninput="FB.theme.set(\'' +
-      key +
-      "',this.value)\">" +
-      '<input type="text" value="' +
-      val +
-      '" onchange="FB.theme.set(\'' +
-      key +
-      "',this.value)\">" +
+      '" data-theme-key="' + key + '" data-theme-type="text">' +
       "</div></div>"
     );
   }
@@ -108,12 +137,10 @@ FB.theme.renderPanel = function () {
       );
     }).join("");
     return (
-      '<div class="rp-row"><label>' +
+      '<div class="rp-row"><label for="theme_' + key + '">' +
       label +
       "</label>" +
-      "<select onchange=\"FB.theme.set('" +
-      key +
-      "',this.value)\">" +
+      '<select id="theme_' + key + '" name="theme_' + key + '" data-theme-key="' + key + '" data-theme-type="font">' +
       opts +
       "</select></div>"
     );
@@ -130,23 +157,51 @@ FB.theme.renderPanel = function () {
     fontSelect("Body Font", "fontBody", t.fontBody || "Lexend") +
     '<div style="font-size:10px;color:var(--text-muted);padding:0 14px 8px">Changes preview in exported page. Blocks using hardcoded colours unaffected.</div>' +
     '<div class="rp-section-label">Page Settings</div>' +
-    '<div class="rp-row"><label>Page Title</label>' +
-    '<input type="text" value="' +
+    '<div class="rp-row"><label for="page_title">Page Title</label>' +
+    '<input id="page_title" name="page_title" type="text" value="' +
     (p.title || "") +
-    '" placeholder="My Awesome Site" onchange="FB.theme.setPage(\'title\',this.value)"></div>' +
-    '<div class="rp-row"><label>Meta Description</label>' +
-    '<textarea rows="2" placeholder="Brief page description (160 chars)" onchange="FB.theme.setPage(\'description\',this.value)">' +
+    '" placeholder="My Awesome Site" data-page-prop="title" data-page-type="text"></div>' +
+    '<div class="rp-row"><label for="page_description">Meta Description</label>' +
+    '<textarea id="page_description" name="page_description" rows="2" placeholder="Brief page description (160 chars)" data-page-prop="description" data-page-type="text">' +
     (p.description || "") +
     "</textarea></div>" +
-    '<div class="rp-row"><label>Favicon URL</label>' +
-    '<input type="text" value="' +
+    '<div class="rp-row"><label for="page_favicon">Favicon URL</label>' +
+    '<input id="page_favicon" name="page_favicon" type="text" value="' +
     (p.favicon || "") +
-    '" placeholder="https://...png" onchange="FB.theme.setPage(\'favicon\',this.value)"></div>' +
+    '" placeholder="https://...png" data-page-prop="favicon" data-page-type="text"></div>' +
     '<div class="rp-section-label">Custom CSS</div>' +
-    '<div class="rp-row"><textarea rows="7" style="font-family:\'IBM Plex Mono\',monospace;font-size:10px;line-height:1.5" ' +
+    '<div class="rp-row"><label for="page_customCSS" style="display:block;margin-bottom:6px">Custom CSS</label><textarea id="page_customCSS" name="page_customCSS" rows="7" style="font-family:\'IBM Plex Mono\',monospace;font-size:10px;line-height:1.5" ' +
     'placeholder=":root { --my-var: red; }&#10;&#10;.my-class {&#10;  color: var(--my-var);&#10;}" ' +
-    "onchange=\"FB.theme.setPage('customCSS',this.value)\">" +
+    "data-page-prop=\"customCSS\" data-page-type=\"text\">" +
     (p.customCSS || "") +
     "</textarea></div>"
   );
+};
+
+// Initialize event listeners for theme panel fields
+FB.theme.initPanelEvents = function() {
+  // Theme color and font fields
+  var themeFields = document.querySelectorAll('[data-theme-key]');
+  themeFields.forEach(function(field) {
+    field.addEventListener('change', function(e) {
+      var key = field.getAttribute('data-theme-key');
+      var value = field.value;
+      FB.theme.set(key, value);
+    });
+    field.addEventListener('input', function(e) {
+      var key = field.getAttribute('data-theme-key');
+      var value = field.value;
+      FB.theme.set(key, value);
+    });
+  });
+
+  // Page property fields
+  var pageFields = document.querySelectorAll('[data-page-prop]');
+  pageFields.forEach(function(field) {
+    field.addEventListener('change', function(e) {
+      var prop = field.getAttribute('data-page-prop');
+      var value = field.value;
+      FB.theme.setPage(prop, value);
+    });
+  });
 };

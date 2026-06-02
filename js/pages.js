@@ -1,24 +1,34 @@
 FB.pages = {};
 
+FB.pages._getDefaults = function () {
+  return {
+    title: "",
+    description: "",
+    ogImage: "",
+    favicon: "",
+    customCSS: "",
+    metalinks: [],
+  };
+};
+
+FB.pages._ensureMetadata = function (page) {
+  var defaults = FB.pages._getDefaults();
+  Object.keys(defaults).forEach(function (key) {
+    if (!(key in page)) {
+      page[key] = defaults[key];
+    }
+  });
+};
+
 FB.pages.init = function () {
-  var saved = null;
-  try {
-    var raw = localStorage.getItem("fb-pages-save");
-    if (raw) saved = JSON.parse(raw);
-  } catch (e) {}
-
-  if (saved && saved.pages && saved.pages.length) {
-    FB.state.pages = saved.pages;
-    FB.state.currentPageId = saved.currentPageId || saved.pages[0].id;
-    var cur = FB.pages.current();
-    if (cur) FB.state.blocks = JSON.parse(JSON.stringify(cur.blocks));
-    return true; // restored from save
-  }
-
+  // Always start fresh - no restore from localStorage
+  // (localStorage is still updated for session recovery, just not auto-restored)
   var id = "p_" + Math.random().toString(36).slice(2, 7);
-  FB.state.pages = [{ id: id, name: "Home", slug: "index", blocks: [] }];
+  var defaults = FB.pages._getDefaults();
+  var newPage = { id: id, name: "Home", slug: "index", blocks: [] };
+  Object.assign(newPage, defaults);
+  FB.state.pages = [newPage];
   FB.state.currentPageId = id;
-  FB.state.blocks = [];
   return false;
 };
 
@@ -80,12 +90,14 @@ FB.pages.add = function () {
     return existingNames.indexOf(n) === -1;
   });
   if (!name) name = "Page " + (FB.state.pages.length + 1);
-  FB.state.pages.push({
+  var newPage = {
     id: id,
     name: name,
     slug: name.toLowerCase().replace(/\s+/g, "-"),
     blocks: [],
-  });
+  };
+  FB.pages._ensureMetadata(newPage);
+  FB.state.pages.push(newPage);
   FB.pages.switchTo(id);
   FB.util.showToast("+ Page added: " + name);
 };
@@ -107,6 +119,7 @@ FB.pages.delete = function (id) {
   var idx = FB.state.pages.findIndex(function (p) {
     return p.id === id;
   });
+  if (idx === -1) return;
   FB.state.pages.splice(idx, 1);
   if (FB.state.currentPageId === id) {
     var newPage = FB.state.pages[Math.max(0, idx - 1)];
@@ -140,10 +153,7 @@ FB.pages.rename = function (id, name) {
 FB.pages.render = function () {
   var bar = document.getElementById("page-tabs-bar");
   if (!bar) return;
-
-  var html =
-    '<button class="page-tabs-scroll-btn" id="page-tabs-prev" onclick="FB.pages._scrollTabs(-1)" title="Scroll left">‹</button>';
-  html += '<div class="page-tabs-inner" id="page-tabs-inner">';
+  var html = '<div class="page-tabs-inner">';
   FB.state.pages.forEach(function (page) {
     var active = page.id === FB.state.currentPageId;
     html +=
@@ -157,6 +167,9 @@ FB.pages.render = function () {
       "')\">" +
       page.name +
       "</span>" +
+      '<button class="page-tab-settings" onclick="event.stopPropagation();FB.pages.showMetadataEditor(\'' +
+      page.id +
+      '\')" title="Page settings">⚙️</button>' +
       (FB.state.pages.length > 1
         ? '<button class="page-tab-del" onclick="event.stopPropagation();FB.pages.delete(\'' +
           page.id +
@@ -167,40 +180,14 @@ FB.pages.render = function () {
   html +=
     '<button class="page-tab-add" onclick="FB.pages.add()" title="Add page">+</button>';
   html += "</div>";
-  html +=
-    '<button class="page-tabs-scroll-btn" id="page-tabs-next" onclick="FB.pages._scrollTabs(1)" title="Scroll right">›</button>';
-  html +=
-    '<button class="page-tabs-manage-btn" onclick="FB.pagesManager.open()" title="Manage pages">Manage</button>';
   bar.innerHTML = html;
-
   bar.querySelectorAll(".page-tab").forEach(function (tab) {
     tab.addEventListener("click", function (e) {
       if (e.target.classList.contains("page-tab-del")) return;
+      if (e.target.classList.contains("page-tab-settings")) return;
       FB.pages.switchTo(tab.dataset.pageId);
     });
   });
-
-  FB.pages._updateScrollBtns();
-  var inner = document.getElementById("page-tabs-inner");
-  if (inner) inner.addEventListener("scroll", FB.pages._updateScrollBtns);
-};
-
-FB.pages._scrollTabs = function (dir) {
-  var inner = document.getElementById("page-tabs-inner");
-  if (inner) inner.scrollBy({ left: dir * 160, behavior: "smooth" });
-};
-
-FB.pages._updateScrollBtns = function () {
-  var inner = document.getElementById("page-tabs-inner");
-  var prev = document.getElementById("page-tabs-prev");
-  var next = document.getElementById("page-tabs-next");
-  if (!inner || !prev || !next) return;
-  var overflows = inner.scrollWidth > inner.clientWidth + 2;
-  prev.classList.toggle("visible", overflows && inner.scrollLeft > 4);
-  next.classList.toggle(
-    "visible",
-    overflows && inner.scrollLeft < inner.scrollWidth - inner.clientWidth - 4,
-  );
 };
 
 FB.pages._startRename = function (id) {
@@ -233,6 +220,197 @@ FB.pages._startRename = function (id) {
       inp.blur();
     }
   });
+};
+
+FB.pages.updateMetadata = function (pageId, key, value) {
+  var page = FB.state.pages.find(function (p) {
+    return p.id === pageId;
+  });
+  if (!page) return;
+  page[key] = value;
+  FB.pages._save();
+};
+
+FB.pages.showMetadataEditor = function (pageId) {
+  if (FB.state.currentPageId !== pageId) {
+    FB.pages.switchTo(pageId);
+  }
+  FB.state.metadataEditingPageId = pageId;
+  FB.panels.renderRightPanel();
+};
+
+FB.pages.renderMetadataPanel = function (pageId) {
+  var page = FB.state.pages.find(function (p) {
+    return p.id === pageId;
+  });
+  if (!page) return "";
+
+  var html = '<div class="metadata-panel">';
+  html += '<h3 style="margin:0 0 1rem 0;font-size:1rem;">Page Settings</h3>';
+
+  // Page title
+  html += '<div class="metadata-field">';
+  html += '<label>Page Title <span class="char-count">0/60</span></label>';
+  html +=
+    '<input id="page_title" name="page_title" type="text" class="page-title-input" value="' +
+    (page.title || "") +
+    '" placeholder="e.g., Home | My Site" maxlength="60" />';
+  html += "</div>";
+
+  // Meta description
+  html += '<div class="metadata-field">';
+  html += '<label>Meta Description <span class="char-count">0/160</span></label>';
+  html +=
+    '<textarea id="page_description" name="page_description" class="page-description-input" placeholder="e.g., Learn about our amazing services" maxlength="160" style="height:80px;resize:vertical;">' +
+    (page.description || "") +
+    "</textarea>";
+  html += "</div>";
+
+  // OG Image
+  html += '<div class="metadata-field">';
+  html +=
+    '<label>Open Graph Image <span style="font-size:0.85em;color:#666;">(optional)</span></label>';
+  html +=
+    '<input id="page_ogImage" name="page_ogImage" type="text" class="page-og-image-input" value="' +
+    (page.ogImage || "") +
+    '" placeholder="https://example.com/image.jpg" />';
+  html += "</div>";
+
+  // Favicon
+  html += '<div class="metadata-field">';
+  html +=
+    '<label>Favicon URL <span style="font-size:0.85em;color:#666;">(optional)</span></label>';
+  html +=
+    '<input id="page_favicon" name="page_favicon" type="text" class="page-favicon-input" value="' +
+    (page.favicon || "") +
+    '" placeholder="https://example.com/favicon.ico" />';
+  html += "</div>";
+
+  // Custom CSS
+  html += '<div class="metadata-field">';
+  html +=
+    '<label>Custom CSS <span style="font-size:0.85em;color:#666;">(optional)</span></label>';
+  html +=
+    '<textarea id="page_customCSS" name="page_customCSS" class="page-css-input" placeholder="/* Page-specific styles */" style="height:100px;resize:vertical;font-family:monospace;font-size:12px;">' +
+    (page.customCSS || "") +
+    "</textarea>";
+  html += "</div>";
+
+  // Meta Links
+  html += '<div class="metadata-field">';
+  html += '<label>Meta Links & Enrichment</label>';
+  html += '<div class="metalinks-buttons">';
+  html +=
+    '<button class="metalink-btn" onclick="FB.pages._addMetalink(\'canonical\', \'' +
+    pageId +
+    '\')">Add Canonical</button>';
+  html +=
+    '<button class="metalink-btn" onclick="FB.pages._addMetalink(\'alternate\', \'' +
+    pageId +
+    '\')">Add Alternate</button>';
+  html +=
+    '<button class="metalink-btn" onclick="FB.pages._addMetalink(\'custom\', \'' +
+    pageId +
+    '\')">Add Custom</button>';
+  html += "</div>";
+
+  // Meta links table
+  if (page.metalinks && page.metalinks.length) {
+    html += '<table class="metalinks-table">';
+    html +=
+      '<thead><tr><th>Type</th><th>Value</th><th>Action</th></tr></thead><tbody>';
+    page.metalinks.forEach(function (link, idx) {
+      html += "<tr>";
+      html += "<td>" + (link.rel || "custom") + "</td>";
+      html +=
+        '<td style="word-break:break-all;font-size:0.9em;">' +
+        (link.href || "") +
+        (link.hreflang ? " (hreflang: " + link.hreflang + ")" : "") +
+        "</td>";
+      html +=
+        '<td><button class="metalink-remove-btn" onclick="FB.pages._removeMetalink(\'' +
+        pageId +
+        "', " +
+        idx +
+        ')">✕</button></td>';
+      html += "</tr>";
+    });
+    html += "</tbody></table>";
+  }
+  html += "</div>";
+
+  // Save button
+  html +=
+    '<button class="metadata-save-btn" onclick="FB.pages._saveMetadataPanel(\'' +
+    pageId +
+    '\')" style="margin-top:1rem;">Save Changes</button>';
+
+  html += "</div>";
+  return html;
+};
+
+FB.pages._saveMetadataPanel = function (pageId) {
+  var panel = document.querySelector(".metadata-panel");
+  if (!panel) return;
+
+  var title = panel.querySelector(".page-title-input").value;
+  var description = panel.querySelector(".page-description-input").value;
+  var ogImage = panel.querySelector(".page-og-image-input").value;
+  var favicon = panel.querySelector(".page-favicon-input").value;
+  var customCSS = panel.querySelector(".page-css-input").value;
+
+  FB.pages.updateMetadata(pageId, "title", title);
+  FB.pages.updateMetadata(pageId, "description", description);
+  FB.pages.updateMetadata(pageId, "ogImage", ogImage);
+  FB.pages.updateMetadata(pageId, "favicon", favicon);
+  FB.pages.updateMetadata(pageId, "customCSS", customCSS);
+
+  FB.util.showToast("Page metadata saved");
+  FB.state.metadataEditingPageId = null;
+  FB.panels.renderRightPanel();
+};
+
+FB.pages._addMetalink = function (type, pageId) {
+  var page = FB.state.pages.find(function (p) {
+    return p.id === pageId;
+  });
+  if (!page) return;
+
+  var rel = "";
+  var href = "";
+  var hreflang = "";
+
+  if (type === "canonical") {
+    rel = "canonical";
+    href = prompt("Enter canonical URL:");
+    if (!href) return;
+  } else if (type === "alternate") {
+    rel = "alternate";
+    href = prompt("Enter alternate URL:");
+    if (!href) return;
+    hreflang = prompt("Enter hreflang value (e.g., en-US):");
+    if (!hreflang) return;
+  } else if (type === "custom") {
+    rel = prompt("Enter rel attribute (e.g., prefetch, preload):");
+    if (!rel) return;
+    href = prompt("Enter href:");
+    if (!href) return;
+  }
+
+  if (!page.metalinks) page.metalinks = [];
+  page.metalinks.push({ rel: rel, href: href, hreflang: hreflang || null });
+  FB.pages._save();
+  FB.pages.showMetadataEditor(pageId);
+};
+
+FB.pages._removeMetalink = function (pageId, idx) {
+  var page = FB.state.pages.find(function (p) {
+    return p.id === pageId;
+  });
+  if (!page || !page.metalinks || idx < 0 || idx >= page.metalinks.length) return;
+  page.metalinks.splice(idx, 1);
+  FB.pages._save();
+  FB.pages.showMetadataEditor(pageId);
 };
 
 // Export all pages as separate HTML files (sequential downloads)

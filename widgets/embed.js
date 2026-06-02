@@ -19,39 +19,17 @@ FB.widgets.register("googleMaps", {
       '"></iframe></div>'
     );
   },
-  editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Address</label><input type="text" value="' +
-      p.address +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','address',this.value)\"></div>" +
-      '<div class="rp-row"><label>Zoom: ' +
-      (p.zoom || 12) +
-      '</label><input type="range" min="5" max="20" value="' +
-      (p.zoom || 12) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','zoom',+this.value);this.previousElementSibling.textContent='Zoom: '+this.value\"></div>" +
-      '<div class="rp-row"><label>Height: ' +
-      (p.height || 350) +
-      'px</label><input type="range" min="200" max="600" value="' +
-      (p.height || 350) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','height',+this.value);this.previousElementSibling.textContent='Height: '+this.value+'px'\"></div>"
-    );
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
-FB.widgets.register("codeHighlight", {
-  label: "Code Highlight",
-  icon: "</>",
-  iconBg: "#1e1e1e",
-  iconColor: "#569CD6",
+FB.widgets.register("codeBlock", {
+  label: "Code Block",
+  icon: "{ }",
+  iconBg: "#1a1a2a",
+  iconColor: "#66d9ef",
   category: "embed",
   defaultProps: {
-    code: 'function hello() {\n  console.log("Hello World");\n}',
+    code: "console.log('Hello World');",
     language: "JavaScript",
   },
   render: function (p) {
@@ -66,20 +44,7 @@ FB.widgets.register("codeHighlight", {
       "</pre></div>"
     );
   },
-  editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Language</label><input type="text" value="' +
-      p.language +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','language',this.value)\"></div>" +
-      '<div class="rp-row"><label>Code</label><textarea rows="6" style="font-family:monospace;font-size:11px" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','code',this.value)\">" +
-      p.code +
-      "</textarea></div>"
-    );
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 FB.widgets.register("shareButtons", {
@@ -124,15 +89,7 @@ FB.widgets.register("shareButtons", {
       "</div>"
     );
   },
-  editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Networks (one per line)</label><textarea rows="4" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','networks',this.value.split('\\n').filter(function(s){return s.trim()}))\">" +
-      (p.networks || []).join("\n") +
-      "</textarea></div>"
-    );
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 FB.widgets.register("videoPlaylist", {
@@ -181,34 +138,7 @@ FB.widgets.register("videoPlaylist", {
       "</div></div>"
     );
   },
-  editPanel: function (id, p) {
-    var html = "";
-    (p.videos || []).forEach(function (v, i) {
-      html +=
-        '<div class="rp-row" style="border:1px solid var(--border);border-radius:4px;margin:4px 14px;padding:8px">' +
-        "<label>Video " +
-        (i + 1) +
-        ' Title</label><input type="text" value="' +
-        v.title +
-        '" onchange="var vs=JSON.parse(JSON.stringify(FB.state.blocks.find(function(b){return b.id===\'' +
-        id +
-        "'}).props.videos||[]));vs[" +
-        i +
-        "].title=this.value;FB.panels.updateWidgetProp('" +
-        id +
-        "','videos',vs)\">" +
-        '<label style="margin-top:4px">Embed URL</label><input type="text" value="' +
-        v.src +
-        '" onchange="var vs=JSON.parse(JSON.stringify(FB.state.blocks.find(function(b){return b.id===\'' +
-        id +
-        "'}).props.videos||[]));vs[" +
-        i +
-        "].src=this.value;FB.panels.updateWidgetProp('" +
-        id +
-        "','videos',vs)\"></div>";
-    });
-    return html;
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 FB.widgets.register("lottie", {
@@ -245,52 +175,7 @@ FB.widgets.register("lottie", {
       ';position:relative;border-radius:4px;overflow:hidden"><div class="fw-lottie-svg" style="width:100%;height:100%"></div></div>'
     );
   },
-  editPanel: function (id, p) {
-    var h = "";
-    h +=
-      '<div class="rp-row"><label>Animation URL</label><input type="text" value="' +
-      (p.src || "") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','src',this.value);FB.canvas.refreshBlock('" +
-      id +
-      "')\"></div>";
-    h +=
-      '<div class="rp-row"><label>Height: ' +
-      (p.height || 300) +
-      'px</label><input type="range" min="100" max="600" value="' +
-      (p.height || 300) +
-      '" oninput="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','height',+this.value);this.previousElementSibling.textContent='Height: '+this.value+'px'\"></div>";
-    h +=
-      '<div class="rp-row"><label>Speed</label><input type="range" min="0.1" max="3" step="0.1" value="' +
-      (p.speed || 1) +
-      '" oninput="var sp=+this.value;FB.panels.updateWidgetProp(\'' +
-      id +
-      "','speed',sp)\"></div>";
-    h +=
-      '<div class="rp-row"><label>Background</label><input type="color" value="' +
-      (p.bg || "#000000") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','bg',this.value)\"></div>";
-    h +=
-      '<div class="rp-row"><label><input type="checkbox" ' +
-      (p.autoplay ? "checked" : "") +
-      " onchange=\"FB.panels.updateWidgetProp('" +
-      id +
-      "','autoplay',this.checked)\"> Autoplay</label></div>";
-    h +=
-      '<div class="rp-row"><label><input type="checkbox" ' +
-      (p.loop ? "checked" : "") +
-      " onchange=\"FB.panels.updateWidgetProp('" +
-      id +
-      "','loop',this.checked)\"> Loop</label></div>";
-    h +=
-      '<div class="rp-row" style="flex-direction:column;align-items:flex-start;padding-top:6px"><span style="font-size:10px;color:#666">Free Lottie animations: <a href="https://lottiefiles.com/featured" target="_blank" style="color:#cdfe00">lottiefiles.com</a></span></div>';
-    return h;
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 // ── Motion Block (created by Motion Creator) ──
@@ -317,26 +202,7 @@ FB.widgets.register("motionBlock", {
       ';position:relative;overflow:hidden;border-radius:4px"><canvas class="fw-motion-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas></div>'
     );
   },
-  editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>Height (px)</label><input type="number" value="' +
-      (p.height || 350) +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','height',+this.value)\"></div>" +
-      '<div class="rp-row"><label>Background</label><input type="color" value="' +
-      (p.bg || "#0d0d1a") +
-      '" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','bg',this.value)\"></div>" +
-      '<div class="rp-row"><label><input type="checkbox" ' +
-      (p.loop ? "checked" : "") +
-      " onchange=\"FB.panels.updateWidgetProp('" +
-      id +
-      "','loop',this.checked)\"> Loop</label></div>" +
-      '<div style="padding:10px;font-size:10px;color:#666">Created with the <a href="#" onclick="FB.motion.open();return false" style="color:#cdfe00">Motion Creator</a></div>'
-    );
-  },
+  editPanel: function (id, p) { return ""; },
 });
 
 FB.panels._lottieLoaded = false;
@@ -413,18 +279,5 @@ FB.widgets.register("htmlEmbed", {
   render: function (p) {
     return '<div class="fw-html-embed" style="min-height:60px;position:relative"></div>';
   },
-  editPanel: function (id, p) {
-    return (
-      '<div class="rp-row"><label>HTML Content</label><textarea rows="10" style="font-family:monospace;font-size:11px;line-height:1.5" onchange="FB.panels.updateWidgetProp(\'' +
-      id +
-      "','html',this.value)\">" +
-      (p.html || "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;") +
-      "</textarea></div>" +
-      '<div style="padding:8px 14px;font-size:11px;color:var(--text-muted);border-top:1px solid var(--border)">HTML renders in a scoped Shadow DOM. Inline styles preserved.</div>'
-    );
-  },
+  editPanel: function (id, p) { return ""; },
 });

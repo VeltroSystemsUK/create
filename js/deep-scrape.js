@@ -211,6 +211,7 @@ FB.deepScrape._saveKey = function () {
 };
 
 FB.deepScrape._removePage = function (idx) {
+  if (!FB.deepScrape._pages || idx < 0 || idx >= FB.deepScrape._pages.length) return;
   FB.deepScrape._pages.splice(idx, 1);
   FB.deepScrape._render();
 };
@@ -435,6 +436,7 @@ FB.deepScrape._renderResult = function () {
 
 FB.deepScrape._removeBlock = function (idx) {
   if (!FB.deepScrape._result || !FB.deepScrape._result.template) return;
+  if (!FB.deepScrape._result.template.blocks || idx < 0 || idx >= FB.deepScrape._result.template.blocks.length) return;
   FB.deepScrape._result.template.blocks.splice(idx, 1);
   FB.deepScrape._render();
 };
