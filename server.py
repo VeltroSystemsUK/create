@@ -24,6 +24,14 @@ from pathlib import Path
 
 from flask import Flask, jsonify, request, send_from_directory, session
 
+# ── CORS Helper ─────────────────────────────────────────────────────
+def add_cors_headers(response):
+    """Add CORS headers to allow cross-origin requests"""
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+    return response
+
 # ── Config ──────────────────────────────────────────────────────────
 BASE_DIR = Path(__file__).parent
 CMS_DIR = BASE_DIR / ".cms"
@@ -39,6 +47,18 @@ SESSION_DURATION = 60 * 60 * 24  # 24 hours
 
 app = Flask(__name__, static_folder=None)
 app.secret_key = secrets.token_hex(32)
+
+# Register CORS handler for all responses
+@app.after_request
+def after_request(response):
+    return add_cors_headers(response)
+
+# Handle OPTIONS requests (preflight)
+@app.before_request
+def handle_preflight():
+    if request.method == 'OPTIONS':
+        response = jsonify({'status': 'ok'})
+        return add_cors_headers(response)
 
 
 # ── Helpers ─────────────────────────────────────────────────────────
