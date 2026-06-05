@@ -1,0 +1,365 @@
+{
+  "meta": {
+    "name": "Pop Art Lottie Generator Knowledgebase",
+    "version": "1.0.0",
+    "description": "Comprehensive knowledgebase for generating Lottie-compatible Pop Art animations"
+  },
+
+  "style_matrix": {
+    "linework": {
+      "rules": [
+        "Uniform, heavy black strokes (3px to 8px standard scaling)",
+        "High contrast required",
+        "Clean round caps and joins to prevent artifacting",
+        "No feathering or soft edges"
+      ],
+      "lottie_handling": "Rendered as solid vector stroke paths with round lineCap: 'round' and lineJoin: 'round'",
+      "technical_spec": {
+        "stroke_width_range": [3, 8],
+        "line_cap": "round",
+        "line_join": "round",
+        "min_contrast_ratio": 4.5
+      }
+    },
+    "color_palette": {
+      "rules": [
+        "Pure primary colors (saturated Cyan, Magenta, Yellow)",
+        "Deep black (#111111) and stark white (#FFFFFF)",
+        "Strict hexadecimal color matching",
+        "Avoid soft gradients - use solid fills only"
+      ],
+      "standard_palette": {
+        "primary_magenta": "#FF00FF",
+        "primary_cyan": "#00FFFF",
+        "primary_yellow": "#FFFF00",
+        "deep_black": "#111111",
+        "stark_white": "#FFFFFF",
+        "accent_red": "#FF0055",
+        "accent_lime": "#00FF00",
+        "accent_orange": "#FF6600"
+      },
+      "lottie_handling": "Apply as solid fill objects. No gradient support.",
+      "technical_spec": {
+        "format": "hex",
+        "saturation_minimum": 80,
+        "gradient_support": false
+      }
+    },
+    "shading_texture": {
+      "rules": [
+        "Simulate offset printing using Ben-Day dots or diagonal halftone lines",
+        "CRITICAL: Massive dot grids destroy Lottie performance",
+        "Replace with scalable repeating vector SVG patterns or striping",
+        "Linear 45-degree diagonal hash marks spaced 6px apart preferred",
+        "Keep pattern complexity minimal"
+      ],
+      "pattern_types": [
+        {
+          "name": "diagonal_stripes",
+          "description": "45-degree diagonal black lines",
+          "spacing_px": 6,
+          "stroke_width_px": 1,
+          "performance": "excellent",
+          "lottie_friendly": true
+        },
+        {
+          "name": "vertical_stripes",
+          "description": "Vertical parallel lines for speed lines",
+          "spacing_px": 4,
+          "stroke_width_px": 2,
+          "performance": "excellent",
+          "lottie_friendly": true
+        },
+        {
+          "name": "ben_day_dots",
+          "description": "Regular dot grid (use sparingly)",
+          "dot_radius_px": 3,
+          "spacing_px": 8,
+          "performance": "warning - only use for small areas",
+          "lottie_friendly": false
+        }
+      ],
+      "lottie_handling": "Use SVG pattern fills or pre-rendered vector mask strokes",
+      "technical_spec": {
+        "max_pattern_nodes_per_layer": 50,
+        "recommended_pattern": "diagonal_stripes",
+        "avoid_count_over": 500
+      }
+    },
+    "typography": {
+      "rules": [
+        "Impactful, blocky, sans-serif or slab-serif",
+        "Heavy black dropshadows (offset 2-4px)",
+        "Convert text to outlines before Lottie export",
+        "Avoid font-loading dependencies in JSON"
+      ],
+      "recommended_families": [
+        "Impact",
+        "Futura Bold",
+        "Bebas Neue",
+        "Playfair Display Bold",
+        "Cooper Black"
+      ],
+      "lottie_handling": "Convert all text to vector paths (bezier curves). Store as shape layer with no font reference.",
+      "technical_spec": {
+        "must_convert_to_paths": true,
+        "dropshadow_offset_px": [3, 3],
+        "dropshadow_opacity": 0.8,
+        "outline_stroke_width_px": 2
+      }
+    }
+  },
+
+  "lottie_constraints": {
+    "path_optimization": {
+      "max_nodes_per_character": 500,
+      "max_nodes_per_composition": 2000,
+      "guidance": "Keep vertices to minimum. Complex character should not exceed 500 vector nodes total.",
+      "violation_impact": "Causes lag during web runtime rendering"
+    },
+    "layer_nesting": {
+      "max_depth": 3,
+      "grouping_strategy": "Organize semantically (Head > Eye_Left, Mouth > Speech_Bubble)",
+      "guidance": "Limit nesting to 3 levels deep for clean JSON parsing",
+      "violation_impact": "Slow JSON parsing and memory overhead"
+    },
+    "animation_performance": {
+      "recommended_fps": [24, 30],
+      "reasoning": "Mimics traditional hand-drawn comic or cell animation pacing",
+      "interpolation": "Sharp, snappy easing curves. Avoid linear movement.",
+      "fast_pop_punch_curve": [0.175, 0.885, 0.32, 1.275],
+      "curve_description": "Creates subtle overshoot elastic bounce"
+    },
+    "supported_features": [
+      "Path keyframing",
+      "Scale transformation",
+      "Rotation transformation",
+      "Opacity/Alpha",
+      "Trim paths (for stroke animation)",
+      "Position/Translate"
+    ],
+    "unsupported_features": [
+      "After Effects blurs",
+      "Layer styles (inner glow, bevel, shadow)",
+      "Raster masks",
+      "Gradient meshes",
+      "Complex filters"
+    ]
+  },
+
+  "motion_principles": {
+    "pacing": {
+      "slow_reveal": "12-24 frames for anticipation",
+      "quick_pop": "4-8 frames for impact",
+      "hold_moment": "12-16 frames for emphasis",
+      "ease_out": "8-12 frames for settle"
+    },
+    "easing_curves": {
+      "snappy_entrance": [0.175, 0.885, 0.32, 1.275],
+      "punch_pop": [0.34, 1.56, 0.64, 1],
+      "smooth_exit": [0.25, 0.46, 0.45, 0.94],
+      "elastic_bounce": [0.68, -0.55, 0.265, 1.55]
+    },
+    "loop_structure": {
+      "hold_frames": 0,
+      "transition_frames": 4,
+      "total_min_frames": 24,
+      "total_max_frames": 120,
+      "guidance": "Ensure frame 0 and final frame have identical element positions/properties for seamless loop"
+    }
+  },
+
+  "template_structure": {
+    "sections": [
+      {
+        "name": "CONCEPT_OVERVIEW",
+        "fields": [
+          "title: Catchy, punchy title (1-3 words)",
+          "description: 2-sentence description of loop animation",
+          "duration_frames: Total frame count",
+          "fps: Frames per second (24 or 30)",
+          "loop_duration_seconds: Calculated (frames / fps)"
+        ]
+      },
+      {
+        "name": "PALETTE_TEXTURES",
+        "fields": [
+          "primary_colors: Array of hex codes with names",
+          "shadow_texture: Description of halftone/stripe pattern",
+          "pattern_type: One of [diagonal_stripes, vertical_stripes, ben_day_dots]",
+          "texture_hex_codes: Exact colors for patterns"
+        ]
+      },
+      {
+        "name": "VECTOR_LAYER_HIERARCHY",
+        "fields": [
+          "root_composition: Canvas size, fps, frame count",
+          "layer_tree: Nested structure showing parent/child relationships",
+          "total_estimated_nodes: Sum of all vector nodes",
+          "nesting_depth_check: Maximum depth (must be ≤ 3)"
+        ]
+      },
+      {
+        "name": "MOTION_KEYFRAMES",
+        "fields": [
+          "animation_segments: Array of frame ranges with descriptions",
+          "keyframe_instructions: Exact frame-by-frame mechanical instructions",
+          "easing_curves: Array of easing function values",
+          "seamless_loop_check: Verification that frame 0 = final frame state"
+        ]
+      }
+    ]
+  },
+
+  "examples": [
+    {
+      "id": "retro_phone_ring",
+      "user_prompt": "a retro phone ringing dramatically",
+      "generated_spec": {
+        "concept_overview": {
+          "title": "The Retro Ring of Anxiety",
+          "description": "A classic 1960s rotary telephone violently shakes on a flat surface while an explosive 'RING!' sound effect bursts from the receiver. The entire animation loops flawlessly every 48 frames (2 seconds at 24fps).",
+          "duration_frames": 48,
+          "fps": 24,
+          "loop_duration_seconds": 2.0
+        },
+        "palette_textures": {
+          "primary_colors": [
+            { "name": "Phone Magenta", "hex": "#FF0055" },
+            { "name": "Background Cyan", "hex": "#00E5FF" },
+            { "name": "Highlight Yellow", "hex": "#FFFF00" },
+            { "name": "Outline Black", "hex": "#111111" }
+          ],
+          "shadow_texture": "Linear 45-degree diagonal black hash marks spaced 6px apart (simulated fast-rendering halftone)",
+          "pattern_type": "diagonal_stripes"
+        },
+        "vector_layer_hierarchy": {
+          "root_composition": "24fps, 48 frames, 500x500px",
+          "layer_tree": [
+            {
+              "name": "BG_Layer",
+              "type": "solid_fill",
+              "color": "#00E5FF"
+            },
+            {
+              "name": "Shadow_Pattern_Layer",
+              "type": "pattern_mask",
+              "pattern": "diagonal_stripes"
+            },
+            {
+              "name": "Phone_Base_Group",
+              "children": [
+                {
+                  "name": "Rotary_Dial",
+                  "rotation_animation": true
+                },
+                {
+                  "name": "Bells_Left_Right",
+                  "rotation_jitter_animation": true
+                }
+              ]
+            },
+            {
+              "name": "Receiver_Group",
+              "vibration_animation": true,
+              "detached_positioning": true
+            },
+            {
+              "name": "FX_Burst_Group",
+              "children": [
+                {
+                  "name": "Burst_Shape",
+                  "type": "vector_path",
+                  "color": "#FFFF00"
+                },
+                {
+                  "name": "Text_Element",
+                  "content": "RING!",
+                  "converted_to_paths": true
+                }
+              ]
+            }
+          ],
+          "total_estimated_nodes": 380,
+          "nesting_depth_check": 3
+        },
+        "motion_keyframes": {
+          "animation_segments": [
+            {
+              "segment": "Frames 0–12 (The Build)",
+              "description": "Receiver_Group scales up and down rapidly by 5% on high-frequency loop to simulate vibration"
+            },
+            {
+              "segment": "Frame 12 (The Pop)",
+              "description": "FX_Burst_Group opacity snaps 0% → 100%. Scale pops 50% → 110% using easing [0.175, 0.885, 0.32, 1.275], settles back to 100% by frame 16"
+            },
+            {
+              "segment": "Frames 16–36 (The Ring)",
+              "description": "Rotary_Dial spins 45° clockwise and snaps back. Text_Element oscillates along path warp"
+            },
+            {
+              "segment": "Frames 37–48 (The Cool Down)",
+              "description": "Elements ease back to exact Frame 0 positions for seamless loop"
+            }
+          ],
+          "easing_curves": {
+            "pop_burst": [0.175, 0.885, 0.32, 1.275],
+            "receiver_vibration": [0.25, 0.46, 0.45, 0.94]
+          },
+          "seamless_loop_check": "PASS - Frame 0 and Frame 48 have identical element states"
+        }
+      }
+    }
+  ],
+
+  "constraint_validation_rules": [
+    {
+      "category": "Path Complexity",
+      "rule": "max_nodes_per_composition <= 2000",
+      "severity": "critical",
+      "error_message": "Total vector nodes exceed Lottie performance threshold"
+    },
+    {
+      "category": "Layer Nesting",
+      "rule": "max_nesting_depth <= 3",
+      "severity": "critical",
+      "error_message": "Nesting depth exceeds 3 levels - simplify hierarchy"
+    },
+    {
+      "category": "Animation Loop",
+      "rule": "frame_0_state == final_frame_state",
+      "severity": "critical",
+      "error_message": "Animation does not loop seamlessly - frame 0 and final frame must be identical"
+    },
+    {
+      "category": "Framerate",
+      "rule": "fps in [24, 30]",
+      "severity": "warning",
+      "error_message": "Framerate should be 24 or 30 fps for comic animation feel"
+    },
+    {
+      "category": "Unsupported Features",
+      "rule": "no blurs, layer_styles, raster_masks",
+      "severity": "critical",
+      "error_message": "Detected unsupported Lottie feature - remove and rebuild with supported features"
+    },
+    {
+      "category": "Color Palette",
+      "rule": "colors are hex format && saturation >= 80",
+      "severity": "warning",
+      "error_message": "Color palette should use pure, saturated primary colors"
+    },
+    {
+      "category": "Text Handling",
+      "rule": "all_text_converted_to_paths == true",
+      "severity": "critical",
+      "error_message": "Text must be converted to vector paths - remove font dependencies"
+    },
+    {
+      "category": "Linework",
+      "rule": "stroke_width in [3, 8]",
+      "severity": "warning",
+      "error_message": "Linework stroke width should be between 3px and 8px for Pop Art aesthetic"
+    }
+  ]
+}
