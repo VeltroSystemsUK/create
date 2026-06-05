@@ -1,0 +1,244 @@
+/* ── GRID LAYOUT PATTERNS ── */
+
+/* F-Shape Grid: full-width header → 2-col (3fr 1fr) → full-width footer */
+.fw-grid-fshape {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 0;
+}
+.fw-grid-fshape > .fw-grid-main {
+  grid-column: 1;
+}
+.fw-grid-fshape > .fw-grid-sidebar {
+  grid-column: 2;
+  background: rgba(0, 0, 0, 0.03);
+  padding: 2rem;
+}
+.fw-grid-fshape > .fw-grid-full {
+  grid-column: 1 / -1;
+}
+
+/* Holy Grail: full-width header/footer + 3-col middle (1fr 3fr 1fr) */
+.fw-grid-holygrail {
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+}
+.fw-grid-holygrail > .fw-grid-header {
+  grid-column: 1 / -1;
+  grid-row: 1;
+}
+.fw-grid-holygrail > .fw-grid-nav {
+  grid-column: 1;
+  grid-row: 2;
+  background: rgba(0, 0, 0, 0.03);
+  padding: 2rem;
+}
+.fw-grid-holygrail > .fw-grid-main {
+  grid-column: 2;
+  grid-row: 2;
+  padding: 2rem;
+}
+.fw-grid-holygrail > .fw-grid-info {
+  grid-column: 3;
+  grid-row: 2;
+  background: rgba(0, 0, 0, 0.03);
+  padding: 2rem;
+}
+.fw-grid-holygrail > .fw-grid-footer {
+  grid-column: 1 / -1;
+  grid-row: 3;
+}
+
+/* Asymmetric Split: two highly unequal columns */
+.fw-grid-asymmetric {
+  display: flex;
+  min-height: 80vh;
+}
+.fw-grid-asymmetric > .fw-grid-aside {
+  width: 40%;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem;
+  background: rgba(0, 0, 0, 0.03);
+}
+.fw-grid-asymmetric > .fw-grid-content {
+  width: 60%;
+  padding: 3rem;
+}
+.fw-grid-asymmetric.right-heavy > .fw-grid-aside {
+  order: 2;
+}
+.fw-grid-asymmetric.right-heavy > .fw-grid-content {
+  order: 1;
+}
+
+/* Broken Bento Grid: multi-column, multi-row with unequal cell sizes */
+.fw-grid-bento {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 200px;
+  gap: 12px;
+  padding: 12px;
+}
+.fw-grid-bento > .fw-bento-cell {
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  text-align: center;
+  padding: 1.5rem;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+.fw-grid-bento > .fw-bento-cell:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+.fw-grid-bento > .fw-bento-cell.wide {
+  grid-column: span 2;
+}
+.fw-grid-bento > .fw-bento-cell.tall {
+  grid-row: span 2;
+}
+.fw-grid-bento > .fw-bento-cell.mega {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+/* Alternating Zig-Zag: stacked rows with alternating [Image][Text] / [Text][Image] */
+.fw-zigzag-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.fw-zigzag-row > .fw-zigzag-media {
+  width: 50%;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fw-zigzag-row > .fw-zigzag-text {
+  width: 50%;
+  padding: 3rem;
+}
+.fw-zigzag-row:nth-child(even) {
+  flex-direction: row-reverse;
+}
+
+/* Mondrian-style grid: thick borders, random-sized blocks */
+.fw-grid-mondrian {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-auto-rows: 120px;
+  gap: 4px;
+  background: #111;
+  padding: 4px;
+}
+.fw-grid-mondrian > .fw-mondrian-cell {
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #111;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.fw-grid-mondrian > .fw-mondrian-cell:hover {
+  background: var(--accent, #cdfe00);
+  color: #111;
+}
+
+/* Horizontal scroll: overflow-x with visible scrollbar */
+.fw-grid-hscroll {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.fw-grid-hscroll > .fw-hscroll-panel {
+  min-width: 100vw;
+  min-height: 80vh;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  flex-shrink: 0;
+}
+
+/* ── TILING WINDOW MANAGER (TWM) ── */
+.twm-workspace {
+  background-color: #121214;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  width: 100%;
+  min-height: 60vh;
+  padding: 12px;
+  box-sizing: border-box;
+}
+.twm-node {
+  background-color: #1a1a24;
+  border: 1px solid #2e2e3a;
+  border-radius: 6px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 calc(33.33% - 12px);
+  min-width: 220px;
+  min-height: 30vh;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  color: #e2e8f0;
+  cursor: pointer;
+}
+.twm-node.active-focus {
+  flex: 3 1 50%;
+  background-color: #1e293b;
+  border-color: #00ffcc;
+  box-shadow: 0 10px 30px -10px rgba(0, 255, 204, 0.15);
+}
+.twm-node.active-focus .twm-node-label {
+  color: #00ffcc;
+}
+.twm-node:not(.active-focus) {
+  filter: grayscale(20%) blur(0.5px);
+}
+.twm-node-label {
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  letter-spacing: 0.05em;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.twm-node-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #e2e8f0;
+}
+.twm-node-desc {
+  font-size: 0.875rem;
+  color: #94a3b8;
+  line-height: 1.6;
+}

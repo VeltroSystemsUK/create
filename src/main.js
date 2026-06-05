@@ -32,7 +32,7 @@ import "../js/ai-templates.js";
 import "../js/app.js";
 import "../js/theme-toggle.js";
 import "../js/language.js";
-import "../js/design.js";
+import "./design/design.ts";
 import "../widgets/design-templates.js";
 import "../js/motion-creator.js";
 import "../js/deep-scrape.js";

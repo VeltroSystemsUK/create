@@ -327,6 +327,124 @@ def delete_media(name):
     return jsonify({"ok": True})
 
 
+# ── Designs (Design Studio CRUD) ────────────────────────────────────
+@app.route("/api/designs", methods=["GET"])
+def list_designs():
+    designs = []
+    if DESIGNS_DIR.exists():
+        for path in DESIGNS_DIR.glob("*.json"):
+            if path.name == "my-project.json":
+                continue
+            data = _load_json(path)
+            if isinstance(data, dict):
+                designs.append({
+                    "slug": path.stem,
+                    "name": data.get("name", path.stem),
+                    "width": data.get("width", 800),
+                    "height": data.get("height", 600),
+                    "thumbnail": data.get("thumbnail", "")
+                })
+    return jsonify(designs)
+
+
+@app.route("/api/designs/<slug>", methods=["GET"])
+def get_design(slug):
+    path = DESIGNS_DIR / f"{slug}.json"
+    if not path.is_file():
+        return jsonify({"error": "Design not found"}), 404
+    data = _load_json(path)
+    return jsonify(data)
+
+
+@app.route("/api/designs", methods=["POST"])
+def save_design():
+    data = request.get_json(silent=True) or {}
+    name = data.get("name", "Untitled")
+    import re
+    slug = re.sub(r'[^a-z0-9]+', '-', name.lower()).strip('-')
+    if not slug:
+        slug = "untitled"
+    orig_slug = slug
+    counter = 1
+    while (DESIGNS_DIR / f"{slug}.json").exists():
+        slug = f"{orig_slug}-{counter}"
+        counter += 1
+    
+    path = DESIGNS_DIR / f"{slug}.json"
+    _save_json(path, data)
+    return jsonify({"ok": True, "slug": slug})
+
+
+# ── AI Generative SVG/Raster Image ──────────────────────────────────
+@app.route("/api/ai-image", methods=["POST"])
+def ai_image():
+    data = request.get_json(silent=True) or {}
+    prompt = data.get("prompt", "").strip().lower()
+    
+    if "star" in prompt:
+        shapes_svg = """
+        <polygon points="200,50 240,150 340,150 260,220 290,320 200,260 110,320 140,220 60,150 160,150" fill="#CDFE00" stroke="#ffffff" stroke-width="4"/>
+        <circle cx="200" cy="200" r="40" fill="#111111" />
+        <polygon points="200,100 220,170 290,170 230,210 250,280 200,240 150,280 170,210 110,170 180,170" fill="#7C3AED" />
+        """
+        title = "Star Vector"
+    elif "logo" in prompt or "brand" in prompt or "icon" in prompt:
+        shapes_svg = """
+        <defs>
+            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#7C3AED;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#CDFE00;stop-opacity:1" />
+            </linearGradient>
+        </defs>
+        <path d="M150,150 C200,100 300,100 300,200 C300,300 200,300 150,250 Z" fill="url(#grad1)" opacity="0.85"/>
+        <path d="M250,250 C200,300 100,300 100,200 C100,100 200,100 250,150 Z" fill="#ffffff" opacity="0.6"/>
+        <circle cx="200" cy="200" r="30" fill="#111111"/>
+        """
+        title = "Brand Vector Logo"
+    elif "flower" in prompt or "nature" in prompt:
+        shapes_svg = """
+        <g fill="#f43f5e" stroke="#ffffff" stroke-width="2">
+            <ellipse cx="200" cy="140" rx="30" ry="50" transform="rotate(0 200 200)" />
+            <ellipse cx="200" cy="140" rx="30" ry="50" transform="rotate(45 200 200)" />
+            <ellipse cx="200" cy="140" rx="30" ry="50" transform="rotate(90 200 200)" />
+            <ellipse cx="200" cy="140" rx="30" ry="50" transform="rotate(135 200 200)" />
+            <ellipse cx="200" cy="140" rx="30" ry="50" transform="rotate(180 200 200)" />
+            <ellipse cx="200" cy="140" rx="30" ry="50" transform="rotate(225 200 200)" />
+            <ellipse cx="200" cy="140" rx="30" ry="50" transform="rotate(270 200 200)" />
+            <ellipse cx="200" cy="140" rx="30" ry="50" transform="rotate(315 200 200)" />
+        </g>
+        <circle cx="200" cy="200" r="35" fill="#CDFE00" stroke="#ffffff" stroke-width="3" />
+        """
+        title = "Nature Vector Flower"
+    else:
+        shapes_svg = """
+        <defs>
+            <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+            </linearGradient>
+        </defs>
+        <rect x="80" y="80" width="240" height="240" rx="20" fill="url(#grad2)" opacity="0.8"/>
+        <circle cx="200" cy="200" r="80" fill="#7C3AED" opacity="0.9" />
+        <polygon points="200,150 250,230 150,230" fill="#CDFE00" />
+        <line x1="80" y1="80" x2="320" y2="320" stroke="#ffffff" stroke-width="4" stroke-dasharray="10,10"/>
+        """
+        title = "Abstract Vector Composition"
+
+    svg_content = f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+        <rect width="400" height="400" fill="transparent"/>
+        <g id="ai-vector-group">
+            {shapes_svg}
+            <text x="200" y="380" font-family="Lexend, sans-serif" font-size="16" font-weight="bold" fill="#ffffff" text-anchor="middle">{title}</text>
+        </g>
+    </svg>"""
+
+    return jsonify({
+        "svg": svg_content,
+        "url": "data:image/svg+xml;utf8," + svg_content.replace("#", "%23").replace("\\n", "").replace("  ", "")
+    })
+
+
 # ── Schema ──────────────────────────────────────────────────────────
 
 
@@ -349,11 +467,18 @@ def serve_static(filename="framework-builder.html"):
     safe = filename.lstrip("/")
     if safe == "":
         safe = "framework-builder.html"
+    
+    # 1. Try dist folder (built assets)
     fpath = BUILD_DIR / safe
     if fpath.is_file():
         return send_from_directory(BUILD_DIR, safe)
 
-    # Fallback: look for the file directly in dist/
+    # 2. Try root folder (source assets, widgets, js)
+    rpath = BASE_DIR / safe
+    if rpath.is_file():
+        return send_from_directory(BASE_DIR, safe)
+
+    # 3. Fallback: look for the file directly in dist/
     if (BUILD_DIR / (safe + ".html")).is_file():
         return send_from_directory(BUILD_DIR, safe + ".html")
 
