@@ -548,6 +548,7 @@ def popart_generate():
         headers = {
             "Content-Type": "application/json",
             "x-api-key": api_key,
+            "anthropic-version": "2023-06-01",
         }
 
         body = json.dumps({
