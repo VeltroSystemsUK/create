@@ -508,6 +508,50 @@ def serve_animator(filename="index.html"):
 
 # ── Entry point ─────────────────────────────────────────────────────
 
+# ── Pop Art Generator API Proxy ────────────────────────────────────
+@app.route("/api/popart/generate", methods=["POST"])
+def popart_generate():
+    """Proxy Claude API calls for Pop Art Generator (handles CORS)"""
+    import urllib.request
+    import urllib.error
+
+    try:
+        api_key = os.environ.get("ANTHROPIC_API_KEY")
+        if not api_key:
+            return jsonify({"error": "API key not configured"}), 500
+
+        data = request.json
+        prompt = data.get("prompt", "")
+
+        # Prepare the API request
+        url = "https://api.anthropic.com/v1/messages"
+        headers = {
+            "Content-Type": "application/json",
+            "x-api-key": api_key,
+        }
+
+        body = json.dumps({
+            "model": "claude-opus-4-8",
+            "max_tokens": 2000,
+            "system": data.get("system", ""),
+            "messages": [{"role": "user", "content": prompt}]
+        })
+
+        req = urllib.request.Request(
+            url, data=body.encode(), headers=headers, method="POST"
+        )
+
+        with urllib.request.urlopen(req) as response:
+            result = json.loads(response.read())
+            return jsonify(result)
+
+    except urllib.error.HTTPError as e:
+        error_data = json.loads(e.read())
+        return jsonify(error_data), e.code
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 if __name__ == "__main__":
     import argparse
 
