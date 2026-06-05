@@ -243,6 +243,11 @@ FB.motion._renderUI = function () {
   h += '<span class="mc-modal-title">✦ Motion Creator</span>';
   h += '<span class="mc-toolbar-div"></span>';
 
+  // Layer Actions
+  h += '<button class="mc-btn" onclick="FB.motion._duplicateLayer()" title="Duplicate">⊕</button>';
+  h += '<button class="mc-btn" onclick="FB.motion._deleteLayer()" title="Delete">✕</button>';
+  h += '<span class="mc-toolbar-div"></span>';
+
   // Playback
   h += '<span class="mc-time-disp" id="mc-time-display">0.0s / ' + (s.duration/1000).toFixed(1) + 's</span>';
   h += '<button class="mc-btn mc-btn-play" id="mc-play-btn" onclick="FB.motion._togglePlay()">▶</button>';
