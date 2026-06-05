@@ -529,19 +529,41 @@ def serve_animator(filename="index.html"):
 # ── Entry point ─────────────────────────────────────────────────────
 
 # ── Pop Art Generator API Proxy ────────────────────────────────────
-@app.route("/api/popart/generate", methods=["POST"])
+@app.route("/api/popart/generate", methods=["POST", "OPTIONS"])
 def popart_generate():
     """Proxy Claude API calls for Pop Art Generator (handles CORS)"""
     import urllib.request
     import urllib.error
+    import sys
+
+    # Handle OPTIONS preflight
+    if request.method == "OPTIONS":
+        response = jsonify({"status": "ok"})
+        return add_cors_headers(response)
 
     try:
+        print("[POPART] Request received", file=sys.stderr)
+
         api_key = os.environ.get("ANTHROPIC_API_KEY")
         if not api_key:
+            print("[POPART] ERROR: API key not configured", file=sys.stderr)
             return jsonify({"error": "API key not configured"}), 500
 
+        print(f"[POPART] API key set: {api_key[:20]}...", file=sys.stderr)
+
         data = request.json
+        if not data:
+            print("[POPART] ERROR: No JSON body provided", file=sys.stderr)
+            return jsonify({"error": "No JSON body provided"}), 400
+
         prompt = data.get("prompt", "")
+        system = data.get("system", "")
+
+        print(f"[POPART] Prompt length: {len(prompt)}, System length: {len(system)}", file=sys.stderr)
+
+        if not prompt:
+            print("[POPART] ERROR: prompt field is required", file=sys.stderr)
+            return jsonify({"error": "prompt field is required"}), 400
 
         # Prepare the API request
         url = "https://api.anthropic.com/v1/messages"
@@ -551,26 +573,42 @@ def popart_generate():
             "anthropic-version": "2023-06-01",
         }
 
-        body = json.dumps({
+        body_dict = {
             "model": "claude-opus-4-8",
             "max_tokens": 2000,
-            "system": data.get("system", ""),
+            "system": system,
             "messages": [{"role": "user", "content": prompt}]
-        })
+        }
+
+        body = json.dumps(body_dict)
+        print(f"[POPART] Body length: {len(body)}", file=sys.stderr)
 
         req = urllib.request.Request(
             url, data=body.encode(), headers=headers, method="POST"
         )
 
+        print("[POPART] Calling Anthropic API...", file=sys.stderr)
         with urllib.request.urlopen(req) as response:
-            result = json.loads(response.read())
-            return jsonify(result)
+            response_body = response.read()
+            print(f"[POPART] Raw response size: {len(response_body)} bytes", file=sys.stderr)
+            result = json.loads(response_body)
+            print(f"[POPART] Parsed result keys: {list(result.keys())}", file=sys.stderr)
+            json_response = jsonify(result)
+            print(f"[POPART] About to return response...", file=sys.stderr)
+            return json_response
 
     except urllib.error.HTTPError as e:
-        error_data = json.loads(e.read())
-        return jsonify(error_data), e.code
+        print(f"[POPART] HTTPError: {e.code} {e.reason}", file=sys.stderr)
+        try:
+            error_data = json.loads(e.read().decode())
+            return jsonify(error_data), e.code
+        except:
+            return jsonify({"error": f"HTTP {e.code}: {e.reason}"}), e.code
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        import traceback
+        print(f"[POPART] Exception: {e}", file=sys.stderr)
+        traceback.print_exc(file=sys.stderr)
+        return jsonify({"error": f"Internal error: {str(e)}"}), 500
 
 
 if __name__ == "__main__":

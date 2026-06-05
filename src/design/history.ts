@@ -1,3 +1,6 @@
+/// <reference path="./fabric.d.ts" />
+/// <reference path="./global.d.ts" />
+
 interface CanvasSnapshot {
   objects: Record<string, any>;
   canvas: {

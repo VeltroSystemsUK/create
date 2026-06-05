@@ -57,11 +57,12 @@ FB.design.switchLeftTab = function (tab) {
     b.classList.toggle("active", b.dataset.tab === tab);
   });
   document
-    .querySelectorAll("#ds-tab-elements,#ds-tab-layers,#ds-tab-assets")
+    .querySelectorAll("#ds-tab-elements,#ds-tab-layers,#ds-tab-assets,#ds-tab-media")
     .forEach(function (el) {
       el.classList.toggle("active", el.id === "ds-tab-" + tab);
     });
   if (tab === "assets") FB.design._loadAssets();
+  if (tab === "media") FB.design.media.load();
 };
 
 FB.design.switchRightTab = function (tab) {
@@ -273,6 +274,17 @@ FB.design.elements = (function () {
     },
   ];
 
+  var VELTRO_ELEMENTS = [
+    { type: "kinetic-text",     icon: "〰",  label: "Kinetic Text",     desc: "Wave-animated text" },
+    { type: "text-scramble",    icon: "⌨",  label: "Text Scramble",    desc: "Decode effect" },
+    { type: "typewriter-reveal",icon: "✍",  label: "Typewriter",       desc: "Reveal animation" },
+    { type: "physics-sandbox",  icon: "◉",  label: "Physics Sandbox",  desc: "Interactive physics" },
+    { type: "holographic-card", icon: "✦",  label: "Holographic Card", desc: "Iridescent card" },
+    { type: "tilt-card-3d",     icon: "⬡",  label: "3D Tilt Card",     desc: "Perspective tilt" },
+    { type: "aurora-bg",        icon: "⊙",  label: "Aurora BG",        desc: "Northern lights" },
+    { type: "nebula-bg",        icon: "✶",  label: "Nebula BG",        desc: "Particle nebula" },
+  ];
+
   var _iconQuery = "";
 
   function render() {
@@ -285,10 +297,10 @@ FB.design.elements = (function () {
     var el = document.getElementById("ds-tool-row");
     if (!el) return;
     el.innerHTML = [
-      { id: "select", label: "▶", title: "Select (V)" },
-      { id: "text", label: "T", title: "Text (T)" },
-      { id: "image", label: "🖼", title: "Upload Image (I)" },
-      { id: "ai", label: "✦", title: "AI Generate" },
+      { id: "select", label: "↖", title: "Select (V)" },
+      { id: "text",   label: "T", title: "Text (T)" },
+      { id: "image",  label: "▣", title: "Upload Image (I)" },
+      { id: "ai",     label: "✦", title: "AI Generate" },
     ]
       .map(function (t) {
         var isActive = t.id === active;
@@ -311,21 +323,99 @@ FB.design.elements = (function () {
       .join("");
   }
 
+
+  var _currentPatternType = "none";
+  var _currentPatternOpacity = 0.5;
+  var _patternOpacityTimer = null;
+  var _accordionState = {};
+
+  function _saveAccordionState() {
+    document.querySelectorAll(".ds-accordion-item").forEach(function (item) {
+      var key = item.dataset.accordion;
+      if (key) {
+        var content = item.querySelector(".ds-accordion-content");
+        if (content) _accordionState[key] = content.classList.contains("active");
+      }
+    });
+  }
+
+  function _restoreAccordionState() {
+    document.querySelectorAll(".ds-accordion-item").forEach(function (item) {
+      var key = item.dataset.accordion;
+      if (key && key in _accordionState) {
+        var btn = item.querySelector(".ds-accordion-header");
+        var content = item.querySelector(".ds-accordion-content");
+        var chevron = btn && btn.querySelector(".ds-accordion-chevron");
+        var open = _accordionState[key];
+        if (btn) btn.classList.toggle("active", open);
+        if (content) {
+          content.classList.toggle("active", open);
+          content.style.display = open ? "block" : "none";
+        }
+        if (chevron) chevron.textContent = open ? "▼" : "▶";
+      }
+    });
+  }
+
   function _renderElementsBody() {
+    _saveAccordionState();
     var el = document.getElementById("ds-elements-body");
     if (!el) return;
     el.innerHTML =
-      _framesHtml() +
-      _shapesHtml() +
-      _textHtml() +
-      _iconsHtml() +
-      _backgroundsHtml();
+      _accordionHtml("Frames", _framesHtml(), false) +
+      _accordionHtml("Shapes", _shapesHtml(), true) +
+      _accordionHtml("Veltro Engine", _veltroHtml(), true) +
+      _accordionHtml("Text", _textHtml(), false) +
+      _accordionHtml("Icons", _iconsHtml(), !!_iconQuery) +
+      _accordionHtml("Backgrounds", _backgroundsHtml(), false);
+    _restoreAccordionState();
+
+    // Restore search focus and value
+    if (_iconQuery) {
+      var inp = document.getElementById("ds-icon-search");
+      if (inp) {
+        inp.value = _iconQuery;
+      }
+    }
+  }
+
+  function _accordionHtml(title, contentHtml, isExpanded) {
+    var activeClass = isExpanded ? " active" : "";
+    var displayStyle = isExpanded ? "display: block;" : "display: none;";
+    var chevron = isExpanded ? "▼" : "▶";
+    return (
+      '<div class="ds-accordion-item" data-accordion="' + title.toLowerCase() + '">' +
+      '<button class="ds-accordion-header' + activeClass + '" onclick="FB.design.elements.toggleAccordion(this)">' +
+      '<span>' + title + '</span>' +
+      '<span class="ds-accordion-chevron">' + chevron + '</span>' +
+      '</button>' +
+      '<div class="ds-accordion-content' + activeClass + '" style="' + displayStyle + '">' +
+      contentHtml +
+      '</div>' +
+      '</div>'
+    );
+  }
+
+  function toggleAccordion(btn) {
+    var content = btn.nextElementSibling;
+    var chevron = btn.querySelector(".ds-accordion-chevron");
+    if (!content) return;
+    var isOpen = content.classList.contains("active");
+    if (isOpen) {
+      content.classList.remove("active");
+      content.style.display = "none";
+      btn.classList.remove("active");
+      if (chevron) chevron.textContent = "▶";
+    } else {
+      content.classList.add("active");
+      content.style.display = "block";
+      btn.classList.add("active");
+      if (chevron) chevron.textContent = "▼";
+    }
   }
 
   function _framesHtml() {
     return (
-      "<div>" +
-      '<div class="ds-section-label">Frames</div>' +
       '<div class="ds-frame-grid">' +
       FRAMES.map(function (f) {
         return (
@@ -342,14 +432,12 @@ FB.design.elements = (function () {
           "</div></div>"
         );
       }).join("") +
-      "</div></div>"
+      "</div>"
     );
   }
 
   function _shapesHtml() {
     return (
-      "<div>" +
-      '<div class="ds-section-label">Shapes</div>' +
       '<div class="ds-shape-grid">' +
       SHAPES.map(function (s) {
         return (
@@ -363,14 +451,31 @@ FB.design.elements = (function () {
           "</div>"
         );
       }).join("") +
-      "</div></div>"
+      "</div>"
+    );
+  }
+
+  function _veltroHtml() {
+    return (
+      '<div class="ds-veltro-grid">' +
+      VELTRO_ELEMENTS.map(function (v) {
+        return (
+          '<div class="ds-veltro-tile" onclick="FB.design.elements.addVeltroElement(\'' +
+          v.type +
+          "')\">" +
+          '<span class="ds-veltro-icon">' + v.icon + '</span>' +
+          '<div class="ds-veltro-info">' +
+          '<div class="ds-veltro-name">' + v.label + '</div>' +
+          '<div class="ds-veltro-desc">' + v.desc + '</div>' +
+          '</div></div>'
+        );
+      }).join("") +
+      "</div>"
     );
   }
 
   function _textHtml() {
     return (
-      "<div>" +
-      '<div class="ds-section-label">Text</div>' +
       '<div class="ds-text-presets">' +
       TEXT_PRESETS.map(function (p) {
         return (
@@ -388,7 +493,7 @@ FB.design.elements = (function () {
           "</span></div>"
         );
       }).join("") +
-      "</div></div>"
+      "</div>"
     );
   }
 
@@ -405,8 +510,7 @@ FB.design.elements = (function () {
         })
       : ICONS;
     return (
-      "<div>" +
-      '<div class="ds-section-label">Icons</div>' +
+      '<div>' +
       '<input id="ds-icon-search" name="ds-icon-search" placeholder="Search icons…" value="' +
       FB.design._esc(_iconQuery) +
       '" ' +
@@ -433,25 +537,417 @@ FB.design.elements = (function () {
   }
 
   function _backgroundsHtml() {
-    return (
-      "<div>" +
-      '<div class="ds-section-label">Backgrounds</div>' +
-      '<div class="ds-bg-swatches">' +
-      BACKGROUNDS.map(function (bg) {
-        return (
-          '<div class="ds-bg-swatch" title="' +
-          bg.label +
-          '" style="background:' +
-          bg.value +
-          ';" ' +
-          "onclick=\"FB.design.elements.setBackground('" +
-          bg.value.replace(/'/g, "\\'") +
-          "')\">" +
-          "</div>"
-        );
-      }).join("") +
-      "</div></div>"
-    );
+    var fc = FB.design.canvas.get();
+    var currentBg = (fc && fc.backgroundColor) || "#ffffff";
+    var bgNormalized = FB.design.normalizeColorForInput(typeof currentBg === "string" ? currentBg : "#ffffff");
+    
+    var html = '<div class="ds-bg-designer">';
+    
+    // Solid Color Input
+    html += '<div class="ds-bg-row">';
+    html += '<label class="ds-bg-label">Solid Color</label>';
+    html += '<div style="display:flex; gap:6px; align-items:center;">';
+    html += '<input id="ds-bg-picker-color" type="color" class="ds-color-swatch" value="' + bgNormalized + '" oninput="FB.design.elements.onBgPickerInput(this.value)" />';
+    html += '<input id="ds-bg-picker-hex" type="text" class="ds-input" style="flex:1;" value="' + (typeof currentBg === "string" ? currentBg : "#ffffff") + '" onchange="FB.design.elements.onBgPickerInput(this.value)" />';
+    html += '</div>';
+    html += '</div>';
+
+    // Presets
+    var presets = [
+      { value: "#111111", label: "Midnight" },
+      { value: "#0d0d1a", label: "Deep Space" },
+      { value: "#1a1a2a", label: "Dark Violet" },
+      { value: "#122a20", label: "Dark Forest" },
+      { value: "#2a1212", label: "Dark Velvet" },
+      { value: "#ffffff", label: "Pure White" },
+      { value: "#f5f5f0", label: "Paper" },
+      { value: "#e2e8f0", label: "Cool Gray" },
+      { value: "#fef08a", label: "Soft Yellow" },
+      { value: "#cdfe00", label: "Electric Lime" },
+      { value: "#38bdf8", label: "Sky Blue" },
+      { value: "#ec4899", label: "Cyber Pink" }
+    ];
+    html += '<div class="ds-bg-row">';
+    html += '<label class="ds-bg-label">Presets</label>';
+    html += '<div class="ds-bg-swatches-grid">';
+    presets.forEach(function (p) {
+      html += '<div class="ds-bg-swatch-item" title="' + p.label + '" style="background:' + p.value + ';" onclick="FB.design.elements.onBgPickerInput(\'' + p.value + '\')"></div>';
+    });
+    html += '</div>';
+    html += '</div>';
+
+    // Gradients
+    var gradients = [
+      { value: "linear-gradient(135deg,#0d0d1a 0%,#1a1a2a 100%)", label: "Navy Fade" },
+      { value: "linear-gradient(135deg,#111111 0%,#cdfe0022 100%)", label: "Neon Fade" },
+      { value: "linear-gradient(135deg,#1a1a2a 0%,#2a1a3a 100%)", label: "Purple Dark" },
+      { value: "linear-gradient(135deg,#05050e 0%,#10b98122 50%,#7c3aed44 100%)", label: "Aurora" },
+      { value: "linear-gradient(135deg,#ff79c6 0%,#8be9fd 100%)", label: "Cyberpunk" },
+      { value: "linear-gradient(135deg,#f43f5e 0%,#f97316 100%)", label: "Sunset" }
+    ];
+    html += '<div class="ds-bg-row">';
+    html += '<label class="ds-bg-label">Gradients</label>';
+    html += '<div class="ds-bg-gradients-grid">';
+    gradients.forEach(function (g) {
+      html += '<div class="ds-bg-gradient-item" title="' + g.label + '" style="background:' + g.value + ';" onclick="FB.design.elements.onBgGradientClick(\'' + g.value.replace(/'/g, "\\'") + '\')"></div>';
+    });
+    html += '</div>';
+    html += '</div>';
+
+    // Patterns
+    var activeNone = _currentPatternType === 'none' ? ' active' : '';
+    var activeGrid = _currentPatternType === 'grid' ? ' active' : '';
+    var activeDot = _currentPatternType === 'dot' ? ' active' : '';
+    var activeNoise = _currentPatternType === 'noise' ? ' active' : '';
+    var activeStripes = _currentPatternType === 'stripes' ? ' active' : '';
+    html += '<div class="ds-bg-row">';
+    html += '<label class="ds-bg-label">Design Patterns</label>';
+    html += '<div class="ds-bg-patterns">';
+    html += '<button class="ds-bg-pattern-btn' + activeNone + '" onclick="FB.design.elements.setPattern(\'none\')">None</button>';
+    html += '<button class="ds-bg-pattern-btn' + activeGrid + '" onclick="FB.design.elements.setPattern(\'grid\')">Grid</button>';
+    html += '<button class="ds-bg-pattern-btn' + activeDot + '" onclick="FB.design.elements.setPattern(\'dot\')">Dots</button>';
+    html += '<button class="ds-bg-pattern-btn' + activeNoise + '" onclick="FB.design.elements.setPattern(\'noise\')">Noise</button>';
+    html += '<button class="ds-bg-pattern-btn' + activeStripes + '" onclick="FB.design.elements.setPattern(\'stripes\')">Stripes</button>';
+    html += '</div>';
+    html += '</div>';
+
+    // Pattern Opacity
+    html += '<div class="ds-bg-row">';
+    html += '<label class="ds-bg-label">Pattern Opacity</label>';
+    html += '<div style="display:flex; align-items:center; gap:8px;">';
+    html += '<input id="ds-bg-pattern-opacity" type="range" min="0" max="1" step="0.05" value="' + _currentPatternOpacity + '" style="flex:1;" oninput="FB.design.elements.changePatternOpacity(this.value)" />';
+    html += '<span id="ds-bg-pattern-opacity-label" style="font-size:10px; color:#aaa; min-width:24px; text-align:right;">' + Math.round(_currentPatternOpacity * 100) + '%</span>';
+    html += '</div>';
+    html += '</div>';
+
+    html += '</div>';
+    return html;
+  }
+
+  function onBgPickerInput(hex) {
+    var fc = FB.design.canvas.get();
+    if (!fc) return;
+    fc.setBackgroundColor(hex, function () {
+      fc.renderAll();
+      FB.design.history.push();
+    });
+
+    var colorPicker = document.getElementById("ds-bg-picker-color");
+    if (colorPicker) colorPicker.value = FB.design.normalizeColorForInput(hex);
+    var hexInput = document.getElementById("ds-bg-picker-hex");
+    if (hexInput) hexInput.value = hex;
+
+    var dsBgColor = document.getElementById("ds-bg-color");
+    if (dsBgColor) dsBgColor.value = FB.design.normalizeColorForInput(hex);
+    var dsBgHex = document.getElementById("ds-bg-hex");
+    if (dsBgHex) dsBgHex.value = hex;
+  }
+
+  function _hex8ToRgba(c) {
+    if (c.length !== 9) return c;
+    var r = parseInt(c.slice(1, 3), 16);
+    var g = parseInt(c.slice(3, 5), 16);
+    var b = parseInt(c.slice(5, 7), 16);
+    var a = Math.round(parseInt(c.slice(7, 9), 16) / 255 * 100) / 100;
+    return "rgba(" + r + "," + g + "," + b + "," + a + ")";
+  }
+
+  function onBgGradientClick(val) {
+    var fc = FB.design.canvas.get();
+    if (!fc) return;
+    if (val.indexOf("gradient") !== -1) {
+      var colours = (val.match(/#[0-9a-fA-F]+/g) || ["#111111", "#222222"]).map(_hex8ToRgba);
+      var grad = new fabric.Gradient({
+        type: "linear",
+        coords: { x1: 0, y1: 0, x2: fc.getWidth(), y2: fc.getHeight() },
+        colorStops: [
+          { offset: 0, color: colours[0] },
+          { offset: 1, color: colours[colours.length - 1] }
+        ]
+      });
+      if (colours.length >= 3) {
+        grad.colorStops = [
+          { offset: 0, color: colours[0] },
+          { offset: 0.5, color: colours[1] },
+          { offset: 1, color: colours[2] }
+        ];
+      }
+      fc.setBackgroundColor(grad, function () {
+        fc.renderAll();
+        FB.design.history.push();
+      });
+    }
+  }
+
+  function setPattern(type) {
+    var fc = FB.design.canvas.get();
+    if (!fc) return;
+    _currentPatternType = type;
+
+    document.querySelectorAll(".ds-bg-pattern-btn").forEach(function (btn) {
+      var btnLabel = btn.textContent.toLowerCase();
+      btn.classList.toggle("active", btnLabel === type || (type === "dot" && btnLabel === "dots"));
+    });
+
+    if (type === "none") {
+      fc.setBackgroundImage(null, function () {
+        fc.renderAll();
+        FB.design.history.push();
+      });
+      return;
+    }
+
+    var dataUrl;
+    if (type === "grid") {
+      var canvas = document.createElement("canvas");
+      canvas.width = 40;
+      canvas.height = 40;
+      var ctx = canvas.getContext("2d");
+      ctx.strokeStyle = "rgba(255, 255, 255, " + _currentPatternOpacity + ")";
+      ctx.lineWidth = 1;
+      ctx.strokeRect(0, 0, 40, 40);
+      dataUrl = canvas.toDataURL();
+    } else if (type === "dot") {
+      var canvas = document.createElement("canvas");
+      canvas.width = 25;
+      canvas.height = 25;
+      var ctx = canvas.getContext("2d");
+      ctx.fillStyle = "rgba(255, 255, 255, " + Math.min(1, _currentPatternOpacity * 1.5) + ")";
+      ctx.beginPath();
+      ctx.arc(12, 12, 1.5, 0, Math.PI * 2);
+      ctx.fill();
+      dataUrl = canvas.toDataURL();
+    } else if (type === "noise") {
+      var canvas = document.createElement("canvas");
+      canvas.width = 120;
+      canvas.height = 120;
+      var ctx = canvas.getContext("2d");
+      var imgData = ctx.createImageData(120, 120);
+      var data = imgData.data;
+      for (var i = 0; i < data.length; i += 4) {
+        var val = Math.floor(Math.random() * 255);
+        data[i] = val;
+        data[i + 1] = val;
+        data[i + 2] = val;
+        data[i + 3] = Math.floor(_currentPatternOpacity * 24);
+      }
+      ctx.putImageData(imgData, 0, 0);
+      dataUrl = canvas.toDataURL();
+    } else if (type === "stripes") {
+      var canvas = document.createElement("canvas");
+      canvas.width = 30;
+      canvas.height = 30;
+      var ctx = canvas.getContext("2d");
+      ctx.strokeStyle = "rgba(255, 255, 255, " + _currentPatternOpacity + ")";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, 30);
+      ctx.lineTo(30, 0);
+      ctx.stroke();
+      dataUrl = canvas.toDataURL();
+    }
+
+    if (dataUrl) {
+      fabric.Image.fromURL(dataUrl, function (img) {
+        fc.setBackgroundImage(img, function () {
+          fc.renderAll();
+          FB.design.history.push();
+        }, {
+          repeat: "repeat"
+        });
+      });
+    }
+  }
+
+  function changePatternOpacity(val) {
+    _currentPatternOpacity = parseFloat(val);
+    var label = document.getElementById("ds-bg-pattern-opacity-label");
+    if (label) label.textContent = Math.round(_currentPatternOpacity * 100) + "%";
+    if (_currentPatternType !== "none") {
+      clearTimeout(_patternOpacityTimer);
+      _patternOpacityTimer = setTimeout(function () {
+        setPattern(_currentPatternType);
+      }, 150);
+    }
+  }
+
+  function addVeltroElement(type) {
+    _addVeltroElementToCanvas(type);
+  }
+
+  // Keep the old fabric-only path here as a dead stub (won't be called)
+  function _addVeltroElementToCanvas(type) {
+    var fc = FB.design.canvas.get();
+    if (!fc) return;
+    var cx = fc.getWidth() / 2;
+    var cy = fc.getHeight() / 2;
+
+    if (type === "kinetic-text") {
+      var txt = new fabric.IText("KINETIC TEXT", {
+        left: cx - 150,
+        top: cy - 25,
+        fontFamily: "Lexend",
+        fontSize: 48,
+        fontWeight: 800,
+        fill: "#cdfe00",
+        name: "Kinetic Text",
+        _veltroType: "kineticText"
+      });
+      fc.add(txt);
+      fc.setActiveObject(txt);
+      fc.renderAll();
+      FB.design.history.push();
+    } else if (type === "text-scramble") {
+      var txt = new fabric.IText("DECODE ME", {
+        left: cx - 120,
+        top: cy - 20,
+        fontFamily: "monospace",
+        fontSize: 40,
+        fontWeight: 600,
+        fill: "#ff79c6",
+        name: "Text Scramble",
+        _veltroType: "textScramble"
+      });
+      fc.add(txt);
+      fc.setActiveObject(txt);
+      fc.renderAll();
+      FB.design.history.push();
+    } else if (type === "typewriter-reveal") {
+      var txt = new fabric.IText("Typewriter Text", {
+        left: cx - 110,
+        top: cy - 16,
+        fontFamily: "Lexend",
+        fontSize: 32,
+        fontWeight: 400,
+        fill: "#50fa7b",
+        name: "Typewriter Reveal",
+        _veltroType: "typewriterReveal"
+      });
+      fc.add(txt);
+      fc.setActiveObject(txt);
+      fc.renderAll();
+      FB.design.history.push();
+    } else if (type === "physics-sandbox") {
+      var bgRect = new fabric.Rect({
+        width: 180,
+        height: 120,
+        fill: "rgba(26,26,42,0.6)",
+        stroke: "#cdfe00",
+        strokeWidth: 2,
+        rx: 8,
+        ry: 8
+      });
+      var circle1 = new fabric.Circle({ radius: 10, fill: "#38bdf8", left: 30, top: 40 });
+      var circle2 = new fabric.Circle({ radius: 15, fill: "#ec4899", left: 120, top: 20 });
+      var rect1 = new fabric.Rect({ width: 25, height: 25, fill: "#ffb86c", left: 80, top: 60, angle: 15 });
+      var text = new fabric.IText("◈ Physics Sandbox", {
+        fontSize: 12,
+        fontFamily: "Lexend",
+        fill: "#ffffff",
+        fontWeight: 600,
+        left: 30,
+        top: 95
+      });
+      var group = new fabric.Group([bgRect, circle1, circle2, rect1, text], {
+        left: cx - 90,
+        top: cy - 60,
+        name: "Physics Sandbox",
+        _veltroType: "physicsSandbox"
+      });
+      fc.add(group);
+      fc.setActiveObject(group);
+      fc.renderAll();
+      FB.design.history.push();
+    } else if (type === "holographic-card") {
+      var bgRect = new fabric.Rect({
+        width: 160,
+        height: 220,
+        fill: "rgba(255,255,255,0.08)",
+        stroke: "rgba(255, 255, 255, 0.25)",
+        strokeWidth: 1,
+        rx: 12,
+        ry: 12
+      });
+      var gradShine = new fabric.Polygon([
+        { x: 0, y: 0 }, { x: 80, y: 0 }, { x: 160, y: 220 }, { x: 80, y: 220 }
+      ], {
+        fill: new fabric.Gradient({
+          type: "linear",
+          coords: { x1: 0, y1: 0, x2: 160, y2: 220 },
+          colorStops: [
+            { offset: 0, color: "rgba(139, 92, 246, 0.4)" },
+            { offset: 0.5, color: "rgba(236, 72, 153, 0.2)" },
+            { offset: 1, color: "rgba(56, 189, 248, 0.4)" }
+          ]
+        }),
+        left: 0,
+        top: 0
+      });
+      var spark = new fabric.IText("✦", { fontSize: 24, fill: "#fff", left: 68, top: 40 });
+      var label = new fabric.IText("Holographic Card", {
+        fontSize: 11,
+        fontFamily: "Lexend",
+        fill: "#fff",
+        fontWeight: 600,
+        textAlign: "center",
+        left: 28,
+        top: 170
+      });
+      var group = new fabric.Group([bgRect, gradShine, spark, label], {
+        left: cx - 80,
+        top: cy - 110,
+        name: "Holographic Card",
+        _veltroType: "holographicCard"
+      });
+      fc.add(group);
+      fc.setActiveObject(group);
+      fc.renderAll();
+      FB.design.history.push();
+    } else if (type === "tilt-card-3d") {
+      var bgRect = new fabric.Rect({
+        width: 170,
+        height: 110,
+        fill: "rgba(15, 15, 28, 0.8)",
+        stroke: "#38bdf8",
+        strokeWidth: 1.5,
+        rx: 8,
+        ry: 8
+      });
+      var text = new fabric.IText("Perspective Tilt", {
+        fontSize: 10,
+        fontFamily: "Lexend",
+        fill: "#aaa",
+        left: 45,
+        top: 30
+      });
+      var title = new fabric.IText("3D Tilt Card", {
+        fontSize: 14,
+        fontFamily: "Lexend",
+        fill: "#fff",
+        fontWeight: 700,
+        left: 40,
+        top: 50
+      });
+      var group = new fabric.Group([bgRect, text, title], {
+        left: cx - 85,
+        top: cy - 55,
+        skewX: -5,
+        skewY: 3,
+        name: "Tilt Card 3D",
+        _veltroType: "tiltCard3d"
+      });
+      fc.add(group);
+      fc.setActiveObject(group);
+      fc.renderAll();
+      FB.design.history.push();
+    } else if (type === "aurora-bg") {
+      onBgGradientClick("linear-gradient(135deg, #0d0d1a 0%, #10b98122 50%, #7c3aed44 100%)");
+      fc._veltroType = "auroraBorealis";
+    } else if (type === "nebula-bg") {
+      onBgGradientClick("linear-gradient(135deg, #05050e 0%, #1a1a2a 100%)");
+      setPattern("dot");
+      fc._veltroType = "particleNebula";
+    }
   }
 
   function _onIconSearch(q) {
@@ -637,6 +1133,12 @@ FB.design.elements = (function () {
     setBackground: setBackground,
     _onIconSearch: _onIconSearch,
     _renderToolRow: _renderToolRow,
+    toggleAccordion: toggleAccordion,
+    onBgPickerInput: onBgPickerInput,
+    onBgGradientClick: onBgGradientClick,
+    setPattern: setPattern,
+    changePatternOpacity: changePatternOpacity,
+    addVeltroElement: addVeltroElement
   };
 })();
 
@@ -698,6 +1200,7 @@ FB.design.canvas = (function () {
   var _inited = false;
 
   var PRESETS = {
+    blank: { w: 800, h: 600 },
     hero: { w: 1920, h: 600 },
     og: { w: 1200, h: 630 },
     card: { w: 800, h: 600 },
@@ -743,9 +1246,9 @@ FB.design.canvas = (function () {
   }
 
   function _resizeTo(w, h) {
-    var wrap = document.getElementById("ds-canvas-wrap");
-    var maxW = Math.max(wrap.clientWidth - 40, 200);
-    var maxH = Math.max(wrap.clientHeight - 40, 200);
+    var col = document.getElementById("ds-canvas-column");
+    var maxW = Math.max((col ? col.clientWidth : 0) - 40, 200);
+    var maxH = Math.max((col ? col.clientHeight : 0) - 40, 200);
     var scale = Math.min(1, maxW / w, maxH / h);
     scale = Math.max(scale, 0.01);
     _fc.setWidth(w);
@@ -2183,4 +2686,126 @@ FB.design.ai = (function () {
   }
 
   return { open: open, close: close, generate: generate };
+})();
+
+FB.design.media = (function () {
+  function triggerUpload() {
+    var fileInp = document.getElementById("ds-media-file-input");
+    if (fileInp) fileInp.click();
+  }
+
+  function handleUpload(inp) {
+    var file = inp.files[0];
+    if (!file) return;
+    
+    var btn = document.querySelector(".ds-media-upload-btn");
+    if (!btn) { load(); return; }
+    var origText = btn.textContent;
+    btn.textContent = "⏳ Uploading...";
+    btn.disabled = true;
+
+    var fd = new FormData();
+    fd.append("file", file);
+
+    fetch("/api/media", {
+      method: "POST",
+      body: fd
+    })
+    .then(function (res) {
+      if (!res.ok) throw new Error("Upload failed");
+      return res.json();
+    })
+    .then(function (data) {
+      btn.textContent = "✅ Success!";
+      inp.value = "";
+      setTimeout(function () {
+        btn.textContent = origText;
+        btn.disabled = false;
+      }, 1500);
+      load();
+    })
+    .catch(function (err) {
+      console.error(err);
+      btn.textContent = "❌ Failed";
+      setTimeout(function () {
+        btn.textContent = origText;
+        btn.disabled = false;
+      }, 1500);
+    });
+  }
+
+  function load() {
+    var gallery = document.getElementById("ds-media-gallery");
+    if (!gallery) return;
+    gallery.innerHTML = '<div class="ds-media-loading">Loading media...</div>';
+
+    fetch("/api/media")
+    .then(function (res) {
+      if (!res.ok) throw new Error("Could not load media");
+      return res.json();
+    })
+    .then(function (files) {
+      if (!files.length) {
+        gallery.innerHTML = '<div class="ds-media-loading">No media uploaded yet.</div>';
+        return;
+      }
+      gallery.innerHTML = files.map(function (f) {
+        var safeName = encodeURIComponent(f.name);
+        var src = "/media/" + safeName;
+        var displayName = f.originalName || f.name;
+        return (
+          '<div class="ds-media-item" onclick="FB.design.media.insertImage(\'' + src + '\')">' +
+          '<img src="' + src + '" alt="' + FB.design._esc(displayName) + '" />' +
+          '<button class="ds-media-delete-btn" onclick="FB.design.media.deleteMedia(event, \'' + safeName + '\')" title="Delete">🗑</button>' +
+          '</div>'
+        );
+      }).join("");
+    })
+    .catch(function (err) {
+      gallery.innerHTML = '<div class="ds-media-loading">Failed to load media: ' + err.message + '</div>';
+    });
+  }
+
+  function insertImage(src) {
+    var fc = FB.design.canvas.get();
+    if (!fc) return;
+    
+    fabric.Image.fromURL(src, function (img) {
+      var maxW = fc.getWidth() * 0.5;
+      if (img.width > maxW) img.scaleToWidth(maxW);
+      img.set({
+        left: fc.getWidth() / 2 - img.getScaledWidth() / 2,
+        top: fc.getHeight() / 2 - img.getScaledHeight() / 2,
+        name: "Image"
+      });
+      fc.add(img);
+      fc.setActiveObject(img);
+      fc.renderAll();
+      FB.design.history.push();
+    }, { crossOrigin: "anonymous" });
+  }
+
+  function deleteMedia(e, name) {
+    e.stopPropagation();
+    if (!confirm("Are you sure you want to delete this image?")) return;
+
+    fetch("/api/media/" + name, {
+      method: "DELETE"
+    })
+    .then(function (res) {
+      if (!res.ok) throw new Error("Delete failed");
+      load();
+    })
+    .catch(function (err) {
+      alert("Error: " + err.message);
+    });
+  }
+
+  return {
+    triggerUpload: triggerUpload,
+    handleUpload: handleUpload,
+    load: load,
+    insertImage: insertImage,
+    deleteMedia: deleteMedia
+  };
 })();

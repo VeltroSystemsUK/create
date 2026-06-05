@@ -1,3 +1,6 @@
+/// <reference path="./fabric.d.ts" />
+/// <reference path="./global.d.ts" />
+
 import { store } from "./store";
 
 export function initMasking(canvas: fabric.Canvas) {

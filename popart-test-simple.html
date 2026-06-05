@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pop Art Test - Simple</title>
+  <style>
+    body { font-family: monospace; padding: 20px; background: #f0f0f0; }
+    button { padding: 10px 20px; font-size: 16px; }
+    .log { background: white; border: 1px solid #ccc; padding: 10px; margin-top: 10px; max-height: 300px; overflow-y: auto; font-size: 12px; }
+    .error { color: red; }
+    .success { color: green; }
+  </style>
+</head>
+<body>
+  <h1>Pop Art Spec Generator - Simple Test</h1>
+
+  <button onclick="testGenerate()">Test Generate</button>
+  <button onclick="clearLog()">Clear Log</button>
+
+  <div class="log" id="log"></div>
+
+  <script>
+    function log(msg, isError = false) {
+      const logEl = document.getElementById('log');
+      const p = document.createElement('div');
+      p.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
+      if (isError) p.classList.add('error');
+      else p.classList.add('success');
+      logEl.appendChild(p);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function clearLog() {
+      document.getElementById('log').innerHTML = '';
+    }
+
+    async function testGenerate() {
+      log('Starting test...');
+
+      try {
+        log('Creating request...');
+        const requestBody = {
+          system: 'You are a simple test. Return valid JSON.',
+          prompt: 'Test: generate a simple JSON object with title and description fields.'
+        };
+        log('Request size: ' + JSON.stringify(requestBody).length + ' bytes');
+
+        log('Calling API...');
+        const response = await fetch('http://localhost:3003/api/popart/generate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestBody)
+        });
+
+        log('Response status: ' + response.status);
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          log('ERROR: ' + response.status + ' - ' + errorText, true);
+          return;
+        }
+
+        log('Parsing response...');
+        const data = await response.json();
+        log('Response received: ' + JSON.stringify(data).length + ' bytes');
+
+        if (data.content && data.content[0]) {
+          const text = data.content[0].text;
+          log('Content text length: ' + text.length + ' bytes');
+          log('First 200 chars: ' + text.substring(0, 200));
+        }
+
+        log('Test completed successfully!');
+
+      } catch (err) {
+        log('EXCEPTION: ' + err.message, true);
+        console.error('Full error:', err);
+      }
+    }
+
+    log('Page loaded - ready for testing');
+  </script>
+</body>
+</html>

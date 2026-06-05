@@ -611,21 +611,28 @@
               data-tab="elements"
               onclick="FB.design.switchLeftTab('elements')"
             >
-              <span class="ds-tab-icon">◈</span> Elements
+              <span class="ds-tab-icon">⊞</span> Elements
             </button>
             <button
               class="ds-tab"
               data-tab="layers"
               onclick="FB.design.switchLeftTab('layers')"
             >
-              <span class="ds-tab-icon">☰</span> Layers
+              <span class="ds-tab-icon">≡</span> Layers
+            </button>
+            <button
+              class="ds-tab"
+              data-tab="media"
+              onclick="FB.design.switchLeftTab('media')"
+            >
+              <span class="ds-tab-icon">▣</span> Media
             </button>
             <button
               class="ds-tab"
               data-tab="assets"
               onclick="FB.design.switchLeftTab('assets')"
             >
-              <span class="ds-tab-icon">◇</span> Assets
+              <span class="ds-tab-icon">◈</span> Assets
             </button>
           </div>
 
@@ -636,6 +643,16 @@
 
           <div id="ds-tab-layers" class="ds-tab-content">
             <div id="ds-layers-list"></div>
+          </div>
+
+          <div id="ds-tab-media" class="ds-tab-content">
+            <div class="ds-media-header">
+              <button class="ds-media-upload-btn" onclick="FB.design.media.triggerUpload()">
+                📤 Upload Image
+              </button>
+              <input type="file" id="ds-media-file-input" style="display: none;" accept="image/*" onchange="FB.design.media.handleUpload(this)" />
+            </div>
+            <div id="ds-media-gallery" class="ds-media-grid"></div>
           </div>
 
           <div id="ds-tab-assets" class="ds-tab-content">
@@ -891,10 +908,6 @@
     <!-- MOTION CREATOR OVERLAY -->
     <div id="ds-motion-overlay" style="display: none">
       <div id="ds-motion-modal">
-        <div class="ds-modal-head">
-          <span>🎬 Motion Creator</span>
-          <button onclick="FB.motion.close()">✕</button>
-        </div>
         <div id="ds-motion-main"></div>
       </div>
     </div>
