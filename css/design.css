@@ -156,7 +156,7 @@
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-y: auto;
 }
 #ds-right-panel {
   width: 240px;
@@ -165,7 +165,7 @@
   border-left: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-y: auto;
 }
 #ds-canvas-column {
   flex: 1;
