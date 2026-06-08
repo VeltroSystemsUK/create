@@ -1,14 +1,20 @@
 #!/bin/bash
 # Production-ready server launcher
 
-# Try Gunicorn first (better for production)
-if command -v gunicorn &> /dev/null; then
-    echo "Starting with Gunicorn..."
-    gunicorn -w 4 -b 0.0.0.0:3003 --timeout 120 server:app
+# Try Node.js/Express first (most reliable for this project)
+if command -v node &> /dev/null; then
+    echo "Starting with Node.js/Express..."
+    node serve.js
     exit $?
 fi
 
-# Fallback to Flask with optimizations
-echo "Gunicorn not found, using Flask development server (single threaded)"
-echo "For best results, install Gunicorn: pip3 install --break-system-packages gunicorn"
+# Fallback to Gunicorn if Node.js not available
+if command -v gunicorn &> /dev/null; then
+    echo "Node.js not found, falling back to Gunicorn..."
+    gunicorn -w 4 -b 0.0.0.0:3003 --timeout 300 --keep-alive 300 server:app
+    exit $?
+fi
+
+# Final fallback to Flask development server
+echo "Gunicorn not found, using Flask development server"
 python3 server.py
