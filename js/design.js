@@ -1,5 +1,6 @@
 FB.design = {};
 FB.design._mode = false;
+FB.design._canvasBg = "#ffffff";
 
 // Suppress Fabric.js "alphabetical" textBaseline warnings (broken templates)
 (function () {
@@ -14,6 +15,19 @@ FB.design._esc = function (s) {
   var d = document.createElement("div");
   d.textContent = String(s);
   return d.innerHTML;
+};
+
+FB.design._cssEsc = function (s) {
+  return String(s || "").replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/</g, "\\3C ");
+};
+
+FB.design.applyCanvasSurfaceBg = function () {
+  var bg = FB.design._canvasBg || "#ffffff";
+  var fc = FB.design.canvas && FB.design.canvas.get ? FB.design.canvas.get() : null;
+  var container = fc && fc.wrapperEl ? fc.wrapperEl : document.querySelector("#ds-canvas-wrap .canvas-container");
+  var wrap = document.getElementById("ds-canvas-wrap");
+  if (wrap) wrap.style.background = bg;
+  if (container) container.style.background = "transparent";
 };
 
 // Normalize color for HTML5 color input (must be #rrggbb format)
@@ -52,29 +66,37 @@ FB.design.init = function () {
   // Submodules initialised in canvas.init
 };
 
-FB.design.switchLeftTab = function (tab) {
-  document.querySelectorAll("#ds-left-tabs .ds-tab").forEach(function (b) {
-    b.classList.toggle("active", b.dataset.tab === tab);
-  });
-  document
-    .querySelectorAll("#ds-tab-elements,#ds-tab-layers,#ds-tab-assets,#ds-tab-media")
-    .forEach(function (el) {
-      el.classList.toggle("active", el.id === "ds-tab-" + tab);
-    });
-  if (tab === "assets") FB.design._loadAssets();
-  if (tab === "media") FB.design.media.load();
+FB.design.toggleAccordion = function (headerEl) {
+  var body = document.getElementById("lp-body-" + headerEl.dataset.acc);
+  if (!body) return;
+  var isOpen = headerEl.classList.toggle("open");
+  body.classList.toggle("open", isOpen);
+
+  if (headerEl.dataset.acc === "assets" && isOpen) {
+    FB.design._loadAssets();
+  }
+  if (headerEl.dataset.acc === "media" && isOpen) {
+    FB.design.media.load();
+  }
+};
+
+FB.design.toggleRightAccordion = function (headerEl) {
+  var body = document.getElementById("lp-body-" + headerEl.dataset.acc);
+  if (!body) return;
+  var isOpen = headerEl.classList.toggle("open");
+  body.classList.toggle("open", isOpen);
+
+  if (headerEl.dataset.acc === "export" && isOpen) {
+    FB.design.renderExportTab();
+  }
 };
 
 FB.design.switchRightTab = function (tab) {
-  document.querySelectorAll("#ds-right-tabs .ds-tab").forEach(function (b) {
-    b.classList.toggle("active", b.dataset.tab === tab);
-  });
-  document
-    .querySelectorAll("#ds-tab-design,#ds-tab-align,#ds-tab-export")
-    .forEach(function (el) {
-      el.classList.toggle("active", el.id === "ds-tab-" + tab);
-    });
-  if (tab === "export") FB.design.renderExportTab();
+  // Legacy function for compatibility - now just opens the accordion
+  var header = document.querySelector('[data-acc="' + tab + '"]');
+  if (header && !header.classList.contains("open")) {
+    FB.design.toggleRightAccordion(header);
+  }
 };
 
 FB.design._loadAssets = function () {
@@ -116,8 +138,7 @@ FB.design._loadAssets = function () {
 FB.design.renderExportTab = function () {
   var fc = FB.design.canvas.get();
   if (!fc) return;
-  var bg =
-    typeof fc.backgroundColor === "string" ? fc.backgroundColor : "#ffffff";
+  var bg = FB.design._canvasBg || "#ffffff";
   var el = document.getElementById("ds-canvas-bg-picker");
   if (!el) return;
   var bgNormalized = FB.design.normalizeColorForInput(bg.charAt(0) === "#" ? bg : "#ffffff");
@@ -275,17 +296,54 @@ FB.design.elements = (function () {
   ];
 
   var VELTRO_ELEMENTS = [
-    { type: "kinetic-text",     icon: "〰",  label: "Kinetic Text",     desc: "Wave-animated text" },
-    { type: "text-scramble",    icon: "⌨",  label: "Text Scramble",    desc: "Decode effect" },
-    { type: "typewriter-reveal",icon: "✍",  label: "Typewriter",       desc: "Reveal animation" },
-    { type: "physics-sandbox",  icon: "◉",  label: "Physics Sandbox",  desc: "Interactive physics" },
-    { type: "holographic-card", icon: "✦",  label: "Holographic Card", desc: "Iridescent card" },
-    { type: "tilt-card-3d",     icon: "⬡",  label: "3D Tilt Card",     desc: "Perspective tilt" },
-    { type: "aurora-bg",        icon: "⊙",  label: "Aurora BG",        desc: "Northern lights" },
-    { type: "nebula-bg",        icon: "✶",  label: "Nebula BG",        desc: "Particle nebula" },
+    { type: "kineticText",      icon: "〰", label: "Kinetic Text",     desc: "Editable kinetic typography" },
+    { type: "textScramble",     icon: "⌨", label: "Text Scramble",    desc: "Decode effect" },
+    { type: "typewriterReveal", icon: "✍", label: "Typewriter",       desc: "Typed reveal" },
+    { type: "liquidText",       icon: "≋", label: "Liquid Text",      desc: "Fluid typography" },
+    { type: "morphingText",     icon: "⇄", label: "Morphing Text",    desc: "Word morphing" },
+    { type: "morphingCounter",  icon: "#", label: "Counter",          desc: "Animated numbers" },
+    { type: "physicsSandbox",  icon: "◉", label: "Physics Sandbox",  desc: "Matter-style collisions" },
+    { type: "fluidSimulation", icon: "≋", label: "Fluid Simulation", desc: "Mouse-driven particles" },
+    { type: "gravityWells",    icon: "⊙", label: "Gravity Wells",    desc: "Attractor fields" },
+    { type: "gravityCursor",   icon: "◌", label: "Gravity Cursor",   desc: "Cursor gravity" },
+    { type: "magneticFields",  icon: "⊕", label: "Magnetic Fields",  desc: "Polarity particles" },
+    { type: "clothSimulation", icon: "▣", label: "Cloth Simulation", desc: "Fabric physics" },
+    { type: "pendulumWave",    icon: "⌁", label: "Pendulum Wave",    desc: "Harmonic motion" },
+    { type: "collisionChaos",  icon: "✹", label: "Collision Chaos",  desc: "Particle collisions" },
+    { type: "blackHole",       icon: "●", label: "Black Hole",       desc: "Orbital gravity" },
+    { type: "waveText",        icon: "~", label: "Wave Text",        desc: "Sine typography" },
+    { type: "kineticScramble", icon: "⌨", label: "Kinetic Scramble", desc: "Decode text" },
+    { type: "magneticText",    icon: "↯", label: "Magnetic Text",    desc: "Cursor attraction" },
+    { type: "multiShapeTrail", icon: "✦", label: "Shape Trail",      desc: "Cursor particles" },
+    { type: "cursorDistortion",icon: "◍", label: "Cursor Distort",   desc: "Lens distortion" },
+    { type: "colorSampler",    icon: "▥", label: "Color Sampler",    desc: "Cursor palette" },
+    { type: "liquidGradient",  icon: "◒", label: "Liquid Gradient",  desc: "Flowing colour" },
+    { type: "particleNebula",  icon: "✶", label: "Particle Nebula",  desc: "Ambient particles" },
+    { type: "auroraBorealis",  icon: "⊙", label: "Aurora Borealis",  desc: "Northern lights" },
+    { type: "geometricPatterns", icon: "⬡", label: "Geometric Patterns", desc: "Animated geometry" },
+    { type: "holographicOverlay", icon: "▱", label: "Holographic",    desc: "Iridescent overlay" },
+    { type: "lightLeaks",      icon: "◐", label: "Light Leaks",      desc: "Cinematic flares" },
+    { type: "gradientFlow",    icon: "▧", label: "Gradient Flow",    desc: "Moving gradient" },
+    { type: "morphBlob",       icon: "⬤", label: "Morph Blob",       desc: "Organic blob" },
+    { type: "noiseGrain",      icon: "░", label: "Noise Grain",      desc: "Film grain" },
+    { type: "cursorLens",      icon: "◌", label: "Cursor Lens",      desc: "Magnified mask" },
+    { type: "layeredParallax", icon: "▤", label: "Layered Parallax", desc: "Depth layers" },
+    { type: "morphingGrid",    icon: "▦", label: "Morphing Grid",    desc: "Shape-shifting cells" },
+    { type: "parallaxDepth",   icon: "▥", label: "Parallax Depth",   desc: "Scroll depth" },
+    { type: "velocitySkew",    icon: "▰", label: "Velocity Skew",    desc: "Rubber scroll" },
+    { type: "scrollFluid",     icon: "≋", label: "Scroll Fluid",     desc: "Scroll-reactive fluid" },
+    { type: "velocityFluidBg", icon: "≈", label: "Velocity Fluid BG",desc: "Fluid background" },
+    { type: "carousel3d",      icon: "◫", label: "3D Carousel",      desc: "Spatial cards" },
+    { type: "floatingIslands", icon: "☁", label: "Floating Islands", desc: "Layered islands" },
+    { type: "kineticLayout",   icon: "▦", label: "Kinetic Layout",   desc: "Animated layout" },
+    { type: "shaderBg",        icon: "◈", label: "Shader BG",        desc: "Shader canvas" },
+    { type: "infiniteCanvas",  icon: "∞", label: "Infinite Canvas",  desc: "Draggable scene" },
+    { type: "isometricGrid",   icon: "▨", label: "Isometric Grid",   desc: "3D grid" },
   ];
 
   var _iconQuery = "";
+  var _veltroQuery = "";
+  var _veltroCategory = "all";
 
   function render() {
     _renderToolRow();
@@ -363,10 +421,10 @@ FB.design.elements = (function () {
     if (!el) return;
     el.innerHTML =
       _accordionHtml("Frames", _framesHtml(), false) +
-      _accordionHtml("Shapes", _shapesHtml(), true) +
-      _accordionHtml("Veltro Engine", _veltroHtml(), true) +
+      _accordionHtml("Shapes", _shapesHtml(), false) +
+      _accordionHtml("Veltro Engine", _veltroHtml(), false) +
       _accordionHtml("Text", _textHtml(), false) +
-      _accordionHtml("Icons", _iconsHtml(), !!_iconQuery) +
+      _accordionHtml("Icons", _iconsHtml(), false) +
       _accordionHtml("Backgrounds", _backgroundsHtml(), false);
     _restoreAccordionState();
 
@@ -456,9 +514,32 @@ FB.design.elements = (function () {
   }
 
   function _veltroHtml() {
+    var categories = [
+      ["all", "All"],
+      ["text", "Text"],
+      ["physics", "Physics"],
+      ["cursor", "Cursor"],
+      ["ambient", "Ambient"],
+      ["spatial", "Spatial"],
+      ["scroll", "Scroll"],
+    ];
+    var filtered = _filteredVeltroElements();
     return (
+      '<div class="ds-veltro-browser">' +
+      '<input id="ds-veltro-search" name="ds-veltro-search" class="ds-input ds-veltro-search" placeholder="Search Veltro effects..." value="' +
+      FB.design._esc(_veltroQuery) +
+      '" oninput="FB.design.elements.setVeltroQuery(this.value)" />' +
+      '<select class="ds-select" onchange="FB.design.elements.setVeltroCategory(this.value)" style="margin-top: 8px; width: 100%">' +
+      categories.map(function (cat) {
+        return (
+          '<option value="' + cat[0] + '"' +
+          (_veltroCategory === cat[0] ? " selected" : "") +
+          ">" + cat[1] + "</option>"
+        );
+      }).join("") +
+      '</select></div>' +
       '<div class="ds-veltro-grid">' +
-      VELTRO_ELEMENTS.map(function (v) {
+      (filtered.length ? filtered.map(function (v) {
         return (
           '<div class="ds-veltro-tile" onclick="FB.design.elements.addVeltroElement(\'' +
           v.type +
@@ -467,11 +548,54 @@ FB.design.elements = (function () {
           '<div class="ds-veltro-info">' +
           '<div class="ds-veltro-name">' + v.label + '</div>' +
           '<div class="ds-veltro-desc">' + v.desc + '</div>' +
+          '<div class="ds-veltro-tag">' + _veltroCategoryFor(v) + '</div>' +
           '</div></div>'
         );
-      }).join("") +
+      }).join("") : '<div class="ds-empty-state">No Veltro effects match this search.</div>') +
       "</div>"
     );
+  }
+
+  function _veltroCategoryFor(v) {
+    var haystack = (v.type + " " + v.label + " " + v.desc).toLowerCase();
+    if (/text|type|scramble|counter|word|char|wave/.test(haystack)) return "text";
+    if (/physics|gravity|collision|cloth|pendulum|fluid|magnetic fields|black hole/.test(haystack)) return "physics";
+    if (/cursor|trail|spotlight|lens|sampler|distort|magnetic text/.test(haystack)) return "cursor";
+    if (/scroll|velocity|sticky/.test(haystack)) return "scroll";
+    if (/3d|carousel|isometric|parallax|depth|islands|layout|grid|canvas|tilt/.test(haystack)) return "spatial";
+    if (/particle|aurora|gradient|noise|light|holographic|background|shader|nebula|morph|geometric/.test(haystack)) return "ambient";
+    return "ambient";
+  }
+
+  function _filteredVeltroElements() {
+    var q = _veltroQuery.trim().toLowerCase();
+    return VELTRO_ELEMENTS.filter(function (v) {
+      var cat = _veltroCategoryFor(v);
+      var haystack = (v.type + " " + v.label + " " + v.desc + " " + cat).toLowerCase();
+      return (_veltroCategory === "all" || cat === _veltroCategory) && (!q || haystack.indexOf(q) !== -1);
+    });
+  }
+
+  function setVeltroQuery(value) {
+    _veltroQuery = String(value || "");
+    render();
+    var inp = document.getElementById("ds-veltro-search");
+    if (inp) {
+      inp.focus();
+      var len = inp.value.length;
+      if (inp.setSelectionRange) inp.setSelectionRange(len, len);
+    }
+  }
+
+  function setVeltroCategory(value) {
+    _veltroCategory = value || "all";
+    render();
+  }
+
+  function _veltroOptions(selected) {
+    return VELTRO_ELEMENTS.map(function (v) {
+      return '<option value="' + v.type + '"' + (v.type === selected ? " selected" : "") + ">" + v.label + "</option>";
+    }).join("");
   }
 
   function _textHtml() {
@@ -537,8 +661,7 @@ FB.design.elements = (function () {
   }
 
   function _backgroundsHtml() {
-    var fc = FB.design.canvas.get();
-    var currentBg = (fc && fc.backgroundColor) || "#ffffff";
+    var currentBg = FB.design._canvasBg || "#ffffff";
     var bgNormalized = FB.design.normalizeColorForInput(typeof currentBg === "string" ? currentBg : "#ffffff");
     
     var html = '<div class="ds-bg-designer">';
@@ -772,7 +895,14 @@ FB.design.elements = (function () {
   }
 
   function addVeltroElement(type) {
-    _addVeltroElementToCanvas(type);
+    if (FB.design.veltroCanvas) {
+      FB.design.veltroCanvas.add(type);
+    }
+    var select = document.getElementById("ds-veltro-effect");
+    if (select) select.value = type;
+    if (FB.design.library && FB.design.library.previewVeltroBlock) {
+      FB.design.library.previewVeltroBlock();
+    }
   }
 
   // Keep the old fabric-only path here as a dead stub (won't be called)
@@ -1138,7 +1268,10 @@ FB.design.elements = (function () {
     onBgGradientClick: onBgGradientClick,
     setPattern: setPattern,
     changePatternOpacity: changePatternOpacity,
-    addVeltroElement: addVeltroElement
+    addVeltroElement: addVeltroElement,
+    setVeltroQuery: setVeltroQuery,
+    setVeltroCategory: setVeltroCategory,
+    _veltroOptions: _veltroOptions
   };
 })();
 
@@ -1151,7 +1284,7 @@ FB.design.history = (function () {
     if (_paused) return;
     var fc = FB.design.canvas.get();
     if (!fc) return;
-    _stack.push(JSON.stringify(fc.toJSON(["id", "name"])));
+    _stack.push(JSON.stringify(fc.toJSON(["id", "name", "motion", "_veltroWidget", "_veltroId", "_veltroProps"])));
     if (_stack.length > 50) _stack.shift();
     _future = [];
   }
@@ -1163,6 +1296,7 @@ FB.design.history = (function () {
     _paused = true;
     fc.loadFromJSON(JSON.parse(_stack[_stack.length - 1]), function () {
       fc.renderAll();
+      if (FB.design.veltroCanvas) FB.design.veltroCanvas.sync();
       FB.design.layers.render();
       FB.design.props.render();
       _paused = false;
@@ -1177,6 +1311,7 @@ FB.design.history = (function () {
     _paused = true;
     fc.loadFromJSON(JSON.parse(state), function () {
       fc.renderAll();
+      if (FB.design.veltroCanvas) FB.design.veltroCanvas.sync();
       FB.design.layers.render();
       FB.design.props.render();
       _paused = false;
@@ -1193,6 +1328,198 @@ FB.design.history = (function () {
   }
 
   return { push: push, undo: undo, redo: redo, silent: silent };
+})();
+
+FB.design.veltroCanvas = (function () {
+  function layer() {
+    return document.getElementById("ds-veltro-canvas-layer");
+  }
+
+  function widgetPropsFor(type, obj) {
+    var fc = FB.design.canvas.get();
+    var tokens = FB.design.library && FB.design.library._collectDesignTokens
+      ? FB.design.library._collectDesignTokens(fc)
+      : { bg: "#0d0d1a", primary: "#cdfe00", secondary: "#3b82f6", accent: "#ec4899", words: ["Veltro"], title: "Veltro", height: 400, width: 800 };
+    var props = FB.design.library && FB.design.library._veltroPropsFor
+      ? FB.design.library._veltroPropsFor(type, tokens)
+      : {};
+    props = Object.assign({}, props, obj._veltroProps || {});
+    props.height = Math.max(80, Math.round(obj.getScaledHeight()));
+    return props;
+  }
+
+  function isTextWidget(type) {
+    return /text|type|scramble|counter|word|wave/i.test(String(type || ""));
+  }
+
+  function renderDesignWidget(type, props, id) {
+    var textOffsetStyle = "";
+    if (isTextWidget(type)) {
+      var textX = +(props.textX || 0);
+      var textY = +(props.textY || 0);
+      textOffsetStyle =
+        '<style>[data-veltro-object="' +
+        FB.design._esc(id) +
+        '"] .veltro-scramble-text,[data-veltro-object="' +
+        FB.design._esc(id) +
+        '"] .veltro-typewriter,[data-veltro-object="' +
+        FB.design._esc(id) +
+        '"] .veltro-textmask-text,[data-veltro-object="' +
+        FB.design._esc(id) +
+        '"] .veltro-liquid-text,[data-veltro-object="' +
+        FB.design._esc(id) +
+        '"] .veltro-wave-content,[data-veltro-object="' +
+        FB.design._esc(id) +
+        '"] .veltro-morph-content,[data-veltro-object="' +
+        FB.design._esc(id) +
+        '"] .veltro-ks-text,[data-veltro-object="' +
+        FB.design._esc(id) +
+        '"] .veltro-magtext-content{position:relative!important;left:' +
+        textX +
+        "%!important;top:" +
+        textY +
+        "%!important;}</style>";
+    }
+    if (type === "kineticText") {
+      var text = FB.design._esc(props.text || props.title || "MOVE CLOSER");
+      var color = FB.design._esc(props.color || props.textColor || props.color1 || "#cdfe00");
+      var bg = FB.design._esc(props.bg || props.bgColor || "transparent");
+      var fontSize = +(props.size || props.fontSize || 64);
+      var weight = +(props.weight || props.fontWeight || 800);
+      var spacing = +(props.letterSpacing || 0);
+      var textX = +(props.textX || 0);
+      var textY = +(props.textY || 0);
+      return (
+        textOffsetStyle +
+        '<div class="fw-widget fw-widget-kineticText ds-live-kinetic-text" id="kinetic-' +
+        FB.design._esc(id) +
+        '" style="height:100%;width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:' +
+        (props.borderRadius || 8) +
+        "px;background:" +
+        bg +
+        '">' +
+        '<div style="font-family:' +
+        FB.design._esc(props.fontFamily || "Lexend") +
+        ',sans-serif;font-size:' +
+        fontSize +
+        "px;font-weight:" +
+        weight +
+        ";line-height:1.05;letter-spacing:" +
+        spacing +
+        "px;color:" +
+        color +
+        ';text-align:center;text-transform:' +
+        FB.design._esc(props.textTransform || "none") +
+        ';position:relative;left:' +
+        textX +
+        "%;top:" +
+        textY +
+        '%;animation:ds-kinetic-live 2.4s ease-in-out infinite alternate;filter:drop-shadow(0 0 12px rgba(205,254,0,.18));">' +
+        text +
+        "</div></div>"
+      );
+    }
+    if (FB.widgets && FB.widgets.get && FB.widgets.get(type)) {
+      return (
+        textOffsetStyle +
+        '<div class="fw-widget fw-widget-' +
+        FB.design._esc(type) +
+        '">' +
+        FB.widgets.render(type, Object.assign({}, props, { _blockId: id })) +
+        "</div>"
+      );
+    }
+    return "";
+  }
+
+  function renderObject(obj) {
+    var host = layer();
+    if (!host || !obj || !obj._veltroWidget) return;
+    var id = obj._veltroId || ("ds-vw-" + Date.now() + "-" + Math.floor(Math.random() * 1000));
+    obj._veltroId = id;
+    var el = host.querySelector('[data-veltro-object="' + id + '"]');
+    if (!el) {
+      el = document.createElement("div");
+      el.className = "ds-veltro-canvas-widget";
+      el.dataset.veltroObject = id;
+      host.appendChild(el);
+    }
+    var props = widgetPropsFor(obj._veltroWidget, obj);
+    var html = "";
+    html = renderDesignWidget(obj._veltroWidget, props, id);
+    var renderKey = obj._veltroWidget + ":" + Math.round(obj.getScaledWidth()) + "x" + Math.round(obj.getScaledHeight()) + ":" + JSON.stringify(obj._veltroProps || {});
+    if (el.dataset.renderKey !== renderKey) {
+      el.innerHTML = html;
+      el.dataset.renderKey = renderKey;
+      setTimeout(function () {
+        if (typeof window._VeltroInitAll === "function") window._VeltroInitAll();
+      }, 0);
+    }
+  }
+
+  function sync() {
+    var fc = FB.design.canvas.get();
+    var host = layer();
+    if (!fc || !host) return;
+    var seen = {};
+    var zoom = fc.getZoom();
+    var vt = fc.viewportTransform || [1, 0, 0, 1, 0, 0];
+    fc.getObjects().forEach(function (obj, index) {
+      if (!obj._veltroWidget) return;
+      renderObject(obj);
+      var id = obj._veltroId;
+      seen[id] = true;
+      var el = host.querySelector('[data-veltro-object="' + id + '"]');
+      if (!el) return;
+      el.style.left = Math.round(obj.left * zoom + vt[4]) + "px";
+      el.style.top = Math.round(obj.top * zoom + vt[5]) + "px";
+      el.style.width = Math.max(20, Math.round(obj.getScaledWidth() * zoom)) + "px";
+      el.style.height = Math.max(20, Math.round(obj.getScaledHeight() * zoom)) + "px";
+      el.style.opacity = obj.visible === false ? "0" : "1";
+      el.style.transform = "rotate(" + (obj.angle || 0) + "deg)";
+      el.style.transformOrigin = "center";
+      el.style.zIndex = String(index + 1);
+    });
+    Array.prototype.forEach.call(host.querySelectorAll("[data-veltro-object]"), function (el) {
+      if (!seen[el.dataset.veltroObject]) el.remove();
+    });
+  }
+
+  function add(type) {
+    var fc = FB.design.canvas.get();
+    if (!fc) return;
+    var w = Math.min(520, Math.max(260, fc.getWidth() * 0.42));
+    var h = Math.min(360, Math.max(180, fc.getHeight() * 0.34));
+    var rect = new fabric.Rect({
+      left: fc.getWidth() / 2 - w / 2,
+      top: fc.getHeight() / 2 - h / 2,
+      width: w,
+      height: h,
+      fill: "rgba(205,254,0,0.035)",
+      stroke: "#cdfe00",
+      strokeDashArray: [8, 6],
+      strokeWidth: 2,
+      rx: 8,
+      ry: 8,
+      name: "Veltro: " + type,
+      _veltroWidget: type,
+      _veltroProps: {},
+      _veltroId: "ds-vw-" + Date.now(),
+    });
+    fc.add(rect);
+    fc.setActiveObject(rect);
+    fc.renderAll();
+    sync();
+    if (FB.design.switchRightTab) FB.design.switchRightTab("design");
+    if (FB.design.props) FB.design.props.render();
+    if (FB.design.layers) FB.design.layers.render();
+    FB.design.history.push();
+  }
+
+  return {
+    add: add,
+    sync: sync,
+  };
 })();
 
 FB.design.canvas = (function () {
@@ -1216,7 +1543,7 @@ FB.design.canvas = (function () {
     _inited = true;
 
     _fc = new fabric.Canvas("ds-canvas", {
-      backgroundColor: "#ffffff",
+      backgroundColor: null,
       selection: true,
       preserveObjectStacking: true,
     });
@@ -1258,6 +1585,8 @@ FB.design.canvas = (function () {
       _fc.wrapperEl.style.width = Math.round(w * scale) + "px";
       _fc.wrapperEl.style.height = Math.round(h * scale) + "px";
     }
+    FB.design.applyCanvasSurfaceBg();
+    if (FB.design.veltroCanvas) FB.design.veltroCanvas.sync();
     document.getElementById("ds-size-label").textContent = w + " \xd7 " + h;
     document.getElementById("ds-zoom-label").textContent =
       Math.round(scale * 100) + "%";
@@ -1271,6 +1600,7 @@ FB.design.canvas = (function () {
       zoom *= Math.pow(0.999, delta);
       zoom = Math.min(Math.max(zoom, 0.05), 5);
       _fc.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+      if (FB.design.veltroCanvas) FB.design.veltroCanvas.sync();
       document.getElementById("ds-zoom-label").textContent =
         Math.round(zoom * 100) + "%";
       opt.e.preventDefault();
@@ -1295,6 +1625,7 @@ FB.design.canvas = (function () {
     _fc.on("mouse:move", function (opt) {
       if (_panning && opt.e.buttons) {
         _fc.relativePan({ x: opt.e.movementX, y: opt.e.movementY });
+        if (FB.design.veltroCanvas) FB.design.veltroCanvas.sync();
       }
     });
     _fc.on("mouse:up", function () {
@@ -1320,16 +1651,26 @@ FB.design.canvas = (function () {
       FB.design.align.renderPanel();
     });
     _fc.on("object:added", function () {
+      FB.design.props.render();
       FB.design.layers.render();
+      if (FB.design.veltroCanvas) FB.design.veltroCanvas.sync();
       FB.design.history.push();
     });
     _fc.on("object:removed", function () {
       FB.design.layers.render();
+      if (FB.design.veltroCanvas) FB.design.veltroCanvas.sync();
       FB.design.history.push();
+    });
+    _fc.on("object:moving", function () {
+      if (FB.design.veltroCanvas) FB.design.veltroCanvas.sync();
+    });
+    _fc.on("object:scaling", function () {
+      if (FB.design.veltroCanvas) FB.design.veltroCanvas.sync();
     });
     _fc.on("object:modified", function () {
       FB.design.props.render();
       FB.design.layers.render();
+      if (FB.design.veltroCanvas) FB.design.veltroCanvas.sync();
       FB.design.history.push();
     });
   }
@@ -1495,6 +1836,7 @@ FB.design.canvas = (function () {
   function zoomIn() {
     var z = Math.min(_fc.getZoom() * 1.2, 5);
     _fc.setZoom(z);
+    if (FB.design.veltroCanvas) FB.design.veltroCanvas.sync();
     document.getElementById("ds-zoom-label").textContent =
       Math.round(z * 100) + "%";
   }
@@ -1502,6 +1844,7 @@ FB.design.canvas = (function () {
   function zoomOut() {
     var z = Math.max(_fc.getZoom() * 0.8, 0.05);
     _fc.setZoom(z);
+    if (FB.design.veltroCanvas) FB.design.veltroCanvas.sync();
     document.getElementById("ds-zoom-label").textContent =
       Math.round(z * 100) + "%";
   }
@@ -1516,6 +1859,7 @@ FB.design.canvas = (function () {
     );
     scale = Math.max(scale, 0.01);
     _fc.setZoom(scale);
+    if (FB.design.veltroCanvas) FB.design.veltroCanvas.sync();
     document.getElementById("ds-zoom-label").textContent =
       Math.round(scale * 100) + "%";
     _fc.renderAll();
@@ -1882,7 +2226,7 @@ FB.design.props = (function () {
         : obj.type === "image"
           ? _imageProps(obj)
           : _shapeProps(obj);
-    el.innerHTML = _actionBar(obj) + body;
+    el.innerHTML = _actionBar(obj) + '<div id="ds-design-settings">' + body + "</div>";
   }
 
   function _actionBar(obj) {
@@ -1934,6 +2278,87 @@ FB.design.props = (function () {
     );
   }
 
+  function _motionSection(obj) {
+    var motion = obj.motion || {};
+    var preset = motion.preset || "none";
+    var duration = motion.duration || 1.2;
+    var delay = motion.delay || 0;
+    var easing = motion.easing || "cubic-bezier(.2,.8,.2,1)";
+    var iteration = motion.iteration || "once";
+    var presets = [
+      ["none", "None"],
+      ["fade", "Fade"],
+      ["rise", "Rise"],
+      ["slide-left", "Slide Left"],
+      ["slide-right", "Slide Right"],
+      ["zoom", "Zoom"],
+      ["blur", "Blur In"],
+      ["elastic", "Elastic"],
+      ["bounce", "Bounce"],
+      ["gravity-drop", "Gravity Drop"],
+      ["gravity-rise", "Gravity Rise"],
+      ["swing", "Swing"],
+      ["magnetic", "Magnetic"],
+      ["kinetic-snap", "Kinetic Snap"],
+      ["kinetic-skew", "Kinetic Skew"],
+      ["fluid-wave", "Fluid Wave"],
+      ["liquid-morph", "Liquid Morph"],
+      ["orbit", "Orbit"],
+      ["parallax", "Parallax"],
+      ["tilt", "Tilt"],
+      ["breathe", "Breathe"],
+      ["shimmer", "Shimmer"],
+      ["glitch", "Glitch"],
+      ["float", "Float"],
+      ["pulse", "Pulse"],
+      ["spin", "Spin"],
+      ["drift", "Drift"],
+    ];
+    var easings = [
+      ["cubic-bezier(.2,.8,.2,1)", "Smooth"],
+      ["ease-out", "Ease Out"],
+      ["ease-in-out", "Ease In/Out"],
+      ["linear", "Linear"],
+      ["cubic-bezier(.34,1.56,.64,1)", "Spring"],
+    ];
+
+    return (
+      '<div class="ds-prop-group ds-motion-group">' +
+      '<div class="ds-prop-label" style="display:flex;justify-content:space-between;align-items:center;">Motion' +
+      '<button class="ds-sm-btn" onclick="FB.design.props.previewMotion()" title="Preview selected motion">▶</button>' +
+      '</div>' +
+      '<select class="ds-select" onchange="FB.design.props.setMotion(\'preset\',this.value)">' +
+      presets.map(function (p) {
+        return '<option value="' + p[0] + '"' + (preset === p[0] ? " selected" : "") + ">" + p[1] + "</option>";
+      }).join("") +
+      '</select>' +
+      '<div class="ds-motion-grid">' +
+      '<label>Duration<input class="ds-input" type="number" min="0.1" max="20" step="0.1" value="' + duration + '" onchange="FB.design.props.setMotion(\'duration\',+this.value)"></label>' +
+      '<label>Delay<input class="ds-input" type="number" min="0" max="20" step="0.1" value="' + delay + '" onchange="FB.design.props.setMotion(\'delay\',+this.value)"></label>' +
+      '</div>' +
+      '<div class="ds-motion-grid">' +
+      '<label>Repeat<select class="ds-select" onchange="FB.design.props.setMotion(\'iteration\',this.value)">' +
+      '<option value="once"' + (iteration === "once" ? " selected" : "") + '>Once</option>' +
+      '<option value="loop"' + (iteration === "loop" ? " selected" : "") + '>Loop</option>' +
+      '</select></label>' +
+      '<label>Ease<select class="ds-select" onchange="FB.design.props.setMotion(\'easing\',this.value)">' +
+      easings.map(function (e) {
+        return '<option value="' + e[0] + '"' + (easing === e[0] ? " selected" : "") + ">" + e[1] + "</option>";
+      }).join("") +
+      '</select></label>' +
+      '</div>' +
+      '<div class="ds-motion-presets">' +
+      '<button class="ds-sm-btn" onclick="FB.design.props.applyMotionPreset(\'reveal\')">Reveal</button>' +
+      '<button class="ds-sm-btn" onclick="FB.design.props.applyMotionPreset(\'ambient\')">Ambient</button>' +
+      '<button class="ds-sm-btn" onclick="FB.design.props.applyMotionPreset(\'energetic\')">Energetic</button>' +
+      '<button class="ds-sm-btn" onclick="FB.design.props.applyMotionPreset(\'physics\')">Physics</button>' +
+      '<button class="ds-sm-btn" onclick="FB.design.props.applyMotionPreset(\'fluid\')">Fluid</button>' +
+      '<button class="ds-sm-btn" onclick="FB.design.props.applyMotionPreset(\'magnetic\')">Magnet</button>' +
+      '</div>' +
+      '</div>'
+    );
+  }
+
   function _posSize(obj) {
     return (
       '<div class="ds-prop-group">' +
@@ -1959,6 +2384,9 @@ FB.design.props = (function () {
   }
 
   function _shapeProps(obj) {
+    if (obj._veltroWidget) {
+      return _veltroWidgetProps(obj);
+    }
     var fill = typeof obj.fill === "string" ? obj.fill : "#4a90e2";
     var stroke = obj.stroke || "transparent";
     var sw = obj.strokeWidth || 0;
@@ -1997,7 +2425,189 @@ FB.design.props = (function () {
         "\" onchange=\"FB.design.props.setPropXY('rx','ry',+this.value)\"/></div>";
     }
     html += _shadowSection(obj);
+    html += _motionSection(obj);
     return html;
+  }
+
+  function _veltroWidgetProps(obj) {
+    var props = obj._veltroProps || {};
+    var type = obj._veltroWidget || "physicsSandbox";
+    var textValue = props.text || props.title || props.words || props.contentTitle || props.content || props.spotlightText || ((props.items || []).join(", ")) || "";
+    var color1 = FB.design.normalizeColorForInput(_veltroValue(props, ["color1", "textColor", "particleColor", "magnetColor"], "#cdfe00"));
+    var color2 = FB.design.normalizeColorForInput(_veltroValue(props, ["color2", "dualColour2", "wellColor", "glowColor"], "#3b82f6"));
+    var accent = FB.design.normalizeColorForInput(_veltroValue(props, ["color3", "accentColor", "scrambleColor"], "#ec4899"));
+    var bgRaw = _veltroValue(props, ["bg", "bgColor"], "#0d0d1a");
+    var bg = FB.design.normalizeColorForInput(bgRaw);
+    var particleCount = _veltroNumber(props, ["particleCount", "itemsCount", "count"], 120);
+    var force = _veltroNumber(props, ["mouseForce", "fieldStrength", "gravityStrength", "gravity", "intensity"], 1);
+    var speed = _veltroNumber(props, ["speed", "rotationSpeed", "animationSpeed"], 0.05);
+    var mode = _veltroValue(props, ["fluidMode", "fieldMode", "animationType", "mode"], "flow");
+    var fontSize = _veltroNumber(props, ["fontSize", "textSize"], 56);
+
+    var html = _posSize(obj);
+    html +=
+      '<div class="ds-prop-group ds-veltro-props">' +
+      '<div class="ds-prop-label" style="display:flex;align-items:center;justify-content:space-between;">' +
+      '<span>Veltro Engine</span>' +
+      '<button class="ds-sm-btn" onclick="FB.design.props.refreshVeltroWidget()" title="Refresh live widget">↻</button>' +
+      '</div>' +
+      '<select class="ds-select" onchange="FB.design.props.setVeltroWidget(this.value)">' +
+      (FB.design.elements && FB.design.elements._veltroOptions ? FB.design.elements._veltroOptions(type) : '<option>' + type + '</option>') +
+      '</select>' +
+      '<label class="ds-mini-label">' + _veltroContentLabel(type) + '</label>' +
+      '<textarea class="ds-input" rows="3" oninput="FB.design.props.setVeltroText(this.value)">' + FB.design._esc(textValue) + '</textarea>' +
+      (_veltroGroup(type) === "text"
+        ? '<div class="ds-motion-grid">' +
+          '<label>Text X<input id="ds-veltro-text-x" name="ds-veltro-text-x" class="ds-input" type="number" min="-50" max="50" step="1" value="' + _veltroNumber(props, ["textX"], 0) + '" oninput="FB.design.props.setVeltroProp(\'textX\',+this.value)"></label>' +
+          '<label>Text Y<input id="ds-veltro-text-y" name="ds-veltro-text-y" class="ds-input" type="number" min="-50" max="50" step="1" value="' + _veltroNumber(props, ["textY"], 0) + '" oninput="FB.design.props.setVeltroProp(\'textY\',+this.value)"></label>' +
+          '</div>'
+        : '') +
+      '<div class="ds-motion-grid">' +
+      '<label>Primary<input type="color" class="ds-color-swatch" value="' + color1 + '" oninput="FB.design.props.setVeltroColor(\'primary\',this.value)"></label>' +
+      '<label>Secondary<input type="color" class="ds-color-swatch" value="' + color2 + '" oninput="FB.design.props.setVeltroColor(\'secondary\',this.value)"></label>' +
+      '</div>' +
+      '<div class="ds-motion-grid">' +
+      '<label>Accent<input type="color" class="ds-color-swatch" value="' + accent + '" oninput="FB.design.props.setVeltroColor(\'accent\',this.value)"></label>' +
+      '<label>Text Size<input class="ds-input" type="number" min="8" max="220" step="1" value="' + fontSize + '" oninput="FB.design.props.setVeltroProp(\'fontSize\',+this.value)"></label>' +
+      '</div>' +
+      '<label class="ds-mini-label">Background</label>' +
+      '<div class="ds-color-row"><input type="color" class="ds-color-swatch" value="' + bg + '" oninput="FB.design.props.setVeltroBackground(this.value)">' +
+      '<input class="ds-input" value="' + FB.design._esc(bgRaw) + '" oninput="FB.design.props.setVeltroBackground(this.value)"></div>' +
+      '<div class="ds-motion-grid">' +
+      '<label>Particles<input class="ds-input" type="number" min="5" max="1200" value="' + particleCount + '" oninput="FB.design.props.setVeltroProp(\'particleCount\',+this.value)"></label>' +
+      '<label>Force<input class="ds-input" type="number" min="0" max="20" step="0.1" value="' + force + '" oninput="FB.design.props.setVeltroForce(+this.value)"></label>' +
+      '</div>' +
+      '<div class="ds-motion-grid">' +
+      '<label>Speed<input class="ds-input" type="number" min="0" max="5" step="0.01" value="' + speed + '" oninput="FB.design.props.setVeltroSpeed(+this.value)"></label>' +
+      '<label>Mode<select class="ds-select" onchange="FB.design.props.setVeltroMode(this.value)">' + _veltroModeOptions(type, mode) + '</select></label>' +
+      '</div>' +
+      _veltroSpecificProps(type, props) +
+      '<div class="ds-prop-group">' +
+      '<label class="ds-mini-label">Lines / Trails Preset</label>' +
+      '<select class="ds-select" onchange="FB.design.props.setVeltroPreset(this.value)" style="width: 100%">' +
+      '<option value="">Select preset...</option>' +
+      '<option value="calm">Calm</option>' +
+      '<option value="active">Active</option>' +
+      '<option value="wild">Wild</option>' +
+      '<option value="premium">Premium</option>' +
+      '<option value="minimal">Minimal</option>' +
+      '<option value="showcase">Showcase</option>' +
+      '</select>' +
+      '</div>' +
+      '</div>';
+    return html;
+  }
+
+  function _veltroValue(props, keys, fallback) {
+    for (var i = 0; i < keys.length; i++) {
+      if (props[keys[i]] !== undefined && props[keys[i]] !== null && props[keys[i]] !== "") return props[keys[i]];
+    }
+    return fallback;
+  }
+
+  function _veltroNumber(props, keys, fallback) {
+    var value = _veltroValue(props, keys, fallback);
+    var n = +value;
+    return Number.isFinite(n) ? n : fallback;
+  }
+
+  function _veltroModeOptions(type, current) {
+    var group = _veltroGroup(type);
+    var options = {
+      text: [["flow", "Flow"], ["wave", "Wave"], ["scramble", "Scramble"], ["reveal", "Reveal"], ["morph", "Morph"], ["proximity", "Proximity"]],
+      physics: [["flow", "Flow"], ["attract", "Attract"], ["repel", "Repel"], ["orbit", "Orbit"], ["collision", "Collision"], ["dipole", "Dipole"], ["swirl", "Swirl"]],
+      cursor: [["trail", "Trail"], ["magnetic", "Magnetic"], ["spotlight", "Spotlight"], ["lens", "Lens"], ["ripple", "Ripple"], ["distort", "Distort"]],
+      ambient: [["flow", "Flow"], ["aurora", "Aurora"], ["nebula", "Nebula"], ["grain", "Grain"], ["gradient", "Gradient"], ["holographic", "Holographic"]],
+      spatial: [["parallax", "Parallax"], ["orbit", "Orbit"], ["tilt", "Tilt"], ["isometric", "Isometric"], ["carousel", "Carousel"], ["depth", "Depth"]],
+      scroll: [["velocity", "Velocity"], ["sticky", "Sticky"], ["progress", "Progress"], ["parallax", "Parallax"], ["fluid", "Fluid"]],
+    };
+    var list = options[group] || options.ambient;
+    if (!list.some(function (item) { return item[0] === current; })) list.unshift([current, current]);
+    return list.map(function (item) {
+      return '<option value="' + FB.design._esc(item[0]) + '"' + (item[0] === current ? " selected" : "") + ">" + FB.design._esc(item[1]) + "</option>";
+    }).join("");
+  }
+
+  function _veltroGroup(type) {
+    var t = String(type || "").toLowerCase();
+    if (/text|type|scramble|counter|word|wave/.test(t)) return "text";
+    if (/physics|gravity|collision|cloth|pendulum|fluid|magneticfields|blackhole/.test(t)) return "physics";
+    if (/cursor|trail|spotlight|lens|sampler|distortion|magnetictext/.test(t)) return "cursor";
+    if (/scroll|velocity|sticky|progress/.test(t)) return "scroll";
+    if (/3d|carousel|isometric|parallax|depth|islands|layout|grid|canvas|tilt/.test(t)) return "spatial";
+    return "ambient";
+  }
+
+  function _veltroContentLabel(type) {
+    var t = String(type || "");
+    if (t === "morphingText" || t === "typewriterReveal") return "Words / Text";
+    if (t === "physicsSandbox") return "Physics Text Items";
+    if (_veltroGroup(type) === "text") return "Text Content";
+    return "Text / Items";
+  }
+
+  function _veltroSpecificProps(type, props) {
+    var group = _veltroGroup(type);
+    var html = '<div class="ds-prop-group ds-veltro-advanced"><div class="ds-prop-label">Widget Controls</div>';
+    if (group === "text") {
+      html += _veltroControl("Font Weight", "fontWeight", _veltroNumber(props, ["fontWeight", "weight"], 800), 100, 900, 50);
+      html += _veltroControl("Letter Spacing", "letterSpacing", _veltroNumber(props, ["letterSpacing"], 0), -8, 24, 1);
+      html += _veltroControl("Amplitude", "amplitude", _veltroNumber(props, ["amplitude"], 24), 0, 120, 1);
+      html += _veltroControl("Frequency", "frequency", _veltroNumber(props, ["frequency"], 0.12), 0, 2, 0.01);
+      html += _veltroControl("Morph / Fade Speed", "morphSpeed", _veltroNumber(props, ["morphSpeed", "fadeSpeed", "scrambleSpeed"], 800), 50, 5000, 50);
+      html += _veltroSelect("Character Motion", "charAnimation", _veltroValue(props, ["charAnimation"], "wave"), [["wave", "Wave"], ["scramble", "Scramble"], ["bounce", "Bounce"], ["magnetic", "Magnetic"]]);
+      html += _veltroSelect("Text Transform", "textTransform", _veltroValue(props, ["textTransform"], "none"), [["none", "None"], ["uppercase", "Uppercase"], ["lowercase", "Lowercase"], ["capitalize", "Capitalize"]]);
+    } else if (group === "physics") {
+      html += _veltroControl("Gravity", "gravity", _veltroNumber(props, ["gravity"], 1), 0, 10, 0.1);
+      html += _veltroControl("Restitution", "restitution", _veltroNumber(props, ["restitution"], 0.78), 0, 1, 0.01);
+      html += _veltroControl("Friction", "friction", _veltroNumber(props, ["friction"], 0.04), 0, 1, 0.01);
+      html += _veltroControl("Turbulence", "fluidTurbulence", _veltroNumber(props, ["fluidTurbulence", "turbulence"], 0.45), 0, 2, 0.01);
+      html += _veltroControl("Wells / Fields", "wellCount", _veltroNumber(props, ["wellCount", "fieldCount"], 3), 1, 12, 1);
+    } else if (group === "cursor") {
+      html += _veltroControl("Radius", "radius", _veltroNumber(props, ["radius", "magnetRadius", "lensSize"], 180), 20, 600, 1);
+      html += _veltroControl("Trail Length", "trailLength", _veltroNumber(props, ["trailLength"], 28), 1, 160, 1);
+      html += _veltroControl("Particle Size", "particleSize", _veltroNumber(props, ["particleSize"], 4), 1, 40, 1);
+      html += _veltroControl("Zoom", "zoom", _veltroNumber(props, ["zoom"], 1.8), 1, 5, 0.1);
+    } else if (group === "scroll") {
+      html += _veltroControl("Scroll Strength", "scrollStrength", _veltroNumber(props, ["scrollStrength", "skewStrength"], 0.6), 0, 4, 0.05);
+      html += _veltroControl("Depth", "depth", _veltroNumber(props, ["depth"], 0.35), 0, 2, 0.01);
+      html += _veltroControl("Sections", "sections", _veltroNumber(props, ["sections", "itemsCount"], 4), 1, 12, 1);
+    } else if (group === "spatial") {
+      html += _veltroControl("Depth", "depth", _veltroNumber(props, ["depth"], 0.35), 0, 2, 0.01);
+      html += _veltroControl("Perspective", "perspective", _veltroNumber(props, ["perspective"], 900), 100, 2400, 10);
+      html += _veltroControl("Layers", "layerCount", _veltroNumber(props, ["layerCount", "itemsCount"], 5), 1, 18, 1);
+      html += _veltroControl("Rotation", "rotationSpeed", _veltroNumber(props, ["rotationSpeed"], 0.05), 0, 1, 0.01);
+    } else {
+      html += _veltroControl("Intensity", "intensity", _veltroNumber(props, ["intensity"], 0.7), 0, 2, 0.01);
+      html += _veltroControl("Glow", "glowIntensity", _veltroNumber(props, ["glowIntensity"], 0.8), 0, 2, 0.01);
+      html += _veltroControl("Blur", "blur", _veltroNumber(props, ["blur"], 18), 0, 80, 1);
+      html += _veltroControl("Scale", "scale", _veltroNumber(props, ["scale"], 1), 0.1, 4, 0.05);
+    }
+    html += '<label class="ds-check-row"><input type="checkbox" ' + (_veltroValue(props, ["glowEffect", "fluidGlow", "particleGlow"], true) ? "checked" : "") + ' onchange="FB.design.props.setVeltroGlow(this.checked)"> Glow</label>';
+    html += '<label class="ds-check-row"><input type="checkbox" ' + (_veltroValue(props, ["connectionLines", "fieldLines", "particleTrail"], false) ? "checked" : "") + ' onchange="FB.design.props.setVeltroLines(this.checked)"> Lines / Trails</label>';
+    html += "</div>";
+    return html;
+  }
+
+  function _veltroControl(label, key, value, min, max, step) {
+    return (
+      '<label class="ds-veltro-control">' +
+      '<span>' + FB.design._esc(label) + '<output>' + FB.design._esc(value) + '</output></span>' +
+      '<input class="ds-input" type="range" min="' + min + '" max="' + max + '" step="' + step + '" value="' + value + '" ' +
+      'oninput="this.previousElementSibling.querySelector(\'output\').textContent=this.value;FB.design.props.setVeltroProp(\'' + key + '\',+this.value)">' +
+      '</label>'
+    );
+  }
+
+  function _veltroSelect(label, key, value, options) {
+    return (
+      '<label class="ds-mini-label">' + FB.design._esc(label) + '</label>' +
+      '<select class="ds-select" onchange="FB.design.props.setVeltroProp(\'' + key + '\',this.value)">' +
+      options.map(function (item) {
+        return '<option value="' + FB.design._esc(item[0]) + '"' + (item[0] === value ? " selected" : "") + ">" + FB.design._esc(item[1]) + "</option>";
+      }).join("") +
+      '</select>'
+    );
   }
 
   function _textProps(obj) {
@@ -2103,6 +2713,7 @@ FB.design.props = (function () {
 
     // Shadow
     html += _shadowSection(obj);
+    html += _motionSection(obj);
 
     return html;
   }
@@ -2120,18 +2731,19 @@ FB.design.props = (function () {
       '<button class="ds-sm-btn" onclick="FB.design.props.flip(\'X\')">Flip H</button>' +
       '<button class="ds-sm-btn" onclick="FB.design.props.flip(\'Y\')">Flip V</button>' +
       "</div></div>";
+    html += _motionSection(obj);
     return html;
   }
 
   function _canvasProps(fc) {
-    var canvasBgColor = FB.design.normalizeColorForInput(fc.backgroundColor || "#ffffff");
+    var canvasBgColor = FB.design.normalizeColorForInput(FB.design._canvasBg || "#ffffff");
     return (
       '<div class="ds-prop-group"><div class="ds-prop-label">Canvas Background</div>' +
       '<div class="ds-color-row"><input type="color" class="ds-color-swatch" value="' +
       canvasBgColor +
       '" onchange="FB.design.props.setCanvasBg(this.value)"/>' +
       '<input class="ds-input" value="' +
-      (fc.backgroundColor || "#ffffff") +
+      (FB.design._canvasBg || "#ffffff") +
       '" onchange="FB.design.props.setCanvasBg(this.value)"/></div></div>'
     );
   }
@@ -2143,6 +2755,7 @@ FB.design.props = (function () {
     obj.set(key, val);
     obj.setCoords();
     fc.renderAll();
+    if (FB.design.veltroCanvas) FB.design.veltroCanvas.sync();
     FB.design.history.push();
   }
 
@@ -2154,6 +2767,7 @@ FB.design.props = (function () {
     obj.set(ky, val);
     obj.setCoords();
     fc.renderAll();
+    if (FB.design.veltroCanvas) FB.design.veltroCanvas.sync();
     FB.design.history.push();
   }
 
@@ -2164,6 +2778,7 @@ FB.design.props = (function () {
     obj.scaleToWidth(val);
     obj.setCoords();
     fc.renderAll();
+    if (FB.design.veltroCanvas) FB.design.veltroCanvas.sync();
     FB.design.history.push();
   }
 
@@ -2174,6 +2789,7 @@ FB.design.props = (function () {
     obj.scaleToHeight(val);
     obj.setCoords();
     fc.renderAll();
+    if (FB.design.veltroCanvas) FB.design.veltroCanvas.sync();
     FB.design.history.push();
   }
 
@@ -2188,10 +2804,211 @@ FB.design.props = (function () {
 
   function setCanvasBg(val) {
     var fc = FB.design.canvas.get();
-    fc.setBackgroundColor(val, function () {
+    FB.design._canvasBg = val || "#ffffff";
+    FB.design.applyCanvasSurfaceBg();
+    fc.setBackgroundColor(null, function () {
       fc.renderAll();
       FB.design.history.push();
     });
+  }
+
+  function updateVeltroObject(obj) {
+    var fc = FB.design.canvas.get();
+    if (!obj || !obj._veltroWidget) return;
+    obj.setCoords();
+    if (fc) fc.renderAll();
+    if (FB.design.veltroCanvas) FB.design.veltroCanvas.sync();
+    FB.design.history.push();
+  }
+
+  function setVeltroProps(values, shouldRender) {
+    var fc = FB.design.canvas.get();
+    var obj = fc && fc.getActiveObject();
+    if (!obj || !obj._veltroWidget) return;
+    obj._veltroProps = Object.assign({}, obj._veltroProps || {}, values || {});
+    updateVeltroObject(obj);
+    if (shouldRender) render();
+  }
+
+  function setVeltroWidget(type) {
+    var fc = FB.design.canvas.get();
+    var obj = fc && fc.getActiveObject();
+    if (!obj || !obj._veltroWidget) return;
+    obj._veltroWidget = type;
+    obj.name = "Veltro: " + type;
+    obj._veltroProps = {};
+    updateVeltroObject(obj);
+    render();
+  }
+
+  function setVeltroProp(key, val) {
+    var values = {};
+    values[key] = val;
+    if (key === "particleCount") {
+      values.starCount = val;
+      values.itemsCount = val;
+      values.count = val;
+    }
+    if (key === "fontSize") {
+      values.size = val;
+      values.textSize = val;
+    }
+    if (key === "fontWeight") {
+      values.weight = val;
+    }
+    if (key === "morphSpeed") {
+      values.fadeSpeed = Math.max(50, Math.round(val / 4));
+      values.scrambleSpeed = Math.max(10, Math.round(val / 20));
+      values.multiTextDelay = val;
+    }
+    setVeltroProps(values, false);
+  }
+
+  function setVeltroText(value) {
+    var parts = String(value || "").split(/[\n,]/).map(function (item) {
+      return item.trim();
+    }).filter(Boolean);
+    var first = parts[0] || "";
+    var second = parts[1] || "";
+    setVeltroProps({
+      text: first,
+      title: first,
+      label: first,
+      content: first,
+      contentTitle: first,
+      contentSubtitle: second,
+      spotlightText: first,
+      words: parts.length ? parts.join(",") : first,
+      items: parts.length ? parts : ["Veltro"],
+    }, false);
+  }
+
+  function setVeltroColor(slot, value) {
+    var fc = FB.design.canvas.get();
+    var obj = fc && fc.getActiveObject();
+    if (!obj || !obj._veltroWidget) return;
+    var props = obj._veltroProps || {};
+    var currentPrimary = slot === "primary" ? value : _veltroValue(props, ["color1", "textColor", "particleColor", "magnetColor"], "#cdfe00");
+    var currentSecondary = slot === "secondary" ? value : _veltroValue(props, ["color2", "dualColour2", "wellColor", "glowColor"], "#3b82f6");
+    var currentAccent = slot === "accent" ? value : _veltroValue(props, ["color3", "accentColor", "scrambleColor"], "#ec4899");
+    var nebulaColors = [currentPrimary, currentSecondary, currentAccent].join(",");
+    var maps = {
+      primary: {
+        color1: value,
+        color: value,
+        textColor: value,
+        particleColor: value,
+        magnetColor: value,
+        starColor: value,
+        highlightColor: value,
+        cursorColor: value,
+        nebulaColors: nebulaColors,
+        itemColors: [value, "#3b82f6", "#ec4899", "#f59e0b", "#10b981"].join(","),
+      },
+      secondary: {
+        color2: value,
+        dualColour2: value,
+        wellColor: value,
+        glowColor: value,
+        fieldColor: value,
+        magnetColor: value,
+        lineColor: value,
+        nebulaColors: nebulaColors,
+      },
+      accent: {
+        color3: value,
+        accentColor: value,
+        scrambleColor: value,
+        hoverColor: value,
+        nebulaColors: nebulaColors,
+      },
+    };
+    setVeltroProps(maps[slot] || { color1: value }, false);
+    render();
+  }
+
+  function setVeltroBackground(value) {
+    var fc = FB.design.canvas.get();
+    var obj = fc && fc.getActiveObject();
+    if (!obj || !obj._veltroWidget) return;
+    setVeltroProps({
+      bg: value,
+      bgColor: value,
+      bgGradientColor1: value,
+    }, false);
+    render();
+  }
+
+  function setVeltroSpeed(value) {
+    setVeltroProps({
+      speed: value,
+      rotationSpeed: value,
+      animationSpeed: value,
+    }, false);
+  }
+
+  function setVeltroForce(value) {
+    setVeltroProps({
+      mouseForce: value,
+      fieldStrength: value,
+      gravityStrength: value,
+      gravity: value,
+      intensity: value,
+    }, false);
+  }
+
+  function setVeltroMode(value) {
+    setVeltroProps({
+      fluidMode: value,
+      fieldMode: value,
+      animationType: value,
+      mode: value,
+      effectMode: value,
+    }, false);
+  }
+
+  function setVeltroGlow(enabled) {
+    setVeltroProps({
+      glowEffect: enabled,
+      fluidGlow: enabled,
+      particleGlow: enabled,
+      glow: enabled,
+    }, false);
+  }
+
+  function setVeltroLines(enabled) {
+    setVeltroProps({
+      connectionLines: enabled,
+      fieldLines: enabled,
+      particleTrail: enabled,
+      showLines: enabled,
+    }, false);
+  }
+
+  function refreshVeltroWidget() {
+    var fc = FB.design.canvas.get();
+    var obj = fc && fc.getActiveObject();
+    if (!obj || !obj._veltroWidget) return;
+    obj._veltroId = "ds-vw-" + Date.now();
+    updateVeltroObject(obj);
+    render();
+  }
+
+  function setVeltroPreset(kind) {
+    var presets = {
+      calm: { particleCount: 70, mouseForce: 2, fieldStrength: 0.25, gravityStrength: 0.25, speed: 0.025, intensity: 0.35 },
+      active: { particleCount: 180, mouseForce: 6, fieldStrength: 0.65, gravityStrength: 0.65, speed: 0.06, intensity: 0.7 },
+      wild: { particleCount: 360, mouseForce: 11, fieldStrength: 1.2, gravityStrength: 1.2, speed: 0.12, intensity: 1 },
+      premium: { particleCount: 140, mouseForce: 4, fieldStrength: 0.55, gravityStrength: 0.45, speed: 0.035, intensity: 0.62, glowIntensity: 0.9, blur: 18 },
+      minimal: { particleCount: 45, mouseForce: 1.2, fieldStrength: 0.18, gravityStrength: 0.18, speed: 0.018, intensity: 0.28, glowIntensity: 0.35, blur: 8 },
+      showcase: { particleCount: 260, mouseForce: 7, fieldStrength: 0.82, gravityStrength: 0.72, speed: 0.075, intensity: 0.9, glowIntensity: 1.2, blur: 24 },
+    };
+    var fc = FB.design.canvas.get();
+    var obj = fc && fc.getActiveObject();
+    if (!obj || !obj._veltroWidget || !presets[kind]) return;
+    obj._veltroProps = Object.assign({}, obj._veltroProps || {}, presets[kind]);
+    updateVeltroObject(obj);
+    render();
   }
 
   function duplicate() {
@@ -2272,6 +3089,149 @@ FB.design.props = (function () {
     FB.design.history.push();
   }
 
+  function setMotion(key, val) {
+    var fc = FB.design.canvas.get();
+    var objs = fc.getActiveObjects();
+    if (!objs.length) return;
+    objs.forEach(function (obj) {
+      var motion = Object.assign({
+        preset: "none",
+        duration: 1.2,
+        delay: 0,
+        easing: "cubic-bezier(.2,.8,.2,1)",
+        iteration: "once",
+      }, obj.motion || {});
+      motion[key] = val;
+      if (key === "preset" && val === "none") {
+        obj.motion = { preset: "none" };
+      } else {
+        obj.motion = motion;
+      }
+      obj.set("motion", obj.motion);
+    });
+    fc.renderAll();
+    FB.design.history.push();
+    render();
+  }
+
+  function applyMotionPreset(kind) {
+    var presets = {
+      reveal: { preset: "rise", duration: 0.9, delay: 0, easing: "cubic-bezier(.2,.8,.2,1)", iteration: "once" },
+      ambient: { preset: "float", duration: 4, delay: 0, easing: "ease-in-out", iteration: "loop" },
+      energetic: { preset: "pulse", duration: 1.4, delay: 0, easing: "cubic-bezier(.34,1.56,.64,1)", iteration: "loop" },
+      physics: { preset: "gravity-drop", duration: 1.1, delay: 0, easing: "cubic-bezier(.2,.8,.2,1)", iteration: "once" },
+      fluid: { preset: "fluid-wave", duration: 3.2, delay: 0, easing: "ease-in-out", iteration: "loop" },
+      magnetic: { preset: "magnetic", duration: 2.4, delay: 0, easing: "cubic-bezier(.34,1.56,.64,1)", iteration: "loop" },
+    };
+    var motion = presets[kind];
+    if (!motion) return;
+    var fc = FB.design.canvas.get();
+    var objs = fc.getActiveObjects();
+    if (!objs.length) return;
+    objs.forEach(function (obj, idx) {
+      obj.motion = Object.assign({}, motion, { delay: +(motion.delay + idx * 0.08).toFixed(2) });
+      obj.set("motion", obj.motion);
+    });
+    fc.renderAll();
+    FB.design.history.push();
+    render();
+  }
+
+  function previewMotion() {
+    var fc = FB.design.canvas.get();
+    var objs = fc.getActiveObjects();
+    if (!fc || !objs.length) return;
+    var start = performance.now();
+    var originals = objs.map(function (obj) {
+      return {
+        obj: obj,
+        left: obj.left || 0,
+        top: obj.top || 0,
+        scaleX: obj.scaleX || 1,
+        scaleY: obj.scaleY || 1,
+        angle: obj.angle || 0,
+        opacity: obj.opacity == null ? 1 : obj.opacity,
+      };
+    });
+
+    function easeOut(t) {
+      return 1 - Math.pow(1 - t, 3);
+    }
+
+    function frame(now) {
+      var elapsed = (now - start) / 1000;
+      var running = false;
+      originals.forEach(function (item) {
+        var m = item.obj.motion || {};
+        if (!m.preset || m.preset === "none") return;
+        var duration = Math.max(0.1, +(m.duration || 1.2));
+        var delay = Math.max(0, +(m.delay || 0));
+        var local = (elapsed - delay) / duration;
+        if (local < 0) {
+          running = true;
+          return;
+        }
+        var t = Math.min(local, 1);
+        var e = easeOut(t);
+        running = running || local < 1;
+        item.obj.set({
+          left: item.left,
+          top: item.top,
+          scaleX: item.scaleX,
+          scaleY: item.scaleY,
+          angle: item.angle,
+          opacity: item.opacity,
+        });
+        if (m.preset === "fade") item.obj.set("opacity", item.opacity * e);
+        if (m.preset === "rise") item.obj.set({ top: item.top + (1 - e) * 36, opacity: item.opacity * e });
+        if (m.preset === "slide-left") item.obj.set({ left: item.left + (1 - e) * 48, opacity: item.opacity * e });
+        if (m.preset === "slide-right") item.obj.set({ left: item.left - (1 - e) * 48, opacity: item.opacity * e });
+        if (m.preset === "zoom") item.obj.set({ scaleX: item.scaleX * (0.82 + e * 0.18), scaleY: item.scaleY * (0.82 + e * 0.18), opacity: item.opacity * e });
+        var wave = Math.sin(t * Math.PI * 2);
+        if (m.preset === "spin") item.obj.set("angle", item.angle + e * 360);
+        if (m.preset === "float") item.obj.set("top", item.top + wave * 14);
+        if (m.preset === "pulse") item.obj.set({ scaleX: item.scaleX * (1 + Math.sin(t * Math.PI) * 0.08), scaleY: item.scaleY * (1 + Math.sin(t * Math.PI) * 0.08) });
+        if (m.preset === "drift") item.obj.set({ left: item.left + e * 28, top: item.top - e * 14 });
+        if (m.preset === "blur") item.obj.set("opacity", item.opacity * e);
+        if (m.preset === "elastic") item.obj.set({ scaleX: item.scaleX * (0.7 + e * 0.3 + Math.sin(t * Math.PI * 4) * (1 - t) * 0.12), scaleY: item.scaleY * (0.7 + e * 0.3 - Math.sin(t * Math.PI * 4) * (1 - t) * 0.08), opacity: item.opacity * e });
+        if (m.preset === "bounce") item.obj.set("top", item.top - Math.abs(Math.sin(t * Math.PI * 3)) * (1 - t) * 46);
+        if (m.preset === "gravity-drop") item.obj.set({ top: item.top - (1 - e) * 120 + Math.sin(t * Math.PI * 6) * (1 - t) * 10, opacity: item.opacity * e });
+        if (m.preset === "gravity-rise") item.obj.set({ top: item.top + (1 - e) * 120, opacity: item.opacity * e });
+        if (m.preset === "swing") item.obj.set("angle", item.angle + Math.sin(t * Math.PI * 3) * (1 - t) * 22);
+        if (m.preset === "magnetic") item.obj.set({ left: item.left + Math.sin(t * Math.PI * 2) * 18, top: item.top + Math.cos(t * Math.PI * 2) * 10, scaleX: item.scaleX * (1 + Math.sin(t * Math.PI * 4) * 0.035), scaleY: item.scaleY * (1 + Math.sin(t * Math.PI * 4) * 0.035) });
+        if (m.preset === "kinetic-snap") item.obj.set({ left: item.left + Math.sin(t * Math.PI * 8) * (1 - t) * 22, scaleX: item.scaleX * (1 + Math.sin(t * Math.PI * 8) * (1 - t) * 0.08), opacity: item.opacity * e });
+        if (m.preset === "kinetic-skew") item.obj.set({ angle: item.angle + wave * 8, top: item.top + Math.sin(t * Math.PI * 4) * 8 });
+        if (m.preset === "fluid-wave") item.obj.set({ top: item.top + wave * 16, angle: item.angle + wave * 3 });
+        if (m.preset === "liquid-morph") item.obj.set({ scaleX: item.scaleX * (1 + wave * 0.08), scaleY: item.scaleY * (1 - wave * 0.06), angle: item.angle + wave * 2 });
+        if (m.preset === "orbit") item.obj.set({ left: item.left + Math.cos(t * Math.PI * 2) * 18, top: item.top + Math.sin(t * Math.PI * 2) * 18 });
+        if (m.preset === "parallax") item.obj.set({ left: item.left + Math.sin(t * Math.PI * 2) * 24, top: item.top + Math.sin(t * Math.PI * 2 + 1) * 8 });
+        if (m.preset === "tilt") item.obj.set("angle", item.angle + wave * 10);
+        if (m.preset === "breathe") item.obj.set({ scaleX: item.scaleX * (1 + wave * 0.035), scaleY: item.scaleY * (1 + wave * 0.035) });
+        if (m.preset === "shimmer") item.obj.set("opacity", item.opacity * (0.72 + Math.abs(wave) * 0.28));
+        if (m.preset === "glitch") item.obj.set({ left: item.left + (Math.random() - 0.5) * 10 * (1 - t), opacity: item.opacity * (0.82 + Math.random() * 0.18) });
+        item.obj.setCoords();
+      });
+      fc.renderAll();
+      if (running) {
+        requestAnimationFrame(frame);
+      } else {
+        originals.forEach(function (item) {
+          item.obj.set({
+            left: item.left,
+            top: item.top,
+            scaleX: item.scaleX,
+            scaleY: item.scaleY,
+            angle: item.angle,
+            opacity: item.opacity,
+          });
+          item.obj.setCoords();
+        });
+        fc.renderAll();
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+
   return {
     render: render,
     setProp: setProp,
@@ -2280,11 +3240,27 @@ FB.design.props = (function () {
     setHeight: setHeight,
     flip: flip,
     setCanvasBg: setCanvasBg,
+    setVeltroWidget: setVeltroWidget,
+    setVeltroProp: setVeltroProp,
+    setVeltroProps: setVeltroProps,
+    setVeltroText: setVeltroText,
+    setVeltroColor: setVeltroColor,
+    setVeltroBackground: setVeltroBackground,
+    setVeltroSpeed: setVeltroSpeed,
+    setVeltroForce: setVeltroForce,
+    setVeltroMode: setVeltroMode,
+    setVeltroGlow: setVeltroGlow,
+    setVeltroLines: setVeltroLines,
+    refreshVeltroWidget: refreshVeltroWidget,
+    setVeltroPreset: setVeltroPreset,
     duplicate: duplicate,
     deleteSelected: deleteSelected,
     toggleBold: toggleBold,
     toggleShadow: toggleShadow,
     setShadow: setShadow,
+    setMotion: setMotion,
+    applyMotionPreset: applyMotionPreset,
+    previewMotion: previewMotion,
   };
 })();
 
@@ -2356,6 +3332,8 @@ FB.design.align = (function () {
 
     fc.renderAll();
     FB.design.layers.render();
+    if (FB.design.veltroCanvas) FB.design.veltroCanvas.sync();
+    FB.design.history.push();
   }
 
   function renderPanel() {
@@ -2425,16 +3403,22 @@ FB.design.library = (function () {
     var name = prompt("Save design as:", _currentName);
     if (!name) return;
     _currentName = name;
+    var prevBg = fc.backgroundColor;
+    fc.setBackgroundColor(FB.design._canvasBg || "#ffffff", function () {});
+    fc.renderAll();
     var thumbnail = fc.toDataURL({
       format: "png",
       multiplier: Math.min(1, 320 / fc.getWidth()),
     });
+    fc.setBackgroundColor(prevBg || null, function () {});
+    fc.renderAll();
     var payload = {
       name: name,
       width: fc.getWidth(),
       height: fc.getHeight(),
+      canvasBg: FB.design._canvasBg || "#ffffff",
       thumbnail: thumbnail,
-      fabric: fc.toJSON(["name"]),
+      fabric: fc.toJSON(["name", "motion", "_veltroWidget", "_veltroId", "_veltroProps"]),
     };
     fetch("/api/designs", {
       method: "POST",
@@ -2507,11 +3491,16 @@ FB.design.library = (function () {
           console.error("[loadDesign] Canvas not available");
           return;
         }
+        FB.design._canvasBg = d.canvasBg || d.backgroundColor || "#ffffff";
         fc.setWidth(d.width);
         fc.setHeight(d.height);
+        FB.design.applyCanvasSurfaceBg();
         FB.design.history.silent(function () {
           fc.loadFromJSON(d.fabric, function () {
+            fc.setBackgroundColor(null, function () {});
+            FB.design.applyCanvasSurfaceBg();
             fc.renderAll();
+            if (FB.design.veltroCanvas) FB.design.veltroCanvas.sync();
             FB.design.layers.render();
             FB.design.props.render();
             _currentName = d.name;
@@ -2530,7 +3519,12 @@ FB.design.library = (function () {
   function exportPNG() {
     var fc = FB.design.canvas.get();
     if (!fc) return;
+    var prevBg = fc.backgroundColor;
+    fc.setBackgroundColor(FB.design._canvasBg || "#ffffff", function () {});
+    fc.renderAll();
     var url = fc.toDataURL({ format: "png", multiplier: 1 });
+    fc.setBackgroundColor(prevBg || null, function () {});
+    fc.renderAll();
     var a = document.createElement("a");
     a.href = url;
     a.download = (_currentName || "design") + ".png";
@@ -2548,19 +3542,469 @@ FB.design.library = (function () {
     a.click();
   }
 
+  function hasMotion(fc) {
+    return !!(fc && fc.getObjects().some(function (obj) {
+      return obj._veltroWidget || (obj.motion && obj.motion.preset && obj.motion.preset !== "none");
+    }));
+  }
+
+  function cssForMotion(className, motion) {
+    var preset = motion.preset || "none";
+    if (preset === "none") return "";
+    var duration = Math.max(0.1, +(motion.duration || 1.2));
+    var delay = Math.max(0, +(motion.delay || 0));
+    var easing = FB.design._cssEsc(motion.easing || "cubic-bezier(.2,.8,.2,1)");
+    var iteration = motion.iteration === "loop" ? "infinite" : "1";
+    var alternatePresets = [
+      "float", "pulse", "drift", "magnetic", "fluid-wave", "liquid-morph",
+      "orbit", "parallax", "tilt", "breathe", "shimmer", "swing"
+    ];
+    var direction = motion.iteration === "loop" && alternatePresets.indexOf(preset) !== -1 ? "alternate" : "normal";
+    return (
+      "." + className + "{" +
+      "transform-box:fill-box;transform-origin:center;animation:ds-" + preset + " " +
+      duration + "s " + easing + " " + delay + "s " + iteration + " " + direction + " both;" +
+      "}"
+    );
+  }
+
+  function motionKeyframes() {
+    return [
+      "@keyframes ds-fade{from{opacity:0}to{opacity:1}}",
+      "@keyframes ds-rise{from{opacity:0;transform:translateY(36px)}to{opacity:1;transform:translateY(0)}}",
+      "@keyframes ds-slide-left{from{opacity:0;transform:translateX(48px)}to{opacity:1;transform:translateX(0)}}",
+      "@keyframes ds-slide-right{from{opacity:0;transform:translateX(-48px)}to{opacity:1;transform:translateX(0)}}",
+      "@keyframes ds-zoom{from{opacity:0;transform:scale(.82)}to{opacity:1;transform:scale(1)}}",
+      "@keyframes ds-blur{from{opacity:0;filter:blur(18px)}to{opacity:1;filter:blur(0)}}",
+      "@keyframes ds-elastic{0%{opacity:0;transform:scale(.7)}55%{opacity:1;transform:scale(1.12,.88)}78%{transform:scale(.96,1.04)}100%{opacity:1;transform:scale(1)}}",
+      "@keyframes ds-bounce{0%{transform:translateY(0)}35%{transform:translateY(-42px)}55%{transform:translateY(0)}72%{transform:translateY(-18px)}100%{transform:translateY(0)}}",
+      "@keyframes ds-gravity-drop{0%{opacity:0;transform:translateY(-120px) scaleY(1.08)}58%{opacity:1;transform:translateY(0) scaleY(.92)}74%{transform:translateY(-18px) scaleY(1.03)}100%{opacity:1;transform:translateY(0) scaleY(1)}}",
+      "@keyframes ds-gravity-rise{0%{opacity:0;transform:translateY(120px) scale(.96)}70%{opacity:1;transform:translateY(-10px) scale(1.02)}100%{opacity:1;transform:translateY(0) scale(1)}}",
+      "@keyframes ds-swing{0%{transform:rotate(-13deg)}30%{transform:rotate(10deg)}55%{transform:rotate(-6deg)}80%{transform:rotate(3deg)}100%{transform:rotate(0)}}",
+      "@keyframes ds-magnetic{0%{transform:translate(-14px,8px) scale(.98)}35%{transform:translate(8px,-6px) scale(1.04)}70%{transform:translate(-5px,4px) scale(1.01)}100%{transform:translate(0,0) scale(1)}}",
+      "@keyframes ds-kinetic-snap{0%{opacity:0;transform:translateX(-54px) skewX(-12deg) scaleX(1.22)}55%{opacity:1;transform:translateX(10px) skewX(7deg) scaleX(.92)}100%{opacity:1;transform:translateX(0) skewX(0) scaleX(1)}}",
+      "@keyframes ds-kinetic-skew{0%{transform:skewX(-10deg) translateX(-16px)}50%{transform:skewX(8deg) translateX(10px)}100%{transform:skewX(0) translateX(0)}}",
+      "@keyframes ds-fluid-wave{0%{transform:translateY(-12px) rotate(-2deg)}33%{transform:translateY(8px) rotate(1.5deg)}66%{transform:translateY(-4px) rotate(-1deg)}100%{transform:translateY(12px) rotate(2deg)}}",
+      "@keyframes ds-liquid-morph{0%{transform:scale(1.08,.92) rotate(-1deg)}50%{transform:scale(.94,1.08) rotate(1.5deg)}100%{transform:scale(1.04,.96) rotate(-.5deg)}}",
+      "@keyframes ds-orbit{0%{transform:translate(18px,0)}25%{transform:translate(0,18px)}50%{transform:translate(-18px,0)}75%{transform:translate(0,-18px)}100%{transform:translate(18px,0)}}",
+      "@keyframes ds-parallax{0%{transform:translate3d(-26px,8px,0)}50%{transform:translate3d(18px,-6px,0)}100%{transform:translate3d(-26px,8px,0)}}",
+      "@keyframes ds-tilt{0%{transform:rotateX(0) rotateY(0) rotate(-5deg)}50%{transform:rotateX(8deg) rotateY(-10deg) rotate(6deg)}100%{transform:rotateX(0) rotateY(0) rotate(-5deg)}}",
+      "@keyframes ds-breathe{0%{transform:scale(.98);opacity:.88}50%{transform:scale(1.045);opacity:1}100%{transform:scale(.98);opacity:.9}}",
+      "@keyframes ds-shimmer{0%{opacity:.62;filter:brightness(.9) saturate(1)}45%{opacity:1;filter:brightness(1.35) saturate(1.25)}100%{opacity:.72;filter:brightness(.95) saturate(1)}}",
+      "@keyframes ds-glitch{0%,100%{transform:translate(0,0);opacity:1}12%{transform:translate(-6px,2px);opacity:.75}18%{transform:translate(5px,-3px);opacity:1}36%{transform:translate(-3px,-2px)}42%{transform:translate(7px,3px);opacity:.82}64%{transform:translate(-2px,4px)}70%{transform:translate(0,0);opacity:1}}",
+      "@keyframes ds-float{from{transform:translateY(-10px)}to{transform:translateY(10px)}}",
+      "@keyframes ds-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}",
+      "@keyframes ds-spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}",
+      "@keyframes ds-drift{from{transform:translate(-14px,8px)}to{transform:translate(18px,-10px)}}",
+    ].join("");
+  }
+
+  function buildAnimatedHTML(fc) {
+    var svg = fc.toSVG();
+    var objects = fc.getObjects();
+    var css = "";
+    var veltroLayer = buildVeltroExportLayer(fc);
+    try {
+      var doc = new DOMParser().parseFromString(svg, "image/svg+xml");
+      var root = doc.documentElement;
+      var drawable = Array.prototype.filter.call(root.children, function (node) {
+        return ["defs", "desc", "title", "style"].indexOf((node.tagName || "").toLowerCase()) === -1;
+      });
+      drawable.forEach(function (node, idx) {
+        if (objects[idx] && objects[idx]._veltroWidget) {
+          node.parentNode.removeChild(node);
+          return;
+        }
+        var motion = objects[idx] && objects[idx].motion;
+        if (!motion || !motion.preset || motion.preset === "none") return;
+        var cls = "ds-motion-layer-" + idx;
+        var wrapper = doc.createElementNS("http://www.w3.org/2000/svg", "g");
+        wrapper.setAttribute("class", cls);
+        node.parentNode.insertBefore(wrapper, node);
+        wrapper.appendChild(node);
+        css += cssForMotion(cls, motion);
+      });
+      svg = new XMLSerializer().serializeToString(root);
+    } catch (_) {
+      css = objects.map(function (obj, idx) {
+        return cssForMotion("ds-motion-layer-" + idx, obj.motion || {});
+      }).join("");
+    }
+    var title = FB.design._esc(_currentName || "Animated design");
+    return (
+      '<div class="ds-animated-design" role="img" aria-label="' + title + '">' +
+      '<style>' +
+      ".ds-animated-design{position:relative;width:100%;overflow:hidden;line-height:0;background:" + FB.design._cssEsc(FB.design._canvasBg || "transparent") + "}" +
+      ".ds-animated-design svg{display:block;width:100%;height:auto}" +
+      ".ds-export-veltro-layer{position:absolute;inset:0;pointer-events:auto;overflow:hidden}" +
+      ".ds-export-veltro-widget{position:absolute;line-height:normal;overflow:hidden}" +
+      ".ds-export-veltro-widget>.fw-widget,.ds-export-veltro-widget [class*='veltro-']{width:100%;height:100%}" +
+      "@media (prefers-reduced-motion:reduce){.ds-animated-design *{animation:none!important;transition:none!important}}" +
+      motionKeyframes() +
+      css +
+      "</style>" +
+      svg +
+      veltroLayer +
+      "</div>"
+    );
+  }
+
+  function buildVeltroExportLayer(fc) {
+    var objects = fc.getObjects().filter(function (obj) { return obj._veltroWidget; });
+    if (!objects.length) return "";
+    var tokens = collectDesignTokens(fc);
+    var widgets = objects.map(function (obj, idx) {
+      var type = obj._veltroWidget;
+      var id = obj._veltroId || ("export-vw-" + idx);
+      var props = Object.assign({}, veltroPropsFor(type, tokens), obj._veltroProps || {}, {
+        _blockId: id,
+        height: Math.max(80, Math.round(obj.getScaledHeight())),
+      });
+      var widget = FB.widgets && FB.widgets.get && FB.widgets.get(type);
+      if (!widget) return "";
+      var style = [
+        "left:" + ((obj.left / fc.getWidth()) * 100).toFixed(4) + "%",
+        "top:" + ((obj.top / fc.getHeight()) * 100).toFixed(4) + "%",
+        "width:" + ((obj.getScaledWidth() / fc.getWidth()) * 100).toFixed(4) + "%",
+        "height:" + ((obj.getScaledHeight() / fc.getHeight()) * 100).toFixed(4) + "%",
+        "transform:rotate(" + (obj.angle || 0) + "deg)",
+        "transform-origin:center",
+        "opacity:" + (obj.opacity == null ? 1 : obj.opacity),
+      ].join(";");
+      return (
+        '<div class="ds-export-veltro-widget" data-veltro-export="' +
+        FB.design._esc(id) +
+        '" style="' +
+        style +
+        '">' +
+        '<div class="fw-widget fw-widget-' +
+        FB.design._esc(type) +
+        '">' +
+        FB.widgets.render(type, props) +
+        "</div></div>"
+      );
+    }).join("");
+    if (!widgets) return "";
+    return (
+      '<div class="ds-export-veltro-layer">' +
+      widgets +
+      "</div>" +
+      '<script>(function(){var s=["/js/widgets.js","/widgets/veltro.js","/widgets/veltro/batch-ambient.js","/widgets/veltro/batch-cursor.js","/widgets/veltro/batch-physics.js","/widgets/veltro/batch-scroll.js","/widgets/veltro/batch-spatial.js","/widgets/veltro/batch-text.js","/widgets/veltro/orig-fx.js","/widgets/veltro/orig-text.js"];function l(i){if(i>=s.length){setTimeout(function(){if(window._VeltroInitAll)window._VeltroInitAll();},50);return}var e=document.createElement("script");e.src=s[i];e.onload=function(){l(i+1)};e.onerror=function(){l(i+1)};document.head.appendChild(e)};if(!window.FB){window.FB={widgets:{_registry:{},register:function(k,v){this._registry[k]=v},get:function(k){return this._registry[k]},render:function(k,p){var w=this.get(k);return w&&w.render?w.render(p||{}):""}}}};l(0)}());</script>'
+    );
+  }
+
+  function exportHTML() {
+    var fc = FB.design.canvas.get();
+    if (!fc) return;
+    var blob = new Blob([buildAnimatedHTML(fc)], { type: "text/html" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = (_currentName || "animated-design") + ".html";
+    a.click();
+  }
+
   function insertIntoPage() {
     var fc = FB.design.canvas.get();
     if (!fc) return;
-    var dataUrl = fc.toDataURL({ format: "png", multiplier: 1 });
+    FB.panels.setMode("builder");
+    FB.state.saveHistory();
+    if (hasMotion(fc)) {
+      FB.state.blocks.push({
+        id: FB.state.genId(),
+        type: "htmlEmbed",
+        props: { html: buildAnimatedHTML(fc) },
+      });
+      FB.util.showToast("Animated design inserted");
+    } else {
+      var prevBg = fc.backgroundColor;
+      fc.setBackgroundColor(FB.design._canvasBg || "#ffffff", function () {});
+      fc.renderAll();
+      var dataUrl = fc.toDataURL({ format: "png", multiplier: 1 });
+      fc.setBackgroundColor(prevBg || null, function () {});
+      fc.renderAll();
+      FB.state.blocks.push({
+        id: FB.state.genId(),
+        type: "imageBlock",
+        props: { src: dataUrl, alt: _currentName, objectFit: "contain" },
+      });
+      FB.util.showToast("Design inserted as image block");
+    }
+    FB.canvas.render();
+  }
+
+  function collectDesignTokens(fc) {
+    var objects = fc.getObjects();
+    var texts = objects
+      .filter(function (obj) { return obj.type === "i-text" && obj.text; })
+      .map(function (obj) { return String(obj.text).trim(); })
+      .filter(Boolean);
+    var colors = objects
+      .map(function (obj) { return typeof obj.fill === "string" ? obj.fill : ""; })
+      .filter(function (color) { return /^#[0-9a-f]{3,8}$/i.test(color); });
+    var bg = FB.design._canvasBg || "#0d0d1a";
+    var primary = colors[0] || "#cdfe00";
+    var secondary = colors[1] || "#3b82f6";
+    var accent = colors[2] || "#ec4899";
+    var title = texts[0] || _currentName || "Veltro";
+    var words = texts.length ? texts : title.split(/\s+/).filter(Boolean);
+    if (!words.length) words = ["Veltro", "Motion"];
+    return {
+      width: fc.getWidth(),
+      height: Math.max(320, Math.min(720, fc.getHeight())),
+      bg: bg,
+      primary: primary,
+      secondary: secondary,
+      accent: accent,
+      title: title,
+      words: words.slice(0, 8),
+    };
+  }
+
+  function veltroPropsFor(effect, tokens) {
+    var base = {
+      height: tokens.height,
+      bg: tokens.bg,
+      bgColor: tokens.bg,
+      bgType: "gradient",
+      bgGradientDir: "135deg",
+      bgGradientColor1: tokens.bg,
+      bgGradientColor2: "#111827",
+      borderRadius: 8,
+      entranceAnim: "fadeUp",
+    };
+    var map = {
+      physicsSandbox: Object.assign({}, base, {
+        items: tokens.words,
+        gravity: 1,
+        restitution: 0.78,
+        friction: 0.04,
+        textColor: tokens.primary,
+        itemColors: [tokens.primary, tokens.secondary, tokens.accent, "#f59e0b", "#10b981"].join(","),
+        objectShape: "mixed",
+        collisionFlash: true,
+        showHint: true,
+      }),
+      fluidSimulation: Object.assign({}, base, {
+        particleCount: 260,
+        viscosity: 0.42,
+        color1: tokens.secondary,
+        color2: tokens.accent,
+        fluidMode: "flow",
+        fluidTurbulence: 0.45,
+        fluidGlow: true,
+        mouseForce: 7,
+        connectionLines: true,
+      }),
+      gravityWells: Object.assign({}, base, {
+        wellCount: 3,
+        particleCount: 160,
+        gravityStrength: 0.62,
+        particleColor: tokens.primary,
+        wellColor: tokens.accent,
+      }),
+      magneticFields: Object.assign({}, base, {
+        particleCount: 110,
+        fieldStrength: 0.68,
+        particleColor: tokens.primary,
+        fieldLines: true,
+        particleTrail: true,
+        fieldMode: "dipole",
+        particleGlow: true,
+        glowColor: tokens.secondary,
+      }),
+      kineticText: Object.assign({}, base, {
+        text: tokens.title,
+        color: tokens.primary,
+        size: Math.max(42, Math.min(96, Math.floor(tokens.width / 18))),
+        weight: 760,
+        minWeight: 180,
+        maxWeight: 900,
+        mode: "proximity",
+        radius: 280,
+        fontFamily: "Lexend",
+        align: "center",
+        bgColor: tokens.bg,
+      }),
+      textScramble: Object.assign({}, base, {
+        text: tokens.title,
+        color: tokens.primary,
+        fontSize: Math.max(40, Math.min(88, Math.floor(tokens.width / 20))),
+        fontWeight: 800,
+        bg: tokens.bg,
+        scrambleSpeed: 30,
+        decodeTrigger: "hover",
+        autoScramble: true,
+        autoScrambleInterval: 900,
+      }),
+      typewriterReveal: Object.assign({}, base, {
+        text: tokens.title,
+        multiText: tokens.words.join(","),
+        color: tokens.primary,
+        fontSize: Math.max(36, Math.min(76, Math.floor(tokens.width / 22))),
+        fontWeight: 700,
+        bg: tokens.bg,
+        speed: 80,
+        loop: true,
+      }),
+      textMask: Object.assign({}, base, {
+        text: tokens.title,
+        fontSize: Math.max(44, Math.min(96, Math.floor(tokens.width / 18))),
+        fontWeight: 900,
+        bg: tokens.bg,
+        maskFallbackColor: tokens.primary,
+      }),
+      liquidText: Object.assign({}, base, {
+        text: tokens.title,
+        color: tokens.secondary,
+        fontSize: Math.max(44, Math.min(96, Math.floor(tokens.width / 18))),
+        fontWeight: 900,
+        bg: tokens.bg,
+        amplitude: 10,
+        frequency: 0.05,
+        speed: 0.02,
+        glowEffect: true,
+        glowColor: tokens.secondary,
+      }),
+      morphingText: Object.assign({}, base, {
+        words: tokens.words.join(","),
+        textColor: tokens.primary,
+        fontSize: Math.max(44, Math.min(92, Math.floor(tokens.width / 18))),
+        fontWeight: 800,
+        bg: tokens.bg,
+        morphSpeed: 2000,
+        fadeSpeed: 500,
+        highlightCurrent: true,
+        highlightColor: tokens.primary,
+      }),
+      morphingCounter: Object.assign({}, base, {
+        target: 100,
+        prefix: "",
+        suffix: "+",
+        fontSize: Math.max(44, Math.min(96, Math.floor(tokens.width / 18))),
+        color: tokens.primary,
+        bg: tokens.bg,
+      }),
+      waveText: Object.assign({}, base, {
+        text: tokens.title,
+        fontSize: Math.max(44, Math.min(96, Math.floor(tokens.width / 18))),
+        textColor: tokens.primary,
+        dualColour: true,
+        dualColour2: tokens.secondary,
+        amplitude: 24,
+        frequency: 0.12,
+        speed: 0.055,
+        glowEffect: true,
+        glowColor: tokens.primary,
+      }),
+      kineticScramble: Object.assign({}, base, {
+        text: tokens.title,
+        textColor: tokens.primary,
+        color: tokens.primary,
+        scrambleColor: tokens.accent,
+        fontSize: Math.max(42, Math.min(88, Math.floor(tokens.width / 20))),
+        fontWeight: 800,
+        bg: tokens.bg,
+        scrambleSpeed: 100,
+        revealSpeed: 2000,
+        autoScramble: true,
+        autoScrambleInterval: 1400,
+      }),
+      magneticText: Object.assign({}, base, {
+        text: tokens.title,
+        textColor: tokens.primary,
+        magnetColor: tokens.secondary,
+        fontSize: Math.max(40, Math.min(90, Math.floor(tokens.width / 20))),
+        magneticRadius: 150,
+        magneticStrength: 0.5,
+      }),
+      liquidGradient: Object.assign({}, base, {
+        color1: tokens.primary,
+        color2: tokens.secondary,
+        color3: tokens.accent,
+        speed: 0.018,
+      }),
+      particleNebula: Object.assign({}, base, {
+        particleCount: 120,
+        color1: tokens.primary,
+        color2: tokens.secondary,
+        color3: tokens.accent,
+      }),
+      auroraBorealis: Object.assign({}, base, {
+        color1: tokens.primary,
+        color2: tokens.secondary,
+        color3: tokens.accent,
+        intensity: 0.72,
+      }),
+      cursorLens: Object.assign({}, base, {
+        image: "",
+        lensSize: 180,
+        zoom: 1.8,
+        text: tokens.title,
+        bg: tokens.bg,
+      }),
+      layeredParallax: Object.assign({}, base, {
+        layers: tokens.words.map(function (word, idx) {
+          return { text: word, depth: (idx + 1) * 0.18, color: [tokens.primary, tokens.secondary, tokens.accent][idx % 3] };
+        }),
+      }),
+      morphingGrid: Object.assign({}, base, {
+        items: tokens.words,
+        color1: tokens.primary,
+        color2: tokens.secondary,
+        color3: tokens.accent,
+      }),
+    };
+    return map[effect] || map.physicsSandbox;
+  }
+
+  function insertVeltroBlock() {
+    var fc = FB.design.canvas.get();
+    if (!fc) return;
+    var select = document.getElementById("ds-veltro-effect");
+    var effect = select ? select.value : "physicsSandbox";
+    var props = veltroPropsFor(effect, collectDesignTokens(fc));
     FB.panels.setMode("builder");
     FB.state.saveHistory();
     FB.state.blocks.push({
       id: FB.state.genId(),
-      type: "imageBlock",
-      props: { src: dataUrl, alt: _currentName, objectFit: "contain" },
+      type: effect,
+      props: props,
     });
     FB.canvas.render();
-    FB.util.showToast("Design inserted as image block");
+    if (typeof window._VeltroInitAll === "function") window._VeltroInitAll();
+    FB.util.showToast("Veltro block inserted");
+  }
+
+  function currentVeltroSelection() {
+    var fc = FB.design.canvas.get();
+    if (!fc) return null;
+    var select = document.getElementById("ds-veltro-effect");
+    var effect = select ? select.value : "physicsSandbox";
+    return {
+      id: "ds-preview-" + effect,
+      type: effect,
+      props: veltroPropsFor(effect, collectDesignTokens(fc)),
+    };
+  }
+
+  function previewVeltroBlock() {
+    var block = currentVeltroSelection();
+    var host = document.getElementById("ds-veltro-preview");
+    if (!block || !host) return;
+    if (!FB.widgets || !FB.widgets.get || !FB.widgets.get(block.type)) {
+      host.innerHTML = '<div style="padding:18px;color:#777;font-size:11px">Veltro widget unavailable</div>';
+      return;
+    }
+    var props = Object.assign({}, block.props, { _blockId: block.id });
+    host.innerHTML =
+      '<div class="fw-widget fw-widget-' +
+      FB.design._esc(block.type) +
+      '">' +
+      FB.widgets.render(block.type, props) +
+      '</div>';
+    setTimeout(function () {
+      if (typeof window._VeltroInitAll === "function") window._VeltroInitAll();
+    }, 0);
   }
 
   return {
@@ -2570,7 +4014,12 @@ FB.design.library = (function () {
     loadDesign: loadDesign,
     exportPNG: exportPNG,
     exportSVG: exportSVG,
+    exportHTML: exportHTML,
     insertIntoPage: insertIntoPage,
+    insertVeltroBlock: insertVeltroBlock,
+    previewVeltroBlock: previewVeltroBlock,
+    _collectDesignTokens: collectDesignTokens,
+    _veltroPropsFor: veltroPropsFor,
   };
 })();
 
