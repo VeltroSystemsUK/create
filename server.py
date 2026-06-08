@@ -1,5 +1,5 @@
 """
-Framework Builder — CMS Backend Server
+Veltro Create — CMS Backend Server
 
 Serves the builder frontend and provides a file-based CMS API
 with session-based authentication. All content stored as JSON files.
@@ -30,6 +30,8 @@ def add_cors_headers(response):
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
     response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+    # Force keep-alive for large files like main-DndWa5BP.js
+    response.headers['Connection'] = 'keep-alive'
     return response
 
 # ── Config ──────────────────────────────────────────────────────────
@@ -614,7 +616,7 @@ def popart_generate():
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description="Framework Builder CMS Server")
+    parser = argparse.ArgumentParser(description="Veltro Create CMS Server")
     parser.add_argument(
         "--port", type=int, default=3003, help="Server port (default: 3003)"
     )
@@ -627,6 +629,10 @@ if __name__ == "__main__":
     CMS_DIR.mkdir(exist_ok=True)
     DESIGNS_DIR.mkdir(exist_ok=True)
     MEDIA_DIR.mkdir(exist_ok=True)
+
+    # Configure Flask for better performance with large files
+    app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 31536000  # 1 year cache
+    app.config['JSON_SORT_KEYS'] = False
 
     # Bootstrap config if missing
     if not CONFIG_PATH.exists():
@@ -663,7 +669,7 @@ if __name__ == "__main__":
             },
         )
 
-    print(f"Framework Builder CMS")
+    print(f"Veltro Create CMS")
     print(f"  Server:  http://localhost:{args.port}")
     print(f"  API:     http://localhost:{args.port}/api/")
     print(f"  Builder: http://localhost:{args.port}/")
@@ -671,4 +677,4 @@ if __name__ == "__main__":
     print(f"  Dev:     {'yes' if args.dev else 'no'}")
     print()
 
-    app.run(host="0.0.0.0", port=args.port, debug=args.dev)
+    app.run(host="0.0.0.0", port=args.port, debug=args.dev, threaded=True)
