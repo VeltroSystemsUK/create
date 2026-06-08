@@ -849,7 +849,7 @@
           html += "</div>";
         } else if (f.type === "richtext") {
           html +=
-            "<textarea onchange=\"saveField('" +
+            "<textarea id=\"field-" + field + "-" + blockId + "\" name=\"" + field + "\" onchange=\"saveField('" +
             pageId +
             "','" +
             blockId +
@@ -883,7 +883,7 @@
           });
           html += "</div>";
           html +=
-            '<input class="tag-input" type="text" placeholder="Add item..." onkeydown="addListItem(event,\'' +
+            '<input class="tag-input" type="text" id="list-input-' + field + '-' + blockId + '" name="' + field + '-item" placeholder="Add item..." onkeydown="addListItem(event,\'' +
             pageId +
             "','" +
             blockId +
@@ -935,7 +935,7 @@
                     escHtml(iv) +
                     '" alt="" style="width:48px;height:48px;object-fit:cover;border-radius:4px;background:#222;margin-bottom:4px;">';
                 html +=
-                  '<input type="text" value="' +
+                  '<input type="text" id="coll-' + field + '-' + idx + '-' + ifn + '" name="' + field + '-' + ifn + '" value="' +
                   escHtml(iv) +
                   '" style="width:100%;padding:5px 8px;border:1px solid #333;border-radius:4px;background:#111;color:#e0e0e0;font-size:12px;outline:none;" onchange="saveCollectionItem(\'' +
                   pageId +
@@ -957,7 +957,7 @@
                   "</div>";
                 if (iff.type === "richtext") {
                   html +=
-                    "<textarea onchange=\"saveCollectionItem('" +
+                    "<textarea id=\"coll-rt-" + field + "-" + idx + "-" + ifn + "\" name=\"" + field + "-" + ifn + "\" onchange=\"saveCollectionItem('" +
                     pageId +
                     "','" +
                     blockId +
@@ -972,7 +972,7 @@
                     "</textarea>";
                 } else {
                   html +=
-                    '<input type="text" value="' +
+                    '<input type="text" id="coll-item-' + field + '-' + idx + '-' + ifn + '" name="' + field + '-' + ifn + '" value="' +
                     escHtml(iv) +
                     '" style="width:100%;padding:5px 8px;border:1px solid #333;border-radius:4px;background:#111;color:#e0e0e0;font-size:12px;outline:none;" onchange="saveCollectionItem(\'' +
                     pageId +
@@ -1003,7 +1003,7 @@
         } else {
           var sv = val != null ? String(val) : "";
           html +=
-            '<input type="text" value="' +
+            '<input type="text" id="field-' + field + '-' + blockId + '" name="' + field + '" value="' +
             escHtml(sv) +
             '" onchange="saveField(\'' +
             pageId +
