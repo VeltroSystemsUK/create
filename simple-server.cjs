@@ -98,13 +98,15 @@ const server = http.createServer((req, res) => {
     console.log(`  -> 200 OK (${stats.size} bytes)`);
     res.writeHead(200);
 
-    // Stream the file
-    const fileStream = fs.createReadStream(filePath);
-    fileStream.on('error', (err) => {
-      console.error(`Error reading file: ${err.message}`);
-      res.destroy();
+    // Read file and send (buffer for reliability)
+    fs.readFile(filePath, (err, data) => {
+      if (err) {
+        console.error(`Error reading file: ${err.message}`);
+        res.destroy();
+        return;
+      }
+      res.end(data);
     });
-    fileStream.pipe(res);
   });
 });
 
