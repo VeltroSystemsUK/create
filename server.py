@@ -631,6 +631,14 @@ if __name__ == "__main__":
     # Configure Flask for better performance with large files
     app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 31536000  # 1 year cache
     app.config['JSON_SORT_KEYS'] = False
+    app.config['COMPRESS_LEVEL'] = 6  # gzip compression level
+
+    # Enable gzip compression for responses
+    try:
+        from flask_compress import Compress
+        Compress(app)
+    except ImportError:
+        pass  # Flask-Compress not installed, skip
 
     # Bootstrap config if missing
     if not CONFIG_PATH.exists():
