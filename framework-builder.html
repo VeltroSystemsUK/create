@@ -1009,8 +1009,13 @@
         scripts.forEach(function(src) {
           var script = document.createElement("script");
           script.src = src;
+          script.async = true;
+          script.onerror = function() {
+            console.warn("Failed to load widget: " + src);
+          };
           document.head.appendChild(script);
         });
+        console.log("Widget loading initiated - " + scripts.length + " widgets queued");
       }
       loadWidgets();
     </script>
