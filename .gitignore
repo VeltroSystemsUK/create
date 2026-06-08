@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Vite
+.vite/
+dist/
+
+# Playwright test artifacts (accessibility snapshots + screenshots + logs)
+.playwright-mcp/page-*.yml
+.playwright-mcp/page-*.png
+.playwright-mcp/console-*.log
+.playwright-mcp/gallery-*.html
+
+# Graphify output
+graphify-out/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Environment
+.env
+.env.local
+.venv/
+
+# Local assistant/config artifacts
+.claude/settings.local.json
+.omo/
+
+# Local database and uploads
+server/.env
+server/framework_builder.db
+server/*.db
+server/public/uploads/

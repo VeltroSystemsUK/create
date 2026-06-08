@@ -1,0 +1,63 @@
+{
+  "title": "Strategic Operations: From Chaos to Clarity",
+  "slug": "strategic-operations",
+  "description": "Transform operational chaos into a streamlined, data-driven machine. Learn the frameworks used by Fortune 500 ops leaders to reduce costs, improve throughput, and build resilient teams.",
+  "level": "intermediate",
+  "duration": "3 hours",
+  "learningObjectives": [
+    "Diagnose operational bottlenecks using the 5-Why framework",
+    "Design and implement a real-time KPI dashboard",
+    "Apply capacity planning models to prevent resource burnout",
+    "Build a continuous improvement culture that sticks"
+  ],
+  "targetAudience": "Operations managers, team leads, and founders who want to scale their business operations without adding headcount",
+  "prerequisites": "Basic understanding of business operations. No finance or engineering background required.",
+  "instructor": { "name": "", "title": "", "bio": "", "image": "" },
+  "modules": [
+    {
+      "title": "Module 1: The Diagnostic Mindset",
+      "description": "Learn to see operational problems before they become crises.",
+      "estimatedTime": "15 min",
+      "hook": {
+        "soWhat": "76% of operational failures are detectable 3-6 months before they surface, yet most organizations miss the signals entirely.",
+        "premise": "Operational chaos follows predictable patterns that can be intercepted. This module gives you the diagnostic lens that separates high-performing ops leaders from perpetual firefighters."
+      },
+      "anchor": {
+        "concepts": [
+          {
+            "name": "Operational Signal Detection",
+            "definition": "Systematic identification of leading indicators that predict downstream process failures.",
+            "keyInsight": "Most teams measure lagging indicators. The shift to leading indicators alone can prevent 60% of escalations."
+          }
+        ],
+        "analogy": "Like a doctor reading vital signs before a heart attack occurs, an ops leader reads throughput variance and exception rates to catch problems while they are still minor.",
+        "inPractice": {
+          "doneRight": "A logistics company implemented a 3-metric dashboard and reduced late shipments by 40% in 90 days.",
+          "doneWrong": "A SaaS company tracked only NPS and missed a 3-month decline in support resolution time — leading to a 15% churn spike."
+        }
+      },
+      "arena": {
+        "scenario": {
+          "role": "Operations Lead",
+          "situation": "Your fulfillment team's error rate has crept from 0.5% to 2.1% over 8 weeks. The CEO wants a plan by Friday.",
+          "options": [
+            { "label": "A", "text": "Implement mandatory double-checks on all orders", "isCorrect": false, "impactTwist": "Error rate drops but throughput falls 35%. Order backlog doubles within 2 weeks." },
+            { "label": "B", "text": "Run a root-cause analysis on the error spike first", "isCorrect": true, "impactTwist": "You discover a warehouse layout change is the cause. A simple relabeling restores the error rate to 0.4% without any throughput loss." },
+            { "label": "C", "text": "Hire 3 temporary staff to absorb the extra checking", "isCorrect": false, "impactTwist": "Costs increase 12%. Temporary staff introduce process variances. Root cause remains unaddressed." }
+          ]
+        }
+      },
+      "proof": {
+        "questions": [
+          {
+            "question": "A team reports 'everything is fine' but you notice rising exception reports. What is the correct first step?",
+            "options": ["Trust the team and wait", "Investigate exceptions as leading indicators", "Immediately restructure the workflow"],
+            "correctIndex": 1,
+            "explanation": "Exception reports are leading indicators. Investigating early prevents the 'everything is fine' moment from becoming a crisis."
+          }
+        ],
+        "microCredential": "+10 Operational Diagnosis"
+      }
+    }
+  ]
+}

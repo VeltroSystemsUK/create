@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Motion Studio — Animation Creator</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- TOP BAR -->
+      <div class="ms-topbar">
+        <div class="ms-logo">🎬 Motion Studio</div>
+        <div class="ms-topbar-actions">
+          <button class="ms-btn" onclick="MS.file.newProject()">📄 New</button>
+          <button class="ms-btn" onclick="MS.file.importLottie()">
+            📂 Import Lottie
+          </button>
+          <button class="ms-btn" onclick="MS.file.exportLottie()">
+            🎞 Export Lottie
+          </button>
+          <button class="ms-btn" onclick="MS.file.exportJSON()">
+            ⬇ Export JSON
+          </button>
+        </div>
+      </div>
+
+      <!-- MAIN LAYOUT -->
+      <div class="ms-body">
+        <!-- LEFT: TOOLBOX + LAYERS -->
+        <div class="ms-left">
+          <div class="ms-panel">
+            <div class="ms-panel-title">Tools</div>
+            <div class="ms-tools">
+              <button
+                class="ms-tool-btn"
+                onclick="MS.shapes.addRect()"
+                title="Rectangle"
+              >
+                ▬
+              </button>
+              <button
+                class="ms-tool-btn"
+                onclick="MS.shapes.addCircle()"
+                title="Circle"
+              >
+                ●
+              </button>
+              <button
+                class="ms-tool-btn"
+                onclick="MS.shapes.deleteSelected()"
+                title="Delete"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+          <div class="ms-panel" style="flex: 1">
+            <div class="ms-panel-title">Layers</div>
+            <div class="ms-layers" id="ms-layers"></div>
+          </div>
+        </div>
+
+        <!-- CENTER: STAGE -->
+        <div class="ms-center">
+          <div class="ms-stage-wrap">
+            <canvas id="ms-stage" width="500" height="350"></canvas>
+          </div>
+        </div>
+
+        <!-- RIGHT: PROPERTIES -->
+        <div class="ms-right">
+          <div class="ms-panel">
+            <div class="ms-panel-title">Playback</div>
+            <div class="ms-playback">
+              <div class="ms-time-display" id="ms-time">0.0s / 2.0s</div>
+              <div class="ms-playback-btns">
+                <button
+                  class="ms-btn ms-btn-sm"
+                  onclick="MS.playback.toggle()"
+                  id="ms-play-btn"
+                >
+                  ▶
+                </button>
+                <button class="ms-btn ms-btn-sm" onclick="MS.playback.stop()">
+                  ⏹
+                </button>
+                <label class="ms-chk-label"
+                  ><input type="checkbox" id="ms-loop" checked /> Loop</label
+                >
+              </div>
+              <div class="ms-props">
+                <div class="ms-prop">
+                  <label>Duration (s)</label>
+                  <input
+                    type="range"
+                    min="0.5"
+                    max="10"
+                    step="0.5"
+                    value="2"
+                    id="ms-duration"
+                    oninput="MS.project.setDuration(+this.value)"
+                  />
+                  <span class="ms-prop-val" id="ms-dur-val">2.0</span>
+                </div>
+                <div class="ms-prop">
+                  <label>FPS</label>
+                  <select id="ms-fps" onchange="MS.project.setFPS(+this.value)">
+                    <option value="24">24</option>
+                    <option value="30" selected>30</option>
+                    <option value="60">60</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ms-panel" style="flex: 1">
+            <div class="ms-panel-title">Properties</div>
+            <div class="ms-props" id="ms-props-panel"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTTOM: TIMELINE -->
+      <div class="ms-timeline" id="ms-timeline-wrap">
+        <div class="ms-timeline-header">
+          <span style="font-size: 10px; color: #666; font-weight: 500"
+            >TIMELINE</span
+          >
+          <span style="flex: 1"></span>
+          <button class="ms-btn ms-btn-xs" onclick="MS.timeline.zoomIn()">
+            🔍+
+          </button>
+          <button class="ms-btn ms-btn-xs" onclick="MS.timeline.zoomOut()">
+            🔍−
+          </button>
+        </div>
+        <div class="ms-timeline-body" id="ms-timeline-body">
+          <div class="ms-ruler" id="ms-ruler"></div>
+          <div class="ms-tracks" id="ms-tracks"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESOURCES PANEL -->
+    <div class="ms-resources" id="ms-resources">
+      <div
+        class="ms-resources-header"
+        onclick="
+          var n = this.nextElementSibling;
+          n.style.display = n.style.display === 'none' ? 'block' : 'none';
+        "
+      >
+        <span>📚 Resources & References</span>
+        <span style="font-size: 10px; color: #555">▼</span>
+      </div>
+      <div class="ms-resources-body">
+        <a
+          href="https://github.com/marciogranzotto/lottie-tools"
+          target="_blank"
+          class="ms-ref"
+        >
+          <strong>lottie-tools</strong><br />
+          <span class="ms-ref-desc"
+            >Web-based Lottie editor by marciogranzotto (React/TS, Lottie JSON
+            pipeline)</span
+          >
+        </a>
+        <a
+          href="https://github.com/mbasaglia/glaxnimate"
+          target="_blank"
+          class="ms-ref"
+        >
+          <strong>Glaxnimate</strong><br />
+          <span class="ms-ref-desc"
+            >Desktop vector animation program (C++/Qt5, Lottie export)</span
+          >
+        </a>
+        <a
+          href="https://github.com/HaikuTeam/animator"
+          target="_blank"
+          class="ms-ref"
+        >
+          <strong>Haiku Animator</strong><br />
+          <span class="ms-ref-desc"
+            >Professional Lottie animation tool (Electron, expressions, Figma
+            link)</span
+          >
+        </a>
+        <a
+          href="https://lottiefiles.com/lottie-creator"
+          target="_blank"
+          class="ms-ref"
+        >
+          <strong>LottieFiles Creator</strong><br />
+          <span class="ms-ref-desc"
+            >Official Lottie animation creator (web-based, state machines)</span
+          >
+        </a>
+        <a
+          href="https://lottiefiles.com/featured"
+          target="_blank"
+          class="ms-ref"
+        >
+          <strong>LottieFiles</strong><br />
+          <span class="ms-ref-desc"
+            >Free Lottie animation library — download JSON to import here</span
+          >
+        </a>
+      </div>
+    </div>
+
+    <!-- Motion Creator — modularized (load state first) -->
+    <script src="js/motion-creator/state.js?v=2"></script>
+    <script src="js/motion-creator/layers.js?v=2"></script>
+    <script src="js/motion-creator/shapes.js?v=2"></script>
+    <script src="js/motion-creator/stage.js?v=2"></script>
+    <script src="js/motion-creator/playback.js?v=2"></script>
+    <script src="js/motion-creator/timeline.js?v=2"></script>
+    <script src="js/motion-creator/props.js?v=2"></script>
+    <script src="js/motion-creator/file.js?v=2"></script>
+  </body>
+</html>

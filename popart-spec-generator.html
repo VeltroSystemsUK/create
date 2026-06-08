@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pop Art Spec Generator</title>
+  <script src="https://unpkg.com/lottie-web@latest/build/player/lottie.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Bebas Neue', 'Impact', sans-serif;
+      background: linear-gradient(135deg, #00ffff 0%, #ff00ff 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    /* INPUT PANEL */
+    .input-panel {
+      background: #111;
+      border: 3px solid #000;
+      border-radius: 0;
+      padding: 24px;
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.5);
+    }
+
+    .header {
+      margin-bottom: 24px;
+    }
+
+    .title {
+      font-size: 32px;
+      color: #ffff00;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+      text-shadow: 2px 2px 0 #ff00ff, 4px 4px 0 #00ffff;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    .input-label {
+      display: block;
+      font-size: 11px;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .prompt-input {
+      width: 100%;
+      padding: 12px;
+      background: #1a1a2a;
+      border: 2px solid #cdfe00;
+      border-radius: 4px;
+      color: #fff;
+      font-size: 14px;
+      font-family: 'Courier New', monospace;
+      min-height: 80px;
+      resize: vertical;
+      outline: none;
+    }
+
+    .prompt-input:focus {
+      border-color: #ff00ff;
+      box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+    }
+
+    .example-prompts {
+      margin-top: 12px;
+      font-size: 10px;
+      color: #666;
+    }
+
+    .example-btn {
+      display: inline-block;
+      background: #161625;
+      border: 1px solid #2a2a3a;
+      color: #999;
+      padding: 4px 8px;
+      margin-right: 6px;
+      margin-top: 4px;
+      cursor: pointer;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      transition: all 0.15s;
+    }
+
+    .example-btn:hover {
+      border-color: #cdfe00;
+      color: #cdfe00;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .gen-btn, .export-btn, .reset-btn {
+      flex: 1;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Impact', sans-serif;
+    }
+
+    .gen-btn {
+      background: #cdfe00;
+      color: #000;
+    }
+
+    .gen-btn:hover {
+      background: #ffff00;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(205, 254, 0, 0.4);
+    }
+
+    .gen-btn:disabled {
+      background: #444;
+      color: #666;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .export-btn {
+      background: #ff00ff;
+      color: #fff;
+    }
+
+    .export-btn:hover {
+      background: #ff1493;
+      transform: translateY(-2px);
+    }
+
+    .export-btn:disabled {
+      background: #444;
+      cursor: not-allowed;
+    }
+
+    .reset-btn {
+      background: #00ffff;
+      color: #000;
+    }
+
+    .reset-btn:hover {
+      background: #00ffff;
+      transform: translateY(-2px);
+    }
+
+    /* OUTPUT PANEL */
+    .output-panel {
+      background: #0a0a14;
+      border: 3px solid #cdfe00;
+      border-radius: 0;
+      padding: 24px;
+      box-shadow: 8px 8px 0 rgba(205, 254, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .output-header {
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #cdfe00;
+    }
+
+    .output-title {
+      font-size: 18px;
+      color: #cdfe00;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .status-badge {
+      display: inline-block;
+      font-size: 9px;
+      padding: 4px 8px;
+      margin-top: 8px;
+      border-radius: 3px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-badge.success {
+      background: #00ff00;
+      color: #000;
+    }
+
+    .status-badge.warning {
+      background: #ffaa00;
+      color: #000;
+    }
+
+    .status-badge.error {
+      background: #ff0055;
+      color: #fff;
+    }
+
+    /* SPEC SECTIONS */
+    .spec-section {
+      margin-bottom: 20px;
+      background: #111;
+      border: 1px solid #2a2a3a;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .spec-header {
+      background: #161625;
+      padding: 10px 12px;
+      border-bottom: 1px solid #2a2a3a;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+
+    .spec-header:hover {
+      background: #1a1a2a;
+    }
+
+    .spec-header-title {
+      font-size: 11px;
+      color: #cdfe00;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    .spec-header-toggle {
+      font-size: 10px;
+      color: #666;
+    }
+
+    .spec-content {
+      padding: 12px;
+      display: none;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .spec-content.expanded {
+      display: block;
+    }
+
+    .spec-field {
+      margin-bottom: 10px;
+      font-size: 11px;
+    }
+
+    .spec-field-label {
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .spec-field-value {
+      color: #ccc;
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      background: #0a0a14;
+      padding: 6px 8px;
+      border-left: 2px solid #cdfe00;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    /* VALIDATION PANEL */
+    .validation-panel {
+      background: #111;
+      border: 2px solid #ff0055;
+      border-radius: 4px;
+      padding: 12px;
+      margin-bottom: 20px;
+    }
+
+    .validation-title {
+      font-size: 10px;
+      color: #ff0055;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .validation-item {
+      font-size: 10px;
+      padding: 6px 8px;
+      margin-bottom: 4px;
+      border-left: 2px solid #ff0055;
+      color: #ff99aa;
+    }
+
+    .validation-item.warning {
+      border-left-color: #ffaa00;
+      color: #ffcc99;
+    }
+
+    .validation-item.success {
+      border-left-color: #00ff00;
+      color: #99ff99;
+    }
+
+    .loading {
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    @media (max-width: 1024px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+
+      .output-panel {
+        max-height: 50vh;
+      }
+    }
+    /* Debug panel */
+    #debugInfo {
+      color: #ff6b6b;
+      font-family: 'Courier New', monospace;
+    }
+
+    /* Preview Panel */
+    #previewPanel {
+      background: #0a0a14;
+      border: 2px solid #cdfe00;
+      border-radius: 4px;
+      padding: 16px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    #previewPanel.active {
+      display: block;
+    }
+
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .preview-title {
+      font-size: 12px;
+      color: #cdfe00;
+      text-transform: uppercase;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .preview-btn {
+      background: #cdfe00;
+      color: #000;
+      border: none;
+      border-radius: 3px;
+      padding: 6px 12px;
+      font-size: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .preview-btn:hover {
+      background: #ffff00;
+      transform: translateY(-1px);
+    }
+
+    #lottieContainer {
+      background: #111;
+      border: 1px solid #2a2a3a;
+      border-radius: 4px;
+      width: 100%;
+      height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- INPUT PANEL -->
+    <div class="input-panel">
+      <div class="header">
+        <div class="title">✦ POP ART SPEC</div>
+        <div class="subtitle">Lottie Animation Generator</div>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" for="genreSelect">Animation Genre</label>
+        <select id="genreSelect" style="width: 100%; padding: 10px; background: #1a1a2a; border: 2px solid #cdfe00; border-radius: 4px; color: #cdfe00; font-family: 'Courier New', monospace; font-size: 12px; margin-bottom: 16px;">
+          <option value="pop-art">🎨 Pop Art</option>
+          <option value="cyberpunk">⚡ Cyberpunk</option>
+          <option value="minimalist">◻️ Minimalist</option>
+          <option value="retro-80s">📼 Retro 80s</option>
+          <option value="abstract">✨ Abstract</option>
+          <option value="graffiti">🎭 Graffiti</option>
+          <option value="steampunk">⚙️ Steampunk</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" for="promptInput">Theme / Prompt</label>
+        <textarea class="prompt-input" id="promptInput" placeholder="Describe your animation idea. Example: &quot;a retro phone ringing dramatically&quot;"></textarea>
+
+        <div class="example-prompts">
+          <strong>Quick Start:</strong>
+          <button class="example-btn" onclick="setExample('a retro phone ringing dramatically')">Retro Phone</button>
+          <button class="example-btn" onclick="setExample('exploding fireworks with comic book sound effects')">Fireworks</button>
+          <button class="example-btn" onclick="setExample('a blinking neon sign with geometric patterns')">Neon Sign</button>
+          <button class="example-btn" onclick="setExample('spinning vinyl record with stars bursting around it')">Vinyl Record</button>
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button class="gen-btn" id="generateBtn" onclick="generateSpec()">Generate Spec</button>
+        <button class="export-btn" id="exportBtn" onclick="exportSpec()" disabled>Export JSON</button>
+        <button class="reset-btn" onclick="resetForm()">Reset</button>
+      </div>
+
+      <div style="margin-top: 12px; padding: 8px; background: #1a1a2a; border: 1px solid #2a2a3a; border-radius: 4px; font-size: 9px; color: #888;">
+        <strong style="color: #cdfe00;">Debug Info:</strong>
+        <div id="debugInfo">API Key: Not set</div>
+      </div>
+
+      <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #2a2a3a; font-size: 10px; color: #666;">
+        <strong>Workflow:</strong>
+        <ol style="margin-left: 16px; margin-top: 8px; line-height: 1.6;">
+          <li>Enter your Pop Art animation idea</li>
+          <li>Click "Generate Spec" to create Lottie JSON</li>
+          <li>Review the structure in expandable sections</li>
+          <li>Check the Raw JSON for completeness</li>
+          <li>Click "Export JSON" to download the animation file</li>
+          <li>Use in: After Effects, Figma, web players, etc.</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- OUTPUT PANEL -->
+    <div class="output-panel" id="outputPanel" style="display: none;">
+      <div class="output-header">
+        <div class="output-title" id="outputTitle">Generated Specification</div>
+        <div id="statusContainer"></div>
+      </div>
+
+
+      <!-- Animation Preview Panel -->
+      <div id="previewPanel" style="display: none; background: #0a0a14; border: 2px solid #cdfe00; border-radius: 4px; padding: 16px; margin-bottom: 20px;">
+        <div class="preview-header">
+          <div class="preview-title">🎬 Animation Preview</div>
+        </div>
+        <div id="lottieContainer" style="background: #111; border: 1px solid #2a2a3a; border-radius: 4px; width: 100%; height: 400px; display: flex; align-items: center; justify-content: center;"></div>
+      </div>
+
+      <div id="validationPanel" class="validation-panel" style="display: none;">
+        <div class="validation-title">Constraint Validation</div>
+        <div id="validationContent"></div>
+      </div>
+
+      <div id="specContainer"></div>
+
+      <div style="margin-top: 20px; padding-top: 12px; border-top: 1px solid #2a2a3a; font-size: 9px; color: #666;">
+        <strong>Raw JSON:</strong>
+        <pre id="rawJson" style="background: #0a0a14; padding: 8px; border-left: 2px solid #cdfe00; max-height: 200px; overflow-y: auto; margin-top: 8px; font-size: 8px;"></pre>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Global scope for functions
+    let currentSpec = null;
+
+    // Load knowledgebase
+    let PopArtGenerator = {
+      knowledgebase: null,
+      async init() {
+        console.log('✓ Pop Art Generator ready');
+        return true;
+      },
+      retrieveContext(theme) {
+        if (!this.knowledgebase) return { theme };
+        const kb = this.knowledgebase;
+        const relevantExamples = kb.examples.filter(ex =>
+          theme.toLowerCase().includes(ex.id.split('_')[0])
+        );
+        return {
+          theme,
+          examples: relevantExamples,
+          constraints: kb.constraint_validation_rules,
+          styleGuide: kb.style_matrix,
+          motionRules: kb.lottie_constraints
+        };
+      },
+      buildSystemPrompt(ragContext, genre = 'pop-art') {
+        const styles = {
+          'pop-art': {
+            name: 'Pop Art (1960s Comic Book)',
+            colors: '#FF00FF, #00FFFF, #FFFF00, #000000, #FFFFFF',
+            description: 'Bright primary colors, heavy black outlines (4-8px), bold shapes'
+          },
+          'cyberpunk': {
+            name: 'Cyberpunk (Neon Tech)',
+            colors: '#00FF00, #00FFFF, #FF00FF, #000000, #1A1A1A',
+            description: 'Neon glow effects, tech lines, grid patterns, digital aesthetic'
+          },
+          'minimalist': {
+            name: 'Minimalist (Clean Modern)',
+            colors: '#CCCCCC, #333333, #FFFFFF, #666666, #999999',
+            description: 'Simple geometric shapes, subtle movements, monochrome/grayscale, elegant simplicity'
+          },
+          'retro-80s': {
+            name: 'Retro 80s (Pastel Synth)',
+            colors: '#FF69B4, #87CEEB, #FFD700, #FF6347, #DDA0DD',
+            description: 'Pastel colors, soft gradients via strokes, retro geometric shapes, nostalgic feel'
+          },
+          'abstract': {
+            name: 'Abstract (Modern Art)',
+            colors: '#FF6B9D, #C44569, #A8E6CF, #FFD3B6, #FFAAA5',
+            description: 'Organic shapes, flowing animations, layered elements, contemporary art style'
+          },
+          'graffiti': {
+            name: 'Graffiti (Street Art)',
+            colors: '#FF4500, #FFD700, #32CD32, #00CED1, #FF1493',
+            description: 'Bold letters, spray paint texture via overlapping shapes, vibrant street style, energetic'
+          },
+          'steampunk': {
+            name: 'Steampunk (Industrial Retro)',
+            colors: '#8B4513, #DAA520, #696969, #CD853F, #2F4F4F',
+            description: 'Gears and mechanical elements, bronze/copper tones, industrial aesthetic, rotating parts'
+          }
+        };
+
+        const style = styles[genre] || styles['pop-art'];
+
+        return `Generate ONLY valid SVG with CSS animations in the ${style.name} style.
+
+Output format: <svg>...</svg> with <style> for animations.
+
+Requirements:
+- 500x500 viewBox
+- Colors: ${style.colors}
+- ${style.description}
+- Simple shapes: circles, rectangles, paths, lines
+- CSS @keyframes animations (2-3 seconds, loop infinitely)
+- 2-3 animated elements max
+- No text, only shapes
+
+Example structure:
+<svg viewBox="0 0 500 500" width="500" height="500" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .gear { animation: spin 3s linear infinite; }
+  </style>
+  <circle cx="250" cy="250" r="100" fill="#FF00FF" stroke="#000" stroke-width="5" class="gear"/>
+</svg>
+
+Output ONLY the SVG tag and nothing else.`;
+      },
+      async generateSpec(userPrompt, genre = 'pop-art') {
+        const ragContext = this.retrieveContext(userPrompt);
+        const systemPrompt = this.buildSystemPrompt(ragContext, genre);
+
+        try {
+          console.log('Calling Pop Art backend...');
+
+          const apiEndpoint = window.POPART_API_ENDPOINT || '/api/popart/generate';
+          const response = await fetch(apiEndpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              system: systemPrompt,
+              prompt: `Generate a Pop Art Lottie animation spec for: "${userPrompt}"`
+            })
+          });
+
+          console.log('API Response status:', response.status);
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error('API Error:', response.status, errorText);
+            throw new Error(`API error ${response.status}: ${errorText}`);
+          }
+
+          const data = await response.json();
+          console.log('API Success');
+
+          const generatedSpec = data.content[0].text;
+          console.log('Generated text length:', generatedSpec.length);
+
+          // Check if response is SVG or JSON
+          let spec;
+          try {
+            if (generatedSpec.trim().startsWith('<svg')) {
+              // It's SVG
+              spec = { svg: generatedSpec, type: 'svg' };
+              console.log('✓ SVG generated successfully');
+              return {
+                success: true,
+                spec,
+                validation: { isValid: true, issues: [], warnings: [], summary: 'Generated successfully' },
+                rawResponse: generatedSpec
+              };
+            } else {
+              // Try JSON
+              const jsonMatch = generatedSpec.match(/```(?:json)?\s*([\s\S]*?)```/);
+              let jsonString = jsonMatch ? jsonMatch[1].trim() : generatedSpec;
+
+              spec = JSON.parse(jsonString);
+              console.log('✓ JSON spec parsed successfully');
+
+              return {
+                success: true,
+                spec,
+                validation: { isValid: true, issues: [], warnings: [], summary: 'Generated successfully' },
+                rawResponse: generatedSpec
+              };
+            }
+          } catch (parseErr) {
+            console.error('Parse failed:', parseErr.message);
+            return {
+              success: true,
+              spec: { error: 'Parse error', raw: generatedSpec.substring(0, 500) },
+              validation: { isValid: false, issues: [parseErr.message], warnings: [], summary: 'Parse error' },
+              rawResponse: generatedSpec
+            };
+          }
+        } catch (err) {
+          console.error('Generation error:', err);
+          throw err;
+        }
+      },
+      exportAsLottie(spec) {
+        // If spec is already Lottie JSON, return it as-is
+        if (spec && spec.v && spec.layers) {
+          return spec;
+        }
+        // Fallback for older spec format
+        return {
+          v: '5.7.0',
+          fr: spec.concept_overview?.fps || 24,
+          ip: 0,
+          op: spec.concept_overview?.duration_frames || 48,
+          w: 500,
+          h: 500,
+          nm: spec.concept_overview?.title || 'Pop Art Animation',
+          ddd: 0,
+          assets: [],
+          layers: [],
+          markers: []
+        };
+      }
+    };
+
+    function setExample(prompt) {
+      document.getElementById('promptInput').value = prompt;
+    }
+
+    function resetForm() {
+      document.getElementById('promptInput').value = '';
+      document.getElementById('outputPanel').style.display = 'none';
+      document.getElementById('exportBtn').disabled = true;
+      currentSpec = null;
+    }
+
+    async function generateSpec() {
+      const prompt = document.getElementById('promptInput').value.trim();
+      const genre = document.getElementById('genreSelect').value;
+      console.log('Generate clicked, prompt:', prompt, 'genre:', genre);
+
+      if (!prompt) {
+        alert('Please enter a theme or prompt');
+        return;
+      }
+
+      const btn = document.getElementById('generateBtn');
+      btn.disabled = true;
+      btn.textContent = 'Generating...';
+      btn.classList.add('loading');
+
+      try {
+        console.log('Starting generation...');
+        const result = await PopArtGenerator.generateSpec(prompt, genre);
+        console.log('Result:', result);
+
+        currentSpec = result.spec;
+        displaySpec(result);
+        document.getElementById('outputPanel').style.display = 'flex';
+        document.getElementById('exportBtn').disabled = !result.success;
+
+        // Try to play the animation
+        if (result.spec && typeof result.spec === 'object') {
+          setTimeout(() => playAnimation(result.spec), 300);
+        }
+      } catch (err) {
+        console.error('Error:', err);
+        alert('Error generating spec:\n\n' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Generate Spec';
+        btn.classList.remove('loading');
+      }
+    }
+
+    function displaySpec(result) {
+      try {
+        console.log('displaySpec called with:', result);
+        const { spec, validation } = result;
+
+        // Status badge
+        const statusBadge = validation.isValid
+          ? '<span class="status-badge success">✓ VALID</span>'
+          : '<span class="status-badge error">✗ INVALID</span>';
+
+        const statusEl = document.getElementById('statusContainer');
+        if (!statusEl) {
+          console.error('statusContainer element not found!');
+          return;
+        }
+
+        statusEl.innerHTML = statusBadge +
+          `<div style="font-size: 9px; color: #888; margin-top: 8px;">${validation.summary}</div>`;
+        console.log('Status updated');
+
+        // Validation panel
+        if (validation.issues.length > 0 || validation.warnings.length > 0) {
+          let validationHtml = '';
+          validation.issues.forEach(issue => {
+            validationHtml += `<div class="validation-item">${issue}</div>`;
+          });
+          validation.warnings.forEach(warning => {
+            validationHtml += `<div class="validation-item warning">⚠ ${warning}</div>`;
+          });
+          document.getElementById('validationContent').innerHTML = validationHtml;
+          document.getElementById('validationPanel').style.display = 'block';
+          console.log('Validation panel shown with', validation.issues.length, 'issues,', validation.warnings.length, 'warnings');
+        } else {
+          document.getElementById('validationPanel').style.display = 'none';
+          console.log('No validation issues or warnings');
+        }
+
+        // Spec sections
+        let specHtml = '';
+        Object.entries(spec).forEach(([key, value]) => {
+          const sectionName = key.toUpperCase().replace(/_/g, ' ');
+          const fieldHtml = typeof value === 'object'
+            ? `<div class="spec-field-value">${JSON.stringify(value, null, 2)}</div>`
+            : `<div class="spec-field-value">${String(value)}</div>`;
+
+          specHtml += `
+            <div class="spec-section">
+              <div class="spec-header" onclick="toggleSection(this)">
+                <div class="spec-header-title">${sectionName}</div>
+                <div class="spec-header-toggle">▼</div>
+              </div>
+              <div class="spec-content expanded">
+                <div class="spec-field">
+                  ${fieldHtml}
+                </div>
+              </div>
+            </div>
+          `;
+        });
+
+        document.getElementById('specContainer').innerHTML = specHtml;
+        console.log('Spec container populated');
+
+        document.getElementById('rawJson').textContent = JSON.stringify(spec, null, 2);
+        console.log('Raw JSON populated');
+
+        // Add click handlers
+        document.querySelectorAll('.spec-header').forEach(header => {
+          header.addEventListener('click', function(e) {
+            if (e.target.closest('.spec-header')) {
+              toggleSection(this);
+            }
+          });
+        });
+        console.log('Click handlers attached');
+
+      } catch (err) {
+        console.error('Error in displaySpec:', err);
+        alert('Error displaying spec: ' + err.message);
+      }
+    }
+
+    function toggleSection(header) {
+      const content = header.nextElementSibling;
+      const toggle = header.querySelector('.spec-header-toggle');
+
+      if (content.classList.contains('expanded')) {
+        content.classList.remove('expanded');
+        toggle.textContent = '▶';
+      } else {
+        content.classList.add('expanded');
+        toggle.textContent = '▼';
+      }
+    }
+
+    function playAnimation(spec) {
+      try {
+        const container = document.getElementById('lottieContainer');
+        if (!container) return;
+
+        container.innerHTML = '';
+        const previewPanel = document.getElementById('previewPanel');
+        if (previewPanel) previewPanel.style.display = 'block';
+
+        if (spec.type === 'svg') {
+          container.innerHTML = spec.svg;
+          console.log('✓ SVG animation playing');
+        } else if (spec.layers) {
+          lottie.loadAnimation({
+            container: container,
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            animationData: spec
+          });
+          console.log('✓ Lottie animation playing');
+        }
+      } catch (err) {
+        console.error('Animation error:', err);
+      }
+    }
+
+
+    function exportSpec() {
+      if (!currentSpec) {
+        alert('Generate a spec first');
+        return;
+      }
+
+      try {
+        let dataStr, filename, mimeType;
+
+        if (currentSpec.type === 'svg') {
+          // Export SVG
+          dataStr = currentSpec.svg;
+          filename = `pop-art-${Date.now()}.svg`;
+          mimeType = 'image/svg+xml';
+        } else {
+          // Export Lottie JSON
+          const lottieJson = PopArtGenerator.exportAsLottie(currentSpec);
+          dataStr = JSON.stringify(lottieJson, null, 2);
+          filename = `pop-art-${Date.now()}.json`;
+          mimeType = 'application/json';
+        }
+
+        const dataBlob = new Blob([dataStr], { type: mimeType });
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        link.click();
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        alert('Export error: ' + err.message);
+      }
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', () => PopArtGenerator.init());
+    // Update debug info on page load
+    window.addEventListener('load', updateDebugInfo);
+  </script>
+</body>
+</html>
