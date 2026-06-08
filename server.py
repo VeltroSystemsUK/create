@@ -22,7 +22,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-from flask import Flask, jsonify, request, send_from_directory, session
+from flask import Flask, jsonify, request, send_from_directory, session, send_file
 
 # ── CORS Helper ─────────────────────────────────────────────────────
 def add_cors_headers(response):
@@ -30,8 +30,6 @@ def add_cors_headers(response):
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
     response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
-    # Force keep-alive for large files like main-DndWa5BP.js
-    response.headers['Connection'] = 'keep-alive'
     return response
 
 # ── Config ──────────────────────────────────────────────────────────
@@ -100,6 +98,13 @@ def _verify_password(password, config):
         return False
     computed, _ = _hash_password(password, pw_salt)
     return computed == pw_hash
+
+
+def _get_mimetype(filepath):
+    """Get MIME type for a file."""
+    import mimetypes
+    mime, _ = mimetypes.guess_type(filepath)
+    return mime or "application/octet-stream"
 
 
 def _load_sessions():
@@ -489,20 +494,29 @@ def serve_static(filename="framework-builder.html"):
     safe = filename.lstrip("/")
     if safe == "":
         safe = "framework-builder.html"
-    
+
     # 1. Try dist folder (built assets)
     fpath = BUILD_DIR / safe
     if fpath.is_file():
-        return send_from_directory(BUILD_DIR, safe)
+        try:
+            return send_file(str(fpath), mimetype=_get_mimetype(str(fpath)))
+        except Exception:
+            return send_from_directory(BUILD_DIR, safe)
 
     # 2. Try root folder (source assets, widgets, js)
     rpath = BASE_DIR / safe
     if rpath.is_file():
-        return send_from_directory(BASE_DIR, safe)
+        try:
+            return send_file(str(rpath), mimetype=_get_mimetype(str(rpath)))
+        except Exception:
+            return send_from_directory(BASE_DIR, safe)
 
     # 3. Fallback: look for the file directly in dist/
     if (BUILD_DIR / (safe + ".html")).is_file():
-        return send_from_directory(BUILD_DIR, safe + ".html")
+        try:
+            return send_file(str(BUILD_DIR / (safe + ".html")), mimetype="text/html")
+        except Exception:
+            return send_from_directory(BUILD_DIR, safe + ".html")
 
     return jsonify({"error": "Not found"}), 404
 
@@ -677,4 +691,15 @@ if __name__ == "__main__":
     print(f"  Dev:     {'yes' if args.dev else 'no'}")
     print()
 
-    app.run(host="0.0.0.0", port=args.port, debug=args.dev, threaded=True)
+    # Run with explicit server configuration for better file serving
+    # Use WSGIRequestHandler from werkzeug for more control
+    from werkzeug.serving import WSGIRequestHandler
+    WSGIRequestHandler.protocol_version = "HTTP/1.1"
+
+    app.run(
+        host="0.0.0.0",
+        port=args.port,
+        debug=args.dev,
+        threaded=True,
+        use_reloader=args.dev
+    )
