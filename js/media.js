@@ -8,12 +8,40 @@ FB.media = (function() {
   }
 
   function loadMedia() {
-    // Load from localStorage
+    // Load from server
+    fetch('/api/media')
+      .then(r => r.json())
+      .then(files => {
+        mediaItems = files.map(file => {
+          // Get metadata from localStorage
+          const stored = localStorage.getItem('veltro_media_' + file.name) || '{}';
+          const meta = JSON.parse(stored);
+          return {
+            id: 'media-' + file.name,
+            name: file.originalName || file.name,
+            type: getTypeFromName(file.name),
+            category: meta.category || categorizeFileName(file.name),
+            url: '/api/media/' + file.name,
+            size: file.size,
+            tags: meta.tags || [],
+            createdAt: file.addedAt
+          };
+        });
+        renderGrid();
+        console.log('📚 Loaded ' + mediaItems.length + ' media items');
+      })
+      .catch(err => {
+        console.warn('Failed to load media:', err);
+        loadMediaOffline();
+      });
+  }
+
+  function loadMediaOffline() {
     const stored = localStorage.getItem('veltro_media_library');
     if (stored) {
       mediaItems = JSON.parse(stored);
+      renderGrid();
     }
-    renderGrid();
   }
 
   function saveMedia() {
@@ -138,25 +166,38 @@ FB.media = (function() {
     const files = Array.from(event.target.files);
 
     files.forEach(file => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const item = {
-          id: 'media-' + Date.now() + Math.random(),
-          name: file.name,
-          type: file.type,
-          category: categorizeFile(file.type),
-          url: e.target.result,
-          size: file.size,
-          tags: [],
-          createdAt: new Date().toISOString()
-        };
+      const formData = new FormData();
+      formData.append('file', file);
 
-        mediaItems.push(item);
-        saveMedia();
-        renderGrid();
-        console.log('✅ Media uploaded: ' + file.name);
-      };
-      reader.readAsDataURL(file);
+      fetch('/api/media', {
+        method: 'POST',
+        body: formData
+      })
+        .then(r => r.json())
+        .then(result => {
+          const item = {
+            id: 'media-' + result.name,
+            name: result.originalName || file.name,
+            type: file.type,
+            category: categorizeFile(file.type),
+            url: '/api/media/' + result.name,
+            size: file.size,
+            tags: [],
+            createdAt: new Date().toISOString()
+          };
+
+          // Save metadata to localStorage
+          const meta = { category: item.category, tags: item.tags };
+          localStorage.setItem('veltro_media_' + result.name, JSON.stringify(meta));
+
+          mediaItems.push(item);
+          renderGrid();
+          console.log('✅ Media uploaded: ' + file.name);
+        })
+        .catch(err => {
+          console.error('Upload failed:', err);
+          alert('Failed to upload: ' + file.name);
+        });
     });
 
     event.target.value = '';
@@ -166,7 +207,7 @@ FB.media = (function() {
     const item = mediaItems.find(m => m.id === itemId);
     if (item && tag && !item.tags.includes(tag)) {
       item.tags.push(tag);
-      saveMedia();
+      saveMeta(item);
       renderGrid();
     }
   }
@@ -175,9 +216,15 @@ FB.media = (function() {
     const item = mediaItems.find(m => m.id === itemId);
     if (item) {
       item.tags = item.tags.filter(t => t !== tag);
-      saveMedia();
+      saveMeta(item);
       renderGrid();
     }
+  }
+
+  function saveMeta(item) {
+    const filename = item.id.replace('media-', '');
+    const meta = { category: item.category, tags: item.tags };
+    localStorage.setItem('veltro_media_' + filename, JSON.stringify(meta));
   }
 
   function showTagMenu(event, itemId) {
@@ -192,7 +239,7 @@ FB.media = (function() {
       } else {
         item.tags = [tag];
       }
-      saveMedia();
+      saveMeta(item);
       renderGrid();
     }
   }
@@ -204,6 +251,19 @@ FB.media = (function() {
     return 'other';
   }
 
+  function getTypeFromName(filename) {
+    const ext = filename.split('.').pop().toLowerCase();
+    if (['svg', 'ai', 'eps'].includes(ext)) return 'image/svg+xml';
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) return 'image/' + ext;
+    if (['mp4', 'webm', 'mov'].includes(ext)) return 'video/' + ext;
+    return 'application/octet-stream';
+  }
+
+  function categorizeFileName(filename) {
+    const type = getTypeFromName(filename);
+    return categorizeFile(type);
+  }
+
   return {
     init: init,
     filterCategory: filterCategory,
@@ -212,7 +272,9 @@ FB.media = (function() {
     addTag: addTag,
     removeTag: removeTag,
     showTagMenu: showTagMenu,
-    loadMedia: loadMedia
+    loadMedia: loadMedia,
+    setupCanvasDropZone: setupCanvasDropZone,
+    insertMediaToCanvas: insertMediaToCanvas
   };
 })();
 
