@@ -2806,7 +2806,7 @@ FB.design.props = (function () {
     var fc = FB.design.canvas.get();
     FB.design._canvasBg = val || "#ffffff";
     FB.design.applyCanvasSurfaceBg();
-    fc.setBackgroundColor(null, function () {
+    fc.setBackgroundColor(FB.design._canvasBg, function () {
       fc.renderAll();
       FB.design.history.push();
     });
