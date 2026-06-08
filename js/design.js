@@ -164,13 +164,18 @@ FB.design.elements = (function () {
     { type: "rect", label: "▬", title: "Rectangle" },
     { type: "rect-r", label: "▭", title: "Rounded Rect" },
     { type: "circle", label: "⬤", title: "Circle" },
+    { type: "ellipse", label: "⬭", title: "Ellipse" },
     { type: "tri", label: "▲", title: "Triangle" },
     { type: "poly", label: "⬡", title: "Polygon" },
     { type: "star", label: "★", title: "Star" },
+    { type: "diamond", label: "♦", title: "Diamond" },
+    { type: "hexagon", label: "⬢", title: "Hexagon" },
     { type: "line", label: "—", title: "Line" },
     { type: "arrow", label: "→", title: "Arrow" },
+    { type: "double-arrow", label: "↔", title: "Double Arrow" },
     { type: "dashed", label: "╌", title: "Dashed Line" },
     { type: "heart", label: "♡", title: "Heart" },
+    { type: "crescent", label: "☾", title: "Crescent" },
   ];
 
   var TEXT_PRESETS = [
@@ -1553,6 +1558,7 @@ FB.design.canvas = (function () {
     _bindEvents();
     _bindKeys();
     FB.design.tools.bindMouseDraw();
+    _hookArrowRendering();
     FB.design.elements.render();
     FB.design.align.renderPanel();
     FB.design.renderExportTab();
@@ -1570,6 +1576,55 @@ FB.design.canvas = (function () {
     if (!p) return;
     _resizeTo(p.w, p.h);
     document.getElementById("ds-preset-select").value = key;
+  }
+
+  function _hookArrowRendering() {
+    if (!_fc) return;
+    var origRenderAll = _fc.renderAll.bind(_fc);
+    _fc.renderAll = function () {
+      origRenderAll();
+      _drawArrowHeads();
+    };
+  }
+
+  function _drawArrowHeads() {
+    if (!_fc) return;
+    var canvas = _fc.getElement();
+    var ctx = _fc.contextTop || _fc.getContext();
+    if (!ctx) return;
+
+    _fc.forEachObject(function (obj) {
+      if (obj._isArrow || obj._isDoubleArrow) {
+        var pts = obj.calcLinePoints();
+        if (!pts) return;
+        var x1 = pts.x1, y1 = pts.y1, x2 = pts.x2, y2 = pts.y2;
+        var headsize = Math.max(8, obj.strokeWidth * 4);
+        var angle = Math.atan2(y2 - y1, x2 - x1);
+
+        // Draw arrow head at end
+        ctx.save();
+        ctx.fillStyle = obj.stroke || "#4a90e2";
+        ctx.globalAlpha = obj.opacity || 1;
+        _drawArrowHead(ctx, x2, y2, angle, headsize);
+
+        // Draw second arrow head at start if double arrow
+        if (obj._isDoubleArrow) {
+          _drawArrowHead(ctx, x1, y1, angle + Math.PI, headsize);
+        }
+        ctx.restore();
+      }
+    });
+  }
+
+  function _drawArrowHead(ctx, x, y, angle, size) {
+    var h = size;
+    var w = size * 0.6;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x - h * Math.cos(angle - Math.PI / 6), y - h * Math.sin(angle - Math.PI / 6));
+    ctx.lineTo(x - h * Math.cos(angle + Math.PI / 6), y - h * Math.sin(angle + Math.PI / 6));
+    ctx.closePath();
+    ctx.fill();
   }
 
   function _resizeTo(w, h) {
@@ -2053,6 +2108,57 @@ FB.design.tools = (function () {
       line._isArrow = true;
       return line;
     }
+    if (type === "double-arrow") {
+      var line = new fabric.Line([x, y, x, y], {
+        stroke: "#4a90e2",
+        strokeWidth: 2,
+        name: "Double Arrow",
+      });
+      line._isDoubleArrow = true;
+      return line;
+    }
+    if (type === "ellipse") {
+      return new fabric.Ellipse(
+        Object.assign({ rx: 60, ry: 40, name: "Ellipse" }, opts),
+      );
+    }
+    if (type === "diamond") {
+      return new fabric.Polygon(
+        [
+          { x: 50, y: 0 },
+          { x: 100, y: 50 },
+          { x: 50, y: 100 },
+          { x: 0, y: 50 },
+        ],
+        Object.assign({ name: "Diamond" }, opts),
+      );
+    }
+    if (type === "hexagon") {
+      return new fabric.Polygon(
+        [
+          { x: 50, y: 0 },
+          { x: 100, y: 25 },
+          { x: 100, y: 75 },
+          { x: 50, y: 100 },
+          { x: 0, y: 75 },
+          { x: 0, y: 25 },
+        ],
+        Object.assign({ name: "Hexagon" }, opts),
+      );
+    }
+    if (type === "crescent") {
+      return new fabric.Polygon(
+        [
+          { x: 50, y: 0 },
+          { x: 100, y: 50 },
+          { x: 50, y: 100 },
+          { x: 40, y: 85 },
+          { x: 60, y: 50 },
+          { x: 40, y: 15 },
+        ],
+        Object.assign({ name: "Crescent" }, opts),
+      );
+    }
     return null;
   }
 
@@ -2417,6 +2523,12 @@ FB.design.props = (function () {
       '<input id="shape-opacity" name="shape-opacity" class="ds-input" type="range" min="0" max="100" value="' +
       op +
       '" oninput="FB.design.props.setProp(\'opacity\',this.value/100)"/></div>';
+    html +=
+      '<div class="ds-prop-group"><div class="ds-prop-label">Flip</div>' +
+      '<div class="ds-prop-row">' +
+      '<button class="ds-sm-btn" onclick="FB.design.props.flipH()" title="Flip Horizontal">⟷ H</button>' +
+      '<button class="ds-sm-btn" onclick="FB.design.props.flipV()" title="Flip Vertical">⟨⟩ V</button>' +
+      '</div></div>';
     if (obj.type === "rect") {
       html +=
         '<div class="ds-prop-group"><div class="ds-prop-label">Corner Radius</div>' +
@@ -2800,6 +2912,14 @@ FB.design.props = (function () {
     obj.set("flip" + axis, !obj["flip" + axis]);
     fc.renderAll();
     FB.design.history.push();
+  }
+
+  function flipH() {
+    flip("X");
+  }
+
+  function flipV() {
+    flip("Y");
   }
 
   function setCanvasBg(val) {
@@ -3240,6 +3360,8 @@ FB.design.props = (function () {
     setWidth: setWidth,
     setHeight: setHeight,
     flip: flip,
+    flipH: flipH,
+    flipV: flipV,
     setCanvasBg: setCanvasBg,
     setVeltroWidget: setVeltroWidget,
     setVeltroProp: setVeltroProp,
