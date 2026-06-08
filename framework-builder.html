@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Framework Builder</title>
+    <title>Veltro Create</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&display=swap"
@@ -32,7 +32,7 @@
   <body>
     <!-- TOP BAR -->
     <div id="topbar">
-      <div class="logo">Framework <span>Builder</span></div>
+      <div class="logo">Veltro <span>Create</span></div>
       <div class="tb-center">
         <div class="device-btns">
           <button
@@ -132,6 +132,12 @@
                   <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
                 </svg>
                 <span class="tb-group-lbl">Design Studio</span>
+              </button>
+              <button class="tb-btn" id="me-mode-btn" onclick="FB.panels.setMode('motion')" title="Motion Editor">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span class="tb-group-lbl">Motion Editor</span>
               </button>
               <button class="tb-btn" onclick="FB.panels.toggleRightPanel()" title="Toggle inspector">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -396,7 +402,7 @@
         </div>
         <div class="lp-accordion">
           <div
-            class="lp-acc-header open"
+            class="lp-acc-header"
             data-acc="sections"
             onclick="FB.panels.toggleLeftAccordion(this)"
           >
@@ -404,7 +410,7 @@
             <span class="lp-acc-label">Sections</span>
             <span class="lp-acc-arrow">▶</span>
           </div>
-          <div class="lp-acc-body open" id="lp-body-sections">
+          <div class="lp-acc-body" id="lp-body-sections">
             <div id="block-library"></div>
           </div>
         </div>
@@ -482,7 +488,24 @@
           </div>
         </div>
 
-        <div class="lp-accordion"></div>
+        <div class="lp-accordion">
+          <div
+            class="lp-acc-header"
+            data-acc="education"
+            onclick="FB.panels.toggleLeftAccordion(this)"
+          >
+            <span class="lp-acc-icon">🎓</span>
+            <span class="lp-acc-label">Education</span>
+            <span class="lp-acc-arrow">▶</span>
+          </div>
+          <div class="lp-acc-body" id="lp-body-education">
+            <div id="education-library"></div>
+            <div class="lp-section-divider"></div>
+            <div class="lp-section-label">Book Ingestion</div>
+            <div id="book-ingestion"></div>
+          </div>
+        </div>
+
         <div class="lp-accordion">
           <div
             class="lp-acc-header"
@@ -547,34 +570,35 @@
     <div id="design-studio" style="display: none">
       <!-- TOP BAR -->
       <div id="ds-topbar">
-        <button class="ds-back-btn" onclick="FB.panels.setMode('builder')">
-          ← Builder
+        <div class="logo ds-logo">Veltro <span>Design</span></div>
+        <button class="tb-btn" onclick="FB.panels.setMode('builder')" title="Back to Builder">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>
+          </svg>
+          <span>Builder</span>
         </button>
-        <div class="ds-divider"></div>
+        <div class="tb-sep"></div>
         <input id="ds-title" name="design-title" class="ds-title-input" value="Untitled Design" />
-        <div class="ds-divider"></div>
+        <div class="tb-sep"></div>
         <button
-          class="ds-icon-btn"
+          class="tb-btn"
           title="Undo (Ctrl+Z)"
           onclick="FB.design.history.undo()"
         >
-          ↩
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+          </svg>
         </button>
         <button
-          class="ds-icon-btn"
+          class="tb-btn"
           title="Redo (Ctrl+Y)"
           onclick="FB.design.history.redo()"
         >
-          ↪
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+          </svg>
         </button>
-        <div
-          style="
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-          "
-        >
+        <div class="tb-right ds-toolbar-right">
           <select
             id="ds-preset-select"
             name="design-preset"
@@ -588,14 +612,20 @@
             <option value="custom">Custom…</option>
           </select>
           <div id="ds-zoom-controls">
-            <button onclick="FB.design.canvas.zoomOut()">−</button>
+            <button class="tb-btn" onclick="FB.design.canvas.zoomOut()" title="Zoom out">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/></svg>
+            </button>
             <span id="ds-zoom-label">100%</span>
-            <button onclick="FB.design.canvas.zoomIn()">+</button>
-            <button onclick="FB.design.canvas.zoomFit()">Fit</button>
+            <button class="tb-btn" onclick="FB.design.canvas.zoomIn()" title="Zoom in">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+            </button>
+            <button class="tb-btn" onclick="FB.design.canvas.zoomFit()" title="Fit to view">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M16 3h3a2 2 0 0 1 2 2v3"/><path d="M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+            </button>
           </div>
-          <div class="ds-divider"></div>
+          <div class="tb-sep"></div>
           <span id="ds-size-label"></span>
-          <button class="ds-save-btn" onclick="FB.design.library.save()">
+          <button class="tb-export" onclick="FB.design.library.save()">
             Save
           </button>
         </div>
@@ -605,92 +635,105 @@
       <div id="ds-main">
         <!-- LEFT PANEL -->
         <div id="ds-left-panel">
-          <div class="ds-tab-row" id="ds-left-tabs">
-            <button
-              class="ds-tab active"
-              data-tab="elements"
-              onclick="FB.design.switchLeftTab('elements')"
+          <div class="lp-accordion">
+            <div
+              class="lp-acc-header"
+              data-acc="elements"
+              onclick="FB.design.toggleAccordion(this)"
             >
-              <span class="ds-tab-icon">⊞</span> Elements
-            </button>
-            <button
-              class="ds-tab"
-              data-tab="layers"
-              onclick="FB.design.switchLeftTab('layers')"
-            >
-              <span class="ds-tab-icon">≡</span> Layers
-            </button>
-            <button
-              class="ds-tab"
-              data-tab="media"
-              onclick="FB.design.switchLeftTab('media')"
-            >
-              <span class="ds-tab-icon">▣</span> Media
-            </button>
-            <button
-              class="ds-tab"
-              data-tab="assets"
-              onclick="FB.design.switchLeftTab('assets')"
-            >
-              <span class="ds-tab-icon">◈</span> Assets
-            </button>
+              <span class="lp-acc-icon">■</span>
+              <span class="lp-acc-label">Elements</span>
+              <span class="lp-acc-arrow">▶</span>
+            </div>
+            <div class="lp-acc-body" id="lp-body-elements">
+              <div id="ds-tool-row"></div>
+              <div id="ds-elements-body"></div>
+            </div>
           </div>
 
-          <div id="ds-tab-elements" class="ds-tab-content active">
-            <div id="ds-tool-row"></div>
-            <div id="ds-elements-body"></div>
+          <div class="lp-accordion">
+            <div
+              class="lp-acc-header"
+              data-acc="layers"
+              onclick="FB.design.toggleAccordion(this)"
+            >
+              <span class="lp-acc-icon">≋</span>
+              <span class="lp-acc-label">Layers</span>
+              <span class="lp-acc-arrow">▶</span>
+            </div>
+            <div class="lp-acc-body" id="lp-body-layers">
+              <div id="ds-layers-list"></div>
+            </div>
           </div>
 
-          <div id="ds-tab-layers" class="ds-tab-content">
-            <div id="ds-layers-list"></div>
+          <div class="lp-accordion">
+            <div
+              class="lp-acc-header"
+              data-acc="media"
+              onclick="FB.design.toggleAccordion(this)"
+            >
+              <span class="lp-acc-icon">▦</span>
+              <span class="lp-acc-label">Media</span>
+              <span class="lp-acc-arrow">▶</span>
+            </div>
+            <div class="lp-acc-body" id="lp-body-media">
+              <div class="ds-media-header">
+                <button class="rp-btn ds-media-upload-btn" onclick="FB.design.media.triggerUpload()" style="width: calc(100% - 12px); margin: 0 6px">
+                  ▲ Upload Image
+                </button>
+                <input type="file" id="ds-media-file-input" style="display: none;" accept="image/*" onchange="FB.design.media.handleUpload(this)" />
+              </div>
+              <div id="ds-media-gallery" class="ds-media-grid"></div>
+            </div>
           </div>
 
-          <div id="ds-tab-media" class="ds-tab-content">
-            <div class="ds-media-header">
-              <button class="ds-media-upload-btn" onclick="FB.design.media.triggerUpload()">
-                📤 Upload Image
+          <div class="lp-accordion">
+            <div
+              class="lp-acc-header"
+              data-acc="assets"
+              onclick="FB.design.toggleAccordion(this)"
+            >
+              <span class="lp-acc-icon">◆</span>
+              <span class="lp-acc-label">Assets</span>
+              <span class="lp-acc-arrow">▶</span>
+            </div>
+            <div class="lp-acc-body" id="lp-body-assets">
+              <button class="rp-btn" style="width: calc(100% - 12px); margin: 6px" onclick="FB.design.templates.open()">
+                ⊞ Browse Templates
               </button>
-              <input type="file" id="ds-media-file-input" style="display: none;" accept="image/*" onchange="FB.design.media.handleUpload(this)" />
+              <button
+                class="rp-btn"
+                style="width: calc(100% - 12px); margin: 6px"
+                onclick="FB.ai.open()"
+              >
+                ◈ AI Template Builder
+              </button>
+              <button
+                class="rp-btn"
+                style="width: calc(100% - 12px); margin: 6px"
+                onclick="FB.deepScrape.open()"
+              >
+                ◉ Deep Scrape
+              </button>
+              <button
+                class="rp-btn"
+                style="width: calc(100% - 12px); margin: 6px"
+                onclick="FB.motion.open()"
+              >
+                ≈ Motion Creator
+              </button>
+              <div class="lp-section-label" style="padding: 12px 12px 6px">
+                My Designs
+              </div>
+              <div id="ds-assets-designs"></div>
+              <button
+                class="rp-btn"
+                style="width: calc(100% - 12px); margin: 6px"
+                onclick="FB.design._loadAssets()"
+              >
+                ↻ Refresh
+              </button>
             </div>
-            <div id="ds-media-gallery" class="ds-media-grid"></div>
-          </div>
-
-          <div id="ds-tab-assets" class="ds-tab-content">
-            <button class="ds-full-btn" onclick="FB.design.templates.open()">
-              ⊞ Browse Templates
-            </button>
-            <button
-              class="ds-full-btn"
-              style="background: #f97316; color: #fff"
-              onclick="FB.ai.open()"
-            >
-              ✨ AI Template Builder
-            </button>
-            <button
-              class="ds-full-btn"
-              style="background: #7c3aed; color: #fff"
-              onclick="FB.deepScrape.open()"
-            >
-              🕷 Deep Scrape
-            </button>
-            <button
-              class="ds-full-btn"
-              style="background: #cdfe00; color: #111"
-              onclick="FB.motion.open()"
-            >
-              🎬 Motion Creator
-            </button>
-            <div class="ds-section-label" style="padding: 8px 8px 4px">
-              My Designs
-            </div>
-            <div id="ds-assets-designs"></div>
-            <button
-              class="ds-full-btn"
-              style="margin: 6px 8px"
-              onclick="FB.design._loadAssets()"
-            >
-              ↻ Refresh
-            </button>
           </div>
         </div>
 
@@ -698,69 +741,125 @@
         <div id="ds-canvas-column">
           <div id="ds-canvas-wrap">
             <canvas id="ds-canvas"></canvas>
+            <div id="ds-veltro-canvas-layer"></div>
           </div>
         </div>
 
         <!-- RIGHT PANEL -->
         <div id="ds-right-panel">
-          <div class="ds-tab-row" id="ds-right-tabs">
-            <button
-              class="ds-tab active"
-              data-tab="design"
-              onclick="FB.design.switchRightTab('design')"
+          <div class="lp-accordion">
+            <div
+              class="lp-acc-header"
+              data-acc="design"
+              onclick="FB.design.toggleRightAccordion(this)"
             >
-              Design
-            </button>
-            <button
-              class="ds-tab"
-              data-tab="align"
-              onclick="FB.design.switchRightTab('align')"
-            >
-              Align
-            </button>
-            <button
-              class="ds-tab"
-              data-tab="export"
-              onclick="FB.design.switchRightTab('export')"
-            >
-              Export
-            </button>
+              <span class="lp-acc-icon">◉</span>
+              <span class="lp-acc-label">Design</span>
+              <span class="lp-acc-arrow">▶</span>
+            </div>
+            <div class="lp-acc-body" id="lp-body-design">
+              <div id="ds-props" style="padding: 8px"></div>
+            </div>
           </div>
 
-          <div id="ds-tab-design" class="ds-tab-content active">
-            <div id="ds-props"></div>
+          <div class="lp-accordion">
+            <div
+              class="lp-acc-header"
+              data-acc="align"
+              onclick="FB.design.toggleRightAccordion(this)"
+            >
+              <span class="lp-acc-icon">☷</span>
+              <span class="lp-acc-label">Align</span>
+              <span class="lp-acc-arrow">▶</span>
+            </div>
+            <div class="lp-acc-body" id="lp-body-align">
+              <div id="ds-align-panel" style="padding: 8px"></div>
+            </div>
           </div>
 
-          <div id="ds-tab-align" class="ds-tab-content">
-            <div id="ds-align-panel"></div>
-          </div>
-
-          <div id="ds-tab-export" class="ds-tab-content">
-            <div id="ds-export-panel">
-              <button
-                class="ds-insert-btn"
-                onclick="FB.design.library.insertIntoPage()"
-              >
-                Insert into Page →
-              </button>
-              <div class="ds-export-row">
+          <div class="lp-accordion">
+            <div
+              class="lp-acc-header"
+              data-acc="export"
+              onclick="FB.design.toggleRightAccordion(this)"
+            >
+              <span class="lp-acc-icon">▲</span>
+              <span class="lp-acc-label">Export</span>
+              <span class="lp-acc-arrow">▶</span>
+            </div>
+            <div class="lp-acc-body" id="lp-body-export">
+              <div id="ds-export-panel" style="padding: 8px">
                 <button
-                  class="ds-export-btn"
-                  onclick="FB.design.library.exportPNG()"
+                  class="rp-btn"
+                  style="width: calc(100% - 12px); margin: 6px; background: var(--accent); color: #111; font-weight: 600"
+                  onclick="FB.design.library.insertIntoPage()"
                 >
-                  Export PNG
+                  ↗ Insert into Page
+                </button>
+                <div class="lp-section-label" style="padding: 12px 12px 6px">
+                  Export Options
+                </div>
+                <div class="ds-export-row">
+                  <button
+                    class="rp-btn"
+                    style="width: calc(33% - 8px); margin: 4px"
+                    onclick="FB.design.library.exportPNG()"
+                  >
+                    PNG
+                  </button>
+                  <button
+                    class="rp-btn"
+                    style="width: calc(33% - 8px); margin: 4px"
+                    onclick="FB.design.library.exportSVG()"
+                  >
+                    SVG
+                  </button>
+                  <button
+                    class="rp-btn"
+                    style="width: calc(33% - 8px); margin: 4px"
+                    onclick="FB.design.library.exportHTML()"
+                  >
+                    HTML
+                  </button>
+                </div>
+                <div class="lp-section-label" style="padding: 12px 12px 6px">
+                  Veltro Engine
+                </div>
+                <select id="ds-veltro-effect" class="ds-select" onchange="FB.design.library.previewVeltroBlock()" style="margin: 0 12px; width: calc(100% - 24px)">
+                  <option value="physicsSandbox">Physics Sandbox</option>
+                  <option value="fluidSimulation">Fluid Simulation</option>
+                  <option value="gravityWells">Gravity Wells</option>
+                  <option value="magneticFields">Magnetic Fields</option>
+                  <option value="waveText">Wave Text</option>
+                  <option value="kineticScramble">Kinetic Scramble</option>
+                  <option value="magneticText">Magnetic Text</option>
+                  <option value="liquidGradient">Liquid Gradient</option>
+                  <option value="particleNebula">Particle Nebula</option>
+                  <option value="auroraBorealis">Aurora Borealis</option>
+                  <option value="cursorLens">Cursor Lens</option>
+                  <option value="layeredParallax">Layered Parallax</option>
+                  <option value="morphingGrid">Morphing Grid</option>
+                </select>
+                <button
+                  class="rp-btn"
+                  style="width: calc(100% - 12px); margin: 6px"
+                  onclick="FB.design.library.insertVeltroBlock()"
+                >
+                  ⊕ Insert Veltro Block
                 </button>
                 <button
-                  class="ds-export-btn"
-                  onclick="FB.design.library.exportSVG()"
+                  class="rp-btn"
+                  style="width: calc(100% - 12px); margin: 6px"
+                  onclick="FB.design.library.previewVeltroBlock()"
                 >
-                  Export SVG
+                  ◆ Preview Veltro
                 </button>
+                <div id="ds-veltro-preview"></div>
+                <div class="lp-section-label" style="padding: 12px 12px 6px">
+                  Canvas Background
+                </div>
+                <div id="ds-canvas-bg-picker" style="padding: 0 12px 12px"></div>
               </div>
-              <div class="ds-section-label" style="padding: 12px 0 4px">
-                Canvas Background
-              </div>
-              <div id="ds-canvas-bg-picker"></div>
             </div>
           </div>
         </div>
@@ -860,20 +959,31 @@
       </div>
     </div>
 
+    <!-- MOTION CREATOR OVERLAY -->
+    <div id="ds-motion-overlay" style="display: none">
+      <div id="ds-motion-modal">
+        <div class="ds-modal-head">
+          <span>🎬 Motion Creator</span>
+          <button onclick="FB.motion.close()">✕</button>
+        </div>
+        <div id="ds-motion-main"></div>
+      </div>
+    </div>
+
     <div id="toast"></div>
     <div id="fw-page-enter"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
-    <!-- Virtual Lifecycle Registry - Memory management for widgets -->
-    <script src="js/lifecycle.js"></script>
-    <!-- Viewport Culling - Performance optimization for physics and canvas operations -->
-    <script src="js/viewport-culling.js"></script>
+    <!-- Virtual Lifecycle Registry - Memory management for widgets (async - optional for app start) -->
+    <script src="js/lifecycle.js" async></script>
+    <!-- Viewport Culling - Performance optimization for physics and canvas operations (async - optional) -->
+    <script src="js/viewport-culling.js" async></script>
     <script type="module" src="/src/main.js"></script>
     <!-- Load widgets AFTER FB is initialized -->
     <script>
       function loadWidgets() {
-        if (!window.FB) {
-          setTimeout(loadWidgets, 100);
+        if (!window.FB || !window.FB.widgets) {
+          setTimeout(loadWidgets, 200);
           return;
         }
         var scripts = [
@@ -885,6 +995,7 @@
           "/widgets/interactive.js",
           "/widgets/layout.js",
           "/widgets/media.js",
+          "/widgets/education.js",
           "/widgets/veltro.js",
           "/widgets/veltro/batch-ambient.js",
           "/widgets/veltro/batch-cursor.js",
@@ -905,12 +1016,168 @@
     </script>
     <div id="google-translate-root" style="display: none"></div>
 
-    <!-- MOTION CREATOR OVERLAY -->
-    <div id="ds-motion-overlay" style="display: none">
-      <div id="ds-motion-modal">
-        <div id="ds-motion-main"></div>
+    <!-- MOTION EDITOR -->
+    <div id="motion-editor" style="display: none;">
+      <!-- TOP BAR -->
+      <div id="me-topbar">
+        <button class="me-back-btn" onclick="FB.panels.setMode('builder')">
+          ← Builder
+        </button>
+        <div class="me-divider"></div>
+        <span style="font-weight: 600; color: var(--text-primary);">Motion Editor</span>
+        <div style="margin-left: auto; display: flex; gap: 8px; align-items: center;">
+          <button class="me-btn" onclick="FB.motion.exportAnimation()" title="Export animation">
+            ↓ Export SVG
+          </button>
+        </div>
+      </div>
+
+      <!-- MAIN AREA -->
+      <div id="me-main">
+        <!-- LEFT PANEL - TOOLS -->
+        <div id="me-left-panel">
+          <div class="me-tab-row">
+            <button class="me-tab active" data-tab="pop-art" onclick="FB.motion.selectTool('pop-art')">
+              <span class="me-tab-icon">🎨</span> Pop Art
+            </button>
+            <button class="me-tab" data-tab="cyberpunk" onclick="FB.motion.selectTool('cyberpunk')">
+              <span class="me-tab-icon">⚡</span> Cyberpunk
+            </button>
+            <button class="me-tab" data-tab="minimalist" onclick="FB.motion.selectTool('minimalist')">
+              <span class="me-tab-icon">◻️</span> Minimal
+            </button>
+            <button class="me-tab" data-tab="retro" onclick="FB.motion.selectTool('retro-80s')">
+              <span class="me-tab-icon">📼</span> Retro
+            </button>
+          </div>
+          <div id="me-tools-content">
+            <label class="me-label">Animation Concept</label>
+            <textarea id="me-prompt" class="me-input" placeholder="Describe your animation idea..." style="min-height: 100px;"></textarea>
+            <button class="me-generate-btn" onclick="FB.motion.generate()">Generate Animation</button>
+          </div>
+        </div>
+
+        <!-- CENTER - PREVIEW -->
+        <div id="me-center">
+          <div id="me-preview" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #111; border-radius: 8px;">
+            <span style="color: var(--text-secondary);">Animation preview will appear here</span>
+          </div>
+        </div>
+
+        <!-- RIGHT PANEL - DETAILS -->
+        <div id="me-right-panel">
+          <div style="padding: 16px;">
+            <h3 style="font-size: 12px; font-weight: 600; color: var(--text-primary); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Animation Data</h3>
+            <pre id="me-json" style="background: #0a0a14; border: 1px solid var(--border); border-radius: 4px; padding: 8px; font-size: 9px; color: var(--text-secondary); max-height: 300px; overflow-y: auto; white-space: pre-wrap; word-break: break-all;"></pre>
+          </div>
+        </div>
       </div>
     </div>
+    <script>
+      // MOTION EDITOR
+      if (!window.FB) window.FB = {};
+      if (!window.FB.motion) {
+        window.FB.motion = {
+          currentGenre: 'pop-art',
+          currentAnimation: null,
+
+          selectTool(genre) {
+            this.currentGenre = genre;
+            document.querySelectorAll('.me-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelector(`[data-tab="${genre}"]`).classList.add('active');
+          },
+
+          async generate() {
+            const prompt = document.getElementById('me-prompt').value.trim();
+            if (!prompt) {
+              alert('Please enter an animation concept');
+              return;
+            }
+
+            const btn = document.querySelector('.me-generate-btn');
+            btn.disabled = true;
+            btn.textContent = 'Generating...';
+
+            try {
+              const systemPrompt = this.buildSystemPrompt(this.currentGenre);
+              const response = await fetch('http://localhost:3003/api/popart/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  system: systemPrompt,
+                  prompt: `Generate a ${this.currentGenre} animation for: "${prompt}"`
+                })
+              });
+
+              const data = await response.json();
+              const generatedText = data.content[0].text;
+
+              // Extract SVG
+              if (generatedText.trim().startsWith('<svg')) {
+                this.currentAnimation = { svg: generatedText, type: 'svg' };
+                document.getElementById('me-preview').innerHTML = generatedText;
+                document.getElementById('me-json').textContent = generatedText;
+              } else {
+                alert('Failed to generate animation');
+              }
+            } catch (err) {
+              alert('Error: ' + err.message);
+            } finally {
+              btn.disabled = false;
+              btn.textContent = 'Generate Animation';
+            }
+          },
+
+          buildSystemPrompt(genre) {
+            const styles = {
+              'pop-art': { colors: '#FF00FF, #00FFFF, #FFFF00, #000000, #FFFFFF', desc: 'Bright primary colors, heavy black outlines (4-8px), bold shapes' },
+              'cyberpunk': { colors: '#00FF00, #00FFFF, #FF00FF, #000000', desc: 'Neon glow effects, tech lines, grid patterns, digital aesthetic' },
+              'minimalist': { colors: '#CCCCCC, #333333, #FFFFFF, #666666', desc: 'Simple geometric shapes, subtle movements, monochrome' },
+              'retro-80s': { colors: '#FF69B4, #87CEEB, #FFD700, #FF6347', desc: 'Pastel colors, retro geometric shapes, nostalgic feel' },
+              'abstract': { colors: '#FF6B9D, #C44569, #A8E6CF, #FFD3B6', desc: 'Organic shapes, flowing animations, contemporary art' },
+              'graffiti': { colors: '#FF4500, #FFD700, #32CD32, #00CED1', desc: 'Bold letters, vibrant street style, energetic' },
+              'steampunk': { colors: '#8B4513, #DAA520, #696969, #CD853F', desc: 'Gears and mechanical elements, industrial aesthetic' }
+            };
+            const s = styles[genre] || styles['pop-art'];
+            return `Generate ONLY valid SVG with CSS animations in the ${genre} style. Colors: ${s.colors}. ${s.desc}. Simple shapes only. CSS @keyframes animations (2-3 seconds, loop infinitely). Output ONLY the SVG tag.`;
+          },
+
+          exportAnimation() {
+            if (!this.currentAnimation) {
+              alert('Generate an animation first');
+              return;
+            }
+            const svg = this.currentAnimation.svg;
+            const blob = new Blob([svg], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `animation-${Date.now()}.svg`;
+            a.click();
+            URL.revokeObjectURL(url);
+          }
+        };
+      }
+
+      // Panel mode switching
+      if (window.FB && window.FB.panels) {
+        const originalSetMode = window.FB.panels.setMode;
+        window.FB.panels.setMode = function(mode) {
+          if (mode === 'motion') {
+            document.getElementById('motion-editor').style.display = 'flex';
+            document.getElementById('design-studio').style.display = 'none';
+            document.getElementById('topbar').style.display = 'none';
+            document.getElementById('bottom-bar').style.display = 'none';
+            document.getElementById('left-panel').style.display = 'none';
+            document.getElementById('right-panel').style.display = 'none';
+          } else if (originalSetMode) {
+            document.getElementById('motion-editor').style.display = 'none';
+            originalSetMode.call(this, mode);
+          }
+        };
+      }
+    </script>
+
     <script>
       function googleTranslateElementInit() {
         new google.translate.TranslateElement(
