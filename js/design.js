@@ -307,44 +307,20 @@ FB.design.elements = (function () {
     { type: "liquidText",       icon: "≋", label: "Liquid Text",      desc: "Fluid typography" },
     { type: "morphingText",     icon: "⇄", label: "Morphing Text",    desc: "Word morphing" },
     { type: "morphingCounter",  icon: "#", label: "Counter",          desc: "Animated numbers" },
-    { type: "physicsSandbox",  icon: "◉", label: "Physics Sandbox",  desc: "Matter-style collisions" },
-    { type: "fluidSimulation", icon: "≋", label: "Fluid Simulation", desc: "Mouse-driven particles" },
-    { type: "gravityWells",    icon: "⊙", label: "Gravity Wells",    desc: "Attractor fields" },
-    { type: "gravityCursor",   icon: "◌", label: "Gravity Cursor",   desc: "Cursor gravity" },
-    { type: "magneticFields",  icon: "⊕", label: "Magnetic Fields",  desc: "Polarity particles" },
-    { type: "clothSimulation", icon: "▣", label: "Cloth Simulation", desc: "Fabric physics" },
-    { type: "pendulumWave",    icon: "⌁", label: "Pendulum Wave",    desc: "Harmonic motion" },
-    { type: "collisionChaos",  icon: "✹", label: "Collision Chaos",  desc: "Particle collisions" },
-    { type: "blackHole",       icon: "●", label: "Black Hole",       desc: "Orbital gravity" },
     { type: "waveText",        icon: "~", label: "Wave Text",        desc: "Sine typography" },
     { type: "kineticScramble", icon: "⌨", label: "Kinetic Scramble", desc: "Decode text" },
-    { type: "magneticText",    icon: "↯", label: "Magnetic Text",    desc: "Cursor attraction" },
-    { type: "multiShapeTrail", icon: "✦", label: "Shape Trail",      desc: "Cursor particles" },
-    { type: "cursorDistortion",icon: "◍", label: "Cursor Distort",   desc: "Lens distortion" },
-    { type: "colorSampler",    icon: "▥", label: "Color Sampler",    desc: "Cursor palette" },
-    { type: "liquidGradient",  icon: "◒", label: "Liquid Gradient",  desc: "Flowing colour" },
-    { type: "particleNebula",  icon: "✶", label: "Particle Nebula",  desc: "Ambient particles" },
-    { type: "auroraBorealis",  icon: "⊙", label: "Aurora Borealis",  desc: "Northern lights" },
-    { type: "geometricPatterns", icon: "⬡", label: "Geometric Patterns", desc: "Animated geometry" },
-    { type: "holographicOverlay", icon: "▱", label: "Holographic",    desc: "Iridescent overlay" },
-    { type: "lightLeaks",      icon: "◐", label: "Light Leaks",      desc: "Cinematic flares" },
-    { type: "gradientFlow",    icon: "▧", label: "Gradient Flow",    desc: "Moving gradient" },
-    { type: "morphBlob",       icon: "⬤", label: "Morph Blob",       desc: "Organic blob" },
-    { type: "noiseGrain",      icon: "░", label: "Noise Grain",      desc: "Film grain" },
-    { type: "cursorLens",      icon: "◌", label: "Cursor Lens",      desc: "Magnified mask" },
-    { type: "layeredParallax", icon: "▤", label: "Layered Parallax", desc: "Depth layers" },
-    { type: "morphingGrid",    icon: "▦", label: "Morphing Grid",    desc: "Shape-shifting cells" },
-    { type: "parallaxDepth",   icon: "▥", label: "Parallax Depth",   desc: "Scroll depth" },
-    { type: "velocitySkew",    icon: "▰", label: "Velocity Skew",    desc: "Rubber scroll" },
-    { type: "scrollFluid",     icon: "≋", label: "Scroll Fluid",     desc: "Scroll-reactive fluid" },
-    { type: "velocityFluidBg", icon: "≈", label: "Velocity Fluid BG",desc: "Fluid background" },
-    { type: "carousel3d",      icon: "◫", label: "3D Carousel",      desc: "Spatial cards" },
-    { type: "floatingIslands", icon: "☁", label: "Floating Islands", desc: "Layered islands" },
-    { type: "kineticLayout",   icon: "▦", label: "Kinetic Layout",   desc: "Animated layout" },
-    { type: "shaderBg",        icon: "◈", label: "Shader BG",        desc: "Shader canvas" },
-    { type: "infiniteCanvas",  icon: "∞", label: "Infinite Canvas",  desc: "Draggable scene" },
-    { type: "isometricGrid",   icon: "▨", label: "Isometric Grid",   desc: "3D grid" },
+    { type: "magneticText",    icon: "↯", label: "Magnetic Text",    desc: "Responsive text pull" },
   ];
+
+  var MARKETING_WIDGETS = [
+    { type: "campaignHero", icon: "▰", label: "Campaign Hero", desc: "Headline, CTA, trust line, image slot", variants: [["saas", "SaaS"], ["ecommerce", "Shop"], ["event", "Event"], ["service", "Service"]] },
+    { type: "offerStack", icon: "%", label: "Offer Stack", desc: "Price, discount, bullets, guarantee", variants: [["launch", "Launch"], ["discount", "Deal"], ["premium", "Premium"], ["urgent", "Urgent"]] },
+    { type: "socialProof", icon: "★", label: "Social Proof Strip", desc: "Quote, rating, avatar, metric", variants: [["quote", "Quote"], ["rating", "Rating"], ["logos", "Logos"], ["metric", "Metric"]] },
+    { type: "productSpotlight", icon: "▣", label: "Product Spotlight", desc: "Product ad card with price and CTA", variants: [["luxury", "Luxury"], ["minimal", "Minimal"], ["sale", "Sale"], ["tech", "Tech"]] },
+    { type: "announcementBanner", icon: "!", label: "Announcement Banner", desc: "Launch, sale, feature, urgency banner", variants: [["launch", "Launch"], ["sale", "Sale"], ["feature", "Feature"], ["limited", "Limited"]] },
+  ];
+  var MARKETING_PRESET_KEY = "fb-design-marketing-presets";
+  var MARKETING_SERIAL_PROPS = ["id", "name", "motion", "_dsImageSlot", "_dsImageSlotPrefix", "_dsImageSlotId", "_dsSlotImage", "_dsSlotImageFor", "_dsMarketingWidget", "_dsMarketingType", "_dsMarketingVariant"];
 
   var _iconQuery = "";
   var _veltroQuery = "";
@@ -427,6 +403,7 @@ FB.design.elements = (function () {
     el.innerHTML =
       _accordionHtml("Frames", _framesHtml(), false) +
       _accordionHtml("Shapes", _shapesHtml(), false) +
+      _accordionHtml("Marketing Widgets", _marketingHtml(), false) +
       _accordionHtml("Veltro Engine", _veltroHtml(), false) +
       _accordionHtml("Text", _textHtml(), false) +
       _accordionHtml("Icons", _iconsHtml(), false) +
@@ -516,6 +493,69 @@ FB.design.elements = (function () {
       }).join("") +
       "</div>"
     );
+  }
+
+  function _marketingHtml() {
+    var presets = _marketingPresets();
+    return (
+      '<div class="ds-marketing-preset-panel">' +
+      '<div class="ds-mini-label">My Marketing Presets</div>' +
+      (presets.length
+        ? presets.map(function (p) {
+          return (
+            '<div class="ds-marketing-preset-row">' +
+            '<button type="button" class="ds-sm-btn" onclick="FB.design.elements.addMarketingPreset(\'' + FB.design._esc(p.id) + '\')">' +
+            FB.design._esc(p.name || "Marketing Preset") +
+            '</button>' +
+            '<button type="button" class="ds-sm-btn" title="Delete preset" onclick="event.stopPropagation();FB.design.elements.deleteMarketingPreset(\'' + FB.design._esc(p.id) + '\')">×</button>' +
+            '</div>'
+          );
+        }).join("")
+        : '<div class="ds-veltro-desc" style="padding:4px 0 8px">Save a selected marketing widget to reuse it here.</div>') +
+      '</div>' +
+      '<div class="ds-veltro-grid">' +
+      MARKETING_WIDGETS.map(function (w) {
+        return (
+          '<div class="ds-veltro-tile" onclick="FB.design.elements.addMarketingWidget(\'' +
+          w.type +
+          "')\">" +
+          '<span class="ds-veltro-icon">' + w.icon + '</span>' +
+          '<div class="ds-veltro-info">' +
+          '<div class="ds-veltro-name">' + w.label + '</div>' +
+          '<div class="ds-veltro-desc">' + w.desc + '</div>' +
+          '<div class="ds-marketing-variants">' +
+          (w.variants || []).map(function (v) {
+            return (
+              '<button type="button" class="ds-marketing-variant" onclick="event.stopPropagation();FB.design.elements.addMarketingWidget(\'' +
+              w.type +
+              "','" +
+              v[0] +
+              "')\">" +
+              v[1] +
+              "</button>"
+            );
+          }).join("") +
+          "</div>" +
+          '<div class="ds-veltro-tag">marketing</div>' +
+          '</div></div>'
+        );
+      }).join("") +
+      "</div>"
+    );
+  }
+
+  function _marketingPresets() {
+    try {
+      var list = JSON.parse(localStorage.getItem(MARKETING_PRESET_KEY) || "[]");
+      return Array.isArray(list) ? list : [];
+    } catch (err) {
+      console.error("[marketingPresets] Failed to parse presets:", err);
+      return [];
+    }
+  }
+
+  function _setMarketingPresets(list) {
+    localStorage.setItem(MARKETING_PRESET_KEY, JSON.stringify(list || []));
   }
 
   function _veltroHtml() {
@@ -910,6 +950,578 @@ FB.design.elements = (function () {
     }
   }
 
+  function _mwRect(name, left, top, width, height, fill, opts) {
+    return new fabric.Rect(Object.assign({
+      left: left,
+      top: top,
+      width: width,
+      height: height,
+      fill: fill,
+      rx: 6,
+      ry: 6,
+      stroke: "transparent",
+      strokeWidth: 0,
+      name: name,
+    }, opts || {}));
+  }
+
+  function _mwText(name, text, left, top, size, fill, opts) {
+    return new fabric.IText(text, Object.assign({
+      left: left,
+      top: top,
+      fontFamily: "Lexend",
+      fontSize: size,
+      fontWeight: 600,
+      fill: fill,
+      lineHeight: 1.12,
+      styles: {},
+      name: name,
+    }, opts || {}));
+  }
+
+  function _mwLine(name, points, stroke, opts) {
+    return new fabric.Line(points, Object.assign({
+      stroke: stroke,
+      strokeWidth: 2,
+      name: name,
+    }, opts || {}));
+  }
+
+  function _mwImageSlot(prefix, left, top, width, height, label) {
+    return [
+      _mwRect(prefix + " / Image slot", left, top, width, height, "#17171f", {
+        stroke: "#3a3a48",
+        strokeWidth: 2,
+        _dsImageSlot: true,
+        _dsImageSlotPrefix: prefix,
+      }),
+      _mwLine(prefix + " / Image cross 1", [left + 18, top + 18, left + width - 18, top + height - 18], "#3a3a48", {
+        strokeDashArray: [8, 8],
+      }),
+      _mwLine(prefix + " / Image cross 2", [left + width - 18, top + 18, left + 18, top + height - 18], "#3a3a48", {
+        strokeDashArray: [8, 8],
+      }),
+      _mwText(prefix + " / Image label", label || "Image", left + width / 2 - 38, top + height / 2 - 12, 18, "#8b8b96", {
+        fontWeight: 700,
+      }),
+    ];
+  }
+
+  function _mwBullet(prefix, index, text, left, top) {
+    return [
+      new fabric.Circle({
+        left: left,
+        top: top + 5,
+        radius: 8,
+        fill: "#cdfe00",
+        name: prefix + " / Bullet " + index + " dot",
+      }),
+      _mwText(prefix + " / Bullet " + index, text, left + 26, top, 18, "#f7f7f2", {
+        fontWeight: 600,
+      }),
+    ];
+  }
+
+  function _marketingVariantLabel(type, variant) {
+    var def = MARKETING_WIDGETS.filter(function (w) { return w.type === type; })[0];
+    var match = def && (def.variants || []).filter(function (v) { return v[0] === variant; })[0];
+    return match ? match[1] : "";
+  }
+
+  function _marketingVariantOptions(type, selected) {
+    var def = MARKETING_WIDGETS.filter(function (w) { return w.type === type; })[0];
+    return ((def && def.variants) || []).map(function (item) {
+      return '<option value="' + FB.design._esc(item[0]) + '"' + (item[0] === selected ? " selected" : "") + ">" + FB.design._esc(item[1]) + "</option>";
+    }).join("");
+  }
+
+  function _marketingCopy(type, variant) {
+    var copy = {
+      campaignHero: {
+        saas: { accent: "#cdfe00", bg: "#101014", badge: "SaaS LAUNCH", headline: "Ship the feature\npeople remember", subhead: "Turn a product update into a clear campaign hero with CTA, proof, and crisp positioning.", cta: "Start free", trust: "Trusted by product teams shipping weekly", image: "App UI" },
+        ecommerce: { accent: "#f5f5f0", bg: "#12100d", badge: "NEW DROP", headline: "A product drop\nbuilt to convert", subhead: "Showcase a premium product with a strong offer, clean CTA, and editorial campaign framing.", cta: "Shop now", trust: "Free delivery on launch orders", image: "Product" },
+        event: { accent: "#7dd3fc", bg: "#0d1117", badge: "LIVE EVENT", headline: "Reserve your seat\nfor the next session", subhead: "Promote webinars, workshops, talks, or launches with a clear event-first layout.", cta: "Register", trust: "Thursday 7PM GMT · Online", image: "Speaker" },
+        service: { accent: "#facc15", bg: "#111111", badge: "SERVICE OFFER", headline: "Turn attention\ninto booked calls", subhead: "Position a premium service with a clean promise, proof line, and direct consultation CTA.", cta: "Book a call", trust: "Strategy, design, and launch support", image: "Result" },
+      },
+      offerStack: {
+        launch: { accent: "#cdfe00", urgency: "LIMITED LAUNCH OFFER", title: "Premium launch pack", oldPrice: "£499", price: "£199", period: "one-time", bullets: ["Campaign strategy canvas", "Editable launch graphics", "Social proof and offer assets", "Export-ready creative set"], guarantee: "30-day creative refresh guarantee", cta: "Claim the offer" },
+        discount: { accent: "#facc15", urgency: "SAVE 40% TODAY", title: "Growth creative bundle", oldPrice: "£349", price: "£209", period: "today", bullets: ["Offer graphics", "Product spotlight cards", "Promo banners", "Social proof strips"], guarantee: "Discount ends at midnight", cta: "Get the deal" },
+        premium: { accent: "#f5f5f0", urgency: "PREMIUM PACKAGE", title: "Executive campaign kit", oldPrice: "£1,200", price: "£799", period: "project", bullets: ["Premium hero creative", "High-end offer design", "Trust and proof assets", "Launch-ready exports"], guarantee: "Includes priority polish pass", cta: "Upgrade now" },
+        urgent: { accent: "#fb7185", urgency: "48 HOURS ONLY", title: "Last-call launch offer", oldPrice: "£599", price: "£249", period: "expires soon", bullets: ["Urgency banner set", "CTA variations", "Proof cards", "Fast campaign graphics"], guarantee: "Limited spaces available", cta: "Secure my spot" },
+      },
+      socialProof: {
+        quote: { accent: "#cdfe00", initial: "A", stars: "★★★★★", quote: "“This campaign helped us explain the offer clearly\nand launch with assets that looked premium.”", name: "Avery Stone", role: "Founder, Studio North", metric: "+38%", label: "conversion lift", trust: "TRUSTED BY TEAMS SHIPPING WEEKLY" },
+        rating: { accent: "#facc15", initial: "M", stars: "★★★★★", quote: "“The design finally matched the quality of the product.\nCustomers understood the value instantly.”", name: "Maya Ellis", role: "Ecommerce Lead", metric: "4.9", label: "average rating", trust: "2,400+ VERIFIED CUSTOMER REVIEWS" },
+        logos: { accent: "#f5f5f0", initial: "B", stars: "TRUSTED BY", quote: "ACME   NOVA   ATLAS   ORBIT   NORTH", name: "Partner network", role: "Campaign-ready trust strip", metric: "120+", label: "brand teams", trust: "AS SEEN IN LAUNCH CAMPAIGNS" },
+        metric: { accent: "#7dd3fc", initial: "R", stars: "RESULT SNAPSHOT", quote: "“We used one concise proof block across our landing page,\npaid ads, and sales deck.”", name: "Riley Chen", role: "Growth Strategist", metric: "3.2x", label: "lead quality", trust: "MEASURED AFTER 30 DAYS" },
+      },
+      productSpotlight: {
+        luxury: { accent: "#f5f5f0", bg: "#11100d", badge: "SIGNATURE", category: "LIMITED COLLECTION", name: "Atelier Creator Pack", rating: "★★★★★  4.9", price: "£149", chips: ["Premium", "Curated"], cta: "Explore collection", image: "Product Image" },
+        minimal: { accent: "#cdfe00", bg: "#101014", badge: "NEW", category: "VELTRO STORE", name: "Premium Creator Pack", rating: "★★★★★  4.9", price: "£79", chips: ["Editable", "Exportable"], cta: "Shop now", image: "Product Image" },
+        sale: { accent: "#fb7185", bg: "#130d10", badge: "SALE", category: "FLASH OFFER", name: "Launch Asset Bundle", rating: "★★★★★  4.8", price: "£39", chips: ["40% off", "Today"], cta: "Buy the bundle", image: "Sale Product" },
+        tech: { accent: "#7dd3fc", bg: "#0d1117", badge: "PRO", category: "DIGITAL PRODUCT", name: "Automation Toolkit", rating: "★★★★★  5.0", price: "£129", chips: ["Fast", "Scalable"], cta: "View specs", image: "Interface" },
+      },
+      announcementBanner: {
+        launch: { accent: "#cdfe00", bg: "#101014", label: "NEW", headline: "The launch campaign is live", copy: "Announce product drops, limited spaces, sales, or feature releases with editable campaign creative.", cta: "View offer" },
+        sale: { accent: "#fb7185", bg: "#130d10", label: "SALE", headline: "Flash sale ends tonight", copy: "Use this banner for seasonal promos, discount campaigns, and high-urgency ecommerce announcements.", cta: "Shop sale" },
+        feature: { accent: "#7dd3fc", bg: "#0d1117", label: "FEATURE", headline: "A sharper workflow just shipped", copy: "Spotlight new product features, updates, releases, or platform improvements with one clear message.", cta: "See update" },
+        limited: { accent: "#facc15", bg: "#111111", label: "LIMITED", headline: "Only a few spaces remain", copy: "Promote cohorts, consultations, events, and limited service capacity with a clean urgency banner.", cta: "Reserve now" },
+      },
+    };
+    var set = copy[type] || {};
+    return set[variant] || set[Object.keys(set)[0]] || {};
+  }
+
+  function _buildCampaignHero(fc, variant) {
+    var c = _marketingCopy("campaignHero", variant);
+    var o = [
+      _mwRect("Campaign Hero / Background", 0, 0, 900, 430, c.bg || "#101014"),
+      _mwRect("Campaign Hero / Accent wash", 610, 24, 250, 250, (c.accent || "#cdfe00") + "1f", {
+        rx: 8,
+        ry: 8,
+      }),
+      _mwRect("Campaign Hero / Badge bg", 56, 54, 176, 34, c.accent || "#cdfe00"),
+      _mwText("Campaign Hero / Badge", c.badge || "NEW CAMPAIGN", 76, 63, 14, "#111111", {
+        fontWeight: 800,
+      }),
+      _mwText("Campaign Hero / Headline", c.headline || "Launch-ready\nmarketing creative", 56, 116, 56, "#ffffff", {
+        fontWeight: 850,
+      }),
+      _mwText("Campaign Hero / Subhead", c.subhead || "Build a polished campaign hero with editable copy,\nCTA, trust signal, and product placement.", 58, 250, 22, "#a7a7ad", {
+        fontWeight: 500,
+      }),
+      _mwRect("Campaign Hero / CTA bg", 58, 332, 170, 48, c.accent || "#cdfe00"),
+      _mwText("Campaign Hero / CTA", c.cta || "Get Started", 88, 346, 18, "#111111", {
+        fontWeight: 800,
+      }),
+      _mwText("Campaign Hero / Trust line", c.trust || "Trusted by 2,000+ growing teams", 252, 346, 18, "#d8d8d2", {
+        fontWeight: 600,
+      }),
+    ];
+    return o.concat(_mwImageSlot("Campaign Hero", 610, 96, 230, 240, c.image || "Product"));
+  }
+
+  function _buildOfferStack(fc, variant) {
+    var c = _marketingCopy("offerStack", variant);
+    var o = [
+      _mwRect("Offer Stack / Card", 0, 0, 430, 560, "#101014", {
+        stroke: "#2d2d35",
+        strokeWidth: 2,
+      }),
+      _mwRect("Offer Stack / Urgency bg", 32, 30, 210, 34, c.accent || "#cdfe00"),
+      _mwText("Offer Stack / Urgency", c.urgency || "LIMITED LAUNCH OFFER", 48, 39, 13, "#111111", {
+        fontWeight: 850,
+      }),
+      _mwText("Offer Stack / Title", c.title || "Premium launch pack", 32, 94, 34, "#ffffff", {
+        fontWeight: 850,
+      }),
+      _mwText("Offer Stack / Old price", c.oldPrice || "£499", 34, 158, 24, "#777780", {
+        fontWeight: 600,
+        linethrough: true,
+      }),
+      _mwText("Offer Stack / Price", c.price || "£199", 112, 140, 62, c.accent || "#cdfe00", {
+        fontWeight: 900,
+      }),
+      _mwText("Offer Stack / Period", c.period || "one-time", 300, 170, 18, "#a7a7ad", {
+        fontWeight: 600,
+      }),
+    ];
+    (c.bullets || []).forEach(function (text, i) {
+      o = o.concat(_mwBullet("Offer Stack", i + 1, text, 36, 238 + i * 42));
+    });
+    o.push(
+      _mwRect("Offer Stack / Guarantee bg", 32, 420, 366, 44, "#181820", {
+        stroke: "#303038",
+        strokeWidth: 1,
+      }),
+      _mwText("Offer Stack / Guarantee", c.guarantee || "30-day creative refresh guarantee", 54, 434, 17, "#f7f7f2", {
+        fontWeight: 700,
+      }),
+      _mwRect("Offer Stack / CTA bg", 32, 488, 366, 48, c.accent || "#cdfe00"),
+      _mwText("Offer Stack / CTA", c.cta || "Claim the offer", 142, 502, 18, "#111111", {
+        fontWeight: 850,
+      })
+    );
+    return o;
+  }
+
+  function _buildSocialProof(fc, variant) {
+    var c = _marketingCopy("socialProof", variant);
+    return [
+      _mwRect("Social Proof / Strip bg", 0, 0, 820, 220, "#101014", {
+        stroke: "#2d2d35",
+        strokeWidth: 2,
+      }),
+      new fabric.Circle({ left: 44, top: 54, radius: 42, fill: c.accent || "#cdfe00", name: "Social Proof / Avatar bg" }),
+      _mwText("Social Proof / Avatar initial", c.initial || "A", 72, 72, 36, "#111111", {
+        fontWeight: 900,
+      }),
+      _mwText("Social Proof / Stars", c.stars || "★★★★★", 134, 44, 24, c.accent || "#cdfe00", {
+        fontWeight: 800,
+      }),
+      _mwText("Social Proof / Quote", c.quote || "“This campaign helped us explain the offer clearly\nand launch with assets that looked premium.”", 134, 82, 28, "#ffffff", {
+        fontWeight: 700,
+      }),
+      _mwText("Social Proof / Name", c.name || "Avery Stone", 136, 162, 18, "#f7f7f2", {
+        fontWeight: 800,
+      }),
+      _mwText("Social Proof / Role", c.role || "Founder, Studio North", 260, 162, 18, "#8f8f98", {
+        fontWeight: 600,
+      }),
+      _mwRect("Social Proof / Metric pill bg", 620, 58, 150, 88, "#181820", {
+        stroke: "#303038",
+        strokeWidth: 1,
+      }),
+      _mwText("Social Proof / Metric", c.metric || "+38%", 648, 76, 36, c.accent || "#cdfe00", {
+        fontWeight: 900,
+      }),
+      _mwText("Social Proof / Metric label", c.label || "conversion lift", 648, 120, 16, "#a7a7ad", {
+        fontWeight: 700,
+      }),
+      _mwText("Social Proof / Trust label", c.trust || "TRUSTED BY TEAMS SHIPPING WEEKLY", 528, 176, 13, "#74747c", {
+        fontWeight: 800,
+      }),
+    ];
+  }
+
+  function _buildProductSpotlight(fc, variant) {
+    var c = _marketingCopy("productSpotlight", variant);
+    var o = [
+      _mwRect("Product Spotlight / Card", 0, 0, 470, 620, c.bg || "#101014", {
+        stroke: "#2d2d35",
+        strokeWidth: 2,
+      }),
+      _mwRect("Product Spotlight / Badge bg", 32, 32, 104, 32, c.accent || "#cdfe00"),
+      _mwText("Product Spotlight / Badge", c.badge || "BESTSELLER", 48, 41, 13, "#111111", {
+        fontWeight: 850,
+      }),
+    ].concat(_mwImageSlot("Product Spotlight", 32, 84, 406, 270, c.image || "Product Image"));
+    o.push(
+      _mwText("Product Spotlight / Category", c.category || "VELTRO STORE", 32, 386, 13, c.accent || "#cdfe00", {
+        fontWeight: 850,
+      }),
+      _mwText("Product Spotlight / Name", c.name || "Premium Creator Pack", 32, 412, 34, "#ffffff", {
+        fontWeight: 850,
+      }),
+      _mwText("Product Spotlight / Rating", c.rating || "★★★★★  4.9", 32, 466, 18, c.accent || "#cdfe00", {
+        fontWeight: 750,
+      }),
+      _mwText("Product Spotlight / Price", c.price || "£79", 32, 500, 44, "#ffffff", {
+        fontWeight: 900,
+      }),
+      _mwRect("Product Spotlight / Chip 1 bg", 128, 506, 94, 30, "#181820"),
+      _mwText("Product Spotlight / Chip 1", (c.chips || ["Editable", "Exportable"])[0], 148, 514, 13, "#d8d8d2", {
+        fontWeight: 700,
+      }),
+      _mwRect("Product Spotlight / Chip 2 bg", 236, 506, 100, 30, "#181820"),
+      _mwText("Product Spotlight / Chip 2", (c.chips || ["Editable", "Exportable"])[1], 252, 514, 13, "#d8d8d2", {
+        fontWeight: 700,
+      }),
+      _mwRect("Product Spotlight / CTA bg", 32, 556, 406, 44, c.accent || "#cdfe00"),
+      _mwText("Product Spotlight / CTA", c.cta || "Shop now", 190, 568, 18, "#111111", {
+        fontWeight: 850,
+      })
+    );
+    return o;
+  }
+
+  function _buildAnnouncementBanner(fc, variant) {
+    var c = _marketingCopy("announcementBanner", variant);
+    return [
+      _mwRect("Announcement Banner / Background", 0, 0, 900, 210, c.bg || "#101014", {
+        stroke: "#2d2d35",
+        strokeWidth: 2,
+      }),
+      _mwRect("Announcement Banner / Accent bar", 0, 0, 12, 210, c.accent || "#cdfe00", {
+        rx: 0,
+        ry: 0,
+      }),
+      _mwRect("Announcement Banner / Label bg", 44, 34, 112, 32, c.accent || "#cdfe00"),
+      _mwText("Announcement Banner / Label", c.label || "NEW", 80, 43, 13, "#111111", {
+        fontWeight: 900,
+      }),
+      _mwText("Announcement Banner / Headline", c.headline || "The launch campaign is live", 44, 88, 42, "#ffffff", {
+        fontWeight: 850,
+      }),
+      _mwText("Announcement Banner / Copy", c.copy || "Announce product drops, limited spaces, sales, or feature releases with editable campaign creative.", 46, 146, 18, "#a7a7ad", {
+        fontWeight: 600,
+      }),
+      _mwRect("Announcement Banner / CTA bg", 706, 78, 146, 48, c.accent || "#cdfe00"),
+      _mwText("Announcement Banner / CTA", c.cta || "View offer", 738, 92, 18, "#111111", {
+        fontWeight: 850,
+      }),
+      new fabric.Polygon([{ x: 0, y: 0 }, { x: 54, y: 0 }, { x: 27, y: 46 }], {
+        left: 812,
+        top: 144,
+        fill: (c.accent || "#cdfe00") + "26",
+        name: "Announcement Banner / Accent triangle",
+      }),
+    ];
+  }
+
+  var MARKETING_BUILDERS = {
+    campaignHero: _buildCampaignHero,
+    offerStack: _buildOfferStack,
+    socialProof: _buildSocialProof,
+    productSpotlight: _buildProductSpotlight,
+    announcementBanner: _buildAnnouncementBanner,
+  };
+
+  function _createMarketingGroup(type, variant) {
+    var def = MARKETING_WIDGETS.filter(function (w) { return w.type === type; })[0];
+    var builder = MARKETING_BUILDERS[type];
+    if (!def || !builder) return null;
+    variant = variant || ((def.variants && def.variants[0] && def.variants[0][0]) || "default");
+    var objects = builder(FB.design.canvas.get(), variant);
+    var variantLabel = _marketingVariantLabel(type, variant);
+    var group = new fabric.Group(objects, {
+      name: variantLabel ? def.label + " - " + variantLabel : def.label,
+      left: 0,
+      top: 0,
+      _dsMarketingWidget: true,
+      _dsMarketingType: type,
+      _dsMarketingVariant: variant,
+    });
+    var slotIdBase = "ds-img-slot-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
+    (group._objects || []).forEach(function (child, index) {
+      if (child && child._dsImageSlot) {
+        child._dsImageSlotId = slotIdBase + "-" + index;
+      }
+    });
+    return group;
+  }
+
+  function addMarketingWidget(type, variant) {
+    var fc = FB.design.canvas.get();
+    var group = _createMarketingGroup(type, variant);
+    if (!fc || !group) return;
+    var maxW = Math.max(160, fc.getWidth() * 0.88);
+    var maxH = Math.max(120, fc.getHeight() * 0.78);
+    var scale = Math.min(1, maxW / group.getScaledWidth(), maxH / group.getScaledHeight());
+    group.set({
+      scaleX: scale,
+      scaleY: scale,
+      left: fc.getWidth() / 2 - (group.width * scale) / 2,
+      top: fc.getHeight() / 2 - (group.height * scale) / 2,
+    });
+    group.setCoords();
+    fc.add(group);
+    fc.setActiveObject(group);
+    fc.renderAll();
+    FB.design.tools.setTool("select");
+    if (FB.design.layers) FB.design.layers.render();
+    if (FB.design.props) FB.design.props.render();
+    FB.design.history.push();
+  }
+
+  function regenerateMarketingWidget(obj, variant) {
+    var fc = FB.design.canvas.get();
+    if (!fc || !obj || !obj._dsMarketingWidget) return;
+    var type = obj._dsMarketingType;
+    var group = _createMarketingGroup(type, variant);
+    if (!group) return;
+    var oldSlotIds = (obj._objects || []).filter(function (child) {
+      return child && child._dsImageSlot && child._dsImageSlotId;
+    }).map(function (child) {
+      return child._dsImageSlotId;
+    });
+    var idx = fc.getObjects().indexOf(obj);
+    group.set({
+      left: obj.left,
+      top: obj.top,
+      scaleX: obj.scaleX,
+      scaleY: obj.scaleY,
+      angle: obj.angle,
+      opacity: obj.opacity == null ? 1 : obj.opacity,
+      flipX: !!obj.flipX,
+      flipY: !!obj.flipY,
+    });
+    fc.getObjects().slice().forEach(function (item) {
+      if (item._dsSlotImage && oldSlotIds.indexOf(item._dsSlotImageFor) !== -1) fc.remove(item);
+    });
+    fc.remove(obj);
+    fc.add(group);
+    if (idx >= 0) fc.moveTo(group, idx);
+    group.setCoords();
+    fc.setActiveObject(group);
+    fc.renderAll();
+    if (FB.design.layers) FB.design.layers.render();
+    if (FB.design.props) FB.design.props.render();
+    FB.design.history.push();
+  }
+
+  function _imageSlotRectFor(obj) {
+    if (!obj) return null;
+    if (obj._dsImageSlot) return obj;
+    if (obj.type === "group" && obj._objects) {
+      return obj._objects.filter(function (child) {
+        return child && child._dsImageSlot;
+      })[0] || null;
+    }
+    return null;
+  }
+
+  function imageSlotFor(obj) {
+    var slot = _imageSlotRectFor(obj);
+    if (slot && !slot._dsImageSlotId) {
+      slot._dsImageSlotId = "ds-img-slot-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
+    }
+    return slot;
+  }
+
+  function _marketingSlotBounds(slot) {
+    slot.setCoords();
+    var matrix = slot.calcTransformMatrix();
+    var points = [
+      new fabric.Point(0, 0),
+      new fabric.Point(slot.width || 1, 0),
+      new fabric.Point(slot.width || 1, slot.height || 1),
+      new fabric.Point(0, slot.height || 1),
+    ].map(function (point) {
+      return fabric.util.transformPoint(point, matrix);
+    });
+    var xs = points.map(function (point) { return point.x; });
+    var ys = points.map(function (point) { return point.y; });
+    return {
+      left: Math.min.apply(Math, xs),
+      top: Math.min.apply(Math, ys),
+      width: Math.max(1, Math.max.apply(Math, xs) - Math.min.apply(Math, xs)),
+      height: Math.max(1, Math.max.apply(Math, ys) - Math.min.apply(Math, ys)),
+    };
+  }
+
+  function _fitPresetImageToSlot(img, slot) {
+    var bounds = _marketingSlotBounds(slot);
+    var imageEl = img.getElement ? img.getElement() : null;
+    var intrinsicW = img.width || (imageEl && (imageEl.naturalWidth || imageEl.width)) || bounds.width;
+    var intrinsicH = img.height || (imageEl && (imageEl.naturalHeight || imageEl.height)) || bounds.height;
+    var scale = Math.max(bounds.width / intrinsicW, bounds.height / intrinsicH);
+    img.set({
+      width: intrinsicW,
+      height: intrinsicH,
+      left: bounds.left + (bounds.width - intrinsicW * scale) / 2,
+      top: bounds.top + (bounds.height - intrinsicH * scale) / 2,
+      originX: "left",
+      originY: "top",
+      scaleX: scale,
+      scaleY: scale,
+      clipPath: new fabric.Rect({
+        left: bounds.left,
+        top: bounds.top,
+        width: bounds.width,
+        height: bounds.height,
+        absolutePositioned: true,
+      }),
+    });
+    img.setCoords();
+  }
+
+  function saveMarketingPreset() {
+    var fc = FB.design.canvas.get();
+    var group = fc && fc.getActiveObject();
+    if (!fc || !group || !group._dsMarketingWidget || group.type !== "group") {
+      if (FB.util && FB.util.showToast) FB.util.showToast("Select a marketing widget first");
+      return;
+    }
+    var name = prompt("Save marketing preset as:", group.name || "Marketing Preset");
+    if (!name) return;
+    var slotIds = (group._objects || []).filter(function (child) {
+      return child && child._dsImageSlot && child._dsImageSlotId;
+    }).map(function (child) {
+      return child._dsImageSlotId;
+    });
+    var images = fc.getObjects().filter(function (obj) {
+      return obj && obj._dsSlotImage && slotIds.indexOf(obj._dsSlotImageFor) !== -1;
+    }).map(function (obj) {
+      return obj.toObject(MARKETING_SERIAL_PROPS);
+    });
+    var list = _marketingPresets();
+    list.unshift({
+      id: "mwp-" + Date.now() + "-" + Math.floor(Math.random() * 1000),
+      name: name,
+      type: group._dsMarketingType || "custom",
+      variant: group._dsMarketingVariant || "custom",
+      created: new Date().toISOString(),
+      group: group.toObject(MARKETING_SERIAL_PROPS),
+      images: images,
+    });
+    _setMarketingPresets(list.slice(0, 40));
+    render();
+    if (FB.util && FB.util.showToast) FB.util.showToast("Saved marketing preset: " + name);
+  }
+
+  function addMarketingPreset(id) {
+    var fc = FB.design.canvas.get();
+    var preset = _marketingPresets().filter(function (p) { return p.id === id; })[0];
+    if (!fc || !preset || !preset.group) return;
+    fabric.util.enlivenObjects([preset.group], function (groups) {
+      var group = groups && groups[0];
+      if (!group) return;
+      var idMap = {};
+      var slotIdBase = "ds-img-slot-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
+      (group._objects || []).forEach(function (child, index) {
+        if (child && child._dsImageSlot) {
+          var oldId = child._dsImageSlotId;
+          var newId = slotIdBase + "-" + index;
+          if (oldId) idMap[oldId] = newId;
+          child._dsImageSlotId = newId;
+        }
+      });
+      group.set({
+        left: fc.getWidth() / 2 - group.getScaledWidth() / 2,
+        top: fc.getHeight() / 2 - group.getScaledHeight() / 2,
+        _dsMarketingWidget: true,
+        _dsMarketingType: preset.type || group._dsMarketingType || "custom",
+        _dsMarketingVariant: preset.variant || group._dsMarketingVariant || "custom",
+        name: preset.name || group.name || "Marketing Preset",
+      });
+      group.setCoords();
+      fc.add(group);
+      fc.setActiveObject(group);
+      var imageObjects = preset.images || [];
+      if (!imageObjects.length) {
+        fc.renderAll();
+        FB.design.tools.setTool("select");
+        if (FB.design.layers) FB.design.layers.render();
+        if (FB.design.props) FB.design.props.render();
+        FB.design.history.push();
+        return;
+      }
+      fabric.util.enlivenObjects(imageObjects, function (images) {
+        images.forEach(function (img) {
+          var newSlotId = idMap[img._dsSlotImageFor];
+          var slot = (group._objects || []).filter(function (child) {
+            return child && child._dsImageSlotId === newSlotId;
+          })[0];
+          if (!newSlotId || !slot) return;
+          img.set({
+            _dsSlotImage: true,
+            _dsSlotImageFor: newSlotId,
+            name: (slot._dsImageSlotPrefix || "Marketing") + " / Image",
+          });
+          _fitPresetImageToSlot(img, slot);
+          fc.add(img);
+          var groupIndex = fc.getObjects().indexOf(group);
+          if (groupIndex >= 0) fc.moveTo(img, groupIndex + 1);
+        });
+        fc.setActiveObject(group);
+        fc.renderAll();
+        FB.design.tools.setTool("select");
+        if (FB.design.layers) FB.design.layers.render();
+        if (FB.design.props) FB.design.props.render();
+        FB.design.history.push();
+      });
+    });
+  }
+
+  function deleteMarketingPreset(id) {
+    var list = _marketingPresets().filter(function (p) {
+      return p.id !== id;
+    });
+    _setMarketingPresets(list);
+    render();
+  }
+
   // Keep the old fabric-only path here as a dead stub (won't be called)
   function _addVeltroElementToCanvas(type) {
     var fc = FB.design.canvas.get();
@@ -987,7 +1599,7 @@ FB.design.elements = (function () {
         left: cx - 90,
         top: cy - 60,
         name: "Physics Sandbox",
-        _veltroType: "physicsSandbox"
+        _veltroType: "kineticText"
       });
       fc.add(group);
       fc.setActiveObject(group);
@@ -1273,10 +1885,17 @@ FB.design.elements = (function () {
     onBgGradientClick: onBgGradientClick,
     setPattern: setPattern,
     changePatternOpacity: changePatternOpacity,
+    addMarketingWidget: addMarketingWidget,
+    saveMarketingPreset: saveMarketingPreset,
+    addMarketingPreset: addMarketingPreset,
+    deleteMarketingPreset: deleteMarketingPreset,
+    regenerateMarketingWidget: regenerateMarketingWidget,
     addVeltroElement: addVeltroElement,
+    imageSlotFor: imageSlotFor,
     setVeltroQuery: setVeltroQuery,
     setVeltroCategory: setVeltroCategory,
-    _veltroOptions: _veltroOptions
+    _veltroOptions: _veltroOptions,
+    _marketingVariantOptions: _marketingVariantOptions
   };
 })();
 
@@ -1289,7 +1908,7 @@ FB.design.history = (function () {
     if (_paused) return;
     var fc = FB.design.canvas.get();
     if (!fc) return;
-    _stack.push(JSON.stringify(fc.toJSON(["id", "name", "motion", "_veltroWidget", "_veltroId", "_veltroProps"])));
+    _stack.push(JSON.stringify(fc.toJSON(["id", "name", "motion", "_veltroWidget", "_veltroId", "_veltroProps", "_dsImageSlot", "_dsImageSlotPrefix", "_dsImageSlotId", "_dsSlotImage", "_dsSlotImageFor", "_dsMarketingWidget", "_dsMarketingType", "_dsMarketingVariant"])));
     if (_stack.length > 50) _stack.shift();
     _future = [];
   }
@@ -1530,6 +2149,12 @@ FB.design.veltroCanvas = (function () {
 FB.design.canvas = (function () {
   var _fc = null;
   var _inited = false;
+  var _snapGuides = [];
+  var _snapEnabled = true;
+  var _snapGuideVisible = true;
+  var _snapThreshold = 8;
+  var _snapMargin = 24;
+  var SNAP_SETTINGS_KEY = "fb-design-snap-settings";
 
   var PRESETS = {
     blank: { w: 800, h: 600, label: "Blank Canvas" },
@@ -1553,6 +2178,7 @@ FB.design.canvas = (function () {
       return;
     }
     _inited = true;
+    _loadSnapSettings();
 
     _fc = new fabric.Canvas("ds-canvas", {
       backgroundColor: null,
@@ -1591,6 +2217,7 @@ FB.design.canvas = (function () {
     _fc.renderAll = function () {
       origRenderAll();
       _drawArrowHeads();
+      _drawSnapGuides();
     };
   }
 
@@ -1632,6 +2259,270 @@ FB.design.canvas = (function () {
     ctx.lineTo(x - h * Math.cos(angle + Math.PI / 6), y - h * Math.sin(angle + Math.PI / 6));
     ctx.closePath();
     ctx.fill();
+  }
+
+  function _canvasPoint(x, y) {
+    var vt = _fc.viewportTransform || [1, 0, 0, 1, 0, 0];
+    var zoom = _fc.getZoom ? _fc.getZoom() : 1;
+    return { x: x * zoom + vt[4], y: y * zoom + vt[5] };
+  }
+
+  function _drawSnapGuides() {
+    if (!_fc || !_snapGuideVisible || !_snapGuides.length || !_fc.contextTop) return;
+    var ctx = _fc.contextTop;
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.strokeStyle = "#cdfe00";
+    ctx.lineWidth = 1;
+    ctx.globalAlpha = 0.95;
+    ctx.setLineDash([5, 5]);
+    _snapGuides.forEach(function (guide) {
+      var a = _canvasPoint(guide.x1, guide.y1);
+      var b = _canvasPoint(guide.x2, guide.y2);
+      ctx.beginPath();
+      ctx.moveTo(Math.round(a.x) + 0.5, Math.round(a.y) + 0.5);
+      ctx.lineTo(Math.round(b.x) + 0.5, Math.round(b.y) + 0.5);
+      ctx.stroke();
+    });
+    ctx.restore();
+  }
+
+  function _clearSnapGuides() {
+    if (!_snapGuides.length) return;
+    _snapGuides = [];
+    if (_fc) _fc.requestRenderAll();
+  }
+
+  function _loadSnapSettings() {
+    try {
+      var saved = JSON.parse(localStorage.getItem(SNAP_SETTINGS_KEY) || "{}");
+      if (typeof saved.enabled === "boolean") _snapEnabled = saved.enabled;
+      if (typeof saved.guides === "boolean") _snapGuideVisible = saved.guides;
+      if (Number.isFinite(+saved.threshold)) _snapThreshold = Math.max(1, Math.min(40, +saved.threshold));
+      if (Number.isFinite(+saved.margin)) _snapMargin = Math.max(0, Math.min(200, +saved.margin));
+    } catch (err) {
+      console.error("[snapSettings] Failed to parse settings:", err);
+    }
+  }
+
+  function _saveSnapSettings() {
+    localStorage.setItem(SNAP_SETTINGS_KEY, JSON.stringify({
+      enabled: _snapEnabled,
+      guides: _snapGuideVisible,
+      threshold: _snapThreshold,
+      margin: _snapMargin,
+    }));
+  }
+
+  function snapSettings() {
+    return {
+      enabled: _snapEnabled,
+      guides: _snapGuideVisible,
+      threshold: _snapThreshold,
+      margin: _snapMargin,
+    };
+  }
+
+  function setSnapSetting(key, value) {
+    if (key === "enabled") _snapEnabled = !!value;
+    if (key === "guides") _snapGuideVisible = !!value;
+    if (key === "threshold") _snapThreshold = Math.max(1, Math.min(40, +value || 8));
+    if (key === "margin") _snapMargin = Math.max(0, Math.min(200, +value || 0));
+    if (!_snapGuideVisible || !_snapEnabled) _clearSnapGuides();
+    _saveSnapSettings();
+    if (_fc) _fc.requestRenderAll();
+  }
+
+  function _objectBounds(obj) {
+    obj.setCoords();
+    var b = obj.getBoundingRect(true, true);
+    return {
+      left: b.left,
+      top: b.top,
+      right: b.left + b.width,
+      bottom: b.top + b.height,
+      centerX: b.left + b.width / 2,
+      centerY: b.top + b.height / 2,
+      width: b.width,
+      height: b.height,
+    };
+  }
+
+  function _snapCandidates(active) {
+    var w = _fc.getWidth();
+    var h = _fc.getHeight();
+    var candidates = {
+      x: [
+        { value: 0, y1: 0, y2: h },
+        { value: _snapMargin, y1: 0, y2: h },
+        { value: w / 2, y1: 0, y2: h },
+        { value: w - _snapMargin, y1: 0, y2: h },
+        { value: w, y1: 0, y2: h },
+      ],
+      y: [
+        { value: 0, x1: 0, x2: w },
+        { value: _snapMargin, x1: 0, x2: w },
+        { value: h / 2, x1: 0, x2: w },
+        { value: h - _snapMargin, x1: 0, x2: w },
+        { value: h, x1: 0, x2: w },
+      ],
+    };
+    _fc.getObjects().forEach(function (obj) {
+      if (obj === active || obj.visible === false) return;
+      if (active.type === "activeSelection" && active._objects && active._objects.indexOf(obj) !== -1) return;
+      var b = _objectBounds(obj);
+      candidates.x.push({ value: b.left, y1: Math.max(0, b.top - 16), y2: Math.min(h, b.bottom + 16) });
+      candidates.x.push({ value: b.centerX, y1: Math.max(0, b.top - 16), y2: Math.min(h, b.bottom + 16) });
+      candidates.x.push({ value: b.right, y1: Math.max(0, b.top - 16), y2: Math.min(h, b.bottom + 16) });
+      candidates.y.push({ value: b.top, x1: Math.max(0, b.left - 16), x2: Math.min(w, b.right + 16) });
+      candidates.y.push({ value: b.centerY, x1: Math.max(0, b.left - 16), x2: Math.min(w, b.right + 16) });
+      candidates.y.push({ value: b.bottom, x1: Math.max(0, b.left - 16), x2: Math.min(w, b.right + 16) });
+    });
+    return candidates;
+  }
+
+  function _bestSnap(points, candidates) {
+    var best = null;
+    points.forEach(function (point) {
+      candidates.forEach(function (candidate) {
+        var delta = candidate.value - point.value;
+        var abs = Math.abs(delta);
+        if (abs <= _snapThreshold && (!best || abs < best.abs)) {
+          best = {
+            abs: abs,
+            delta: delta,
+            value: candidate.value,
+            candidate: candidate,
+          };
+        }
+      });
+    });
+    return best;
+  }
+
+  function _snapMovingObject(opt) {
+    var obj = opt && opt.target;
+    if (!_snapEnabled || !obj || (opt.e && opt.e.altKey)) {
+      _clearSnapGuides();
+      return;
+    }
+    var b = _objectBounds(obj);
+    var candidates = _snapCandidates(obj);
+    var xSnap = _bestSnap([
+      { value: b.left },
+      { value: b.centerX },
+      { value: b.right },
+    ], candidates.x);
+    var ySnap = _bestSnap([
+      { value: b.top },
+      { value: b.centerY },
+      { value: b.bottom },
+    ], candidates.y);
+    _snapGuides = [];
+    if (xSnap) {
+      obj.set("left", (obj.left || 0) + xSnap.delta);
+      _snapGuides.push({
+        x1: xSnap.value,
+        y1: xSnap.candidate.y1 == null ? 0 : xSnap.candidate.y1,
+        x2: xSnap.value,
+        y2: xSnap.candidate.y2 == null ? _fc.getHeight() : xSnap.candidate.y2,
+      });
+    }
+    if (ySnap) {
+      obj.set("top", (obj.top || 0) + ySnap.delta);
+      _snapGuides.push({
+        x1: ySnap.candidate.x1 == null ? 0 : ySnap.candidate.x1,
+        y1: ySnap.value,
+        x2: ySnap.candidate.x2 == null ? _fc.getWidth() : ySnap.candidate.x2,
+        y2: ySnap.value,
+      });
+    }
+    obj.setCoords();
+    _fc.requestRenderAll();
+  }
+
+  function _snapGuideForX(snap) {
+    _snapGuides.push({
+      x1: snap.value,
+      y1: snap.candidate.y1 == null ? 0 : snap.candidate.y1,
+      x2: snap.value,
+      y2: snap.candidate.y2 == null ? _fc.getHeight() : snap.candidate.y2,
+    });
+  }
+
+  function _snapGuideForY(snap) {
+    _snapGuides.push({
+      x1: snap.candidate.x1 == null ? 0 : snap.candidate.x1,
+      y1: snap.value,
+      x2: snap.candidate.x2 == null ? _fc.getWidth() : snap.candidate.x2,
+      y2: snap.value,
+    });
+  }
+
+  function _resizeSnapX(obj, edge, snap, bounds) {
+    var baseW = Math.max(1, obj.width || bounds.width || 1);
+    var currentW = Math.max(1, bounds.width);
+    var newW = edge === "left" ? currentW - snap.delta : currentW + snap.delta;
+    newW = Math.max(4, newW);
+    var scale = (obj.scaleX || 1) * (newW / currentW);
+    obj.set("scaleX", scale);
+    if (edge === "left") obj.set("left", (obj.left || 0) + (currentW - newW));
+    if (obj.minScaleLimit) obj.set("scaleX", Math.max(obj.minScaleLimit, obj.scaleX || scale));
+    if (!Number.isFinite(obj.scaleX) || Math.abs(obj.scaleX) < 0.0001) obj.set("scaleX", newW / baseW);
+  }
+
+  function _resizeSnapY(obj, edge, snap, bounds) {
+    var baseH = Math.max(1, obj.height || bounds.height || 1);
+    var currentH = Math.max(1, bounds.height);
+    var newH = edge === "top" ? currentH - snap.delta : currentH + snap.delta;
+    newH = Math.max(4, newH);
+    var scale = (obj.scaleY || 1) * (newH / currentH);
+    obj.set("scaleY", scale);
+    if (edge === "top") obj.set("top", (obj.top || 0) + (currentH - newH));
+    if (obj.minScaleLimit) obj.set("scaleY", Math.max(obj.minScaleLimit, obj.scaleY || scale));
+    if (!Number.isFinite(obj.scaleY) || Math.abs(obj.scaleY) < 0.0001) obj.set("scaleY", newH / baseH);
+  }
+
+  function _snapScalingObject(opt) {
+    var obj = opt && opt.target;
+    if (!_snapEnabled || !obj || (opt.e && opt.e.altKey)) {
+      _clearSnapGuides();
+      return;
+    }
+    if (obj.angle && Math.abs(obj.angle % 360) > 0.01) {
+      _clearSnapGuides();
+      return;
+    }
+    var corner = String((opt.transform && opt.transform.corner) || "");
+    var snapLeft = /l/.test(corner);
+    var snapRight = /r/.test(corner);
+    var snapTop = /t/.test(corner);
+    var snapBottom = /b/.test(corner);
+    if (!snapLeft && !snapRight && !snapTop && !snapBottom) {
+      snapRight = true;
+      snapBottom = true;
+    }
+    var b = _objectBounds(obj);
+    var candidates = _snapCandidates(obj);
+    var xSnap = null;
+    var ySnap = null;
+    if (snapLeft || snapRight) {
+      xSnap = _bestSnap([{ value: snapLeft ? b.left : b.right }], candidates.x);
+    }
+    if (snapTop || snapBottom) {
+      ySnap = _bestSnap([{ value: snapTop ? b.top : b.bottom }], candidates.y);
+    }
+    _snapGuides = [];
+    if (xSnap) {
+      _resizeSnapX(obj, snapLeft ? "left" : "right", xSnap, b);
+      _snapGuideForX(xSnap);
+    }
+    if (ySnap) {
+      _resizeSnapY(obj, snapTop ? "top" : "bottom", ySnap, b);
+      _snapGuideForY(ySnap);
+    }
+    obj.setCoords();
+    _fc.requestRenderAll();
   }
 
   function _resizeTo(w, h) {
@@ -1693,21 +2584,25 @@ FB.design.canvas = (function () {
     _fc.on("mouse:up", function () {
       _panning = false;
       _fc.selection = FB.design.tools.active() === "select";
+      _clearSnapGuides();
     });
   }
 
   function _bindEvents() {
     _fc.on("selection:created", function () {
+      _clearSnapGuides();
       FB.design.props.render();
       FB.design.layers.render();
       FB.design.align.renderPanel();
     });
     _fc.on("selection:updated", function () {
+      _clearSnapGuides();
       FB.design.props.render();
       FB.design.layers.render();
       FB.design.align.renderPanel();
     });
     _fc.on("selection:cleared", function () {
+      _clearSnapGuides();
       FB.design.props.render();
       FB.design.layers.render();
       FB.design.align.renderPanel();
@@ -1723,13 +2618,16 @@ FB.design.canvas = (function () {
       if (FB.design.veltroCanvas) FB.design.veltroCanvas.sync();
       FB.design.history.push();
     });
-    _fc.on("object:moving", function () {
+    _fc.on("object:moving", function (opt) {
+      _snapMovingObject(opt);
       if (FB.design.veltroCanvas) FB.design.veltroCanvas.sync();
     });
-    _fc.on("object:scaling", function () {
+    _fc.on("object:scaling", function (opt) {
+      _snapScalingObject(opt);
       if (FB.design.veltroCanvas) FB.design.veltroCanvas.sync();
     });
     _fc.on("object:modified", function () {
+      _clearSnapGuides();
       FB.design.props.render();
       FB.design.layers.render();
       if (FB.design.veltroCanvas) FB.design.veltroCanvas.sync();
@@ -1938,6 +2836,8 @@ FB.design.canvas = (function () {
     zoomIn: zoomIn,
     zoomOut: zoomOut,
     zoomFit: zoomFit,
+    snapSettings: snapSettings,
+    setSnapSetting: setSnapSetting,
     group: _groupSelected,
     ungroup: _ungroupSelected,
   };
@@ -1973,6 +2873,10 @@ FB.design.tools = (function () {
       if (!file) return;
       var reader = new FileReader();
       reader.onload = function (ev) {
+        if (FB.design.media && FB.design.media.replaceSelectedSlot && FB.design.media.replaceSelectedSlot(ev.target.result)) {
+          FB.design.tools.setTool("select");
+          return;
+        }
         fabric.Image.fromURL(ev.target.result, function (img) {
           var fc = FB.design.canvas.get();
           var maxW = fc.getWidth() * 0.5;
@@ -2320,6 +3224,79 @@ FB.design.props = (function () {
     "Space Grotesk",
     "DM Sans",
   ];
+  var BRAND_KIT_KEY = "fb-design-brand-kit";
+  var DEFAULT_BRAND_KIT = {
+    primary: "#cdfe00",
+    secondary: "#181820",
+    accent: "#7dd3fc",
+    background: "#101014",
+    text: "#ffffff",
+    headingFont: "Lexend",
+    bodyFont: "Inter",
+    radius: 6,
+  };
+
+  function _brandKit() {
+    try {
+      return Object.assign({}, DEFAULT_BRAND_KIT, JSON.parse(localStorage.getItem(BRAND_KIT_KEY) || "{}"));
+    } catch (err) {
+      console.error("[brandKit] Failed to parse kit:", err);
+      return Object.assign({}, DEFAULT_BRAND_KIT);
+    }
+  }
+
+  function _saveBrandKit(kit) {
+    localStorage.setItem(BRAND_KIT_KEY, JSON.stringify(Object.assign({}, _brandKit(), kit || {})));
+  }
+
+  function _fontOptions(current) {
+    return GOOGLE_FONTS.map(function (f) {
+      return '<option value="' + FB.design._esc(f) + '"' + (f === current ? " selected" : "") + ">" + FB.design._esc(f) + "</option>";
+    }).join("");
+  }
+
+  function _brandKitPanel() {
+    var kit = _brandKit();
+    return (
+      '<div class="ds-prop-group ds-brand-kit-props">' +
+      '<div class="ds-prop-label">Brand Kit</div>' +
+      '<div class="ds-motion-grid">' +
+      '<label>Primary<input type="color" class="ds-color-swatch" value="' + FB.design.normalizeColorForInput(kit.primary) + '" oninput="FB.design.props.setBrandKit(\'primary\',this.value)"></label>' +
+      '<label>Accent<input type="color" class="ds-color-swatch" value="' + FB.design.normalizeColorForInput(kit.accent) + '" oninput="FB.design.props.setBrandKit(\'accent\',this.value)"></label>' +
+      '</div>' +
+      '<div class="ds-motion-grid">' +
+      '<label>Background<input type="color" class="ds-color-swatch" value="' + FB.design.normalizeColorForInput(kit.background) + '" oninput="FB.design.props.setBrandKit(\'background\',this.value)"></label>' +
+      '<label>Text<input type="color" class="ds-color-swatch" value="' + FB.design.normalizeColorForInput(kit.text) + '" oninput="FB.design.props.setBrandKit(\'text\',this.value)"></label>' +
+      '</div>' +
+      '<label class="ds-mini-label">Secondary Surface</label>' +
+      '<div class="ds-color-row"><input type="color" class="ds-color-swatch" value="' + FB.design.normalizeColorForInput(kit.secondary) + '" oninput="FB.design.props.setBrandKit(\'secondary\',this.value)">' +
+      '<input class="ds-input" value="' + FB.design._esc(kit.secondary) + '" onchange="FB.design.props.setBrandKit(\'secondary\',this.value)"></div>' +
+      '<label class="ds-mini-label">Heading Font</label>' +
+      '<select class="ds-select" onchange="FB.design.props.setBrandKit(\'headingFont\',this.value)">' + _fontOptions(kit.headingFont) + '</select>' +
+      '<label class="ds-mini-label">Body Font</label>' +
+      '<select class="ds-select" onchange="FB.design.props.setBrandKit(\'bodyFont\',this.value)">' + _fontOptions(kit.bodyFont) + '</select>' +
+      '<label class="ds-veltro-control"><span>Radius <output>' + kit.radius + 'px</output></span>' +
+      '<input class="ds-input" type="range" min="0" max="24" step="1" value="' + kit.radius + '" oninput="this.previousElementSibling.querySelector(\'output\').textContent=this.value+\'px\';FB.design.props.setBrandKit(\'radius\',+this.value)"></label>' +
+      '<div class="ds-motion-presets">' +
+      '<button class="ds-sm-btn" onclick="FB.design.props.captureBrandFromSelection()">Capture</button>' +
+      '<button class="ds-sm-btn" onclick="FB.design.props.applyBrandToSelection()">Apply</button>' +
+      '<button class="ds-sm-btn" onclick="FB.design.props.applyBrandToCanvas()">Canvas BG</button>' +
+      '</div>' +
+      '</div>'
+    );
+  }
+
+  function _brandSelectionPanel() {
+    return (
+      '<div class="ds-prop-group ds-brand-kit-props">' +
+      '<div class="ds-prop-label">Brand Kit</div>' +
+      '<div class="ds-motion-presets">' +
+      '<button class="ds-sm-btn" onclick="FB.design.props.applyBrandToSelection()">Apply Brand</button>' +
+      '<button class="ds-sm-btn" onclick="FB.design.props.captureBrandFromSelection()">Capture Style</button>' +
+      '</div>' +
+      '</div>'
+    );
+  }
 
   function render() {
     var fc = FB.design.canvas.get();
@@ -2332,6 +3309,9 @@ FB.design.props = (function () {
     if (!obj) {
       el.innerHTML = _canvasProps(fc);
       return;
+    }
+    if (obj._dsMarketingWidget && FB.design.switchRightTab) {
+      FB.design.switchRightTab("design");
     }
     var body =
       obj.type === "i-text"
@@ -2507,6 +3487,8 @@ FB.design.props = (function () {
     var fillNormalized = FB.design.normalizeColorForInput(fill);
     var strokeNormalized = FB.design.normalizeColorForInput(stroke === "transparent" ? "#000000" : stroke);
     var html = _posSize(obj);
+    html += _brandSelectionPanel();
+    html += _marketingWidgetProps(obj);
     html +=
       '<div class="ds-prop-group"><div class="ds-prop-label">Fill</div>' +
       '<div class="ds-color-row"><input id="shape-fill-color" name="shape-fill-color" type="color" class="ds-color-swatch" value="' +
@@ -2543,14 +3525,143 @@ FB.design.props = (function () {
         (obj.rx || 0) +
         "\" onchange=\"FB.design.props.setPropXY('rx','ry',+this.value)\"/></div>";
     }
+    html += _imageSlotSection(obj);
     html += _shadowSection(obj);
     html += _motionSection(obj);
     return html;
   }
 
+  function _marketingChildren(obj) {
+    return obj && obj.type === "group" && obj._objects ? obj._objects : [];
+  }
+
+  function _marketingHasName(obj, re) {
+    return re.test(String((obj && obj.name) || ""));
+  }
+
+  function _marketingChild(obj, re, type) {
+    return _marketingChildren(obj).filter(function (child) {
+      return child && (!type || child.type === type) && _marketingHasName(child, re);
+    })[0] || null;
+  }
+
+  function _marketingColor(obj, re, fallback) {
+    var child = _marketingChild(obj, re);
+    return FB.design.normalizeColorForInput((child && child.fill) || fallback);
+  }
+
+  function _marketingRadius(obj) {
+    var child = _marketingChild(obj, /(Background|Card|Strip bg|CTA bg|Badge bg|Label bg|Urgency bg|Image slot)/, "rect");
+    return Math.round((child && child.rx) || 0);
+  }
+
+  function _marketingTextValue(obj, kind) {
+    var re = kind === "cta" ? /\/ CTA$/ : /\/ (Badge|Label|Urgency)$/;
+    var child = _marketingChild(obj, re, "i-text");
+    return child ? child.text || "" : "";
+  }
+
+  function _marketingCopyFields(obj) {
+    var fields = _marketingChildren(obj).map(function (child, index) {
+      if (!child || child.type !== "i-text") return "";
+      var name = String(child.name || "");
+      if (/\/ Image label$/.test(name)) return "";
+      var label = name.split(" / ").pop() || "Text";
+      var value = child.text || "";
+      var rows = value.indexOf("\n") !== -1 || value.length > 48 ? 3 : 1;
+      if (rows > 1) {
+        return (
+          '<label class="ds-mini-label">' + FB.design._esc(label) + '</label>' +
+          '<textarea class="ds-input" rows="' + rows + '" oninput="FB.design.props.setMarketingLayerText(' + index + ',this.value)">' +
+          FB.design._esc(value) +
+          '</textarea>'
+        );
+      }
+      return (
+        '<label class="ds-mini-label">' + FB.design._esc(label) + '</label>' +
+        '<input class="ds-input" value="' + FB.design._esc(value) + '" oninput="FB.design.props.setMarketingLayerText(' + index + ',this.value)">'
+      );
+    }).filter(Boolean);
+    if (!fields.length) return "";
+    return (
+      '<div class="ds-prop-group ds-marketing-copy-props">' +
+      '<div class="ds-prop-label">Copy</div>' +
+      fields.join("") +
+      '</div>'
+    );
+  }
+
+  function _marketingWidgetProps(obj) {
+    if (!obj || !obj._dsMarketingWidget) return "";
+    var type = obj._dsMarketingType || "";
+    var variant = obj._dsMarketingVariant || "";
+    var accent = _marketingColor(obj, /(CTA bg|Badge bg|Label bg|Urgency bg|Accent bar|Stars|Rating|Category|Metric|Avatar bg|Bullet .* dot|Price)/, "#cdfe00");
+    var bg = _marketingColor(obj, /(Background|Card|Strip bg)/, "#101014");
+    var radius = _marketingRadius(obj);
+    var cta = _marketingTextValue(obj, "cta");
+    var badge = _marketingTextValue(obj, "badge");
+    var variantOptions = FB.design.elements && FB.design.elements._marketingVariantOptions
+      ? FB.design.elements._marketingVariantOptions(type, variant)
+      : "";
+    return (
+      '<div class="ds-prop-group ds-marketing-props">' +
+      '<div class="ds-prop-label">Marketing Widget</div>' +
+      '<label class="ds-mini-label">Variant</label>' +
+      '<select class="ds-select" onchange="FB.design.props.regenerateMarketingVariant(this.value)">' +
+      variantOptions +
+      '</select>' +
+      '<label class="ds-mini-label">Theme</label>' +
+      '<select class="ds-select" onchange="FB.design.props.setMarketingTheme(this.value)">' +
+      '<option value="">Custom</option>' +
+      '<option value="dark">Dark</option>' +
+      '<option value="light">Light</option>' +
+      '<option value="premium">Premium</option>' +
+      '<option value="sale">Sale</option>' +
+      '<option value="tech">Tech</option>' +
+      '</select>' +
+      '<div class="ds-motion-grid">' +
+      '<label>Accent<input type="color" class="ds-color-swatch" value="' + accent + '" oninput="FB.design.props.setMarketingAccent(this.value)"></label>' +
+      '<label>Background<input type="color" class="ds-color-swatch" value="' + bg + '" oninput="FB.design.props.setMarketingBackground(this.value)"></label>' +
+      '</div>' +
+      '<label class="ds-mini-label">Corner Radius</label>' +
+      '<input class="ds-input" type="range" min="0" max="24" step="1" value="' + radius + '" oninput="this.nextElementSibling.value=this.value;FB.design.props.setMarketingRadius(+this.value)">' +
+      '<input class="ds-input" type="number" min="0" max="24" value="' + radius + '" onchange="FB.design.props.setMarketingRadius(+this.value)" style="margin-top:6px">' +
+      '<label class="ds-mini-label">CTA Text</label>' +
+      '<input class="ds-input" value="' + FB.design._esc(cta) + '" oninput="FB.design.props.setMarketingText(\'cta\',this.value)">' +
+      '<label class="ds-mini-label">Badge / Label Text</label>' +
+      '<input class="ds-input" value="' + FB.design._esc(badge) + '" oninput="FB.design.props.setMarketingText(\'badge\',this.value)">' +
+      _marketingCopyFields(obj) +
+      '<label class="ds-mini-label">Fit Layout</label>' +
+      '<div class="ds-motion-presets">' +
+      '<button class="ds-sm-btn" onclick="FB.design.props.fitMarketingWidget(\'square\')">Square</button>' +
+      '<button class="ds-sm-btn" onclick="FB.design.props.fitMarketingWidget(\'story\')">Story</button>' +
+      '<button class="ds-sm-btn" onclick="FB.design.props.fitMarketingWidget(\'banner\')">Banner</button>' +
+      '<button class="ds-sm-btn" onclick="FB.design.props.fitMarketingWidget(\'hero\')">Hero</button>' +
+      '<button class="ds-sm-btn" onclick="FB.design.props.fitMarketingWidget(\'social\')">Social</button>' +
+      '</div>' +
+      '<button class="ds-sm-btn" style="width:100%;margin-top:8px" onclick="FB.design.elements.saveMarketingPreset()">Save as marketing preset</button>' +
+      '<button class="ds-sm-btn" style="width:100%;margin-top:8px" onclick="FB.design.canvas.ungroup()">Ungroup for full editing</button>' +
+      '</div>'
+    );
+  }
+
+  function _imageSlotSection(obj) {
+    var slot = FB.design.elements && FB.design.elements.imageSlotFor ? FB.design.elements.imageSlotFor(obj) : null;
+    if (!slot) return "";
+    var label = slot._dsImageSlotPrefix || "Marketing";
+    return (
+      '<div class="ds-prop-group ds-image-slot-tools">' +
+      '<div class="ds-prop-label">Image Slot</div>' +
+      '<div class="ds-mini-label">' + FB.design._esc(label) + '</div>' +
+      '<button class="ds-action-btn" style="width:100%;justify-content:center" onclick="FB.design.props.replaceSlotImage()">Replace Image</button>' +
+      '<button class="ds-sm-btn" style="width:100%;margin-top:6px" onclick="FB.design.switchLeftTab(\'media\')">Choose from Media</button>' +
+      '</div>'
+    );
+  }
+
   function _veltroWidgetProps(obj) {
     var props = obj._veltroProps || {};
-    var type = obj._veltroWidget || "physicsSandbox";
+    var type = obj._veltroWidget || "kineticText";
     var textValue = props.text || props.title || props.words || props.contentTitle || props.content || props.spotlightText || ((props.items || []).join(", ")) || "";
     var color1 = FB.design.normalizeColorForInput(_veltroValue(props, ["color1", "textColor", "particleColor", "magnetColor"], "#cdfe00"));
     var color2 = FB.design.normalizeColorForInput(_veltroValue(props, ["color2", "dualColour2", "wellColor", "glowColor"], "#3b82f6"));
@@ -2564,6 +3675,7 @@ FB.design.props = (function () {
     var fontSize = _veltroNumber(props, ["fontSize", "textSize"], 56);
 
     var html = _posSize(obj);
+    html += _brandSelectionPanel();
     html +=
       '<div class="ds-prop-group ds-veltro-props">' +
       '<div class="ds-prop-label" style="display:flex;align-items:center;justify-content:space-between;">' +
@@ -2736,6 +3848,7 @@ FB.design.props = (function () {
     var lineH = +(obj.lineHeight || 1.2).toFixed(1);
     var spacing = +(obj.charSpacing || 0);
     var html = _posSize(obj);
+    html += _brandSelectionPanel();
 
     // Font family
     html +=
@@ -2856,6 +3969,7 @@ FB.design.props = (function () {
 
   function _canvasProps(fc) {
     var canvasBgColor = FB.design.normalizeColorForInput(FB.design._canvasBg || "#ffffff");
+    var snap = FB.design.canvas && FB.design.canvas.snapSettings ? FB.design.canvas.snapSettings() : { enabled: true, guides: true, threshold: 8, margin: 24 };
     return (
       '<div class="ds-prop-group"><div class="ds-prop-label">Canvas Background</div>' +
       '<div class="ds-color-row"><input type="color" class="ds-color-swatch" value="' +
@@ -2863,7 +3977,18 @@ FB.design.props = (function () {
       '" onchange="FB.design.props.setCanvasBg(this.value)"/>' +
       '<input class="ds-input" value="' +
       (FB.design._canvasBg || "#ffffff") +
-      '" onchange="FB.design.props.setCanvasBg(this.value)"/></div></div>'
+      '" onchange="FB.design.props.setCanvasBg(this.value)"/></div></div>' +
+      '<div class="ds-prop-group ds-snap-props">' +
+      '<div class="ds-prop-label">Snapping</div>' +
+      '<label class="ds-check-row"><input type="checkbox" ' + (snap.enabled ? "checked" : "") + ' onchange="FB.design.props.setSnapSetting(\'enabled\',this.checked)"> Enable snapping</label>' +
+      '<label class="ds-check-row"><input type="checkbox" ' + (snap.guides ? "checked" : "") + ' onchange="FB.design.props.setSnapSetting(\'guides\',this.checked)"> Show alignment guides</label>' +
+      '<label class="ds-veltro-control"><span>Sensitivity <output>' + snap.threshold + 'px</output></span>' +
+      '<input class="ds-input" type="range" min="1" max="24" step="1" value="' + snap.threshold + '" oninput="this.previousElementSibling.querySelector(\'output\').textContent=this.value+\'px\';FB.design.props.setSnapSetting(\'threshold\',+this.value)"></label>' +
+      '<label class="ds-veltro-control"><span>Margin Guide <output>' + snap.margin + 'px</output></span>' +
+      '<input class="ds-input" type="range" min="0" max="120" step="1" value="' + snap.margin + '" oninput="this.previousElementSibling.querySelector(\'output\').textContent=this.value+\'px\';FB.design.props.setSnapSetting(\'margin\',+this.value)"></label>' +
+      '<div class="ds-mini-label">Hold Alt while moving or resizing to bypass snapping.</div>' +
+      '</div>' +
+      _brandKitPanel()
     );
   }
 
@@ -2937,6 +4062,109 @@ FB.design.props = (function () {
       fc.renderAll();
       FB.design.history.push();
     });
+  }
+
+  function setBrandKit(key, value) {
+    var patch = {};
+    if (key === "radius") value = Math.max(0, Math.min(24, +value || 0));
+    patch[key] = value;
+    _saveBrandKit(patch);
+  }
+
+  function _brandContrast(hex) {
+    var c = FB.design.normalizeColorForInput(hex || "#cdfe00").replace("#", "");
+    var r = parseInt(c.slice(0, 2), 16);
+    var g = parseInt(c.slice(2, 4), 16);
+    var b = parseInt(c.slice(4, 6), 16);
+    return (r * 299 + g * 587 + b * 114) / 1000 > 150 ? "#111111" : "#ffffff";
+  }
+
+  function _applyBrandToObject(obj, kit) {
+    if (!obj) return;
+    var name = String(obj.name || "");
+    if (obj.type === "i-text") {
+      obj.set({
+        fill: /CTA|Badge|Label|Urgency/.test(name) ? _brandContrast(kit.primary) : kit.text,
+        fontFamily: /Headline|Title|Name|Price|Metric/.test(name) ? kit.headingFont : kit.bodyFont,
+      });
+      return;
+    }
+    if (obj.type === "rect") {
+      if (/Background|Card|Strip bg/.test(name)) obj.set("fill", kit.background);
+      else if (/CTA bg|Badge bg|Label bg|Urgency bg|Accent bar|Bullet \d+ dot|Avatar bg/.test(name)) obj.set("fill", kit.primary);
+      else if (/Guarantee bg|Metric pill bg|Chip \d+ bg|Image slot/.test(name)) obj.set("fill", kit.secondary);
+      else obj.set("fill", kit.primary);
+      obj.set({ rx: kit.radius, ry: kit.radius });
+      if (obj.stroke && obj.stroke !== "transparent") obj.set("stroke", kit.accent);
+      return;
+    }
+    if (obj.type === "circle" || obj.type === "ellipse" || obj.type === "polygon" || obj.type === "triangle") {
+      obj.set("fill", /Accent|Star|Rating|Metric|Price/.test(name) ? kit.accent : kit.primary);
+      return;
+    }
+    if (obj.type === "line") {
+      obj.set("stroke", kit.accent);
+    }
+  }
+
+  function applyBrandToSelection() {
+    var fc = FB.design.canvas.get();
+    if (!fc) return;
+    var kit = _brandKit();
+    var objs = fc.getActiveObjects();
+    if (!objs.length) return;
+    objs.forEach(function (obj) {
+      if (obj.type === "group" && obj._objects) {
+        obj._objects.forEach(function (child) {
+          _applyBrandToObject(child, kit);
+        });
+        if (obj.addWithUpdate) obj.addWithUpdate();
+      } else {
+        _applyBrandToObject(obj, kit);
+      }
+      obj.dirty = true;
+      obj.setCoords();
+    });
+    fc.renderAll();
+    if (FB.design.layers) FB.design.layers.render();
+    if (FB.design.props) FB.design.props.render();
+    FB.design.history.push();
+  }
+
+  function applyBrandToCanvas() {
+    setCanvasBg(_brandKit().background);
+    render();
+  }
+
+  function captureBrandFromSelection() {
+    var fc = FB.design.canvas.get();
+    var obj = fc && fc.getActiveObject();
+    if (!obj) return;
+    var source = obj;
+    if (obj.type === "group" && obj._objects) {
+      source = obj._objects.filter(function (child) {
+        return child && (child.type === "rect" || child.type === "i-text");
+      })[0] || obj;
+    }
+    var patch = {};
+    if (source.fill && typeof source.fill === "string") {
+      if (source.type === "i-text") patch.text = source.fill;
+      else patch.primary = source.fill;
+    }
+    if (source.fontFamily) {
+      patch.headingFont = source.fontFamily;
+      patch.bodyFont = source.fontFamily;
+    }
+    if (source.rx != null) patch.radius = Math.max(0, Math.min(24, Math.round(source.rx || 0)));
+    _saveBrandKit(patch);
+    render();
+    if (FB.util && FB.util.showToast) FB.util.showToast("Brand kit updated from selection");
+  }
+
+  function setSnapSetting(key, value) {
+    if (FB.design.canvas && FB.design.canvas.setSnapSetting) {
+      FB.design.canvas.setSnapSetting(key, value);
+    }
   }
 
   function updateVeltroObject(obj) {
@@ -3136,6 +4364,223 @@ FB.design.props = (function () {
     if (!obj || !obj._veltroWidget || !presets[kind]) return;
     obj._veltroProps = Object.assign({}, obj._veltroProps || {}, presets[kind]);
     updateVeltroObject(obj);
+    render();
+  }
+
+  function _activeMarketingGroup() {
+    var fc = FB.design.canvas.get();
+    var obj = fc && fc.getActiveObject();
+    return obj && obj._dsMarketingWidget && obj.type === "group" ? obj : null;
+  }
+
+  function _marketingApply(fn) {
+    var fc = FB.design.canvas.get();
+    var obj = _activeMarketingGroup();
+    if (!fc || !obj) return;
+    (obj._objects || []).forEach(function (child) {
+      if (child) fn(child, String(child.name || ""));
+    });
+    if (obj.addWithUpdate) obj.addWithUpdate();
+    obj.dirty = true;
+    obj.setCoords();
+    fc.renderAll();
+    if (FB.design.layers) FB.design.layers.render();
+    FB.design.history.push();
+  }
+
+  function _marketingContrast(hex) {
+    var c = FB.design.normalizeColorForInput(hex || "#cdfe00").replace("#", "");
+    var r = parseInt(c.slice(0, 2), 16);
+    var g = parseInt(c.slice(2, 4), 16);
+    var b = parseInt(c.slice(4, 6), 16);
+    return (r * 299 + g * 587 + b * 114) / 1000 > 150 ? "#111111" : "#ffffff";
+  }
+
+  function _marketingIsAccentName(name) {
+    return /(CTA bg|Badge bg|Label bg|Urgency bg|Accent bar|Avatar bg|Bullet \d+ dot|Stars|Rating|Category|Metric$|Price$)/.test(name);
+  }
+
+  function _marketingIsAccentText(name) {
+    return /\/ (CTA|Badge|Label|Urgency)$/.test(name);
+  }
+
+  function setMarketingAccent(value) {
+    var textFill = _marketingContrast(value);
+    _marketingApply(function (child, name) {
+      if (/Accent wash|Accent triangle/.test(name)) {
+        child.set("fill", value + "26");
+      } else if (_marketingIsAccentName(name)) {
+        child.set("fill", value);
+      } else if (_marketingIsAccentText(name)) {
+        child.set("fill", textFill);
+      }
+    });
+  }
+
+  function setMarketingBackground(value) {
+    _marketingApply(function (child, name) {
+      if (/(Background|Card|Strip bg)$/.test(name)) child.set("fill", value);
+    });
+  }
+
+  function setMarketingRadius(value) {
+    var radius = Math.max(0, Math.min(24, Number.isFinite(+value) ? +value : 0));
+    _marketingApply(function (child, name) {
+      if (child.type !== "rect") return;
+      if (/Accent bar/.test(name)) {
+        child.set({ rx: 0, ry: 0 });
+      } else if (/(Background|Card|Strip bg|CTA bg|Badge bg|Label bg|Urgency bg|Guarantee bg|Metric pill bg|Image slot|Chip \d+ bg)/.test(name)) {
+        child.set({ rx: radius, ry: radius });
+      }
+    });
+  }
+
+  function setMarketingText(kind, value) {
+    var re = kind === "cta" ? /\/ CTA$/ : /\/ (Badge|Label|Urgency)$/;
+    _marketingApply(function (child, name) {
+      if (child.type === "i-text" && re.test(name)) child.set("text", String(value || ""));
+    });
+  }
+
+  function setMarketingLayerText(index, value) {
+    var fc = FB.design.canvas.get();
+    var obj = _activeMarketingGroup();
+    if (!fc || !obj || !obj._objects || !obj._objects[index]) return;
+    var child = obj._objects[index];
+    if (child.type !== "i-text") return;
+    child.set("text", String(value || ""));
+    if (obj.addWithUpdate) obj.addWithUpdate();
+    obj.dirty = true;
+    obj.setCoords();
+    fc.renderAll();
+    if (FB.design.layers) FB.design.layers.render();
+    FB.design.history.push();
+  }
+
+  function setMarketingTheme(kind) {
+    var themes = {
+      dark: { bg: "#101014", accent: "#cdfe00", text: "#ffffff", muted: "#a7a7ad", panel: "#181820", stroke: "#2d2d35" },
+      light: { bg: "#f7f7f2", accent: "#111111", text: "#111111", muted: "#52525b", panel: "#ffffff", stroke: "#d4d4d8" },
+      premium: { bg: "#11100d", accent: "#f5f5f0", text: "#ffffff", muted: "#a7a29a", panel: "#1b1812", stroke: "#383126" },
+      sale: { bg: "#130d10", accent: "#fb7185", text: "#ffffff", muted: "#e7b5bf", panel: "#211319", stroke: "#4a2630" },
+      tech: { bg: "#0d1117", accent: "#7dd3fc", text: "#ffffff", muted: "#9fb6c8", panel: "#111827", stroke: "#263547" },
+    };
+    var t = themes[kind];
+    if (!t) return;
+    var accentText = _marketingContrast(t.accent);
+    _marketingApply(function (child, name) {
+      if (/(Background|Card|Strip bg)$/.test(name)) child.set("fill", t.bg);
+      if (/(Guarantee bg|Metric pill bg|Chip \d+ bg|Image slot)/.test(name)) child.set("fill", t.panel);
+      if (child.stroke && /(Background|Card|Strip bg|Guarantee bg|Metric pill bg|Image slot)/.test(name)) child.set("stroke", t.stroke);
+      if (/Accent wash|Accent triangle/.test(name)) child.set("fill", t.accent + "26");
+      else if (_marketingIsAccentName(name)) child.set("fill", t.accent);
+      if (child.type === "i-text") {
+        if (_marketingIsAccentText(name)) child.set("fill", accentText);
+        else if (/(Headline|Title|Name|Quote|Avatar initial|Price)$/.test(name) && !/(Metric|Stars|Rating|Category)/.test(name)) child.set("fill", t.text);
+        else if (/(Subhead|Copy|Trust line|Trust label|Role|Period|Guarantee|Metric label|Bullet \d+|Chip \d+|Image label)/.test(name)) child.set("fill", t.muted);
+      }
+    });
+    render();
+  }
+
+  function regenerateMarketingVariant(variant) {
+    var obj = _activeMarketingGroup();
+    if (!obj || !FB.design.elements || !FB.design.elements.regenerateMarketingWidget) return;
+    FB.design.elements.regenerateMarketingWidget(obj, variant);
+  }
+
+  function _marketingSlotBounds(slot) {
+    slot.setCoords();
+    var matrix = slot.calcTransformMatrix();
+    var points = [
+      new fabric.Point(0, 0),
+      new fabric.Point(slot.width || 1, 0),
+      new fabric.Point(slot.width || 1, slot.height || 1),
+      new fabric.Point(0, slot.height || 1),
+    ].map(function (point) {
+      return fabric.util.transformPoint(point, matrix);
+    });
+    var xs = points.map(function (point) { return point.x; });
+    var ys = points.map(function (point) { return point.y; });
+    return {
+      left: Math.min.apply(Math, xs),
+      top: Math.min.apply(Math, ys),
+      width: Math.max(1, Math.max.apply(Math, xs) - Math.min.apply(Math, xs)),
+      height: Math.max(1, Math.max.apply(Math, ys) - Math.min.apply(Math, ys)),
+    };
+  }
+
+  function _marketingRefreshSlotImages(group) {
+    var fc = FB.design.canvas.get();
+    if (!fc || !group) return;
+    (group._objects || []).forEach(function (slot) {
+      if (!slot || !slot._dsImageSlot || !slot._dsImageSlotId) return;
+      var img = fc.getObjects().filter(function (item) {
+        return item && item._dsSlotImage && item._dsSlotImageFor === slot._dsImageSlotId;
+      })[0];
+      if (!img) return;
+      var bounds = _marketingSlotBounds(slot);
+      var imageEl = img.getElement ? img.getElement() : null;
+      var intrinsicW = img.width || (imageEl && (imageEl.naturalWidth || imageEl.width)) || bounds.width;
+      var intrinsicH = img.height || (imageEl && (imageEl.naturalHeight || imageEl.height)) || bounds.height;
+      var scale = Math.max(bounds.width / intrinsicW, bounds.height / intrinsicH);
+      img.set({
+        width: intrinsicW,
+        height: intrinsicH,
+        left: bounds.left + (bounds.width - intrinsicW * scale) / 2,
+        top: bounds.top + (bounds.height - intrinsicH * scale) / 2,
+        scaleX: scale,
+        scaleY: scale,
+        clipPath: new fabric.Rect({
+          left: bounds.left,
+          top: bounds.top,
+          width: bounds.width,
+          height: bounds.height,
+          absolutePositioned: true,
+        }),
+      });
+      img.setCoords();
+    });
+  }
+
+  function fitMarketingWidget(kind) {
+    var fc = FB.design.canvas.get();
+    var obj = _activeMarketingGroup();
+    if (!fc || !obj) return;
+    var formats = {
+      square: { w: 1, h: 1, pad: 0.12 },
+      story: { w: 9, h: 16, pad: 0.08 },
+      banner: { w: 3, h: 1, pad: 0.08 },
+      hero: { w: 16, h: 5, pad: 0.08 },
+      social: { w: 1200, h: 630, pad: 0.1 },
+    };
+    var f = formats[kind] || formats.square;
+    var canvasW = fc.getWidth();
+    var canvasH = fc.getHeight();
+    var availableW = canvasW * (1 - f.pad * 2);
+    var availableH = canvasH * (1 - f.pad * 2);
+    var targetAspect = f.w / f.h;
+    var boxW = availableW;
+    var boxH = boxW / targetAspect;
+    if (boxH > availableH) {
+      boxH = availableH;
+      boxW = boxH * targetAspect;
+    }
+    var baseW = obj.width || obj.getScaledWidth() || 1;
+    var baseH = obj.height || obj.getScaledHeight() || 1;
+    var scale = Math.min(boxW / baseW, boxH / baseH);
+    obj.set({
+      scaleX: scale,
+      scaleY: scale,
+      left: canvasW / 2 - (baseW * scale) / 2,
+      top: canvasH / 2 - (baseH * scale) / 2,
+    });
+    obj.setCoords();
+    _marketingRefreshSlotImages(obj);
+    fc.setActiveObject(obj);
+    fc.renderAll();
+    if (FB.design.layers) FB.design.layers.render();
+    FB.design.history.push();
     render();
   }
 
@@ -3360,6 +4805,24 @@ FB.design.props = (function () {
     requestAnimationFrame(frame);
   }
 
+  function replaceSlotImage() {
+    var inp = document.createElement("input");
+    inp.type = "file";
+    inp.accept = "image/*";
+    inp.onchange = function () {
+      var file = inp.files && inp.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function (ev) {
+        if (FB.design.media && FB.design.media.replaceSelectedSlot) {
+          FB.design.media.replaceSelectedSlot(ev.target.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    };
+    inp.click();
+  }
+
   return {
     render: render,
     setProp: setProp,
@@ -3370,6 +4833,11 @@ FB.design.props = (function () {
     flipH: flipH,
     flipV: flipV,
     setCanvasBg: setCanvasBg,
+    setBrandKit: setBrandKit,
+    applyBrandToSelection: applyBrandToSelection,
+    applyBrandToCanvas: applyBrandToCanvas,
+    captureBrandFromSelection: captureBrandFromSelection,
+    setSnapSetting: setSnapSetting,
     setVeltroWidget: setVeltroWidget,
     setVeltroProp: setVeltroProp,
     setVeltroProps: setVeltroProps,
@@ -3383,6 +4851,14 @@ FB.design.props = (function () {
     setVeltroLines: setVeltroLines,
     refreshVeltroWidget: refreshVeltroWidget,
     setVeltroPreset: setVeltroPreset,
+    setMarketingAccent: setMarketingAccent,
+    setMarketingBackground: setMarketingBackground,
+    setMarketingRadius: setMarketingRadius,
+    setMarketingText: setMarketingText,
+    setMarketingLayerText: setMarketingLayerText,
+    setMarketingTheme: setMarketingTheme,
+    regenerateMarketingVariant: regenerateMarketingVariant,
+    fitMarketingWidget: fitMarketingWidget,
     duplicate: duplicate,
     deleteSelected: deleteSelected,
     toggleBold: toggleBold,
@@ -3391,6 +4867,7 @@ FB.design.props = (function () {
     setMotion: setMotion,
     applyMotionPreset: applyMotionPreset,
     previewMotion: previewMotion,
+    replaceSlotImage: replaceSlotImage,
   };
 })();
 
@@ -4084,14 +5561,14 @@ FB.design.library = (function () {
         color3: tokens.accent,
       }),
     };
-    return map[effect] || map.physicsSandbox;
+    return map[effect] || map.kineticText;
   }
 
   function insertVeltroBlock() {
     var fc = FB.design.canvas.get();
     if (!fc) return;
     var select = document.getElementById("ds-veltro-effect");
-    var effect = select ? select.value : "physicsSandbox";
+    var effect = select ? select.value : "kineticText";
     var props = veltroPropsFor(effect, collectDesignTokens(fc));
     FB.panels.setMode("builder");
     FB.state.saveHistory();
@@ -4109,7 +5586,7 @@ FB.design.library = (function () {
     var fc = FB.design.canvas.get();
     if (!fc) return null;
     var select = document.getElementById("ds-veltro-effect");
-    var effect = select ? select.value : "physicsSandbox";
+    var effect = select ? select.value : "kineticText";
     return {
       id: "ds-preview-" + effect,
       type: effect,
@@ -4297,6 +5774,9 @@ FB.design.media = (function () {
     .then(function (data) {
       btn.textContent = "✅ Success!";
       inp.value = "";
+      if (data && data.name) {
+        replaceSelectedSlot("/media/" + encodeURIComponent(data.name));
+      }
       setTimeout(function () {
         btn.textContent = origText;
         btn.disabled = false;
@@ -4348,6 +5828,7 @@ FB.design.media = (function () {
   function insertImage(src) {
     var fc = FB.design.canvas.get();
     if (!fc) return;
+    if (replaceSelectedSlot(src)) return;
     
     fabric.Image.fromURL(src, function (img) {
       var maxW = fc.getWidth() * 0.5;
@@ -4362,6 +5843,92 @@ FB.design.media = (function () {
       fc.renderAll();
       FB.design.history.push();
     }, { crossOrigin: "anonymous" });
+  }
+
+  function _selectedSlot() {
+    var fc = FB.design.canvas.get();
+    var obj = fc && fc.getActiveObject();
+    if (!obj || !FB.design.elements || !FB.design.elements.imageSlotFor) return null;
+    return FB.design.elements.imageSlotFor(obj);
+  }
+
+  function _slotBounds(slot) {
+    slot.setCoords();
+    var matrix = slot.calcTransformMatrix();
+    var points = [
+      new fabric.Point(0, 0),
+      new fabric.Point(slot.width || 1, 0),
+      new fabric.Point(slot.width || 1, slot.height || 1),
+      new fabric.Point(0, slot.height || 1),
+    ].map(function (point) {
+      return fabric.util.transformPoint(point, matrix);
+    });
+    var xs = points.map(function (point) { return point.x; });
+    var ys = points.map(function (point) { return point.y; });
+    var b = {
+      left: Math.min.apply(Math, xs),
+      top: Math.min.apply(Math, ys),
+      width: Math.max.apply(Math, xs) - Math.min.apply(Math, xs),
+      height: Math.max.apply(Math, ys) - Math.min.apply(Math, ys),
+    };
+    return {
+      left: b.left,
+      top: b.top,
+      width: Math.max(1, b.width),
+      height: Math.max(1, b.height),
+    };
+  }
+
+  function replaceSelectedSlot(src) {
+    var fc = FB.design.canvas.get();
+    var slot = _selectedSlot();
+    if (!fc || !slot) return false;
+    var bounds = _slotBounds(slot);
+    var slotId = slot._dsImageSlotId || ("ds-img-slot-" + Date.now());
+    slot._dsImageSlotId = slotId;
+
+    fabric.Image.fromURL(src, function (img) {
+      fc.getObjects().slice().forEach(function (obj) {
+        if (obj._dsSlotImage && obj._dsSlotImageFor === slotId) fc.remove(obj);
+      });
+      var imageEl = img.getElement ? img.getElement() : null;
+      var intrinsicW = img.width || (imageEl && (imageEl.naturalWidth || imageEl.width)) || bounds.width;
+      var intrinsicH = img.height || (imageEl && (imageEl.naturalHeight || imageEl.height)) || bounds.height;
+      var scale = Math.max(bounds.width / intrinsicW, bounds.height / intrinsicH);
+      var clip = new fabric.Rect({
+        left: bounds.left,
+        top: bounds.top,
+        width: bounds.width,
+        height: bounds.height,
+        absolutePositioned: true,
+      });
+      img.set({
+        width: intrinsicW,
+        height: intrinsicH,
+        left: bounds.left + (bounds.width - intrinsicW * scale) / 2,
+        top: bounds.top + (bounds.height - intrinsicH * scale) / 2,
+        originX: "left",
+        originY: "top",
+        scaleX: scale,
+        scaleY: scale,
+        clipPath: clip,
+        name: (slot._dsImageSlotPrefix || "Marketing") + " / Image",
+        _dsSlotImage: true,
+        _dsSlotImageFor: slotId,
+      });
+      fc.add(img);
+      var slotIndex = fc.getObjects().indexOf(slot.group || slot);
+      if (slotIndex >= 0) {
+        fc.moveTo(img, slotIndex + 1);
+      }
+      fc.setActiveObject(img);
+      fc.renderAll();
+      FB.design.layers.render();
+      FB.design.props.render();
+      FB.design.history.push();
+      if (FB.util && FB.util.showToast) FB.util.showToast("Image placed in slot");
+    }, { crossOrigin: "anonymous" });
+    return true;
   }
 
   function deleteMedia(e, name) {
@@ -4385,6 +5952,7 @@ FB.design.media = (function () {
     handleUpload: handleUpload,
     load: load,
     insertImage: insertImage,
+    replaceSelectedSlot: replaceSelectedSlot,
     deleteMedia: deleteMedia
   };
 })();

@@ -2066,6 +2066,44 @@
   font-size: 8px;
   color: #888;
 }
+.ds-marketing-variants {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 5px;
+}
+.ds-marketing-variant {
+  border: 1px solid rgba(205, 254, 0, 0.22);
+  border-radius: 999px;
+  background: rgba(205, 254, 0, 0.05);
+  color: #cdfe00;
+  cursor: pointer;
+  font-size: 7px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 4px 6px;
+}
+.ds-marketing-variant:hover {
+  background: #cdfe00;
+  color: #111;
+}
+.ds-marketing-preset-panel {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 8px;
+  padding: 4px 2px 8px;
+}
+.ds-marketing-preset-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 28px;
+  gap: 4px;
+  margin-top: 4px;
+}
+.ds-marketing-preset-row .ds-sm-btn {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .ds-veltro-tag {
   align-self: flex-start;
   margin-top: 3px;

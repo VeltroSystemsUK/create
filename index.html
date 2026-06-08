@@ -509,6 +509,32 @@
         <div class="lp-accordion">
           <div
             class="lp-acc-header"
+            data-acc="media"
+            onclick="FB.panels.toggleLeftAccordion(this)"
+          >
+            <span class="lp-acc-icon">🎨</span>
+            <span class="lp-acc-label">Media Library</span>
+            <span class="lp-acc-arrow">▶</span>
+          </div>
+          <div class="lp-acc-body" id="lp-body-media">
+            <div style="padding: 8px">
+              <div style="display: flex; gap: 4px; margin-bottom: 8px; flex-wrap: wrap">
+                <button class="rp-btn" onclick="FB.media.filterCategory('all')" style="flex: 1; padding: 4px 8px; font-size: 11px" id="media-filter-all">All</button>
+                <button class="rp-btn" onclick="FB.media.filterCategory('graphics')" style="flex: 1; padding: 4px 8px; font-size: 11px">Graphics</button>
+                <button class="rp-btn" onclick="FB.media.filterCategory('photos')" style="flex: 1; padding: 4px 8px; font-size: 11px">Photos</button>
+                <button class="rp-btn" onclick="FB.media.filterCategory('icons')" style="flex: 1; padding: 4px 8px; font-size: 11px">Icons</button>
+                <button class="rp-btn" onclick="FB.media.filterCategory('videos')" style="flex: 1; padding: 4px 8px; font-size: 11px">Videos</button>
+              </div>
+              <input type="file" id="media-upload-input" multiple accept="image/*,video/*,.svg" style="display: none" onchange="FB.media.handleUpload(event)">
+              <button class="rp-btn" onclick="document.getElementById('media-upload-input').click()" style="width: 100%; margin-bottom: 8px">+ Upload Media</button>
+              <div id="media-library-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; max-height: 300px; overflow-y: auto"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lp-accordion">
+          <div
+            class="lp-acc-header"
             data-acc="mydesigns"
             onclick="FB.panels.toggleLeftAccordion(this)"
           >
@@ -841,19 +867,15 @@
                   Veltro Engine
                 </div>
                 <select id="ds-veltro-effect" class="ds-select" onchange="FB.design.library.previewVeltroBlock()" style="margin: 0 12px; width: calc(100% - 24px)">
-                  <option value="physicsSandbox">Physics Sandbox</option>
-                  <option value="fluidSimulation">Fluid Simulation</option>
-                  <option value="gravityWells">Gravity Wells</option>
-                  <option value="magneticFields">Magnetic Fields</option>
+                  <option value="kineticText">Kinetic Text</option>
+                  <option value="textScramble">Text Scramble</option>
+                  <option value="typewriterReveal">Typewriter</option>
+                  <option value="liquidText">Liquid Text</option>
+                  <option value="morphingText">Morphing Text</option>
+                  <option value="morphingCounter">Counter</option>
                   <option value="waveText">Wave Text</option>
                   <option value="kineticScramble">Kinetic Scramble</option>
                   <option value="magneticText">Magnetic Text</option>
-                  <option value="liquidGradient">Liquid Gradient</option>
-                  <option value="particleNebula">Particle Nebula</option>
-                  <option value="auroraBorealis">Aurora Borealis</option>
-                  <option value="cursorLens">Cursor Lens</option>
-                  <option value="layeredParallax">Layered Parallax</option>
-                  <option value="morphingGrid">Morphing Grid</option>
                 </select>
                 <button
                   class="rp-btn"
@@ -993,6 +1015,7 @@
     <script src="js/lifecycle.js" async></script>
     <!-- Viewport Culling - Performance optimization for physics and canvas operations (async - optional) -->
     <script src="js/viewport-culling.js" async></script>
+    <script src="/js/media.js"></script>
     <script type="module" src="/src/main.js"></script>
     <!-- Load widgets AFTER FB is initialized -->
     <script>
