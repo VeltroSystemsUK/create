@@ -2887,6 +2887,7 @@ FB.design.props = (function () {
     var fc = FB.design.canvas.get();
     var obj = fc && fc.getActiveObject();
     if (!obj || !obj._veltroWidget) return;
+    console.log(`🎨 Setting ${obj._veltroWidget} ${slot} to ${value}`);
     var props = obj._veltroProps || {};
     var currentPrimary = slot === "primary" ? value : _veltroValue(props, ["color1", "textColor", "particleColor", "magnetColor"], "#cdfe00");
     var currentSecondary = slot === "secondary" ? value : _veltroValue(props, ["color2", "dualColour2", "wellColor", "glowColor"], "#3b82f6");
