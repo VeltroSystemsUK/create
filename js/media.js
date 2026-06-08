@@ -1,27 +1,23 @@
 FB.media = (function() {
-  const config = {
-    apiKey: "AIzaSyDOcnMAW8Et8cDHWsV-U9RxFsWqXpL5TAo",
-    authDomain: "veltro-create.firebaseapp.com",
-    projectId: "veltro-create",
-    storageBucket: "veltro-create.appspot.com",
-    messagingSenderId: "123456789",
-    appId: "1:123456789:web:abcd1234"
-  };
-
-  let firebase = null;
   let currentFilter = 'all';
   let mediaItems = [];
 
   function init() {
-    if (typeof window.firebase !== 'undefined') {
-      firebase = window.firebase;
-      loadMedia();
-    }
+    loadMedia();
+    setupCanvasDropZone();
   }
 
   function loadMedia() {
-    // TODO: Load from Firebase
+    // Load from localStorage
+    const stored = localStorage.getItem('veltro_media_library');
+    if (stored) {
+      mediaItems = JSON.parse(stored);
+    }
     renderGrid();
+  }
+
+  function saveMedia() {
+    localStorage.setItem('veltro_media_library', JSON.stringify(mediaItems));
   }
 
   function filterCategory(category) {
@@ -43,6 +39,7 @@ FB.media = (function() {
         class="media-item"
         draggable="true"
         ondragstart="FB.media.dragStart(event, '${item.id}')"
+        oncontextmenu="FB.media.showTagMenu(event, '${item.id}')"
         style="
           position: relative;
           padding: 6px;
@@ -56,12 +53,13 @@ FB.media = (function() {
           justify-content: center;
           overflow: hidden;
         "
-        title="${item.name}"
+        title="${item.name}${item.tags ? '\nTags: ' + item.tags.join(', ') : ''}"
       >
         ${item.type.startsWith('image') ? `<img src="${item.url}" style="max-width: 100%; max-height: 60px; object-fit: contain;">` :
           item.type.startsWith('video') ? `<span style="font-size: 24px">🎬</span>` :
           `<span style="font-size: 24px">📁</span>`}
         <div style="position: absolute; bottom: 2px; right: 2px; font-size: 10px; color: #999">${item.category}</div>
+        ${item.tags && item.tags.length > 0 ? `<div style="position: absolute; top: 2px; left: 2px; font-size: 8px; background: #444; padding: 2px 4px; border-radius: 2px; color: #ccc">${item.tags[0]}</div>` : ''}
       </div>
     `).join('');
   }
@@ -73,6 +71,67 @@ FB.media = (function() {
       type: 'media',
       media: item
     }));
+  }
+
+  function setupCanvasDropZone() {
+    const canvas = document.getElementById('ds-canvas');
+    if (!canvas) return;
+
+    const wrapper = document.getElementById('ds-canvas-wrap');
+    if (!wrapper) return;
+
+    wrapper.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+      wrapper.style.opacity = '0.7';
+    });
+
+    wrapper.addEventListener('dragleave', () => {
+      wrapper.style.opacity = '1';
+    });
+
+    wrapper.addEventListener('drop', (e) => {
+      e.preventDefault();
+      wrapper.style.opacity = '1';
+
+      try {
+        const data = JSON.parse(e.dataTransfer.getData('application/json'));
+        if (data.type === 'media') {
+          insertMediaToCanvas(data.media, e);
+        }
+      } catch (err) {
+        console.warn('Drop failed:', err);
+      }
+    });
+  }
+
+  function insertMediaToCanvas(media, dropEvent) {
+    const fc = FB.design.canvas.get();
+    if (!fc) return;
+
+    const wrapper = document.getElementById('ds-canvas-wrap');
+    const rect = wrapper.getBoundingClientRect();
+    const canvasRect = document.getElementById('ds-canvas').getBoundingClientRect();
+
+    // Calculate position relative to canvas
+    const x = dropEvent.clientX - canvasRect.left;
+    const y = dropEvent.clientY - canvasRect.top;
+
+    if (media.type.startsWith('image')) {
+      fabric.Image.fromURL(media.url, function(img) {
+        img.set({
+          left: x,
+          top: y,
+          scaleX: 0.5,
+          scaleY: 0.5
+        });
+        fc.add(img);
+        fc.setActiveObject(img);
+        fc.renderAll();
+        FB.design.history.push();
+        console.log('📸 Inserted media: ' + media.name);
+      });
+    }
   }
 
   function handleUpload(event) {
@@ -88,18 +147,54 @@ FB.media = (function() {
           category: categorizeFile(file.type),
           url: e.target.result,
           size: file.size,
+          tags: [],
           createdAt: new Date().toISOString()
         };
 
         mediaItems.push(item);
-        // TODO: Upload to Firebase
+        saveMedia();
         renderGrid();
+        console.log('✅ Media uploaded: ' + file.name);
       };
       reader.readAsDataURL(file);
     });
 
-    // Reset input
     event.target.value = '';
+  }
+
+  function addTag(itemId, tag) {
+    const item = mediaItems.find(m => m.id === itemId);
+    if (item && tag && !item.tags.includes(tag)) {
+      item.tags.push(tag);
+      saveMedia();
+      renderGrid();
+    }
+  }
+
+  function removeTag(itemId, tag) {
+    const item = mediaItems.find(m => m.id === itemId);
+    if (item) {
+      item.tags = item.tags.filter(t => t !== tag);
+      saveMedia();
+      renderGrid();
+    }
+  }
+
+  function showTagMenu(event, itemId) {
+    event.preventDefault();
+    const item = mediaItems.find(m => m.id === itemId);
+    if (!item) return;
+
+    const tag = prompt('Add tag (or leave empty to remove):', item.tags[0] || '');
+    if (tag !== null) {
+      if (tag === '') {
+        item.tags = [];
+      } else {
+        item.tags = [tag];
+      }
+      saveMedia();
+      renderGrid();
+    }
   }
 
   function categorizeFile(mimeType) {
@@ -114,6 +209,9 @@ FB.media = (function() {
     filterCategory: filterCategory,
     dragStart: dragStart,
     handleUpload: handleUpload,
+    addTag: addTag,
+    removeTag: removeTag,
+    showTagMenu: showTagMenu,
     loadMedia: loadMedia
   };
 })();
