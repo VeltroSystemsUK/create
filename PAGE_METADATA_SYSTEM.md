@@ -2,7 +2,7 @@
 
 ## Overview
 
-A complete per-page metadata management system has been added to Framework Builder. Each page now supports unique SEO settings, Open Graph tags, and custom metalinks enrichment.
+A complete per-page metadata management system has been added to Veltro Create. Each page now supports unique SEO settings, Open Graph tags, and custom metalinks enrichment.
 
 ## Features Implemented
 

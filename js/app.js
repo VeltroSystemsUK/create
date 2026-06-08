@@ -50,6 +50,8 @@ FB.init = function () {
   FB.panels.buildLibrary();
   FB.panels.buildWidgetLibrary();
   FB.panels.buildEcommerceLibrary();
+  FB.panels.buildEducationLibrary();
+  FB.education.buildIngestionPanel();
   FB.util.bindSearch();
   // Always start fresh - no auto-restore from localStorage
   FB.pages.init();

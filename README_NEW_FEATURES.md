@@ -1,4 +1,4 @@
-# Framework Builder - New Features
+# Veltro Create - New Features
 
 ## 🎉 Three New Features Implemented
 
@@ -33,7 +33,7 @@ Project loaded and ready to edit
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│                   Framework Builder                 │
+│                   Veltro Create                 │
 │ File Menu:                                          │
 │  • Save Project → Enter name → Saved to database   │
 │  • Load Project → List modal → Select → Restore    │
@@ -110,7 +110,7 @@ cd server
 npm start
 ```
 Output: `✓ SQLite database initialized`  
-Output: `🚀 Framework Builder API running on port 3001`
+Output: `🚀 Veltro Create API running on port 3001`
 
 **Terminal 2** (Frontend):
 ```bash
@@ -371,4 +371,4 @@ npm run dev
 http://localhost:3000/framework-builder.html
 ```
 
-Enjoy building with Framework Builder! 🚀
+Enjoy building with Veltro Create! 🚀

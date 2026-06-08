@@ -1,7 +1,7 @@
 {
-  "name": "framework-builder-api",
+  "name": "veltro-create-api",
   "version": "1.0.0",
-  "description": "SQLite API for Framework Builder projects",
+  "description": "SQLite API for Veltro Create projects",
   "main": "server.js",
   "type": "module",
   "scripts": {
@@ -12,10 +12,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2",
-    "sqlite3": "^5.1.7",
+    "@anthropic-ai/sdk": "^0.28.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "multer": "^1.4.5-lts.1"
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1",
+    "pdf-parse": "^2.4.5",
+    "sqlite3": "^5.1.7"
   }
 }

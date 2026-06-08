@@ -5,7 +5,7 @@ This guide is for PostgreSQL. **Switch to SQLite** by reading:
 
 ---
 
-# Framework Builder - Clean Slate + Save/Load + Nested Blocks Setup (PostgreSQL - Deprecated)
+# Veltro Create - Clean Slate + Save/Load + Nested Blocks Setup (PostgreSQL - Deprecated)
 
 ## ✅ Implementation Complete
 
@@ -82,7 +82,7 @@ npm start
 
 You should see:
 ```
-🚀 Framework Builder API running on port 3001
+🚀 Veltro Create API running on port 3001
 📍 Health check: http://localhost:3001/api/health
 ```
 
@@ -367,7 +367,7 @@ For production:
 ```bash
 cd server
 npm start
-# → 🚀 Framework Builder API running on port 3001
+# → 🚀 Veltro Create API running on port 3001
 ```
 
 **Terminal 3 - Frontend**:

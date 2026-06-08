@@ -54,7 +54,7 @@ FB.theme.set = function (key, val) {
 
 FB.theme.setPage = function (key, val) {
   FB.state.page[key] = val;
-  if (key === "title") document.title = val || "Veltro Builder";
+  if (key === "title") document.title = val || "Veltro Create";
   if (key === "customCSS") FB.theme.apply();
 };
 

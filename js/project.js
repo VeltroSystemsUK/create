@@ -1,7 +1,7 @@
 FB.project = {
   currentProjectId: null,
   currentProjectName: "Untitled Project",
-  apiUrl: "http://localhost:3001/api",
+  apiUrl: "/api",
 
   // Save current project to backend
   async saveProject(name = null) {

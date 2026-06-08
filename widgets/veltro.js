@@ -8519,6 +8519,8 @@ window._VeltroInitTextScramble = function () {
       var charset =
         wrap.dataset.charset || "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
       var speed = +(wrap.dataset.speed || 30);
+      var autoScramble = wrap.dataset.autoScramble === "1";
+      var autoInterval = +(wrap.dataset.autoInterval || 3000);
       var isHovering = false;
       text.addEventListener("mouseenter", function () {
         isHovering = true;
@@ -8527,12 +8529,22 @@ window._VeltroInitTextScramble = function () {
         isHovering = false;
         text.textContent = original;
       });
+      if (autoScramble) {
+        var autoUntil = 0;
+        setInterval(function () {
+          autoUntil = Date.now() + Math.max(260, Math.min(autoInterval * 0.55, 1200));
+          setTimeout(function () {
+            if (wrap.isConnected && !isHovering) text.textContent = original;
+          }, Math.max(280, Math.min(autoInterval * 0.6, 1300)));
+        }, Math.max(autoInterval, 500));
+        autoUntil = Date.now() + 900;
+      }
       var interval = setInterval(function () {
         if (!wrap.isConnected) {
           clearInterval(interval);
           return;
         }
-        if (!isHovering) return;
+        if (!isHovering && (!autoScramble || Date.now() > autoUntil)) return;
         var result = "";
         for (var i = 0; i < original.length; i++) {
           result += charset[Math.floor(Math.random() * charset.length)];

@@ -161,7 +161,7 @@ FB.scraper._parseHTML = function (
       cols: [
         {
           heading: "Source",
-          links: [sourceUrl, "Rebuilt with Framework Builder"],
+          links: [sourceUrl, "Rebuilt with Veltro Create"],
         },
         {
           heading: "Edit",
@@ -358,7 +358,7 @@ FB.scraper._elementToBlock = function (el, tag, siteName, palette) {
         tagline: body.substring(0, 100),
         cols: [
           { heading: "Links", links: links.slice(0, 8) },
-          { heading: "Info", links: ["Edit in Framework Builder"] },
+          { heading: "Info", links: ["Edit in Veltro Create"] },
         ],
         copyright: "\u00A9 " + new Date().getFullYear(),
         bg: bg || darkBg,
@@ -614,7 +614,7 @@ FB.scraper._parseMarkdown = function (markdown, sourceUrl) {
           tagline: "Imported site",
           cols: [
             { heading: "Links", links: fLinks },
-            { heading: "Info", links: ["Edit in Framework Builder"] },
+            { heading: "Info", links: ["Edit in Veltro Create"] },
           ],
           copyright: "\u00A9 " + new Date().getFullYear(),
           bg: "#111111",
@@ -783,7 +783,7 @@ FB.scraper._parseMarkdown = function (markdown, sourceUrl) {
         cols: [
           {
             heading: "Source",
-            links: [sourceUrl, "Rebuilt with Framework Builder"],
+            links: [sourceUrl, "Rebuilt with Veltro Create"],
           },
           {
             heading: "Edit",
@@ -953,7 +953,7 @@ FB.scraper.openAiImport = function () {
   var html =
     '<div class="modal-head"><h3>AI Import</h3><button class="modal-close" onclick="FB.export.close()">\u2715</button></div>' +
     '<div style="padding:24px;display:flex;flex-direction:column;gap:16px">' +
-    '<p style="font-size:13px;color:var(--text-muted);line-height:1.6">Enter a URL and your AI API key. The AI will analyze the scraped content and generate Framework Builder blocks that recreate the page design.</p>' +
+    '<p style="font-size:13px;color:var(--text-muted);line-height:1.6">Enter a URL and your AI API key. The AI will analyze the scraped content and generate Veltro Create blocks that recreate the page design.</p>' +
     '<input type="url" id="ai-import-url" placeholder="https://example.com" value="" style="width:100%;padding:10px 14px;background:var(--surface-1);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-size:14px;font-family:inherit;box-sizing:border-box" />' +
     '<select id="ai-import-provider" style="width:100%;padding:10px 14px;background:var(--surface-1);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-size:13px;font-family:inherit">' +
     '<option value="anthropic"' +
@@ -972,7 +972,7 @@ FB.scraper.openAiImport = function () {
     '<div style="display:flex;gap:8px">' +
     '<button class="tb-export" id="ai-import-btn" onclick="var url=document.getElementById(\'ai-import-url\').value;var key=document.getElementById(\'ai-import-key\').value;var prov=document.getElementById(\'ai-import-provider\').value;FB.scraper.aiImport(url,key,prov)" style="flex:1;justify-content:center">AI Import</button>' +
     '<button class="tb-btn" onclick="FB.export.close()" style="flex:0">Cancel</button></div>' +
-    '<div style="font-size:11px;color:var(--text-muted);padding:8px;background:var(--surface-1);border-radius:4px;line-height:1.5">Your API key is sent directly to the AI provider and is not stored on our server. It is saved locally in your browser for reuse. The AI is prompted to analyze the page structure and generate appropriate Framework Builder blocks (Nav, Hero, Features, Grids, Footer, etc).</div>' +
+    '<div style="font-size:11px;color:var(--text-muted);padding:8px;background:var(--surface-1);border-radius:4px;line-height:1.5">Your API key is sent directly to the AI provider and is not stored on our server. It is saved locally in your browser for reuse. The AI is prompted to analyze the page structure and generate appropriate Veltro Create blocks (Nav, Hero, Features, Grids, Footer, etc).</div>' +
     "</div>";
 
   var mt = document.getElementById("modal-title");

@@ -1,5 +1,16 @@
 // Basic Widgets
 
+if (!window.FB || !FB.widgets) {
+  setTimeout(() => {
+    if (window.FB && FB.widgets) {
+      loadBasicWidgets();
+    }
+  }, 100);
+} else {
+  loadBasicWidgets();
+}
+
+function loadBasicWidgets() {
 FB.widgets.register("heading", {
   label: "Heading",
   icon: "H",
@@ -176,3 +187,4 @@ FB.widgets.register("textPath", {
   },
   editPanel: function (id, p) { return ""; },
 });
+}

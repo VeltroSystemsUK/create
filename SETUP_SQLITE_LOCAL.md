@@ -1,4 +1,4 @@
-# Framework Builder - Clean Slate + Save/Load + Nested Blocks (SQLite Edition)
+# Veltro Create - Clean Slate + Save/Load + Nested Blocks (SQLite Edition)
 
 ## ✅ Implementation Complete
 
@@ -52,7 +52,7 @@ npm start
 You should see:
 ```
 ✓ SQLite database initialized at: .../server/framework_builder.db
-🚀 Framework Builder API running on port 3001
+🚀 Veltro Create API running on port 3001
 📍 Health check: http://localhost:3001/api/health
 ```
 
@@ -251,7 +251,7 @@ FB.state.blocks = [
 cd server
 npm start
 # → ✓ SQLite database initialized at: .../server/framework_builder.db
-# → 🚀 Framework Builder API running on port 3001
+# → 🚀 Veltro Create API running on port 3001
 ```
 
 **Terminal 2 - Frontend**:

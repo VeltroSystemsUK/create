@@ -1,5 +1,5 @@
 /**
- * Global type declarations for the Framework Builder runtime.
+ * Global type declarations for the Veltro Create runtime.
  *
  * window.FB is created by the legacy JS modules loaded before our
  * TypeScript design engine. These declarations let TS modules safely

@@ -1412,6 +1412,7 @@ FB.panels.renderRightPanel = function () {
     FB.blocks.BLOCK_DEFS,
     FB.blocks.CUSTOM_BLOCK_DEFS,
     FB.blocks.ECOMMERCE_DEFS,
+    FB.blocks.EDUCATION_DEFS,
     FB.widgets._registry,
   );
   var def = allDefs[block.type];
@@ -1685,6 +1686,56 @@ FB.panels.renderRightPanel = function () {
     contentHtml += '<div class="rp-row"><label for="tw-subtext-' + block.id + '">Subtext</label><input id="tw-subtext-' + block.id + '" name="tw-subtext" type="text" value="' + (p.subtext || '') + '" data-prop="subtext" data-block-id="' + block.id + '"></div>';
     contentHtml += '<div class="rp-row"><label for="tw-fontSize-' + block.id + '">Font Size (rem)</label><input id="tw-fontSize-' + block.id + '" name="tw-fontSize" type="number" value="' + (p.fontSize || 3.5) + '" min="1" max="10" step="0.5" data-prop="fontSize" data-type="number" data-block-id="' + block.id + '"></div>';
     contentHtml += '<div class="rp-row"><label for="tw-typeSpeed-' + block.id + '">Type Speed (ms)</label><input id="tw-typeSpeed-' + block.id + '" name="tw-typeSpeed" type="number" value="' + (p.typeSpeed || 50) + '" min="10" max="200" step="10" data-prop="typeSpeed" data-type="number" data-block-id="' + block.id + '"></div>';
+  }
+
+  /* Education Blocks */
+  if (block.type === "courseHero") {
+    contentHtml += '<div class="rp-row"><label>Course Title</label><input type="text" value="' + (p.courseTitle || '') + '" data-prop="courseTitle" data-block-id="' + block.id + '"></div>';
+    contentHtml += '<div class="rp-row"><label>Course Description</label><textarea rows="3" data-prop="courseDescription" data-block-id="' + block.id + '">' + (p.courseDescription || '') + '</textarea></div>';
+    contentHtml += '<div class="rp-row" style="border-top:1px solid rgba(255,255,255,0.06);padding-top:8px"><label style="font-size:11px;letter-spacing:2px;text-transform:uppercase;opacity:0.5">Instructor</label></div>';
+    contentHtml += '<div class="rp-row"><label>Instructor Name</label><input type="text" value="' + (p.instructorName || '') + '" data-prop="instructorName" data-block-id="' + block.id + '"></div>';
+    contentHtml += '<div class="rp-row"><label>Instructor Title</label><input type="text" value="' + (p.instructorTitle || '') + '" data-prop="instructorTitle" data-block-id="' + block.id + '"></div>';
+    contentHtml += '<div class="rp-row"><label>Instructor Avatar Image URL</label><input type="text" value="' + (p.instructorImage || '') + '" placeholder="https://..." data-prop="instructorImage" data-block-id="' + block.id + '"></div>';
+    contentHtml += '<div class="rp-row"><label>Video URL</label><input type="text" value="' + (p.videoUrl || '') + '" placeholder="https://..." data-prop="videoUrl" data-block-id="' + block.id + '"></div>';
+    contentHtml += '<div class="rp-row"><label>Video Cover Image URL</label><input type="text" value="' + (p.videoCover || '') + '" placeholder="https://..." data-prop="videoCover" data-block-id="' + block.id + '"></div>';
+    contentHtml += '<div class="rp-row"><label>Duration</label><input type="text" value="' + (p.duration || '') + '" data-prop="duration" data-block-id="' + block.id + '"></div>';
+    contentHtml += '<div class="rp-row"><label>Lessons</label><input type="text" value="' + (p.lessons || '') + '" data-prop="lessons" data-block-id="' + block.id + '"></div>';
+    contentHtml += '<div class="rp-row"><label>Level</label><input type="text" value="' + (p.level || '') + '" data-prop="level" data-block-id="' + block.id + '"></div>';
+    contentHtml += '<div class="rp-row"><label>Price</label><input type="text" value="' + (p.price || '') + '" data-prop="price" data-block-id="' + block.id + '"></div>';
+  }
+  if (block.type === "videoLesson") {
+    contentHtml += '<div class="rp-row"><label>Lesson Title</label><input type="text" value="' + (p.lessonTitle || '') + '" data-prop="lessonTitle" data-block-id="' + block.id + '"></div>';
+    contentHtml += '<div class="rp-row"><label>Lesson Number</label><input type="text" value="' + (p.lessonNumber || '') + '" data-prop="lessonNumber" data-block-id="' + block.id + '"></div>';
+    contentHtml += '<div class="rp-row"><label>Video URL</label><input type="text" value="' + (p.videoUrl || '') + '" placeholder="https://..." data-prop="videoUrl" data-block-id="' + block.id + '"></div>';
+    contentHtml += '<div class="rp-row"><label>Duration</label><input type="text" value="' + (p.duration || '') + '" data-prop="duration" data-block-id="' + block.id + '"></div>';
+    contentHtml += '<div class="rp-row"><label>Difficulty</label><input type="text" value="' + (p.difficulty || '') + '" data-prop="difficulty" data-block-id="' + block.id + '"></div>';
+    contentHtml += '<div class="rp-row"><label>Description</label><textarea rows="3" data-prop="description" data-block-id="' + block.id + '">' + (p.description || '') + '</textarea></div>';
+    contentHtml += '<div class="rp-row"><label>Learning Objectives (one per line)</label><textarea rows="3" data-prop="learning_objectives" data-type="multiline-array" data-block-id="' + block.id + '">' + ((p.learning_objectives || []).join('\n')) + '</textarea></div>';
+    contentHtml += '<div class="rp-row" style="border-top:1px solid rgba(255,255,255,0.06);padding-top:8px"><label style="font-size:11px;letter-spacing:2px;text-transform:uppercase;opacity:0.5">Instructor (Optional)</label></div>';
+    contentHtml += '<div class="rp-row"><label>Instructor Name</label><input type="text" value="' + (p.instructorName || '') + '" data-prop="instructorName" data-block-id="' + block.id + '"></div>';
+    contentHtml += '<div class="rp-row"><label>Instructor Avatar Image URL</label><input type="text" value="' + (p.instructorImage || '') + '" placeholder="https://..." data-prop="instructorImage" data-block-id="' + block.id + '"></div>';
+  }
+  if (block.type === "moduleOverview") {
+    contentHtml += '<div class="rp-row"><label>Module Title</label><input type="text" value="' + (p.moduleTitle || '') + '" data-prop="moduleTitle" data-block-id="' + block.id + '"></div>';
+    contentHtml += '<div class="rp-row"><label>Module Description</label><textarea rows="3" data-prop="moduleDescription" data-block-id="' + block.id + '">' + (p.moduleDescription || '') + '</textarea></div>';
+    contentHtml += '<div class="rp-row"><label>Video URL</label><input type="text" value="' + (p.videoUrl || '') + '" placeholder="https://..." data-prop="videoUrl" data-block-id="' + block.id + '"></div>';
+  }
+  if (block.type === "lessonNav") {
+    contentHtml += '<div class="rp-row"><label>Current Lesson</label><input type="text" value="' + (p.currentLesson || '') + '" data-prop="currentLesson" data-block-id="' + block.id + '"></div>';
+    contentHtml += '<div class="rp-row"><label>Progress (%)</label><input type="number" value="' + (p.progress || 0) + '" min="0" max="100" data-prop="progress" data-type="number" data-block-id="' + block.id + '"></div>';
+    contentHtml += '<div class="rp-row"><label>Total Lessons</label><input type="number" value="' + (p.totalLessons || 0) + '" min="0" data-prop="totalLessons" data-type="number" data-block-id="' + block.id + '"></div>';
+    contentHtml += '<div class="rp-row"><label>Previous Lesson</label><input type="text" value="' + (p.previousLesson || '') + '" data-prop="previousLesson" data-block-id="' + block.id + '"></div>';
+    contentHtml += '<div class="rp-row"><label>Next Lesson</label><input type="text" value="' + (p.nextLesson || '') + '" data-prop="nextLesson" data-block-id="' + block.id + '"></div>';
+    contentHtml += '<div class="rp-row"><label>Completed Lessons</label><input type="number" value="' + (p.completedLessons || 0) + '" min="0" data-prop="completedLessons" data-type="number" data-block-id="' + block.id + '"></div>';
+  }
+  if (block.type === "videoTranscript") {
+    contentHtml += '<div class="rp-row"><label>Video URL</label><input type="text" value="' + (p.videoUrl || '') + '" placeholder="https://..." data-prop="videoUrl" data-block-id="' + block.id + '"></div>';
+    contentHtml += '<div class="rp-row"><label>Transcript</label><textarea rows="6" data-prop="transcript" data-block-id="' + block.id + '">' + (p.transcript || '') + '</textarea></div>';
+  }
+  if (block.type === "videoResources") {
+    contentHtml += '<div class="rp-row"><label>Section Title</label><input type="text" value="' + (p.sectionTitle || '') + '" data-prop="sectionTitle" data-block-id="' + block.id + '"></div>';
+    contentHtml += '<div class="rp-row"><label>Video URL</label><input type="text" value="' + (p.videoUrl || '') + '" placeholder="https://..." data-prop="videoUrl" data-block-id="' + block.id + '"></div>';
+    contentHtml += '<div class="rp-row"><label>Resources (one per line)</label><textarea rows="4" data-prop="resources" data-type="multiline-array" data-block-id="' + block.id + '">' + ((p.resources || []).join('\n')) + '</textarea></div>';
   }
   if (block.type === "textMask") {
     contentHtml += '<div class="rp-row"><label for="tm-headline-' + block.id + '">Headline</label><input id="tm-headline-' + block.id + '" name="tm-headline" type="text" value="' + (p.headline || '') + '" data-prop="headline" data-block-id="' + block.id + '"></div>';
@@ -2279,7 +2330,7 @@ FB.panels.initRightPanelEvents = function() {
         var fd = new FormData();
         fd.append('file', file);
 
-        fetch('http://localhost:3001/api/cms/media/upload', {
+        fetch('/api/cms/media/upload', {
           method: 'POST',
           body: fd
         })

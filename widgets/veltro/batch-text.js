@@ -820,3 +820,337 @@ FB.widgets.register("kineticScramble", {
   editPanel: function (id, p) { return ""; },
 });
 
+// ── Lazy initializer support ──
+// inits-lazy.js loads this batch file for all text-effect initializers. Keep
+// these local so Design Studio live previews and exported pages use one path.
+(function () {
+  function observeAndRun(el, start, stop) {
+    if (!el || !start) return;
+    if (!("IntersectionObserver" in window)) {
+      start();
+      return;
+    }
+    var io = new IntersectionObserver(
+      function (entries) {
+        if (entries[0] && entries[0].isIntersecting) start();
+        else if (stop) stop();
+      },
+      { threshold: 0.01 },
+    );
+    io.observe(el);
+  }
+
+  window._VeltroInitKineticText = function () {
+    document
+      .querySelectorAll(".fw-widget-kineticText:not([data-kinetic-init]), .ds-live-kinetic-text:not([data-kinetic-init])")
+      .forEach(function (el) {
+        el.setAttribute("data-kinetic-init", "1");
+      });
+  };
+
+  window._VeltroInitTextMask = function () {
+    document
+      .querySelectorAll(".fw-widget-textMask:not([data-mask-init]), .veltro-textmask-wrap:not([data-mask-init])")
+      .forEach(function (el) {
+        el.setAttribute("data-mask-init", "1");
+      });
+  };
+
+  window._VeltroInitTextScramble = function () {
+    document
+      .querySelectorAll(".veltro-scramble-wrap:not([data-init])")
+      .forEach(function (wrap) {
+        wrap.setAttribute("data-init", "1");
+        var text = wrap.querySelector(".veltro-scramble-text");
+        if (!text) return;
+        var original = wrap.dataset.text || text.textContent || "SCRAMBLE";
+        var charset = wrap.dataset.charset || "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%";
+        var speed = +(wrap.dataset.scrambleSpeed || wrap.dataset.speed || 60);
+        var revealSpeed = +(wrap.dataset.revealSpeed || 900);
+        var autoScramble = wrap.dataset.autoScramble === "1";
+        var autoInterval = +(wrap.dataset.autoInterval || 1200);
+        var activeUntil = autoScramble ? Date.now() + Math.min(autoInterval, 900) : 0;
+        var hovering = false;
+
+        function restore() {
+          if (wrap.isConnected) text.textContent = original;
+        }
+
+        text.addEventListener("mouseenter", function () {
+          hovering = true;
+          activeUntil = Date.now() + revealSpeed;
+        });
+        text.addEventListener("mouseleave", function () {
+          hovering = false;
+          setTimeout(restore, Math.min(revealSpeed, 700));
+        });
+
+        if (autoScramble) {
+          setInterval(function () {
+            if (!wrap.isConnected) return;
+            activeUntil = Date.now() + Math.max(320, Math.min(autoInterval * 0.62, 1400));
+            setTimeout(restore, Math.max(340, Math.min(autoInterval * 0.68, 1500)));
+          }, Math.max(autoInterval, 500));
+        }
+
+        var timer = setInterval(function () {
+          if (!wrap.isConnected) {
+            clearInterval(timer);
+            return;
+          }
+          if (!hovering && Date.now() > activeUntil) return;
+          var result = "";
+          for (var i = 0; i < original.length; i++) {
+            result += original.charAt(i) === " " ? " " : charset[Math.floor(Math.random() * charset.length)];
+          }
+          text.textContent = result;
+        }, Math.max(speed, 20));
+      });
+  };
+
+  window._VeltroInitTypewriter = function () {
+    document
+      .querySelectorAll(".veltro-typewriter-wrap:not([data-init])")
+      .forEach(function (wrap) {
+        wrap.setAttribute("data-init", "1");
+        var target = wrap.querySelector(".veltro-typewriter-text") || wrap.querySelector(".veltro-typewriter");
+        if (!target) return;
+        var original = wrap.dataset.text || target.dataset.text || target.textContent || "Hello, World!";
+        var speed = +(wrap.dataset.speed || 80);
+        var delay = +(wrap.dataset.delay || 1800);
+        var loop = wrap.dataset.loop !== "0";
+        var index = 0;
+        target.textContent = "";
+        function type() {
+          if (!wrap.isConnected) return;
+          if (index < original.length) {
+            target.textContent += original.charAt(index++);
+            setTimeout(type, speed);
+          } else if (loop) {
+            setTimeout(function () {
+              if (!wrap.isConnected) return;
+              target.textContent = "";
+              index = 0;
+              type();
+            }, delay);
+          }
+        }
+        type();
+      });
+  };
+
+  window._VeltroInitCounter = function () {
+    document
+      .querySelectorAll(".veltro-counter-wrap:not([data-init])")
+      .forEach(function (wrap) {
+        wrap.setAttribute("data-init", "1");
+        var el = wrap.querySelector(".veltro-counter");
+        if (!el) return;
+        var target = +(wrap.dataset.value || el.dataset.value || 1000);
+        var prefix = wrap.dataset.prefix || "";
+        var suffix = wrap.dataset.suffix || "+";
+        var duration = +(wrap.dataset.duration || 2000);
+        var startTime = Date.now();
+        function update() {
+          if (!wrap.isConnected) return;
+          var progress = Math.min((Date.now() - startTime) / duration, 1);
+          var ease = 1 - Math.pow(1 - progress, 3);
+          el.textContent = prefix + Math.round(target * ease) + suffix;
+          if (progress < 1) requestAnimationFrame(update);
+        }
+        update();
+      });
+  };
+
+  window._VeltroInitLiquidText = function () {
+    document
+      .querySelectorAll(".veltro-liquid-wrap:not([data-init])")
+      .forEach(function (wrap) {
+        wrap.setAttribute("data-init", "1");
+        var chars = wrap.querySelectorAll(".veltro-liquid-char");
+        if (!chars.length) return;
+        var amplitude = +(wrap.dataset.amplitude || 10);
+        var frequency = +(wrap.dataset.frequency || 0.05);
+        var speed = +(wrap.dataset.speed || 0.04);
+        var time = 0;
+        var rafId = 0;
+        function animate() {
+          if (!wrap.isConnected) return;
+          time += speed;
+          chars.forEach(function (char, i) {
+            char.style.transform = "translateY(" + Math.sin(i * frequency + time) * amplitude + "px)";
+          });
+          rafId = requestAnimationFrame(animate);
+        }
+        function start() {
+          if (!rafId) rafId = requestAnimationFrame(animate);
+        }
+        function stop() {
+          cancelAnimationFrame(rafId);
+          rafId = 0;
+        }
+        observeAndRun(wrap, start, stop);
+      });
+  };
+
+  window._VeltroInitWaveText = function () {
+    document
+      .querySelectorAll(".fw-widget-waveText:not([data-wave-init]), .veltro-wave-wrap:not([data-wave-init])")
+      .forEach(function (el) {
+        el.setAttribute("data-wave-init", "1");
+        var chars = el.querySelectorAll(".veltro-wave-char");
+        if (!chars.length) return;
+        var source = el.classList.contains("veltro-wave-wrap") ? el : el.querySelector(".veltro-wave-wrap") || el;
+        var amplitude = +(source.dataset.amplitude || 12);
+        var frequency = +(source.dataset.frequency || 0.3);
+        var speed = +(source.dataset.speed || 0.05);
+        var t = 0;
+        var rafId = 0;
+        function animate() {
+          if (!el.isConnected) return;
+          t += speed;
+          chars.forEach(function (char, i) {
+            char.style.transform = "translateY(" + Math.sin(t + i * frequency) * amplitude + "px)";
+          });
+          rafId = requestAnimationFrame(animate);
+        }
+        function start() {
+          if (!rafId) rafId = requestAnimationFrame(animate);
+        }
+        function stop() {
+          cancelAnimationFrame(rafId);
+          rafId = 0;
+        }
+        observeAndRun(el, start, stop);
+      });
+  };
+
+  window._VeltroInitRotatingText3d = function () {
+    document
+      .querySelectorAll(".fw-widget-rotatingText3d:not([data-rot3d-init]), .veltro-rot3d-wrap:not([data-rot3d-init])")
+      .forEach(function (el) {
+        el.setAttribute("data-rot3d-init", "1");
+        var t = 0;
+        function animate() {
+          if (!el.isConnected) return;
+          t += 0.5;
+          el.style.transform = "perspective(500px) rotateY(" + t + "deg)";
+          requestAnimationFrame(animate);
+        }
+        requestAnimationFrame(animate);
+      });
+  };
+
+  window._VeltroInitMorphingText = function () {
+    document
+      .querySelectorAll(".fw-widget-morphingText:not([data-morph-init]), .veltro-morph-wrap:not([data-morph-init])")
+      .forEach(function (el) {
+        el.setAttribute("data-morph-init", "1");
+        var wrap = el.classList.contains("veltro-morph-wrap") ? el : el.querySelector(".veltro-morph-wrap");
+        if (!wrap) return;
+        var spans = wrap.querySelectorAll(".veltro-morph-word");
+        if (!spans.length) return;
+        var index = 0;
+        var morphSpeed = +(wrap.dataset.morphSpeed || 1600);
+        var fadeSpeed = +(wrap.dataset.fadeSpeed || 300);
+        function show(next) {
+          spans.forEach(function (span, i) {
+            span.style.opacity = i === next ? "1" : "0";
+          });
+        }
+        show(0);
+        setInterval(function () {
+          if (!wrap.isConnected) return;
+          spans[index].style.opacity = "0";
+          setTimeout(function () {
+            index = (index + 1) % spans.length;
+            show(index);
+          }, fadeSpeed);
+        }, Math.max(morphSpeed, 500));
+      });
+  };
+
+  window._VeltroInitKineticScramble = function () {
+    document
+      .querySelectorAll(".fw-widget-kineticScramble:not([data-ks-init]), .veltro-scramble-wrap:not([data-ks-init])")
+      .forEach(function (el) {
+        el.setAttribute("data-ks-init", "1");
+        if (el.classList.contains("veltro-scramble-wrap")) {
+          window._VeltroInitTextScramble();
+          return;
+        }
+        var text = el.querySelector(".veltro-ks-text");
+        if (!text) return;
+        var original = text.dataset.text || text.textContent || "SCRAMBLE";
+        var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        function scramble() {
+          var progress = 0;
+          var interval = setInterval(function () {
+            if (!el.isConnected) {
+              clearInterval(interval);
+              return;
+            }
+            progress += 0.05;
+            text.textContent = original
+              .split("")
+              .map(function (c, i) {
+                return i < progress * original.length ? original[i] : chars[Math.floor(Math.random() * chars.length)];
+              })
+              .join("");
+            if (progress >= 1) {
+              clearInterval(interval);
+              text.textContent = original;
+            }
+          }, 50);
+        }
+        scramble();
+        setInterval(scramble, 2200);
+      });
+  };
+
+  window._VeltroInitMagText = function () {
+    document
+      .querySelectorAll(".veltro-magtext-content:not([data-init])")
+      .forEach(function (content) {
+        content.setAttribute("data-init", "1");
+        var wrap = content.closest(".veltro-magtext-wrap");
+        if (!wrap) return;
+        var chars = content.querySelectorAll(".veltro-mag-char");
+        function applyFromPoint(mx, my) {
+          chars.forEach(function (char) {
+            var rect = char.getBoundingClientRect();
+            var wr = wrap.getBoundingClientRect();
+            var cx = rect.left - wr.left + rect.width / 2;
+            var cy = rect.top - wr.top + rect.height / 2;
+            var dist = Math.hypot(mx - cx, my - cy);
+            var radius = +char.dataset.magneticRadius || 150;
+            var strength = +char.dataset.magneticStrength || 0.5;
+            if (dist < radius) {
+              var force = (1 - dist / radius) * strength * 30;
+              var angle = Math.atan2(cy - my, cx - mx);
+              char.style.transform = "translate(" + Math.cos(angle) * force + "px," + Math.sin(angle) * force + "px)";
+            } else {
+              char.style.transform = "translate(0,0)";
+            }
+          });
+        }
+        wrap.addEventListener("mousemove", function (e) {
+          var r = wrap.getBoundingClientRect();
+          applyFromPoint(e.clientX - r.left, e.clientY - r.top);
+        });
+        wrap.addEventListener("mouseleave", function () {
+          chars.forEach(function (char) {
+            char.style.transform = "translate(0,0)";
+          });
+        });
+        if (wrap.closest("#ds-veltro-canvas-layer")) {
+          var phase = 0;
+          setInterval(function () {
+            if (!wrap.isConnected) return;
+            phase += 0.35;
+            applyFromPoint(wrap.clientWidth / 2 + Math.cos(phase) * 80, wrap.clientHeight / 2 + Math.sin(phase) * 40);
+          }, 80);
+        }
+      });
+  };
+})();

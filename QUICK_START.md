@@ -1,4 +1,4 @@
-# Quick Start - Framework Builder with SQLite
+# Quick Start - Veltro Create with SQLite
 
 ## 🚀 Get Running in 2 Minutes
 
@@ -15,7 +15,7 @@ npm start
 Expected output:
 ```
 ✓ SQLite database initialized at: .../server/framework_builder.db
-🚀 Framework Builder API running on port 3001
+🚀 Veltro Create API running on port 3001
 ```
 
 ### Step 2: Start Frontend (in new terminal)

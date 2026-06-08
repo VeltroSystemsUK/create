@@ -9,6 +9,11 @@ const router = express.Router();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const uploadsDir = path.join(__dirname, '../public/uploads');
 
+function sanitizeFileName(name) {
+  const baseName = path.basename(String(name || 'upload'));
+  return baseName.replace(/[^a-zA-Z0-9._ -]/g, '-').replace(/^\.+/, '') || 'upload';
+}
+
 // Ensure uploads directory exists
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
@@ -22,8 +27,9 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     const timestamp = Date.now();
     const randomStr = Math.random().toString(36).substring(2, 8);
-    const ext = path.extname(file.originalname);
-    const name = path.basename(file.originalname, ext);
+    const originalName = sanitizeFileName(file.originalname);
+    const ext = path.extname(originalName);
+    const name = path.basename(originalName, ext);
     cb(null, `${name}-${timestamp}-${randomStr}${ext}`);
   }
 });
@@ -68,7 +74,7 @@ router.post('/upload', upload.single('file'), (req, res) => {
     }
 
     const filename = req.file.filename;
-    const fileUrl = `http://localhost:3001/uploads/${filename}`;
+    const fileUrl = `/uploads/${filename}`;
     console.log('Processing file:', filename);
 
     // Save to database

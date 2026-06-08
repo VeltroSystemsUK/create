@@ -1,4 +1,4 @@
-# Framework Builder — Application Specification
+# Veltro Create — Application Specification
 
 Version 1.0 | 108 Widgets | 14 Creative Domains | 3-Stage AI Pipeline
 

@@ -12,7 +12,7 @@ FB.deepScrape._statusMsg = null;
 FB.deepScrape._urlCount = 0;
 
 FB.deepScrape._SYNTH_PROMPT =
-  "You are a web designer synthesising multiple scraped pages into a single Framework Builder template.\n" +
+  "You are a web designer synthesising multiple scraped pages into a single Veltro Create template.\n" +
   "You will receive content from multiple pages, each labeled '## PAGE: <url>'.\n\n" +
   "Your job:\n" +
   "1. Read all pages to understand the brand: industry, tone, colors, audience, key offerings.\n" +
@@ -85,12 +85,13 @@ FB.deepScrape._render = function () {
 
   if (!key) {
     h += '<div class="ai-section">';
-    h += '<div class="ai-section-title">🔑 Gemini API Key Required</div>';
+    h += '<div class="ai-section-title">🔑 Anthropic API Key Required</div>';
     h +=
-      '<p style="font-size:13px;color:var(--text-muted);margin:0 0 12px;line-height:1.6">Deep Scrape uses Gemini to synthesise scraped pages. Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--accent)">aistudio.google.com/apikey</a></p>';
+      '<p style="font-size:13px;color:var(--text-muted);margin:0 0 12px;line-height:1.6">Deep Scrape uses Claude to synthesise scraped pages. Get a free key at <a href="https://console.anthropic.com/account/keys" target="_blank" style="color:var(--accent)">console.anthropic.com/account/keys</a></p>';
+    h += '<label for="ds-api-key-input" style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:6px">API Key</label>';
     h += '<div style="display:flex;gap:8px">';
     h +=
-      '<input id="ds-api-key-input" type="password" placeholder="Paste your Gemini API key..." style="flex:1;padding:10px 14px;background:var(--surface-1);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-size:14px;font-family:inherit">';
+      '<input id="ds-api-key-input" type="password" placeholder="Paste your Anthropic API key..." style="flex:1;padding:10px 14px;background:var(--surface-1);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-size:14px;font-family:inherit">';
     h +=
       '<button class="ds-save-btn" onclick="FB.deepScrape._saveKey()">Save</button>';
     h += "</div></div>";

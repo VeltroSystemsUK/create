@@ -2264,6 +2264,80 @@ FB.blocks.EDUCATION_DEFS = {
       accentColor: "#3b82f6",
     },
   },
+  // Four-Tier Architecture: Hook
+  hookMetric: {
+    label: "Hook: So What",
+    sublabel: "Metric + premise hook",
+    icon: "\u26A1",
+    iconBg: "#b45309",
+    iconColor: "#fcd34d",
+    defaultProps: {
+      soWhat: "82% of businesses fail due to cashflow blind spots.",
+      premise: "This module reveals the exact operational gap that kills profitability. You will learn to identify and close it before it damages your bottom line. The framework is battle-tested across 200+ companies.",
+      moduleTitle: "Module 1",
+      bg: "#0f172a",
+      textColor: "#f1f5f9",
+      accentColor: "#3b82f6",
+    },
+  },
+  // Four-Tier Architecture: Anchor
+  conceptAnchor: {
+    label: "Anchor: Core Concept",
+    sublabel: "Concept + analogy + in-practice",
+    icon: "\u2693",
+    iconBg: "#065f46",
+    iconColor: "#6ee7b7",
+    defaultProps: {
+      conceptName: "Core Concept",
+      definition: "Clear, original definition of the concept.",
+      keyInsight: "The one thing you must remember.",
+      analogy: "Like a ship's anchor, this concept keeps your strategy grounded even in turbulent markets.",
+      doneRight: "Company A applied this principle and reduced costs by 30%.",
+      doneWrong: "Company B ignored this principle and lost market share within 6 months.",
+      bg: "#0f172a",
+      textColor: "#f1f5f9",
+      accentColor: "#3b82f6",
+    },
+  },
+  // Four-Tier Architecture: Arena
+  scenarioSandbox: {
+    label: "Arena: Scenario",
+    sublabel: "Branching decision + impact twist",
+    icon: "\uD83C\uDFAE",
+    iconBg: "#7c3aed",
+    iconColor: "#c4b5fd",
+    defaultProps: {
+      role: "Operations Manager",
+      situation: "A key client demands a 15% discount or they will leave. Based on the margin principles covered in this module, how do you respond?",
+      options: [
+        { label: "A", text: "Grant the discount to retain the client", isCorrect: false, impactTwist: "Your margins drop below sustainable levels. You now need 3 new clients to compensate." },
+        { label: "B", text: "Offer value-added services instead of a discount", isCorrect: true, impactTwist: "The client accepts the added value. Retention stays at 100% and margins are preserved." },
+        { label: "C", text: "Let the client leave — focus on new business", isCorrect: false, impactTwist: "Revenue drops 15% this quarter. Team morale takes a hit from losing a flagship account." },
+      ],
+      bg: "#0f172a",
+      textColor: "#f1f5f9",
+      accentColor: "#3b82f6",
+    },
+  },
+  // Four-Tier Architecture: Proof
+  microCredential: {
+    label: "Proof: Credential",
+    sublabel: "Quiz + skill token earned",
+    icon: "\uD83C\uDFC5",
+    iconBg: "#9d174d",
+    iconColor: "#f9a8d4",
+    defaultProps: {
+      credentialName: "+10 Strategic Thinking",
+      questions: [
+        { question: "What is the primary risk of ignoring the concept from this module?", options: ["Reduced efficiency", "Strategic blind spots", "Team burnout", "Budget overruns"], correctIndex: 1, explanation: "Without this framework, you miss critical signals that lead to costly errors." },
+        { question: "When should you apply the framework from this module?", options: ["Only during crises", "Proactively, as part of regular operations", "When competitors force your hand", "Only if margins drop"], correctIndex: 1, explanation: "The framework is a continuous improvement tool, not an emergency measure." },
+      ],
+      passingScore: 70,
+      bg: "#0f172a",
+      textColor: "#f1f5f9",
+      accentColor: "#3b82f6",
+    },
+  },
 };
 
 // Normalize all blocks to include advanced properties

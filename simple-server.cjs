@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const url = require('url');
 
-const PORT = 3003;
+const PORT = 5000;
 const BASE_DIR = __dirname;
 
 const server = http.createServer((req, res) => {

@@ -28,6 +28,24 @@ db.run(`
 `);
 
 db.run(`
+  CREATE TABLE IF NOT EXISTS education_books (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    book_name TEXT NOT NULL,
+    safe_name TEXT NOT NULL,
+    original_name TEXT NOT NULL,
+    file_type TEXT NOT NULL,
+    file_size INTEGER NOT NULL,
+    file_path TEXT NOT NULL,
+    extracted_text TEXT DEFAULT '',
+    word_count INTEGER DEFAULT 0,
+    course_generated INTEGER DEFAULT 0,
+    course_slug TEXT DEFAULT '',
+    course_json TEXT DEFAULT '',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
+`);
+
+db.run(`
   CREATE TABLE IF NOT EXISTS media (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     filename TEXT NOT NULL UNIQUE,

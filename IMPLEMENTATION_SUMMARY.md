@@ -1,4 +1,4 @@
-# Framework Builder - Implementation Summary
+# Veltro Create - Implementation Summary
 
 ## Three Features Implemented ✅
 
@@ -188,7 +188,7 @@ Each project stores:
 cd server
 npm start
 ```
-Output: `🚀 Framework Builder API running on port 3001`
+Output: `🚀 Veltro Create API running on port 3001`
 
 ### Terminal 2 - Frontend
 ```bash

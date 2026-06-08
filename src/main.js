@@ -1,4 +1,4 @@
-// Framework Builder — ES module entry point
+// Veltro Create — ES module entry point
 // Import order matches the original script-tag load order exactly.
 
 import "../js/state.js";
@@ -23,6 +23,7 @@ import "../widgets/layout.js";
 import "../widgets/interactive.js";
 import "../widgets/gallery-like.js";
 import "../widgets/embed.js";
+import "../widgets/education.js";
 import "../widgets/veltro/index.js";
 import "../js/help.js";
 import "../js/ai-knowledge.js";

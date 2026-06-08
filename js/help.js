@@ -13,7 +13,7 @@ FB.help.TOPICS = [
     content: {
       title: "Interface Overview",
       intro:
-        "Framework Builder is a visual page composer — no code required. Stack and style sections to build any page layout.",
+        "Veltro Create is a visual page composer — no code required. Stack and style sections to build any page layout.",
       itemsLabel: "Key Areas",
       items: [
         {
@@ -37,7 +37,7 @@ FB.help.TOPICS = [
           desc: "Appears when a block is selected. Edit content, colours, typography, spacing, animations and more.",
         },
       ],
-      tip: "New to Framework Builder? Click Take the Tour for a guided 2-minute walkthrough of the whole interface.",
+      tip: "New to Veltro Create? Click Take the Tour for a guided 2-minute walkthrough of the whole interface.",
     },
   },
   {
@@ -163,7 +163,7 @@ FB.help.TOPICS = [
     content: {
       title: "Pages",
       intro:
-        "Framework Builder supports multi-page projects. Each page has its own independent canvas.",
+        "Veltro Create supports multi-page projects. Each page has its own independent canvas.",
       itemsLabel: "Managing Pages",
       items: [
         {
@@ -204,7 +204,7 @@ FB.help.TOPICS = [
         {
           icon: "M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71",
           label: "URL Import",
-          desc: "Click Import in the toolbar, paste any public URL, and Framework Builder scrapes and converts it into editable blocks.",
+          desc: "Click Import in the toolbar, paste any public URL, and Veltro Create scrapes and converts it into editable blocks.",
         },
         {
           icon: "M12 2a5 5 0 0 1 5 5c0 2.5-1.5 4.5-3 6l-2 3-2-3c-1.5-1.5-3-3.5-3-6a5 5 0 0 1 5-5z",
@@ -352,7 +352,7 @@ FB.help._buildShell = function () {
   sidebar.innerHTML =
     '<div class="fb-help-sidebar-head">' +
     '<div class="fb-help-sidebar-title">HELP CENTRE</div>' +
-    '<div class="fb-help-sidebar-sub">Framework Builder</div>' +
+    '<div class="fb-help-sidebar-sub">Veltro Create</div>' +
     "</div>" +
     '<div class="fb-help-topics" id="fb-help-topics"></div>' +
     '<div class="fb-help-sidebar-footer">' +
@@ -554,7 +554,7 @@ FB.help.startTour = function () {
     steps: [
       {
         popover: {
-          title: "Welcome to Framework Builder",
+          title: "Welcome to Veltro Create",
           description:
             "This quick tour walks you through the key areas of the interface. Use the arrows or keyboard to navigate — press ESC to exit at any time.",
           side: "over",

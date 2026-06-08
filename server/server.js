@@ -5,28 +5,49 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import projectRoutes from './routes/projects.js';
 import mediaRoutes from './routes/media.js';
+import educationRoutes from './routes/education.js';
+import designRoutes from './routes/designs.js';
+import studioMediaRoutes from './routes/studioMedia.js';
+import aiImageRoutes from './routes/aiImage.js';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.API_PORT || 3001;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const allowedOrigins = (process.env.CORS_ORIGIN || '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.length) {
+      return callback(null, allowedOrigins.includes(origin));
+    }
+    return callback(null, /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin));
+  }
+}));
 app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: false }));
 
 // Serve uploaded files
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+app.use('/media', express.static(path.join(__dirname, 'public/uploads')));
 
 // Routes
 app.use('/api/projects', projectRoutes);
 app.use('/api/cms/media', mediaRoutes);
+app.use('/api/education', educationRoutes);
+app.use('/api/designs', designRoutes);
+app.use('/api/media', studioMediaRoutes);
+app.use('/api/ai-image', aiImageRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Framework Builder API is running' });
+  res.json({ status: 'ok', message: 'Veltro Create API is running' });
 });
 
 // Error handler
@@ -52,6 +73,6 @@ app.use((req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Framework Builder API running on port ${PORT}`);
+  console.log(`🚀 Veltro Create API running on port ${PORT}`);
   console.log(`📍 Health check: http://localhost:${PORT}/api/health`);
 });

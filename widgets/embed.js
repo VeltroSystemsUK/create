@@ -205,9 +205,10 @@ FB.widgets.register("motionBlock", {
   editPanel: function (id, p) { return ""; },
 });
 
-FB.panels._lottieLoaded = false;
+if (window.FB && window.FB.panels) {
+  FB.panels._lottieLoaded = false;
 
-FB.panels.initLottie = function () {
+  FB.panels.initLottie = function () {
   document
     .querySelectorAll(".fw-lottie-wrap:not([data-lottie-init])")
     .forEach(function (wrap) {
@@ -250,19 +251,20 @@ FB.panels.initLottie = function () {
         document.head.appendChild(s);
       }
     });
-};
+  };
 
-FB.panels._initLottie = function () {
-  FB.panels.initLottie();
-  setInterval(function () {
+  FB.panels._initLottie = function () {
     FB.panels.initLottie();
-  }, 2000);
-};
+    setInterval(function () {
+      FB.panels.initLottie();
+    }, 2000);
+  };
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", FB.panels._initLottie);
-} else {
-  FB.panels._initLottie();
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", FB.panels._initLottie);
+  } else {
+    FB.panels._initLottie();
+  }
 }
 
 // HTML Embed — renders raw HTML with preserved styles via Shadow DOM

@@ -33,12 +33,13 @@ FB.ai._render = function () {
 
   if (!key) {
     h += '<div class="ai-section">';
-    h += '<div class="ai-section-title">🔑 Gemini API Key</div>';
+    h += '<div class="ai-section-title">🔑 Anthropic API Key</div>';
     h +=
-      '<p style="font-size:11px;color:#888;margin:0 0 8px">Get your free key at <a href="https://aistudio.google.com/apikey" target="_blank" style="color:#CDFE00">aistudio.google.com/apikey</a></p>';
+      '<p style="font-size:11px;color:#888;margin:0 0 8px">Get your free key at <a href="https://console.anthropic.com/account/keys" target="_blank" style="color:#CDFE00">console.anthropic.com/account/keys</a></p>';
+    h += '<label for="ai-api-key-input" style="font-size:11px;color:#aaa;display:block;margin-bottom:4px">API Key</label>';
     h += '<div style="display:flex;gap:6px">';
     h +=
-      '<input id="ai-api-key-input" type="password" placeholder="Paste your Gemini API key..." style="flex:1;padding:8px;background:#1a1a1a;border:1px solid #333;border-radius:6px;color:#fff;font-size:12px">';
+      '<input id="ai-api-key-input" type="password" placeholder="Paste your Anthropic API key..." style="flex:1;padding:8px;background:#1a1a1a;border:1px solid #333;border-radius:6px;color:#fff;font-size:12px">';
     h += '<button class="ds-save-btn" onclick="FB.ai._saveKey()">Save</button>';
     h += "</div></div>";
     main.innerHTML = h;

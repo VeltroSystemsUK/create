@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Framework Builder</title>
+    <title>Veltro Create</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&display=swap"
@@ -32,7 +32,7 @@
   <body>
     <!-- TOP BAR -->
     <div id="topbar">
-      <div class="logo">Framework <span>Builder</span></div>
+      <div class="logo">Veltro <span>Create</span></div>
       <div class="tb-center">
         <div class="device-btns">
           <button
@@ -390,7 +390,7 @@
         </div>
         <div class="lp-accordion">
           <div
-            class="lp-acc-header open"
+            class="lp-acc-header"
             data-acc="sections"
             onclick="FB.panels.toggleLeftAccordion(this)"
           >
@@ -398,7 +398,7 @@
             <span class="lp-acc-label">Sections</span>
             <span class="lp-acc-arrow">▶</span>
           </div>
-          <div class="lp-acc-body open" id="lp-body-sections">
+          <div class="lp-acc-body" id="lp-body-sections">
             <div id="block-library"></div>
           </div>
         </div>
@@ -488,6 +488,9 @@
           </div>
           <div class="lp-acc-body" id="lp-body-education">
             <div id="education-library"></div>
+            <div class="lp-section-divider"></div>
+            <div class="lp-section-label">Book Ingestion</div>
+            <div id="book-ingestion"></div>
           </div>
         </div>
 
@@ -555,34 +558,35 @@
     <div id="design-studio" style="display: none">
       <!-- TOP BAR -->
       <div id="ds-topbar">
-        <button class="ds-back-btn" onclick="FB.panels.setMode('builder')">
-          ← Builder
+        <div class="logo ds-logo">Veltro <span>Design</span></div>
+        <button class="tb-btn" onclick="FB.panels.setMode('builder')" title="Back to Builder">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>
+          </svg>
+          <span>Builder</span>
         </button>
-        <div class="ds-divider"></div>
+        <div class="tb-sep"></div>
         <input id="ds-title" name="ds-title" class="ds-title-input" value="Untitled Design" />
-        <div class="ds-divider"></div>
+        <div class="tb-sep"></div>
         <button
-          class="ds-icon-btn"
+          class="tb-btn"
           title="Undo (Ctrl+Z)"
           onclick="FB.design.history.undo()"
         >
-          ↩
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+          </svg>
         </button>
         <button
-          class="ds-icon-btn"
+          class="tb-btn"
           title="Redo (Ctrl+Y)"
           onclick="FB.design.history.redo()"
         >
-          ↪
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+          </svg>
         </button>
-        <div
-          style="
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-          "
-        >
+        <div class="tb-right ds-toolbar-right">
           <select
             id="ds-preset-select"
             name="ds-preset"
@@ -596,14 +600,20 @@
             <option value="custom">Custom…</option>
           </select>
           <div id="ds-zoom-controls">
-            <button onclick="FB.design.canvas.zoomOut()">−</button>
+            <button class="tb-btn" onclick="FB.design.canvas.zoomOut()" title="Zoom out">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/></svg>
+            </button>
             <span id="ds-zoom-label">100%</span>
-            <button onclick="FB.design.canvas.zoomIn()">+</button>
-            <button onclick="FB.design.canvas.zoomFit()">Fit</button>
+            <button class="tb-btn" onclick="FB.design.canvas.zoomIn()" title="Zoom in">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+            </button>
+            <button class="tb-btn" onclick="FB.design.canvas.zoomFit()" title="Fit to view">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M16 3h3a2 2 0 0 1 2 2v3"/><path d="M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+            </button>
           </div>
-          <div class="ds-divider"></div>
+          <div class="tb-sep"></div>
           <span id="ds-size-label"></span>
-          <button class="ds-save-btn" onclick="FB.design.library.save()">
+          <button class="tb-export" onclick="FB.design.library.save()">
             Save
           </button>
         </div>
@@ -689,6 +699,7 @@
         <div id="ds-canvas-column">
           <div id="ds-canvas-wrap">
             <canvas id="ds-canvas"></canvas>
+            <div id="ds-veltro-canvas-layer"></div>
           </div>
         </div>
 
@@ -747,7 +758,44 @@
                 >
                   Export SVG
                 </button>
+                <button
+                  class="ds-export-btn"
+                  onclick="FB.design.library.exportHTML()"
+                >
+                  Export HTML
+                </button>
               </div>
+              <div class="ds-section-label" style="padding: 12px 0 4px">
+                Veltro Engine
+              </div>
+              <select id="ds-veltro-effect" class="ds-select" onchange="FB.design.library.previewVeltroBlock()">
+                <option value="physicsSandbox">Physics Sandbox</option>
+                <option value="fluidSimulation">Fluid Simulation</option>
+                <option value="gravityWells">Gravity Wells</option>
+                <option value="magneticFields">Magnetic Fields</option>
+                <option value="waveText">Wave Text</option>
+                <option value="kineticScramble">Kinetic Scramble</option>
+                <option value="magneticText">Magnetic Text</option>
+                <option value="liquidGradient">Liquid Gradient</option>
+                <option value="particleNebula">Particle Nebula</option>
+                <option value="auroraBorealis">Aurora Borealis</option>
+                <option value="cursorLens">Cursor Lens</option>
+                <option value="layeredParallax">Layered Parallax</option>
+                <option value="morphingGrid">Morphing Grid</option>
+              </select>
+              <button
+                class="ds-export-btn ds-veltro-insert-btn"
+                onclick="FB.design.library.insertVeltroBlock()"
+              >
+                Insert Veltro Block
+              </button>
+              <button
+                class="ds-export-btn"
+                onclick="FB.design.library.previewVeltroBlock()"
+              >
+                Preview Veltro
+              </button>
+              <div id="ds-veltro-preview"></div>
               <div class="ds-section-label" style="padding: 12px 0 4px">
                 Canvas Background
               </div>
@@ -855,23 +903,6 @@
     <div id="fw-page-enter"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
-    <script src="/js/widgets.js"></script>
-    <script src="/widgets/basic.js"></script>
-    <script src="/widgets/content.js"></script>
-    <script src="/widgets/embed.js"></script>
-    <script src="/widgets/gallery-like.js"></script>
-    <script src="/widgets/interactive.js"></script>
-    <script src="/widgets/layout.js"></script>
-    <script src="/widgets/media.js"></script>
-    <script src="/widgets/veltro.js"></script>
-    <script src="/widgets/veltro/batch-ambient.js"></script>
-    <script src="/widgets/veltro/batch-cursor.js"></script>
-    <script src="/widgets/veltro/batch-physics.js"></script>
-    <script src="/widgets/veltro/batch-scroll.js"></script>
-    <script src="/widgets/veltro/batch-spatial.js"></script>
-    <script src="/widgets/veltro/batch-text.js"></script>
-    <script src="/widgets/veltro/orig-fx.js"></script>
-    <script src="/widgets/veltro/orig-text.js"></script>
     <script type="module" src="/src/main.js"></script>
     <div id="google-translate-root" style="display: none"></div>
 
