@@ -105,7 +105,10 @@ const server = http.createServer((req, res) => {
         res.destroy();
         return;
       }
-      res.end(data);
+      console.log(`  -> Sending ${data.length} bytes`);
+      res.end(data, () => {
+        console.log(`  -> Response complete for ${pathname}`);
+      });
     });
   });
 });
