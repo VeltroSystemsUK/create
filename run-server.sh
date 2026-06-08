@@ -1,10 +1,10 @@
 #!/bin/bash
 # Production-ready server launcher
 
-# Try Node.js/Express first (most reliable for this project)
+# Try simple HTTP server first (most reliable - no frameworks)
 if command -v node &> /dev/null; then
-    echo "Starting with Node.js/Express..."
-    node serve.js
+    echo "Starting with Node.js HTTP server..."
+    node simple-server.cjs
     exit $?
 fi
 
