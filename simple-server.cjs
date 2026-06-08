@@ -98,17 +98,27 @@ const server = http.createServer((req, res) => {
     console.log(`  -> 200 OK (${stats.size} bytes)`);
     res.writeHead(200);
 
-    // Read file and send (buffer for reliability)
-    fs.readFile(filePath, (err, data) => {
-      if (err) {
-        console.error(`Error reading file: ${err.message}`);
-        res.destroy();
-        return;
+    // Stream the file with proper error handling
+    const stream = fs.createReadStream(filePath, { highWaterMark: 64 * 1024 });
+
+    stream.on('error', (err) => {
+      console.error(`  -> Stream error: ${err.message}`);
+      if (!res.headersSent) {
+        res.writeHead(500);
       }
-      console.log(`  -> Sending ${data.length} bytes`);
-      res.end(data, () => {
-        console.log(`  -> Response complete for ${pathname}`);
-      });
+      res.destroy();
+    });
+
+    res.on('error', (err) => {
+      console.error(`  -> Response error: ${err.message}`);
+      stream.destroy();
+    });
+
+    console.log(`  -> Streaming ${stats.size} bytes`);
+    stream.pipe(res);
+
+    res.on('finish', () => {
+      console.log(`  -> Response complete for ${pathname}`);
     });
   });
 });
