@@ -1532,12 +1532,24 @@ FB.design.canvas = (function () {
   var _inited = false;
 
   var PRESETS = {
-    blank: { w: 800, h: 600 },
-    hero: { w: 1920, h: 600 },
-    og: { w: 1200, h: 630 },
-    card: { w: 800, h: 600 },
-    square: { w: 1080, h: 1080 },
-    wide: { w: 1920, h: 1080 },
+    blank: { w: 800, h: 600, label: "Blank" },
+    hero: { w: 1920, h: 600, label: "Hero Banner" },
+    og: { w: 1200, h: 630, label: "OG Image" },
+    card: { w: 800, h: 600, label: "Feature Card" },
+    square: { w: 1080, h: 1080, label: "Square Post" },
+    wide: { w: 1920, h: 1080, label: "Wide 16:9" },
+    linkedin: { w: 1200, h: 627, label: "LinkedIn Post" },
+    instagram_square: { w: 1080, h: 1080, label: "Instagram Square" },
+    instagram_portrait: { w: 1080, h: 1350, label: "Instagram Portrait" },
+    instagram_story: { w: 1080, h: 1920, label: "Instagram Story" },
+    facebook: { w: 1200, h: 628, label: "Facebook Post" },
+    facebook_cover: { w: 1200, h: 500, label: "Facebook Cover" },
+    twitter: { w: 1200, h: 675, label: "Twitter/X Post" },
+    tiktok: { w: 1080, h: 1920, label: "TikTok" },
+    youtube_thumb: { w: 1280, h: 720, label: "YouTube Thumbnail" },
+    pinterest: { w: 1000, h: 1500, label: "Pinterest" },
+    snapchat: { w: 1080, h: 1920, label: "Snapchat" },
+    custom: { w: 800, h: 600, label: "Custom" },
   };
 
   function init() {
