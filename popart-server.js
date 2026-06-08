@@ -16,10 +16,10 @@ app.post('/api/popart/generate', async (req, res) => {
     });
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.CLAUDE_API_KEY;
   if (!apiKey) {
     return res.status(500).json({
-      error: 'ANTHROPIC_API_KEY environment variable not set'
+      error: 'CLAUDE_API_KEY environment variable not set'
     });
   }
 
@@ -62,5 +62,5 @@ app.post('/api/popart/generate', async (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`🎨 Pop Art server running on http://localhost:${PORT}`);
-  console.log('Set ANTHROPIC_API_KEY environment variable before starting');
+  console.log('Set CLAUDE_API_KEY environment variable before starting');
 });

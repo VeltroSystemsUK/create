@@ -65,7 +65,7 @@ const PopArtGenerator = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': window.ANTHROPIC_API_KEY || ''
+          'x-api-key': window.CLAUDE_API_KEY || ''
         },
         body: JSON.stringify({
           model: 'claude-opus-4-8',
