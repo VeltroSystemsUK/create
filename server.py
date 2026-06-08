@@ -22,7 +22,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-from flask import Flask, jsonify, request, send_from_directory, session, send_file
+from flask import Flask, jsonify, request, send_from_directory, session
 
 # ── CORS Helper ─────────────────────────────────────────────────────
 def add_cors_headers(response):
@@ -98,13 +98,6 @@ def _verify_password(password, config):
         return False
     computed, _ = _hash_password(password, pw_salt)
     return computed == pw_hash
-
-
-def _get_mimetype(filepath):
-    """Get MIME type for a file."""
-    import mimetypes
-    mime, _ = mimetypes.guess_type(filepath)
-    return mime or "application/octet-stream"
 
 
 def _load_sessions():
@@ -498,25 +491,16 @@ def serve_static(filename="framework-builder.html"):
     # 1. Try dist folder (built assets)
     fpath = BUILD_DIR / safe
     if fpath.is_file():
-        try:
-            return send_file(str(fpath), mimetype=_get_mimetype(str(fpath)))
-        except Exception:
-            return send_from_directory(BUILD_DIR, safe)
+        return send_from_directory(BUILD_DIR, safe)
 
     # 2. Try root folder (source assets, widgets, js)
     rpath = BASE_DIR / safe
     if rpath.is_file():
-        try:
-            return send_file(str(rpath), mimetype=_get_mimetype(str(rpath)))
-        except Exception:
-            return send_from_directory(BASE_DIR, safe)
+        return send_from_directory(BASE_DIR, safe)
 
     # 3. Fallback: look for the file directly in dist/
     if (BUILD_DIR / (safe + ".html")).is_file():
-        try:
-            return send_file(str(BUILD_DIR / (safe + ".html")), mimetype="text/html")
-        except Exception:
-            return send_from_directory(BUILD_DIR, safe + ".html")
+        return send_from_directory(BUILD_DIR, safe + ".html")
 
     return jsonify({"error": "Not found"}), 404
 
