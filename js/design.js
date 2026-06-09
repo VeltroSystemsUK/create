@@ -78,6 +78,9 @@ FB.design.toggleAccordion = function (headerEl) {
   if (headerEl.dataset.acc === "media" && isOpen) {
     FB.design.media.load();
   }
+  if (headerEl.dataset.acc === "brand" && isOpen) {
+    FB.design._renderBrandSettings();
+  }
 };
 
 FB.design.toggleRightAccordion = function (headerEl) {
@@ -3280,6 +3283,7 @@ FB.design.props = (function () {
       '<div class="ds-motion-presets">' +
       '<button class="ds-sm-btn" onclick="FB.design.props.captureBrandFromSelection()">Capture</button>' +
       '<button class="ds-sm-btn" onclick="FB.design.props.applyBrandToSelection()">Apply</button>' +
+      '<button class="ds-sm-btn" onclick="FB.design.props.applyBrandGlobally()">Apply All</button>' +
       '<button class="ds-sm-btn" onclick="FB.design.props.applyBrandToCanvas()">Canvas BG</button>' +
       '</div>' +
       '</div>'
@@ -3293,10 +3297,17 @@ FB.design.props = (function () {
       '<div class="ds-motion-presets">' +
       '<button class="ds-sm-btn" onclick="FB.design.props.applyBrandToSelection()">Apply Brand</button>' +
       '<button class="ds-sm-btn" onclick="FB.design.props.captureBrandFromSelection()">Capture Style</button>' +
+      '<button class="ds-sm-btn" onclick="FB.design.props.applyBrandGlobally()">Apply All</button>' +
       '</div>' +
       '</div>'
     );
   }
+
+  FB.design._renderBrandSettings = function() {
+    var el = document.getElementById("ds-brand-settings");
+    if (!el) return;
+    el.innerHTML = _brandKitPanel();
+  };
 
   function render() {
     var fc = FB.design.canvas.get();
@@ -3866,6 +3877,7 @@ FB.design.props = (function () {
       "</select></div>";
 
     // Size + B/I/U
+    var hasStrike = obj.linethrough;
     html +=
       '<div class="ds-prop-group"><div class="ds-prop-label">Size &amp; Style</div>' +
       '<div class="ds-prop-row" style="align-items:center;">' +
@@ -3886,7 +3898,23 @@ FB.design.props = (function () {
       '" title="Underline" onclick="FB.design.props.setProp(\'underline\',' +
       !isUnder +
       ')"><u>U</u></button>' +
+      '<button class="ds-toggle-btn' +
+      (hasStrike ? " active" : "") +
+      '" title="Strikethrough" onclick="FB.design.props.setProp(\'linethrough\',' +
+      !hasStrike +
+      ')"><s>S</s></button>' +
       "</div></div></div>";
+
+    // Font weight
+    var weights = ["300", "400", "500", "600", "700", "800"];
+    var currentWeight = String(obj.fontWeight || 400);
+    html +=
+      '<div class="ds-prop-group"><div class="ds-prop-label">Weight</div>' +
+      '<select class="ds-select" onchange="FB.design.props.setProp(\'fontWeight\',this.value)">' +
+      weights.map(function(w) {
+        return '<option value="' + w + '"' + (currentWeight === w ? ' selected' : '') + '>' + (w === '300' ? 'Light' : w === '400' ? 'Regular' : w === '500' ? 'Medium' : w === '600' ? 'SemiBold' : w === '700' ? 'Bold' : 'ExtraBold') + '</option>';
+      }).join('') +
+      '</select></div>';
 
     // Colour
     var textColor = FB.design.normalizeColorForInput(obj.fill || "#000000");
@@ -3898,6 +3926,17 @@ FB.design.props = (function () {
       '<input class="ds-input" value="' +
       (obj.fill || "#000000") +
       '" onchange="FB.design.props.setProp(\'fill\',this.value)"/></div></div>';
+
+    // Text Transform
+    var textTransform = obj.textTransform || "none";
+    html +=
+      '<div class="ds-prop-group"><div class="ds-prop-label">Transform</div>' +
+      '<select class="ds-select" onchange="FB.design.props.setProp(\'textTransform\',this.value)">' +
+      '<option value="none"' + (textTransform === 'none' ? ' selected' : '') + '>Normal</option>' +
+      '<option value="uppercase"' + (textTransform === 'uppercase' ? ' selected' : '') + '>UPPERCASE</option>' +
+      '<option value="lowercase"' + (textTransform === 'lowercase' ? ' selected' : '') + '>lowercase</option>' +
+      '<option value="capitalize"' + (textTransform === 'capitalize' ? ' selected' : '') + '>Capitalize</option>' +
+      '</select></div>';
 
     // Align
     html +=
@@ -3920,6 +3959,16 @@ FB.design.props = (function () {
         })
         .join("") +
       "</div></div>";
+
+    // Opacity
+    var textOpacity = Math.round((obj.opacity || 1) * 100);
+    html +=
+      '<div class="ds-prop-group"><div class="ds-prop-label" style="display:flex;justify-content:space-between">Opacity <output style="font-size:9px;color:#aaa">' +
+      textOpacity +
+      '%</output></div>' +
+      '<input class="ds-input" type="range" min="0" max="100" value="' +
+      textOpacity +
+      '" oninput="this.previousElementSibling.querySelector(\'output\').textContent=this.value+\'%\';FB.design.props.setProp(\'opacity\',this.value/100)"/></div>';
 
     // Line height
     html +=
@@ -4129,6 +4178,38 @@ FB.design.props = (function () {
     if (FB.design.layers) FB.design.layers.render();
     if (FB.design.props) FB.design.props.render();
     FB.design.history.push();
+  }
+
+  function _applyBrandToObjectTree(obj, kit) {
+    if (!obj) return;
+    if (obj.type === "group" && obj._objects) {
+      obj._objects.forEach(function (child) {
+        _applyBrandToObject(child, kit);
+      });
+      if (obj.addWithUpdate) obj.addWithUpdate();
+    } else {
+      _applyBrandToObject(obj, kit);
+    }
+    obj.dirty = true;
+    obj.setCoords();
+  }
+
+  function applyBrandGlobally() {
+    var fc = FB.design.canvas.get();
+    if (!fc) return;
+    var kit = _brandKit();
+    fc.getObjects().forEach(function (obj) {
+      _applyBrandToObjectTree(obj, kit);
+    });
+    FB.design._canvasBg = kit.background;
+    FB.design.applyCanvasSurfaceBg();
+    fc.setBackgroundColor(kit.background, function () {});
+    fc.renderAll();
+    if (FB.design.layers) FB.design.layers.render();
+    if (FB.design.props) FB.design.props.render();
+    if (FB.design.veltroCanvas) FB.design.veltroCanvas.sync();
+    FB.design.history.push();
+    if (FB.util && FB.util.showToast) FB.util.showToast("Brand applied across canvas");
   }
 
   function applyBrandToCanvas() {
@@ -4835,6 +4916,7 @@ FB.design.props = (function () {
     setCanvasBg: setCanvasBg,
     setBrandKit: setBrandKit,
     applyBrandToSelection: applyBrandToSelection,
+    applyBrandGlobally: applyBrandGlobally,
     applyBrandToCanvas: applyBrandToCanvas,
     captureBrandFromSelection: captureBrandFromSelection,
     setSnapSetting: setSnapSetting,

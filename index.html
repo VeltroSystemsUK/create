@@ -731,6 +731,21 @@
           <div class="lp-accordion">
             <div
               class="lp-acc-header"
+              data-acc="brand"
+              onclick="FB.design.toggleAccordion(this)"
+            >
+              <span class="lp-acc-icon">◈</span>
+              <span class="lp-acc-label">Brand Settings</span>
+              <span class="lp-acc-arrow">▶</span>
+            </div>
+            <div class="lp-acc-body" id="lp-body-brand">
+              <div id="ds-brand-settings" style="padding: 8px"></div>
+            </div>
+          </div>
+
+          <div class="lp-accordion">
+            <div
+              class="lp-acc-header"
               data-acc="assets"
               onclick="FB.design.toggleAccordion(this)"
             >
@@ -863,35 +878,6 @@
                     HTML
                   </button>
                 </div>
-                <div class="lp-section-label" style="padding: 12px 12px 6px">
-                  Veltro Engine
-                </div>
-                <select id="ds-veltro-effect" class="ds-select" onchange="FB.design.library.previewVeltroBlock()" style="margin: 0 12px; width: calc(100% - 24px)">
-                  <option value="kineticText">Kinetic Text</option>
-                  <option value="textScramble">Text Scramble</option>
-                  <option value="typewriterReveal">Typewriter</option>
-                  <option value="liquidText">Liquid Text</option>
-                  <option value="morphingText">Morphing Text</option>
-                  <option value="morphingCounter">Counter</option>
-                  <option value="waveText">Wave Text</option>
-                  <option value="kineticScramble">Kinetic Scramble</option>
-                  <option value="magneticText">Magnetic Text</option>
-                </select>
-                <button
-                  class="rp-btn"
-                  style="width: calc(100% - 12px); margin: 6px"
-                  onclick="FB.design.library.insertVeltroBlock()"
-                >
-                  ⊕ Insert Veltro Block
-                </button>
-                <button
-                  class="rp-btn"
-                  style="width: calc(100% - 12px); margin: 6px"
-                  onclick="FB.design.library.previewVeltroBlock()"
-                >
-                  ◆ Preview Veltro
-                </button>
-                <div id="ds-veltro-preview"></div>
                 <div class="lp-section-label" style="padding: 12px 12px 6px">
                   Canvas Background
                 </div>
