@@ -13,211 +13,216 @@ FB.help.TOPICS = [
     content: {
       title: "Interface Overview",
       intro:
-        "Veltro Create is a visual page composer — no code required. Stack and style sections to build any page layout.",
+        "Veltro Create is a visual design studio for creating responsive pages. Stack, style, and export with no code.",
       itemsLabel: "Key Areas",
       items: [
         {
           icon: "M2 3h20v4H2zM2 9h20",
           label: "Top Bar",
-          desc: "Device preview, undo/redo, preview mode, save, load, import, AI import and export all live here.",
+          desc: "Device preview (desktop/tablet/mobile), undo/redo, preview mode, AI tools, export options, theme toggle, and language selection.",
         },
         {
           icon: "M2 2h6v20H2zM10 6h12M10 12h12M10 18h12",
           label: "Left Panel",
-          desc: "Browse and add sections, templates, layouts, and widgets. Click any item to add it to your canvas.",
+          desc: "Elements (text, shapes, images), Layers, Media Library, Brand Settings, and Assets. Collapsed mode shows icon-only view for more canvas space.",
         },
         {
           icon: "M3 3h18v18H3zM9 9h6v6H9z",
           label: "Canvas",
-          desc: "Your live editing area. Click a block to select it. Use the ↑↓ arrows or drag to reorder blocks.",
+          desc: "Your live editing area. Click any element to select it. Drag to move, use handles to resize. Aligned guides help with positioning.",
         },
         {
           icon: "M16 2h6v20h-6M2 6h12M2 12h12M2 18h12",
           label: "Right Panel",
-          desc: "Appears when a block is selected. Edit content, colours, typography, spacing, animations and more.",
+          desc: "Design properties (colors, typography, spacing), alignment controls, and export options. Updates based on selected element.",
         },
       ],
-      tip: "New to Veltro Create? Click Take the Tour for a guided 2-minute walkthrough of the whole interface.",
+      tip: "New to Veltro Create? Click Take the Tour for a guided walkthrough of the interface.",
     },
   },
   {
-    id: "sections",
-    label: "Working with Sections",
+    id: "elements",
+    label: "Adding Elements",
     category: "Building",
     icon: "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5",
     content: {
-      title: "Working with Sections",
+      title: "Adding Elements",
       intro:
-        "Sections are the building blocks of your page. Add them from the left panel, then rearrange and customise freely.",
-      itemsLabel: "Actions",
+        "Build with Text, Shapes, and Images. Add elements from the Elements accordion, then arrange and style them freely.",
+      itemsLabel: "Element Types",
       items: [
         {
           icon: "M12 5v14M5 12h14",
-          label: "Adding a Section",
-          desc: "Open the Sections panel on the left and click any section to add it to the bottom of your canvas.",
+          label: "Text",
+          desc: "Add editable text with full font control: 30+ Google Fonts, weights, sizes, transforms, line height, letter spacing, and opacity.",
         },
         {
-          icon: "M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z",
-          label: "Selecting a Block",
-          desc: "Click any block on the canvas to select it. The right panel opens with its editing controls.",
+          icon: "M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z",
+          label: "Shapes",
+          desc: "Draw rectangles, circles, triangles, stars, arrows, and more. Full customization: fill, stroke, corners, shadows, and effects.",
+        },
+        {
+          icon: "M4 5h16v14H4z",
+          label: "Images",
+          desc: "Insert images from your Media Library or upload new ones. Control size, opacity, flip, and apply visual effects.",
         },
         {
           icon: "M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4",
-          label: "Reordering",
-          desc: "Use the ↑ and ↓ arrows on a selected block to move it, or drag it to a new position on the canvas.",
-        },
-        {
-          icon: "M8 16H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2m-6 12h8a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2z",
-          label: "Duplicating",
-          desc: "Select a block, then use Actions → Duplicate in the right panel. Or press Ctrl+C then Ctrl+V.",
+          label: "Reorder Elements",
+          desc: "Use arrow buttons or drag elements on the canvas. Layers panel shows hierarchy — click any layer to select it.",
         },
         {
           icon: "M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2",
-          label: "Deleting",
-          desc: "Select a block and press Delete, or use the Delete button in the Actions section of the right panel.",
+          label: "Duplicate & Delete",
+          desc: "Press Ctrl+D to duplicate selected element. Press Delete to remove. Use Ctrl+Z to undo any action.",
         },
       ],
-      tip: "Use the Layers panel in the left sidebar to see all sections in order — click any layer to jump directly to that block.",
+      tip: "The Layers panel shows your element structure. Useful for selecting nested elements or understanding layout hierarchy.",
     },
   },
   {
     id: "styling",
-    label: "Styling",
+    label: "Styling & Design Properties",
     category: "Building",
     icon: "M4 21v-7m0-4V3m8 18v-9m0-4V3m8 18v-5m0-4V3M1 14h6m2-6h6m2 8h6",
     content: {
-      title: "Styling",
+      title: "Styling & Design Properties",
       intro:
-        "Every visual property of a block is controlled from the right panel. Select any block to reveal its full styling options.",
-      itemsLabel: "Right Panel Sections",
+        "Full design control from the Design panel in the right sidebar. Select any element to reveal all its properties.",
+      itemsLabel: "Design Properties",
       items: [
         {
           icon: "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z",
-          label: "Style — Colours",
-          desc: "Set background colour, opacity, and gradient. Use the gradient builder for linear or radial effects with custom colour stops.",
+          label: "Colors & Effects",
+          desc: "Background color, opacity, shadows, blur, border, border radius, and blend modes. All with live preview.",
         },
         {
           icon: "M4 7h16M4 12h10M4 17h6",
-          label: "Typography",
-          desc: "Choose from 30 Google Fonts. Control size, weight, line height, letter spacing, and text alignment.",
+          label: "Text & Typography",
+          desc: "30+ Google Fonts, sizes, weights (Light to ExtraBold), styles (Bold, Italic), decorations (Underline, Strikethrough), text transform (uppercase, lowercase, capitalize), line height, letter spacing, alignment, and opacity.",
         },
         {
           icon: "M21 3H3v7h18V3zM21 14H3v7h18v-7z",
-          label: "Spacing & Dimensions",
-          desc: "Set padding, margin (4-edge), width, height, min/max constraints, aspect ratio, and line-clamp.",
+          label: "Size & Position",
+          desc: "Width, height, position, padding, margin. Set constraints and alignment for responsive behavior.",
         },
         {
           icon: "M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z",
-          label: "Effects & Border",
-          desc: "Add box shadows, backdrop blur (glassmorphism), mix-blend-mode (16 options), and full border controls with radius.",
+          label: "Advanced Effects",
+          desc: "Box shadows with blur and spread, backdrop blur (glassmorphism), mix-blend-mode options, border customization.",
         },
         {
           icon: "M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3",
-          label: "Hover States",
-          desc: "Define a different background, opacity, or scale when the user hovers. CSS transitions are applied automatically.",
+          label: "Alignment Tools",
+          desc: "Align, distribute, and arrange elements. Snap to guides for precise positioning and consistent spacing.",
         },
       ],
-      tip: "Wrapper properties (opacity, transform, hover) update instantly. Content props like background colour fully re-render the block.",
+      tip: "Brand Settings accordion lets you define global colors, fonts, and radius — apply them across all elements at once.",
     },
   },
   {
-    id: "templates",
-    label: "Templates & Saving",
+    id: "brand",
+    label: "Brand Settings",
     category: "Building",
     icon: "M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2zM17 21v-8H7v8M7 3v5h8",
     content: {
-      title: "Templates & Saving",
+      title: "Brand Settings",
       intro:
-        "Start from a professional template or save your own designs — your work is auto-saved and restored between sessions.",
-      itemsLabel: "How To",
+        "Define your brand's core design system — colors, fonts, and radius. Apply them globally across elements.",
+      itemsLabel: "Brand Properties",
       items: [
         {
-          icon: "M4 6h16M4 10h16M4 14h16M4 18h16",
-          label: "Loading a Template",
-          desc: "Open the Templates section in the left panel and click any thumbnail to load it onto the canvas.",
+          icon: "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z",
+          label: "Brand Colors",
+          desc: "Set Primary, Accent, Secondary Surface, Background, and Text colors. Use color pickers or hex input.",
         },
         {
-          icon: "M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z",
-          label: "Saving Your Work",
-          desc: "Click Save in the toolbar (or Ctrl+S). Your work is also auto-saved every 30 seconds to local storage.",
+          icon: "M4 7h16M4 12h10M4 17h6",
+          label: "Brand Fonts",
+          desc: "Choose Heading Font and Body Font from 30+ Google Fonts. These become available for quick selection.",
         },
         {
-          icon: "M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z",
-          label: "Loading Saved Work",
-          desc: "Click Load in the toolbar to open the Template Manager and restore a previously saved design.",
+          icon: "M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3",
+          label: "Border Radius",
+          desc: "Set default corner radius (0-24px) for all elements. Control the overall visual softness of your design.",
         },
         {
-          icon: "M12 2L2 7l10 5 10-5-10-5z",
-          label: "Block Themes",
-          desc: "The Block Themes panel applies a colour palette across all blocks at once — great for rapid full-page restyling.",
+          icon: "M3 3h18v18H3z",
+          label: "Apply Brand",
+          desc: "Capture colors from selected elements. Apply brand settings to canvas background or all elements at once.",
         },
       ],
-      tip: "Your last session is automatically restored when you reload the page — no manual save needed between sessions.",
+      tip: "Brand Settings are stored locally. Keep them consistent for a cohesive design system throughout your project.",
     },
   },
   {
-    id: "pages",
-    label: "Pages",
+    id: "media",
+    label: "Media Library",
     category: "Building",
-    icon: "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6",
+    icon: "M4 16l4.586-4.586a2 2 0 0 1 2.828 0L16 16m-2-2l1.586-1.586a2 2 0 0 1 2.828 0L20 14m-6-6h.01M6 20h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z",
     content: {
-      title: "Pages",
+      title: "Media Library",
       intro:
-        "Veltro Create supports multi-page projects. Each page has its own independent canvas.",
-      itemsLabel: "Managing Pages",
+        "Organize and manage all your images and media files. Upload, tag, filter, and drag to canvas.",
+      itemsLabel: "Features",
       items: [
         {
-          icon: "M4 6h16M4 10h16M4 14h16",
-          label: "Viewing Pages",
-          desc: "Open the Pages accordion in the left panel, or use the page tabs at the top of the canvas to see all pages.",
-        },
-        {
           icon: "M12 5v14M5 12h14",
-          label: "Adding a Page",
-          desc: "Click the + button at the top of the Pages panel to add a new blank page to your project.",
+          label: "Upload Media",
+          desc: "Click Upload in the Media Library accordion to add images. Files are stored on the server and persist across sessions.",
         },
         {
-          icon: "M9 18l6-6-6-6",
-          label: "Switching Pages",
-          desc: "Click any page name in the Pages panel, or click a page tab above the canvas to switch to it.",
+          icon: "M4 7h16M4 12h10M4 17h6",
+          label: "Organize with Tags",
+          desc: "Right-click any media item to add tags for easy filtering and organization. Tags help you find media quickly.",
         },
         {
-          icon: "M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z",
-          label: "Renaming & Deleting",
-          desc: "Use the options menu next to any page in the Pages panel to rename or delete it.",
+          icon: "M3 3h18v18H3z",
+          label: "Filter by Category",
+          desc: "Filter media by type: All, Graphics, Photos, Icons, Videos. Categories auto-assign based on file type.",
+        },
+        {
+          icon: "M7 16V4m0 0L3 8m4-4l4 4",
+          label: "Drag to Canvas",
+          desc: "Drag any media item directly onto the canvas. Images insert at drop position with automatic scaling.",
         },
       ],
-      tip: "When you export, all pages are included — each page becomes a separate section or file in the output.",
+      tip: "Media is stored server-side. Upload once, use anywhere. All files persist between sessions.",
     },
   },
   {
     id: "import",
-    label: "Import",
+    label: "AI Template Builder",
     category: "Advanced",
     icon: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3",
     content: {
-      title: "Import",
+      title: "AI Template Builder",
       intro:
-        "Pull content from any live website, or describe a page in plain English and let AI build it instantly.",
-      itemsLabel: "Import Options",
+        "Generate complete page designs from plain text descriptions. Describe what you need and AI builds it instantly.",
+      itemsLabel: "How To Use AI",
       items: [
         {
-          icon: "M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71",
-          label: "URL Import",
-          desc: "Click Import in the toolbar, paste any public URL, and Veltro Create scrapes and converts it into editable blocks.",
-        },
-        {
           icon: "M12 2a5 5 0 0 1 5 5c0 2.5-1.5 4.5-3 6l-2 3-2-3c-1.5-1.5-3-3.5-3-6a5 5 0 0 1 5-5z",
-          label: "AI Import",
-          desc: "Click AI in the toolbar, describe the page you need — layout, content, style — and AI generates it instantly.",
+          label: "Open AI Template Builder",
+          desc: "Click 'AI Template Builder' in Assets accordion or Create menu. Opens a dialog to describe your page.",
         },
         {
-          icon: "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z",
-          label: "Reviewing Imports",
-          desc: "Imported blocks land on the canvas ready to edit. Rearrange, restyle, or delete any block after importing.",
+          icon: "M4 7h16M4 12h10M4 17h6",
+          label: "Describe Your Page",
+          desc: "Write a clear description: industry, style, layout sections, content focus. E.g., 'SaaS landing with hero, pricing, CTA'.",
+        },
+        {
+          icon: "M3 3h18v18H3z",
+          label: "AI Generates Design",
+          desc: "AI creates a complete page layout with content, colors, and typography. Fully editable on the canvas.",
+        },
+        {
+          icon: "M7 16V4m0 0L3 8m4-4l4 4",
+          label: "Edit & Customize",
+          desc: "All elements are fully editable. Rearrange sections, change text, adjust colors, modify fonts — no restrictions.",
         },
       ],
-      tip: 'AI Import works best with a clear brief. Include industry, style, and key sections — e.g. "Dark SaaS landing page with hero, 3 features and a CTA."',
+      tip: "Be specific in your description for better results. Include industry, target audience, and key sections.",
     },
   },
   {
@@ -228,66 +233,66 @@ FB.help.TOPICS = [
     content: {
       title: "Export",
       intro:
-        "When your design is ready, export clean production code — no extra libraries or dependencies required.",
-      itemsLabel: "Export Formats",
+        "When your design is ready, export in multiple formats. Clean, production-ready code with zero dependencies.",
+      itemsLabel: "Export Options",
       items: [
         {
           icon: "M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z",
           label: "Export HTML",
-          desc: "A complete, standalone HTML file with all styles inlined. Drop it anywhere — no build step required.",
+          desc: "Standalone HTML file with all styles inlined. Drop anywhere, works immediately. Perfect for static hosting.",
         },
         {
-          icon: "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z",
-          label: "Export React JSX",
-          desc: "A React component tree as JSX. Ready to paste into any React project.",
+          icon: "M4 16l4.586-4.586a2 2 0 0 1 2.828 0L16 16m-2-2l1.586-1.586a2 2 0 0 1 2.828 0L20 14m-6-6h.01M6 20h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z",
+          label: "Export PNG",
+          desc: "Rasterized image of your design. Great for previews, social sharing, or presentations.",
         },
         {
           icon: "M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4",
-          label: "Export TSX",
-          desc: "The same as React export but with TypeScript annotations — for TSX-based projects.",
+          label: "Export SVG",
+          desc: "Vector format for scalable graphics. Preserves all vector shapes and text as editable SVG.",
         },
         {
           icon: "M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z",
-          label: "Preview First",
-          desc: "Click Preview in the toolbar to see exactly how your page looks before exporting. Check all three device sizes.",
+          label: "Preview Mode",
+          desc: "Click Preview in toolbar to test responsiveness at desktop, tablet, and mobile sizes before exporting.",
         },
       ],
-      tip: "Use Preview mode to check your design at desktop, tablet, and mobile sizes before downloading.",
+      tip: "Always preview at multiple sizes. Check layout, typography, and alignment look correct on all devices.",
     },
   },
   {
-    id: "animations",
-    label: "Animations & Effects",
+    id: "effects",
+    label: "Visual Effects & Hover",
     category: "Advanced",
     icon: "M13 2L3 14h9l-1 8 10-12h-9l1-8z",
     content: {
-      title: "Animations & Effects",
+      title: "Visual Effects & Hover States",
       intro:
-        "Add entrance animations, interactive hover effects, and advanced visual treatments to any block.",
-      itemsLabel: "What's Available",
+        "Add interactive hover effects and advanced visual treatments. Make your design feel responsive and polished.",
+      itemsLabel: "Available Effects",
       items: [
-        {
-          icon: "M5 3l14 9-14 9V3z",
-          label: "Animation Presets",
-          desc: "Select a block, open the Animation section in the right panel, choose from 10 presets, set duration and delay, then click Preview.",
-        },
         {
           icon: "M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3",
           label: "Hover States",
-          desc: "Define a different background, opacity, or scale on hover. Smooth CSS transitions are applied automatically.",
+          desc: "Define different styles on hover: background color, opacity, or scale. CSS transitions apply automatically for smooth interactions.",
         },
         {
           icon: "M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z",
-          label: "Effects & Border",
-          desc: "Box shadows, backdrop blur for glassmorphism, mix-blend-mode (16 options), and full border controls live in the Effects section.",
+          label: "Shadows & Blur",
+          desc: "Box shadows with control over spread, blur, and offset. Backdrop blur for glassmorphism effects.",
         },
         {
-          icon: "M13 2L3 14h9l-1 8 10-12h-9l1-8z",
-          label: "Veltro Widgets",
-          desc: "The Widgets panel has advanced animated components — particle fields, animated counters, SVG draws, countdowns, and more.",
+          icon: "M3 3h18v18H3z",
+          label: "Mix Blend Modes",
+          desc: "16 blend mode options (multiply, screen, overlay, etc.) for creative layering and color effects.",
+        },
+        {
+          icon: "M4 21v-7m0-4V3m8 18v-9m0-4V3m8 18v-5m0-4V3M1 14h6m2-6h6m2 8h6",
+          label: "Borders & Radius",
+          desc: "Full border customization: width, color, style. Border radius for curved corners (0-24px).",
         },
       ],
-      tip: "Animations use IntersectionObserver — they trigger as each block scrolls into view, not all at once on page load.",
+      tip: "Hover effects are instant. Use blur and shadows to create depth. Blend modes work best with semi-transparent elements.",
     },
   },
   {
@@ -298,41 +303,41 @@ FB.help.TOPICS = [
     content: {
       title: "Keyboard Shortcuts",
       intro:
-        "Speed up your workflow with these shortcuts. All are disabled while editing text inside a block.",
+        "Speed up your workflow with these keyboard shortcuts. Shortcuts are available when not editing text.",
       itemsLabel: "Shortcuts",
       items: [
         {
           icon: "M2 4h20a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z",
           label: "Ctrl + Z",
-          desc: "Undo the last action.",
+          desc: "Undo the last change.",
         },
         {
           icon: "M2 4h20a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z",
           label: "Ctrl + Y",
-          desc: "Redo the last undone action.",
+          desc: "Redo the last undone change.",
         },
         {
           icon: "M2 4h20a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z",
-          label: "Ctrl + C",
-          desc: "Copy the selected block to the clipboard.",
-        },
-        {
-          icon: "M2 4h20a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z",
-          label: "Ctrl + V",
-          desc: "Paste a copied block below the current selection.",
+          label: "Ctrl + D",
+          desc: "Duplicate the selected element.",
         },
         {
           icon: "M2 4h20a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z",
           label: "Delete",
-          desc: "Delete the selected block.",
+          desc: "Delete the selected element from the canvas.",
+        },
+        {
+          icon: "M2 4h20a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z",
+          label: "Arrow Keys (↑↓)",
+          desc: "Move selected element up or down in the layer order.",
         },
         {
           icon: "M2 4h20a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z",
           label: "Escape",
-          desc: "Deselect the current block.",
+          desc: "Deselect current element and close panels.",
         },
       ],
-      tip: "Keyboard shortcuts are shown as tooltips on toolbar buttons — hover over any button to see its shortcut key.",
+      tip: "Many shortcuts are shown in toolbar button tooltips. Hover to discover more. Works outside text editing mode.",
     },
   },
 ];
@@ -556,7 +561,7 @@ FB.help.startTour = function () {
         popover: {
           title: "Welcome to Veltro Create",
           description:
-            "This quick tour walks you through the key areas of the interface. Use the arrows or keyboard to navigate — press ESC to exit at any time.",
+            "This quick tour walks you through the interface. Use arrow buttons or keyboard to navigate — press ESC to exit anytime.",
           side: "over",
           align: "center",
         },
@@ -564,9 +569,9 @@ FB.help.startTour = function () {
       {
         element: "#topbar",
         popover: {
-          title: "The Toolbar",
+          title: "Top Bar",
           description:
-            "Switch device views, undo/redo changes, preview your page, save and load designs, import from URLs or AI, and export your finished page.",
+            "Device preview, undo/redo, preview mode, theme toggle, AI tools, and export. Everything to manage your design.",
           side: "bottom",
           align: "start",
         },
@@ -576,59 +581,59 @@ FB.help.startTour = function () {
         popover: {
           title: "Left Panel",
           description:
-            "Browse your section library, templates, layouts, and widgets. Everything you need to build a page lives here.",
+            "Elements (text, shapes, images), Layers, Media Library, Brand Settings, and Assets. Collapse it to icon view for more canvas space.",
           side: "right",
           align: "start",
         },
       },
       {
-        element: "#block-library",
+        element: "[data-acc='elements']",
         popover: {
-          title: "Sections Library",
+          title: "Elements",
           description:
-            "Click any section to add it to your canvas. Sections are grouped by type — hero, features, testimonials, footers, and more.",
+            "Click to expand and add text, shapes, or images to your canvas. All the building blocks you need.",
           side: "right",
           align: "start",
         },
       },
       {
-        element: "#canvas-wrap",
+        element: "[data-acc='brand']",
+        popover: {
+          title: "Brand Settings",
+          description:
+            "Define your brand colors, fonts, and border radius. Apply them globally for a consistent design system.",
+          side: "right",
+          align: "start",
+        },
+      },
+      {
+        element: "#ds-canvas-wrap",
         popover: {
           title: "The Canvas",
           description:
-            "Your live editing area. Click a block to select it. Use the ↑↓ arrows to reorder, or drag blocks to new positions.",
+            "Your live editing area. Click any element to select. Drag to move. Use handles to resize. Guides help align elements.",
           side: "left",
           align: "start",
         },
       },
       {
-        element: "#right-panel",
+        element: "#ds-right-panel",
         popover: {
-          title: "Block Inspector",
+          title: "Design Panel",
           description:
-            "When a block is selected, this panel shows all its controls — content, colours, typography, spacing, effects, hover states, and animations.",
+            "Colors, typography, spacing, effects, borders, hover states, and alignment. All controls for the selected element.",
           side: "left",
           align: "start",
         },
       },
       {
-        element: '[title="AI Import"]',
+        element: ".tb-preview",
         popover: {
-          title: "AI Import",
+          title: "Preview Mode",
           description:
-            "Describe the page you want in plain English, or paste a URL. AI will generate a full page layout for you instantly.",
+            "Click Preview to test your design at desktop, tablet, and mobile sizes. Check responsiveness before exporting.",
           side: "bottom",
           align: "center",
-        },
-      },
-      {
-        element: ".tb-export",
-        popover: {
-          title: "Export",
-          description:
-            "When your design is ready, export clean production code as HTML, React JSX, or TypeScript TSX — no extra dependencies needed.",
-          side: "bottom",
-          align: "end",
         },
       },
     ],
