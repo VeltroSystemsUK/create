@@ -157,11 +157,22 @@
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  direction: rtl;
 }
-#ds-left-panel > * {
-  direction: ltr;
+/* Scrollbar styling for left panel */
+#ds-left-panel::-webkit-scrollbar {
+  width: 8px;
 }
+#ds-left-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+#ds-left-panel::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+#ds-left-panel::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
 #ds-right-panel {
   width: 240px;
   min-width: 240px;
@@ -170,10 +181,20 @@
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  direction: rtl;
 }
-#ds-right-panel > * {
-  direction: ltr;
+/* Scrollbar styling for right panel */
+#ds-right-panel::-webkit-scrollbar {
+  width: 8px;
+}
+#ds-right-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+#ds-right-panel::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+#ds-right-panel::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
 }
 #ds-canvas-column {
   flex: 1;
