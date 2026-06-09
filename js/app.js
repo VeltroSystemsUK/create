@@ -45,6 +45,55 @@ FB.util.showToast = function (msg) {
   }, 2200);
 };
 
+FB.util.initPanelResizers = function () {
+  var leftResizer = document.getElementById("left-panel-resizer");
+  var rightResizer = document.getElementById("right-panel-resizer");
+  var leftPanel = document.getElementById("left-panel");
+  var rightPanel = document.getElementById("right-panel");
+  var root = document.documentElement;
+
+  if (leftResizer && leftPanel) {
+    var isResizing = false;
+    leftResizer.addEventListener("mousedown", function (e) {
+      isResizing = true;
+      document.body.classList.add("left-resizing");
+      e.preventDefault();
+    });
+    document.addEventListener("mousemove", function (e) {
+      if (!isResizing) return;
+      var newWidth = Math.max(180, Math.min(600, e.clientX));
+      root.style.setProperty("--panel-w", newWidth + "px");
+    });
+    document.addEventListener("mouseup", function () {
+      if (isResizing) {
+        isResizing = false;
+        document.body.classList.remove("left-resizing");
+      }
+    });
+  }
+
+  if (rightResizer && rightPanel) {
+    var isResizingRight = false;
+    rightResizer.addEventListener("mousedown", function (e) {
+      isResizingRight = true;
+      document.body.classList.add("right-resizing");
+      e.preventDefault();
+    });
+    document.addEventListener("mousemove", function (e) {
+      if (!isResizingRight) return;
+      var viewportWidth = window.innerWidth;
+      var newWidth = Math.max(200, Math.min(600, viewportWidth - e.clientX));
+      root.style.setProperty("--panel-w-right", newWidth + "px");
+    });
+    document.addEventListener("mouseup", function () {
+      if (isResizingRight) {
+        isResizingRight = false;
+        document.body.classList.remove("right-resizing");
+      }
+    });
+  }
+};
+
 FB.init = function () {
   FB.blocks.normalizeAllBlocks();
   FB.panels.buildLibrary();
@@ -53,6 +102,7 @@ FB.init = function () {
   FB.panels.buildEducationLibrary();
   FB.education.buildIngestionPanel();
   FB.util.bindSearch();
+  FB.util.initPanelResizers();
   // Always start fresh - no auto-restore from localStorage
   FB.pages.init();
   // Never load starter template - blank canvas only
