@@ -34,7 +34,7 @@ import "../js/app.js";
 import "../js/theme-toggle.js";
 import "../js/language.js";
 import "../js/design.js";
-import "./design/engine"; // New TS modules — augments legacy FB.design
+// import "./design/engine"; // New TS modules — requires build/Vite, skipped for static server
 import "../widgets/design-templates.js";
 import "../js/motion-creator.js";
 import "../js/deep-scrape.js";
