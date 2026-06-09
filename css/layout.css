@@ -1,11 +1,11 @@
 /* ── TOP BAR ── */
 #topbar {
   height: 56px;
-  display: grid;
-  grid-template-columns: minmax(220px, var(--panel-w)) minmax(360px, 1fr) auto;
+  display: flex;
   align-items: center;
   gap: 14px;
-  padding: 0 14px 0 18px;
+  padding: 0 14px;
+  justify-content: space-between;
   background: var(--surface-1);
   border-bottom: 1px solid var(--border);
   position: relative;
