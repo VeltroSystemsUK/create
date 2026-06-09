@@ -15,10 +15,16 @@ export default defineConfig({
     host: "0.0.0.0",
     port: 3002,
     strictPort: true,
+    cors: true,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    },
     hmr: {
       host: "localhost",
       protocol: "ws",
-      clientPort: 3002,
+      clientPort: Number(process.env.VITE_CLIENT_PORT || 3002),
     },
     open: "/framework-builder.html",
     fs: {
