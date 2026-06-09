@@ -53,6 +53,7 @@
   gap: 8px;
   justify-content: center;
   min-width: 0;
+  flex: 1;
 }
 .tb-right {
   align-items: center;
