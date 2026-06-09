@@ -55,6 +55,12 @@
   min-width: 0;
   flex: 1;
 }
+.tb-center-items {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
 .tb-right {
   align-items: center;
   display: flex;
